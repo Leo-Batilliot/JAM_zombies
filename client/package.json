@@ -1,0 +1,11 @@
+{
+  "name": "@horde/client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@horde/shared": "*"
+  }
+}

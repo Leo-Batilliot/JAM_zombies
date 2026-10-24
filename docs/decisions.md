@@ -4,6 +4,27 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### TypeScript 6.0 au lieu de 7 | T.BE
+
+- **Quoi** : TypeScript est fixé en 6.0.3.
+- **Pourquoi** : typescript-eslint ne supporte pas encore TypeScript 7 (il demande une version inférieure à 6.1).
+- **Impact** : aucun sur le code. Passer en 7 demande d'attendre une version compatible de typescript-eslint.
+- **Avis** : Provisoire. À remonter quand typescript-eslint suivra.
+
+### Code partagé lu depuis ses sources en développement | T.BE
+
+- **Quoi** : `@horde/shared` expose `src/` sous la condition `development` et `dist/` sinon. tsx, Vite, Vitest et le typecheck utilisent les sources, le build du serveur utilise `dist/`.
+- **Pourquoi** : pas besoin de compiler `shared/` pendant le développement, et le serveur compilé tourne en JavaScript pur.
+- **Impact** : le build compile `shared/` avant `server/` (ordre des workspaces). Le build du serveur désactive la condition dans `server/tsconfig.build.json`.
+- **Avis** : Validée.
+
+### Markdown exclu de Prettier | T.BE
+
+- **Quoi** : Prettier ne vérifie que le code et la config, pas les fichiers Markdown.
+- **Pourquoi** : la doc suit les formats de `ressources/exemples/`, que Prettier réécrirait.
+- **Impact** : `npm run lint` ne bloque pas sur la doc.
+- **Avis** : Validée.
+
 ### Un bot reprend l'armée d'un joueur déconnecté | L.BA
 
 - **Quoi** : quand un joueur se déconnecte ou recharge la page, un bot prend le contrôle de son mage. S'il revient pendant le délai de grâce de `lobby.json`, il récupère son mage et son armée grâce à un jeton gardé par le navigateur. Sinon le bot reste et compte dans le minimum du lobby.
