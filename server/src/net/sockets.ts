@@ -14,7 +14,7 @@ import {
 } from "@horde/shared";
 import { validatePlayerName } from "../lobby/name.js";
 import { spawnArmy } from "../systems/army.js";
-import { setMageTarget } from "../systems/movement.js";
+import { orderAttack, orderMove } from "../systems/orders.js";
 import type { Army, World } from "../world/world.js";
 import { visibleEntities, type View } from "./interest.js";
 
@@ -80,7 +80,10 @@ export const attachSockets = (server: Server, world: World) => {
         session.view = { width: message.width, height: message.height };
         break;
       case ClientMessageType.Move:
-        setMageTarget(world, session.army.mage, message.x, message.y);
+        orderMove(world, session.army, message.x, message.y);
+        break;
+      case ClientMessageType.Target:
+        orderAttack(world, session.army, message.entityId);
         break;
       default:
         break;

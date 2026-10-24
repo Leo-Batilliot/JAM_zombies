@@ -3,13 +3,42 @@
   "height": 400,
   "gridCellSize": 4,
   "spawnMargin": 20,
+  "spawnAttempts": 12,
+  "populations": [
+    {
+      "npc": "civilian",
+      "count": 150,
+      "groupSize": {
+        "min": 3,
+        "max": 6
+      },
+      "groupSpread": 3,
+      "wanderDistance": 25,
+      "wanderIntervalSec": 8,
+      "fleeRadius": 10,
+      "respawnIntervalSec": 2,
+      "safeDistance": 30
+    }
+  ],
   "decor": {
     "seed": 1031,
     "scattered": [
-      { "sprite": "decor-tree", "count": 260 },
-      { "sprite": "decor-bush", "count": 220 },
-      { "sprite": "decor-rock", "count": 140 },
-      { "sprite": "decor-grave", "count": 90 }
+      {
+        "sprite": "decor-tree",
+        "count": 260
+      },
+      {
+        "sprite": "decor-bush",
+        "count": 220
+      },
+      {
+        "sprite": "decor-rock",
+        "count": 140
+      },
+      {
+        "sprite": "decor-grave",
+        "count": 90
+      }
     ]
   },
   "pointsOfInterest": {}

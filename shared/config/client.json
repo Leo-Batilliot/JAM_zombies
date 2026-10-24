@@ -2,6 +2,7 @@
   "maxPixelRatio": 2,
   "pixelsPerMeter": 24,
   "markerDurationMs": 600,
+  "pickRadius": 1.2,
   "armyColors": [
     "#e0605a",
     "#4fa3e0",

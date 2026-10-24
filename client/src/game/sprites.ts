@@ -40,6 +40,10 @@ export const spriteName = (
       return "mage";
     case EntityKind.Unit:
       return `unit-${content.units[entity.type] ?? ""}`;
+    case EntityKind.Npc:
+      return `npc-${content.npcs[entity.type] ?? ""}`;
+    case EntityKind.Corpse:
+      return "corpse";
   }
 };
 

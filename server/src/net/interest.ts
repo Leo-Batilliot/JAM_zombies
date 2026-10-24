@@ -1,4 +1,4 @@
-import { EntityKind, type SnapshotEntity } from "@horde/shared";
+import { EntityKind, neutralArmy, type SnapshotEntity } from "@horde/shared";
 import type { Entity, World } from "../world/world.js";
 
 export interface View {
@@ -6,14 +6,35 @@ export interface View {
   height: number;
 }
 
+const typeIndex = (world: World, entity: Entity): number => {
+  switch (entity.kind) {
+    case EntityKind.Mage:
+      return 0;
+    case EntityKind.Unit:
+    case EntityKind.Corpse:
+      return world.registries.units.index(entity.type);
+    case EntityKind.Npc:
+      return world.registries.npcs.index(entity.type);
+  }
+};
+
+const armySlot = (entity: Entity): number => {
+  switch (entity.kind) {
+    case EntityKind.Mage:
+    case EntityKind.Unit:
+      return entity.army.slot;
+    case EntityKind.Corpse:
+      return entity.owner.slot;
+    case EntityKind.Npc:
+      return neutralArmy;
+  }
+};
+
 const toSnapshot = (world: World, entity: Entity): SnapshotEntity => ({
   id: entity.id,
   kind: entity.kind,
-  type:
-    entity.kind === EntityKind.Unit
-      ? world.registries.units.index(entity.type)
-      : 0,
-  army: entity.army.slot,
+  type: typeIndex(world, entity),
+  army: armySlot(entity),
   flags: 0,
   x: entity.x,
   y: entity.y,

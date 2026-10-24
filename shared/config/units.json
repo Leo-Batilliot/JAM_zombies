@@ -5,8 +5,22 @@
       "rank": "front",
       "speed": 7,
       "radius": 0.45,
+      "hp": 30,
+      "damage": 5,
+      "attackIntervalSec": 1,
+      "attackRange": 0.3,
+      "aggroRange": 8,
       "evolutions": []
     }
   },
-  "npcs": {}
+  "npcs": {
+    "civilian": {
+      "corpse": "zombie",
+      "strength": 1,
+      "hp": 10,
+      "radius": 0.4,
+      "speed": 1.5,
+      "fleeSpeed": 4.5
+    }
+  }
 }

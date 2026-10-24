@@ -95,6 +95,9 @@ export const buildRegistries = (config: Config): Registries => {
   for (const [npcId, npc] of registries.npcs.entries()) {
     checkReference(registries.units, npc.corpse, `Corpse of npc "${npcId}"`);
   }
+  for (const { npc } of config.world.populations) {
+    checkReference(registries.npcs, npc, "Population");
+  }
   for (const { unit } of config.gameplay.army.startingUnits) {
     checkReference(registries.units, unit, "Starting army");
   }

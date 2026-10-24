@@ -37,6 +37,7 @@ const serverMessages: ServerMessage[] = [
         maxPixelRatio: 2,
         pixelsPerMeter: 24,
         markerDurationMs: 600,
+        pickRadius: 1,
         armyColors: ["#ff0000"],
         walkFrameMs: 150,
         grimoireBobMs: 1600,
@@ -47,7 +48,7 @@ const serverMessages: ServerMessage[] = [
         decor: { seed: 1, scattered: [{ sprite: "decor-tree", count: 3 }] },
       },
       network: { tickRate: 20, interpolationDelayMs: 100 },
-      content: { units: ["zombie"] },
+      content: { units: ["zombie"], npcs: ["civilian"] },
     },
   },
   {

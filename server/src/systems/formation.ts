@@ -1,5 +1,8 @@
 import type { Config } from "@horde/shared";
 import type { Army, Unit, World } from "../world/world.js";
+import { distance } from "./bodies.js";
+import { reachDistance } from "./combat.js";
+import { currentTarget, type Target } from "./targeting.js";
 
 export interface SlotOffset {
   forward: number;
@@ -84,11 +87,23 @@ export const moveToward = (
   }
 };
 
+const chase = (world: World, unit: Unit, target: Target, step: number) => {
+  const gap = distance(unit, target) - reachDistance(world, unit, target);
+  if (gap > 0) {
+    moveToward(world, unit, target.x, target.y, Math.min(step, gap));
+  }
+};
+
 export const followMages = (world: World, dt: number): void => {
   for (const army of world.armies.values()) {
     for (const [unit, slot] of formationSlots(world, army)) {
-      const { speed } = world.registries.units.get(unit.type);
-      moveToward(world, unit, slot.x, slot.y, speed * dt);
+      const step = world.registries.units.get(unit.type).speed * dt;
+      const target = currentTarget(world, unit);
+      if (target === undefined) {
+        moveToward(world, unit, slot.x, slot.y, step);
+      } else {
+        chase(world, unit, target, step);
+      }
     }
   }
 };

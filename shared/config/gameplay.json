@@ -1,13 +1,34 @@
 {
   "mage": {
     "speed": 6,
-    "radius": 0.6
+    "radius": 0.6,
+    "baseHp": 100,
+    "hpPerLevel": 20
   },
   "army": {
-    "startingUnits": [{ "unit": "zombie", "count": 5 }],
+    "startingUnits": [
+      {
+        "unit": "zombie",
+        "count": 5
+      }
+    ],
     "spawnRadius": 2
   },
   "movement": {
     "separation": 0.5
+  },
+  "combat": {
+    "retargetIntervalSec": 0.5,
+    "leashDistance": 18,
+    "orderRange": 30
+  },
+  "reanimation": {
+    "delaySec": 30,
+    "raiseRadius": 3
+  },
+  "souls": {
+    "perStrength": 1,
+    "levelBase": 10,
+    "levelGrowth": 1.5
   }
 }

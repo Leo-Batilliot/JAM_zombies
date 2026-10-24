@@ -4,6 +4,27 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Civils, combat, cadavres et âmes | 2.05-2.08 | L.BA
+
+- `shared/src/config/schema.ts` : statistiques de combat des unités, PNJ, populations, combat, réanimation, âmes et niveaux, PV du mage, rayon de sélection d'un ennemi.
+- `shared/config/` : civil, population de 150 civils, PV et dégâts du zombie, délai de réanimation de 30 s, coût des niveaux.
+- `shared/src/registry.ts` : vérification du PNJ de chaque population.
+- `shared/src/protocol/messages.ts` : entités de PNJ et de cadavre.
+- `server/src/world/world.ts` : PNJ et groupes, cadavres avec propriétaire et tueur, PV des unités et du mage, âmes et niveau de l'armée.
+- `server/src/world/grid.ts` : éléments stockés directement dans les cellules, plus rapide sur les requêtes.
+- `server/src/world/spawn.ts` : choix d'un point loin des mages.
+- `server/src/systems/civilians.ts` : groupes qui errent et fuient les armées, population maintenue.
+- `server/src/systems/targeting.ts` : ciblage échelonné de l'ennemi le plus proche, laisse autour du mage, ordre d'attaque.
+- `server/src/systems/combat.ts` : poursuite et attaques selon la cadence et les dégâts du registre.
+- `server/src/systems/death.ts` : mort d'une unité ou d'un PNJ, âmes du tueur, cadavre.
+- `server/src/systems/reanimation.ts` : relève près du mage propriétaire après le délai.
+- `server/src/systems/souls.ts` : niveau selon les âmes, PV max selon le niveau.
+- `server/src/systems/orders.ts` : ordres de déplacement et d'attaque.
+- `server/src/net/` : ordre d'attaque, PNJ et cadavres dans le snapshot.
+- `client/src/game/picking.ts`, `client/src/game/game.ts` : clic ou tap sur un ennemi pour l'attaquer.
+- `client/src/game/marker.ts` : marqueur rouge pour un ordre d'attaque.
+- `server/tests/`, `shared/tests/`, `client/tests/` : civils, ciblage, combat, cadavres, réanimation, âmes, sélection d'un ennemi.
+
 ### Armées, suivi du mage et carte | 2.01-2.04 | L.BA
 
 - `shared/src/config/schema.ts` : armée de départ, rayon du mage, séparation, placement par défaut, statistiques de déplacement des unités, décor, palette d'auras et durées d'animation, types d'unités envoyés au client.

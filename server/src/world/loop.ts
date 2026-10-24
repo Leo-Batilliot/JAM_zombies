@@ -1,11 +1,24 @@
+import { maintainPopulations, moveCivilians } from "../systems/civilians.js";
+import { fight } from "../systems/combat.js";
 import { followMages } from "../systems/formation.js";
 import { moveMages } from "../systems/movement.js";
+import { reanimate } from "../systems/reanimation.js";
 import { separateBodies } from "../systems/separation.js";
+import { updateTargets } from "../systems/targeting.js";
 import type { World } from "./world.js";
 
 export type System = (world: World, dt: number) => void;
 
-export const systems: System[] = [moveMages, followMages, separateBodies];
+export const systems: System[] = [
+  maintainPopulations,
+  moveCivilians,
+  moveMages,
+  updateTargets,
+  followMages,
+  separateBodies,
+  fight,
+  reanimate,
+];
 
 export const runTick = (world: World, dt: number): void => {
   for (const system of systems) {

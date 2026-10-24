@@ -12,6 +12,8 @@ const gameplaySchema = z.strictObject({
   mage: z.strictObject({
     speed: z.number().positive(),
     radius: z.number().positive(),
+    baseHp: z.number().positive(),
+    hpPerLevel: z.number().nonnegative(),
   }),
   army: z.strictObject({
     startingUnits: z.array(
@@ -24,6 +26,20 @@ const gameplaySchema = z.strictObject({
   }),
   movement: z.strictObject({
     separation: z.number().positive().max(1),
+  }),
+  combat: z.strictObject({
+    retargetIntervalSec: z.number().positive(),
+    leashDistance: z.number().positive(),
+    orderRange: z.number().positive(),
+  }),
+  reanimation: z.strictObject({
+    delaySec: z.number().nonnegative(),
+    raiseRadius: z.number().positive(),
+  }),
+  souls: z.strictObject({
+    perStrength: z.number().nonnegative(),
+    levelBase: z.number().positive(),
+    levelGrowth: z.number().min(1),
   }),
 });
 
@@ -42,6 +58,11 @@ const unitTypeSchema = z.strictObject({
   rank: z.enum(ranks),
   speed: z.number().positive(),
   radius: z.number().positive(),
+  hp: z.number().positive(),
+  damage: z.number().nonnegative(),
+  attackIntervalSec: z.number().positive(),
+  attackRange: z.number().nonnegative(),
+  aggroRange: z.number().positive(),
   evolutions: z.array(
     z.strictObject({
       into: id,
@@ -52,6 +73,11 @@ const unitTypeSchema = z.strictObject({
 
 const npcTypeSchema = z.strictObject({
   corpse: id,
+  strength: z.int().positive(),
+  hp: z.number().positive(),
+  radius: z.number().positive(),
+  speed: z.number().positive(),
+  fleeSpeed: z.number().positive(),
 });
 
 const unitsSchema = z.strictObject({
@@ -68,6 +94,24 @@ const worldSchema = z.strictObject({
   height: structural(z.int().positive()),
   gridCellSize: structural(z.number().positive()),
   spawnMargin: z.number().nonnegative(),
+  spawnAttempts: z.int().positive(),
+  populations: z.array(
+    z.strictObject({
+      npc: id,
+      count: z.int().nonnegative(),
+      groupSize: z
+        .strictObject({ min: z.int().positive(), max: z.int().positive() })
+        .refine((size) => size.min <= size.max, {
+          message: "min must not exceed max",
+        }),
+      groupSpread: z.number().nonnegative(),
+      wanderDistance: z.number().positive(),
+      wanderIntervalSec: z.number().positive(),
+      fleeRadius: z.number().positive(),
+      respawnIntervalSec: z.number().positive(),
+      safeDistance: z.number().nonnegative(),
+    }),
+  ),
   decor: z.strictObject({
     seed: z.int().nonnegative(),
     scattered: z.array(
@@ -116,6 +160,7 @@ export const clientSettingsSchema = z.strictObject({
   maxPixelRatio: z.number().positive(),
   pixelsPerMeter: z.number().positive(),
   markerDurationMs: z.int().positive(),
+  pickRadius: z.number().positive(),
   armyColors: z.array(color).min(1),
   walkFrameMs: z.int().positive(),
   grimoireBobMs: z.int().positive(),
@@ -142,6 +187,7 @@ export const clientConfigSchema = z.strictObject({
   network: networkSchema.pick({ tickRate: true, interpolationDelayMs: true }),
   content: z.strictObject({
     units: z.array(id),
+    npcs: z.array(id),
   }),
 });
 
@@ -160,6 +206,7 @@ export const toClientConfig = (config: Config): ClientConfig => ({
   },
   content: {
     units: Object.keys(config.units.units),
+    npcs: Object.keys(config.units.npcs),
   },
 });
 

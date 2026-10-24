@@ -6,6 +6,10 @@ export interface Army {
   name: string;
   mage: Mage;
   units: Set<Unit>;
+  corpses: Set<Corpse>;
+  souls: number;
+  level: number;
+  focusId: number | undefined;
 }
 
 export interface Mage {
@@ -18,6 +22,7 @@ export interface Mage {
   targetY: number;
   facingX: number;
   facingY: number;
+  hp: number;
 }
 
 export interface Unit {
@@ -27,20 +32,68 @@ export interface Unit {
   army: Army;
   x: number;
   y: number;
+  hp: number;
+  targetId: number | undefined;
+  retargetAt: number;
+  cooldown: number;
 }
 
-export type Entity = Mage | Unit;
+export interface NpcGroup {
+  population: number;
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  wanderAt: number;
+  members: Set<Npc>;
+}
+
+export interface Npc {
+  id: number;
+  kind: EntityKind.Npc;
+  type: string;
+  group: NpcGroup;
+  offsetX: number;
+  offsetY: number;
+  x: number;
+  y: number;
+  hp: number;
+}
+
+export interface Corpse {
+  id: number;
+  kind: EntityKind.Corpse;
+  type: string;
+  owner: Army;
+  killer: Army | undefined;
+  diedAt: number;
+  x: number;
+  y: number;
+}
+
+export type Entity = Mage | Unit | Npc | Corpse;
+export type Body = Mage | Unit | Npc;
 
 const maxArmySlot = 0xff;
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
+export const isBody = (entity: Entity): entity is Body =>
+  entity.kind !== EntityKind.Corpse;
+
+export const armyOf = (entity: Entity): Army | undefined =>
+  entity.kind === EntityKind.Mage || entity.kind === EntityKind.Unit
+    ? entity.army
+    : undefined;
+
 export class World {
   tick = 0;
   time = 0;
   readonly entities = new Map<number, Entity>();
   readonly armies = new Map<number, Army>();
+  readonly npcGroups = new Set<NpcGroup>();
+  readonly populationSpawnAt = new Map<number, number>();
   readonly grid: SpatialGrid;
   #nextId = 1;
 
@@ -72,6 +125,15 @@ export class World {
     };
   }
 
+  randomNear(x: number, y: number, radius: number): { x: number; y: number } {
+    const angle = this.random() * 2 * Math.PI;
+    const distance = Math.sqrt(this.random()) * radius;
+    return {
+      x: this.clampX(x + Math.cos(angle) * distance),
+      y: this.clampY(y + Math.sin(angle) * distance),
+    };
+  }
+
   #freeSlot(): number {
     for (let slot = 1; slot <= maxArmySlot; slot++) {
       if (!this.armies.has(slot)) {
@@ -87,7 +149,15 @@ export class World {
   }
 
   addArmy(name: string, x: number, y: number): Army {
-    const army = { slot: this.#freeSlot(), name, units: new Set() } as Army;
+    const army = {
+      slot: this.#freeSlot(),
+      name,
+      units: new Set(),
+      corpses: new Set(),
+      souls: 0,
+      level: 1,
+      focusId: undefined,
+    } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
       kind: EntityKind.Mage,
@@ -98,6 +168,7 @@ export class World {
       targetY: this.clampY(y),
       facingX: 0,
       facingY: 1,
+      hp: this.config.gameplay.mage.baseHp,
     };
     this.armies.set(army.slot, army);
     this.#add(army.mage);
@@ -112,22 +183,98 @@ export class World {
       army,
       x: this.clampX(x),
       y: this.clampY(y),
+      hp: this.registries.units.get(type).hp,
+      targetId: undefined,
+      retargetAt: this.time,
+      cooldown: 0,
     };
     army.units.add(unit);
     this.#add(unit);
     return unit;
   }
 
-  removeUnit(unit: Unit): void {
-    unit.army.units.delete(unit);
-    this.remove(unit.id);
+  addNpcGroup(population: number, x: number, y: number): NpcGroup {
+    const group: NpcGroup = {
+      population,
+      x,
+      y,
+      targetX: x,
+      targetY: y,
+      wanderAt: this.time,
+      members: new Set(),
+    };
+    this.npcGroups.add(group);
+    return group;
+  }
+
+  addNpc(group: NpcGroup, type: string, offsetX: number, offsetY: number): Npc {
+    const npc: Npc = {
+      id: this.#nextId++,
+      kind: EntityKind.Npc,
+      type,
+      group,
+      offsetX,
+      offsetY,
+      x: this.clampX(group.x + offsetX),
+      y: this.clampY(group.y + offsetY),
+      hp: this.registries.npcs.get(type).hp,
+    };
+    group.members.add(npc);
+    this.#add(npc);
+    return npc;
+  }
+
+  addCorpse(
+    type: string,
+    owner: Army,
+    killer: Army | undefined,
+    x: number,
+    y: number,
+  ): Corpse {
+    const corpse: Corpse = {
+      id: this.#nextId++,
+      kind: EntityKind.Corpse,
+      type,
+      owner,
+      killer,
+      diedAt: this.time,
+      x: this.clampX(x),
+      y: this.clampY(y),
+    };
+    owner.corpses.add(corpse);
+    this.#add(corpse);
+    return corpse;
+  }
+
+  removeEntity(entity: Entity): void {
+    switch (entity.kind) {
+      case EntityKind.Unit:
+        entity.army.units.delete(entity);
+        break;
+      case EntityKind.Npc:
+        entity.group.members.delete(entity);
+        if (entity.group.members.size === 0) {
+          this.npcGroups.delete(entity.group);
+        }
+        break;
+      case EntityKind.Corpse:
+        entity.owner.corpses.delete(entity);
+        break;
+      case EntityKind.Mage:
+        break;
+    }
+    this.remove(entity.id);
   }
 
   removeArmy(army: Army): void {
     for (const unit of army.units) {
       this.remove(unit.id);
     }
+    for (const corpse of army.corpses) {
+      this.remove(corpse.id);
+    }
     army.units.clear();
+    army.corpses.clear();
     this.remove(army.mage.id);
     this.armies.delete(army.slot);
   }

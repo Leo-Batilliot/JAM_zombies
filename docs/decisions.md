@@ -4,6 +4,34 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Cadavre d'un PNJ au tueur | L.BA
+
+- **Quoi** : le cadavre d'une unité appartient à son armée. Le cadavre d'un PNJ appartient directement à l'armée qui l'a tué, et se relève avec le type donné par `corpse` dans `units.json`. Un PNJ tué sans armée (plus tard par un autre PNJ) ne laisse pas de cadavre.
+- **Pourquoi** : les PNJ ne récupèrent jamais de cadavres, et tuer des civils doit faire grossir l'armée.
+- **Impact** : chaque cadavre garde aussi son tueur, utilisé par les transferts des phases suivantes. Les cadavres disparaissent avec leur armée.
+- **Avis** : Validée.
+
+### Ciblage échelonné, laisse et ordre d'attaque | L.BA
+
+- **Quoi** : chaque unité cherche l'ennemi le plus proche dans sa portée d'aggro toutes les 0,5 s, à un moment qui lui est propre. Elle ne poursuit pas un ennemi à plus de 18 m de son mage. Un ordre d'attaque vise une cible jusqu'à 30 m du mage pour toute l'armée, et un ordre de déplacement l'annule.
+- **Pourquoi** : chercher une cible à chaque tick pour des milliers d'unités coûte trop cher, et sans laisse l'armée se disperse sur la carte.
+- **Impact** : une unité réagit avec jusqu'à 0,5 s de retard. Le mage n'est pas une cible tant que sa mort n'existe pas (2.09).
+- **Avis** : À vérifier. Intervalle, laisse et portée de l'ordre à ajuster en jeu.
+
+### Population de civils en groupes | L.BA
+
+- **Quoi** : chaque population de `world.json` maintient un nombre de PNJ en groupes de 3 à 6. Elle est remplie d'un coup au démarrage, puis un groupe réapparaît toutes les 2 s tant qu'il en manque, au point le plus éloigné des mages parmi quelques tirages. Un groupe erre, et chaque membre fuit l'unité ou le mage le plus proche à moins de 10 m.
+- **Pourquoi** : la ressource de base doit rester disponible partout, sans réapparaître sous les yeux d'un joueur.
+- **Impact** : les civils fuient à 4,5 m/s et les zombies courent à 7 m/s, il faut donc les approcher pour les attraper.
+- **Avis** : À vérifier. Nombre, vitesses et rayon de fuite à ajuster en jeu.
+
+### Coût des niveaux en progression géométrique | L.BA
+
+- **Quoi** : chaque ennemi tué rapporte sa force multipliée par `perStrength` en âmes. Le niveau 2 coûte 10 âmes, puis chaque niveau coûte 1,5 fois le précédent. Le mage gagne 20 PV max par niveau et récupère la différence en montant.
+- **Pourquoi** : la progression est rapide au début et ralentit ensuite, sans plafond de niveau à fixer.
+- **Impact** : le niveau sert aux PV max du mage. Les âmes du surplus au-delà du plafond (5.08) passeront par la même fonction.
+- **Avis** : À vérifier. À équilibrer en jeu.
+
 ### Snapshot à 12 octets par entité | L.BA
 
 - **Quoi** : chaque entité du snapshot porte son type (position dans son registre), l'emplacement de son armée et des drapeaux d'état, en plus de son identifiant, de son genre et de sa position. L'orientation et la marche sont déduites par le client à partir du déplacement.
@@ -62,7 +90,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ### Messages hors périmètre ignorés par le serveur | T.BE
 
-- **Quoi** : le protocole contient déjà tous les messages prévus (cible, formation, retraite, évolution, démo), mais le serveur n'en traite que trois : rejoindre, taille de vue, déplacement. Les autres sont décodés puis ignorés. Un message mal formé ou envoyé avant d'avoir rejoint ferme la connexion.
+- **Quoi** : le protocole contient déjà tous les messages prévus (cible, formation, retraite, évolution, démo), mais le serveur ne traite que ceux dont l'étape est faite : rejoindre, taille de vue, déplacement, cible (2.06). Les autres sont décodés puis ignorés. Un message mal formé ou envoyé avant d'avoir rejoint ferme la connexion.
 - **Pourquoi** : le format est fixé une fois, chaque étape suivante ne fait que brancher son traitement.
 - **Impact** : les événements ponctuels (mort, relève, loot) n'ont pas encore de message, ils seront ajoutés avec leur premier usage.
 - **Avis** : Validée.

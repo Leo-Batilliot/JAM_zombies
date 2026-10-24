@@ -24,13 +24,27 @@ const unit = (
   rank: "front" as const,
   speed: 1,
   radius: 0.5,
+  hp: 10,
+  damage: 1,
+  attackIntervalSec: 1,
+  attackRange: 0.3,
+  aggroRange: 5,
   evolutions,
 });
 
-const withUnits = (units: Config["units"]): Config => ({
-  ...loadSharedConfig(),
-  units,
+const npc = (corpse: string) => ({
+  corpse,
+  strength: 1,
+  hp: 5,
+  radius: 0.4,
+  speed: 1,
+  fleeSpeed: 2,
 });
+
+const withUnits = (units: Config["units"]): Config => {
+  const config = loadSharedConfig();
+  return { ...config, units, world: { ...config.world, populations: [] } };
+};
 
 describe("buildRegistries", () => {
   test("builds a registry for each content type", () => {
@@ -40,7 +54,7 @@ describe("buildRegistries", () => {
           zombie: unit(1, [{ into: "fat", cost: 5 }]),
           fat: unit(5),
         },
-        npcs: { civilian: { corpse: "zombie" } },
+        npcs: { civilian: npc("zombie") },
       }),
     );
     expect(registries.units.get("fat").strength).toBe(5);
@@ -60,6 +74,13 @@ describe("buildRegistries", () => {
     expect(() =>
       buildRegistries(withUnits({ units: { fat: unit(5) }, npcs: {} })),
     ).toThrow(/Starting army[\s\S]*zombie/);
+  });
+
+  test("fails on a population of a missing npc", () => {
+    const config = loadSharedConfig();
+    expect(() =>
+      buildRegistries({ ...config, units: { ...config.units, npcs: {} } }),
+    ).toThrow(/Population[\s\S]*civilian/);
   });
 
   test("fails on an unknown id", () => {
@@ -83,7 +104,7 @@ describe("buildRegistries", () => {
   test("fails on a corpse of a missing unit", () => {
     expect(() =>
       buildRegistries(
-        withUnits({ units: {}, npcs: { civilian: { corpse: "zombie" } } }),
+        withUnits({ units: {}, npcs: { civilian: npc("zombie") } }),
       ),
     ).toThrow(/civilian[\s\S]*zombie/);
   });

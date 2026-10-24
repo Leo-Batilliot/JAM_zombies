@@ -31,6 +31,8 @@ export enum ServerMessageType {
 export enum EntityKind {
   Mage = 1,
   Unit,
+  Npc,
+  Corpse,
 }
 
 export const neutralArmy = 0;

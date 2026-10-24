@@ -1,20 +1,10 @@
 import { EntityKind } from "@horde/shared";
-import type { Entity, World } from "../world/world.js";
+import { isBody, type Body, type World } from "../world/world.js";
+import { bodyRadius, largestRadius } from "./bodies.js";
 
 const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
-export const bodyRadius = (world: World, entity: Entity): number =>
-  entity.kind === EntityKind.Mage
-    ? world.config.gameplay.mage.radius
-    : world.registries.units.get(entity.type).radius;
-
-const largestRadius = (world: World): number =>
-  Math.max(
-    world.config.gameplay.mage.radius,
-    ...world.registries.units.entries().map(([, unit]) => unit.radius),
-  );
-
-const push = (world: World, entity: Entity, dx: number, dy: number): void => {
+const push = (world: World, entity: Body, dx: number, dy: number): void => {
   world.setPosition(entity, entity.x + dx, entity.y + dy);
 };
 
@@ -23,7 +13,7 @@ export const separateBodies = (world: World): void => {
   const reach = largestRadius(world);
   const near: number[] = [];
   for (const entity of world.entities.values()) {
-    if (entity.kind === EntityKind.Mage) {
+    if (!isBody(entity) || entity.kind === EntityKind.Mage) {
       continue;
     }
     const radius = bodyRadius(world, entity);
@@ -31,7 +21,7 @@ export const separateBodies = (world: World): void => {
     world.grid.queryRadius(entity.x, entity.y, radius + reach, near);
     for (const otherId of near) {
       const other = world.entities.get(otherId);
-      if (other === undefined || other === entity) {
+      if (other === undefined || other === entity || !isBody(other)) {
         continue;
       }
       const minDistance = radius + bodyRadius(world, other);
