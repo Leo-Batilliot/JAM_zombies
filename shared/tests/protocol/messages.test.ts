@@ -70,6 +70,25 @@ const serverMessages: ServerMessage[] = [
         deathMs: 900,
         soulBobMs: 1200,
         grimoireBobMs: 1600,
+        audio: {
+          masterVolume: 1,
+          musicVolume: 0.5,
+          effectsVolume: 0.5,
+          fadeSec: 1,
+          combatFullUnits: 20,
+          music: {
+            exploration: "audio/a.mp3",
+            combat: "audio/b.mp3",
+            boss: "audio/c.mp3",
+          },
+          effects: {
+            hit: { url: "audio/hit.mp3", volume: 1, gapMs: 100 },
+            death: { url: "audio/death.mp3", volume: 1, gapMs: 100 },
+            rise: { url: "audio/rise.mp3", volume: 1, gapMs: 100 },
+            scream: { url: "audio/scream.mp3", volume: 1, gapMs: 0 },
+          },
+        },
+        screamer: { image: "face.png", durationMs: 800, vibrateMs: [200] },
       },
       world: {
         width: 400,

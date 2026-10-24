@@ -39,7 +39,8 @@ body {
 }
 
 #ui > .hud,
-#ui > .death {
+#ui > .death,
+#ui > .screamer {
   pointer-events: none;
 }
 
@@ -253,4 +254,37 @@ body.share p {
 .hud-board li.self {
   color: var(--text);
   font-weight: bold;
+}
+
+.screamer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+}
+
+.screamer[hidden] {
+  display: none;
+}
+
+.screamer img {
+  height: 115vh;
+  image-rendering: pixelated;
+  animation: screamer-shake 0.08s steps(2) infinite;
+}
+
+@keyframes screamer-shake {
+  0% {
+    transform: translate(-2%, 1%) scale(1.05);
+  }
+  50% {
+    transform: translate(2%, -1%) scale(1.12);
+  }
+  100% {
+    transform: translate(-1%, 2%) scale(1.08);
+  }
 }

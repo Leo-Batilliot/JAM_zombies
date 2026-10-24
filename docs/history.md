@@ -4,6 +4,20 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Audio, musique dynamique et screamer | 3.01-3.03 | G.WI
+
+- `shared/src/config/schema.ts` : volumes, fondu, couches de musique, effets (volume et écart minimal), réglages du screamer.
+- `shared/config/client.json` : chemins des sons, volumes, screamer de 0,8 s avec vibration.
+- `shared/src/registry.ts` : vérification que la réapparition du mage dure plus longtemps que le screamer.
+- `client/src/audio/engine.ts` : moteur Web Audio, déblocage au clic sur Play, pause quand la page est cachée, effets limités dans le temps.
+- `client/src/audio/music.ts` : couches exploration, combat et boss jouées en boucle et synchronisées, fondus entre elles.
+- `client/src/audio/cues.ts` : coups, morts et relèves visibles déduits des snapshots.
+- `client/src/screamer.ts`, `client/src/style.css` : visage plein écran qui tremble, cri et vibration, puis écran de mort.
+- `client/src/main.ts`, `client/src/game/game.ts` : déblocage de l'audio, musique selon les unités qui se battent, effets, screamer à la mort.
+- `client/public/audio/`, `client/public/screamer/` : musiques, effets et visage générés par script.
+- `docs/credits.md` : sons et visage générés.
+- `shared/tests/`, `client/tests/` : config du client, délai de réapparition, mélange des couches, limite des effets, détection des coups, morts et relèves.
+
 ### Infection des civils, clic gauche et clics bloqués par le HUD | 2.07-2.17 | L.BA
 
 - `shared/src/config/schema.ts`, `shared/config/units.json` : option `infects` des PNJ, activée pour le civil.

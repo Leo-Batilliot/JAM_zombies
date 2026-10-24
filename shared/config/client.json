@@ -19,5 +19,28 @@
   "attackFrameMs": 200,
   "deathMs": 900,
   "soulBobMs": 1200,
-  "grimoireBobMs": 1600
+  "grimoireBobMs": 1600,
+  "audio": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.5,
+    "effectsVolume": 0.7,
+    "fadeSec": 1.5,
+    "combatFullUnits": 30,
+    "music": {
+      "exploration": "audio/music-exploration.mp3",
+      "combat": "audio/music-combat.mp3",
+      "boss": "audio/music-boss.mp3"
+    },
+    "effects": {
+      "hit": { "url": "audio/hit.mp3", "volume": 0.4, "gapMs": 250 },
+      "death": { "url": "audio/death.mp3", "volume": 0.6, "gapMs": 200 },
+      "rise": { "url": "audio/rise.mp3", "volume": 0.5, "gapMs": 300 },
+      "scream": { "url": "audio/scream.mp3", "volume": 1, "gapMs": 0 }
+    }
+  },
+  "screamer": {
+    "image": "screamer/face.png",
+    "durationMs": 800,
+    "vibrateMs": [200, 60, 400]
+  }
 }

@@ -5,9 +5,13 @@ import {
   type Spritesheet,
 } from "pixi.js";
 import { ClientMessageType, type SnapshotEntity } from "@horde/shared";
+import { CueTracker } from "../audio/cues.js";
+import type { AudioEngine } from "../audio/engine.js";
+import { Music, musicMix } from "../audio/music.js";
 import { DeathScreen } from "../death.js";
 import { Hud } from "../hud.js";
 import type { Connection } from "../net/connection.js";
+import { Screamer } from "../screamer.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
 import { MapLayer } from "./map.js";
@@ -21,6 +25,7 @@ export const startGame = async (
   ui: HTMLElement,
   connection: Connection,
   atlas: Spritesheet,
+  audio: AudioEngine,
 ): Promise<void> => {
   const config = () => connection.config;
   const app = new Application();
@@ -55,14 +60,26 @@ export const startGame = async (
     hud.setLeaderboard(leaderboard);
   };
   const death = new DeathScreen(ui);
+  const screamer = new Screamer(ui, audio);
+  const music = new Music(audio);
+  const cues = new CueTracker();
+  const configureAudio = (): void => {
+    audio.configure(config().client.audio);
+    music.configure(config().client.audio);
+    screamer.preload(config().client.screamer);
+  };
+  configureAudio();
   connection.onDied = (killer) => {
-    death.show(killer);
+    screamer.play(config().client.screamer, () => {
+      death.show(killer);
+    });
   };
 
   const buffer = new SnapshotBuffer(config().network);
   connection.onConfig = (next) => {
     buffer.settings = next.network;
     map.build(next);
+    configureAudio();
     sendView();
   };
   connection.onSnapshot = (snapshot) => {
@@ -117,6 +134,21 @@ export const startGame = async (
     }
   });
 
+  const playCues = (view: Rect, now: number): void => {
+    const { fighting, deaths, rises } = cues.read(frame, view);
+    if (fighting > 0) {
+      audio.play("hit", now);
+    }
+    if (deaths > 0) {
+      audio.play("death", now);
+    }
+    if (rises > 0) {
+      audio.play("rise", now);
+    }
+    const { combatFullUnits, fadeSec } = config().client.audio;
+    music.update(musicMix(fighting, combatFullUnits, false), fadeSec);
+  };
+
   const camera = { x: config().world.width / 2, y: config().world.height / 2 };
   app.ticker.add(() => {
     const now = performance.now();
@@ -143,5 +175,6 @@ export const startGame = async (
     };
     entities.update(frame, view, now);
     marker.update(now);
+    playCues(view, now);
   });
 };

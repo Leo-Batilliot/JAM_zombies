@@ -199,6 +199,14 @@ const networkSchema = z.strictObject({
 });
 
 const color = z.string().regex(/^#[0-9a-f]{6}$/i);
+const url = z.string().min(1);
+const volume = z.number().min(0).max(1);
+
+const effectSchema = z.strictObject({
+  url,
+  volume,
+  gapMs: z.int().nonnegative(),
+});
 
 export const clientSettingsSchema = z.strictObject({
   maxPixelRatio: z.number().positive(),
@@ -211,6 +219,29 @@ export const clientSettingsSchema = z.strictObject({
   deathMs: z.int().positive(),
   soulBobMs: z.int().positive(),
   grimoireBobMs: z.int().positive(),
+  audio: z.strictObject({
+    masterVolume: volume,
+    musicVolume: volume,
+    effectsVolume: volume,
+    fadeSec: z.number().positive(),
+    combatFullUnits: z.int().positive(),
+    music: z.strictObject({
+      exploration: url,
+      combat: url,
+      boss: url,
+    }),
+    effects: z.strictObject({
+      hit: effectSchema,
+      death: effectSchema,
+      rise: effectSchema,
+      scream: effectSchema,
+    }),
+  }),
+  screamer: z.strictObject({
+    image: url,
+    durationMs: z.int().positive(),
+    vibrateMs: z.array(z.int().positive()),
+  }),
 });
 
 export const configSchema = z.strictObject({

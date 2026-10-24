@@ -4,6 +4,34 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Screamer avant l'écran de mort | G.WI
+
+- **Quoi** : à la réception du message de mort, le client affiche le visage en plein écran, joue le cri et fait vibrer le téléphone pendant la durée de `client.json`, puis affiche l'écran de mort. Le chargement de la config échoue si la réapparition du mage est plus courte que le screamer.
+- **Pourquoi** : le screamer doit être vu en entier, et le mage ne doit pas réapparaître pendant qu'il est affiché.
+- **Impact** : la vibration ne marche que sur Android, iOS ne la propose pas aux pages web.
+- **Avis** : Validée.
+
+### Effets sonores déduits des snapshots | G.WI
+
+- **Quoi** : le client joue un coup quand une entité visible porte le drapeau de combat, une mort quand un corps visible disparaît du snapshot, une relève quand une entité visible commence à se relever. Chaque effet a un écart minimal entre deux lectures (`gapMs`).
+- **Pourquoi** : pas de nouveau message à envoyer, et des centaines d'unités ne doivent pas jouer des centaines de sons.
+- **Impact** : une téléportation de la caméra (réapparition) peut jouer une mort de trop. Les coups ne dépendent pas du nombre d'unités, la musique de combat s'en charge.
+- **Avis** : À vérifier. Écarts et volumes à régler en jeu.
+
+### Musique en 3 couches synchronisées | G.WI
+
+- **Quoi** : les 3 couches (exploration, combat, boss) ont le même tempo (120 BPM en 5/4), la même tonalité (la mineur) et la même durée (20 s). Elles démarrent ensemble en boucle et seul leur volume change, en fondu. Exploration et boss s'échangent, la couche combat s'ajoute par-dessus selon le nombre d'entités visibles en train de se battre (`combatFullUnits` pour le volume maximal).
+- **Pourquoi** : des boucles calées entre elles restent musicales quel que soit le moment du changement.
+- **Impact** : une vraie musique de remplacement doit respecter le même tempo, la même tonalité et la même durée pour les 3 couches.
+- **Avis** : Validée.
+
+### Sons et musiques générés en attendant les assets libres | G.WI
+
+- **Quoi** : musiques, effets et visage du screamer sont générés par un script jetable (synthèse en Python, dessin pixel art), et les sons sont encodés en MP3. Les chemins sont dans `client.json`.
+- **Pourquoi** : les assets libres n'ont pas pu être téléchargés pendant la phase, et le MP3 se lit sur tous les navigateurs.
+- **Impact** : remplacer un son revient à déposer un fichier et changer son chemin. Chromium décode les boucles MP3 sans blanc, Safari n'a pas été testé.
+- **Avis** : Provisoire. À remplacer par des assets libres (Pixabay, freesound, incompetech) si le temps le permet.
+
 ### Civils infectés sur place | L.BA
 
 - **Quoi** : un PNJ marqué `infects` dans `units.json` ne meurt pas : quand une armée le tue, il devient tout de suite une unité du type `corpse` de cette armée, à l'endroit où il est tombé, avec l'animation de relève. Les civils sont marqués ainsi. Les autres PNJ (chasseurs et soldats des camps, 6.06) laisseront un cadavre normal.

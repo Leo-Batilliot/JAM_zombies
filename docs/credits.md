@@ -6,7 +6,11 @@
 
 ## Sons et musique
 
-Aucun pour l'instant.
+- `client/public/audio/` : musiques et effets générés par script, faits par l'équipe.
+
+## Screamer
+
+- `client/public/screamer/face.png` : visage en pixel art généré par script, fait par l'équipe.
 
 ## Citations
 

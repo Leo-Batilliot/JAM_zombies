@@ -94,6 +94,12 @@ describe("buildRegistries", () => {
     ).toThrow(/Mass grave[\s\S]*ghost/);
   });
 
+  test("fails when the mage respawns before the end of the screamer", () => {
+    const config = loadSharedConfig();
+    config.gameplay.respawn.delaySec = 0.5;
+    expect(() => buildRegistries(config)).toThrow(/screamer/);
+  });
+
   test("fails on an unknown id", () => {
     const registries = buildRegistries(loadSharedConfig());
     expect(() => registries.units.get("ghost")).toThrow(/unit "ghost"/);

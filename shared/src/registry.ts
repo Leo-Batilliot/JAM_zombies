@@ -106,6 +106,12 @@ export const buildRegistries = (config: Config): Registries => {
   for (const { unit } of config.gameplay.army.startingUnits) {
     checkReference(registries.units, unit, "Starting army");
   }
+  if (
+    config.gameplay.respawn.delaySec * 1000 <=
+    config.client.screamer.durationMs
+  ) {
+    throw new RegistryError("Respawn delay must exceed the screamer duration");
+  }
 
   return registries;
 };
