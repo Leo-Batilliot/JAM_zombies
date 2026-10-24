@@ -8,12 +8,13 @@ export const killMage = (
   world: World,
   army: Army,
   killer: Army | undefined,
+  killerName = killer?.name ?? "",
 ): void => {
   world.clearArmy(army);
   army.alive = false;
   army.respawnAt = world.time + world.config.gameplay.respawn.delaySec;
   army.deaths++;
-  army.killerName = killer?.name ?? "";
+  army.killerName = killerName;
   army.souls = 0;
   army.level = 1;
   army.focusId = undefined;
@@ -25,11 +26,12 @@ export const damageMage = (
   mage: Mage,
   amount: number,
   attacker: Army | undefined,
+  attackerName = attacker?.name ?? "",
 ): void => {
   mage.hp -= amount;
   mage.hitAt = world.time;
   if (mage.hp <= 0) {
-    killMage(world, mage.army, attacker);
+    killMage(world, mage.army, attacker, attackerName);
   }
 };
 

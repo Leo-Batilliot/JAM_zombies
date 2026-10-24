@@ -44,6 +44,7 @@ describe("spriteName", () => {
     units: ["zombie", "fat-zombie"],
     npcs: ["civilian"],
     pointsOfInterest: ["mass-grave"],
+    events: [],
   };
   const entity = { id: 1, type: 1, army: 1, flags: 0, x: 0, y: 0 };
 

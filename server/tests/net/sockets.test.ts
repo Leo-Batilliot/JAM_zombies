@@ -14,6 +14,8 @@ import {
   type ServerMessage,
 } from "@horde/shared";
 import { attachSockets } from "../../src/net/sockets.js";
+import { damage } from "../../src/systems/death.js";
+import { startEvent } from "../../src/systems/events.js";
 import { killMage } from "../../src/systems/mage.js";
 import { createBench, type Bench } from "../support/bench.js";
 
@@ -179,6 +181,48 @@ describe("playing", () => {
         { type: ServerMessageType.Died, killer: "Evil Ash" },
       ]);
     });
+    client.socket.close();
+  });
+});
+
+describe("events", () => {
+  test("the player is told when the boss appears and dies", async () => {
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    const state = startEvent(bench.world, "pumpkin", 150, 120);
+    if (army === undefined || state.boss === undefined) {
+      throw new Error("Expected an army and a boss");
+    }
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      expect(client.of(ServerMessageType.EventStarted)).toHaveLength(1);
+    });
+    const [started] = client.of(ServerMessageType.EventStarted);
+    expect(started?.event).toBe(0);
+    expect(started?.x).toBeCloseTo(150, 1);
+    damage(bench.world, state.boss, 1e9, army);
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      expect(client.of(ServerMessageType.EventEnded)).toEqual([
+        {
+          type: ServerMessageType.EventEnded,
+          event: 0,
+          defeated: true,
+          souls: bench.config.events.events["pumpkin"]?.rewardSouls,
+        },
+      ]);
+    });
+    client.socket.close();
+  });
+
+  test("a player who joins during the event is told about the boss", async () => {
+    startEvent(bench.world, "pumpkin", 150, 120);
+    const client = await joined();
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      expect(client.of(ServerMessageType.EventStarted)).toHaveLength(1);
+    });
+    expect(client.of(ServerMessageType.EventEnded)).toHaveLength(0);
     client.socket.close();
   });
 });

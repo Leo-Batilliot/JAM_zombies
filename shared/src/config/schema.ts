@@ -80,13 +80,23 @@ const unitTypeSchema = z.strictObject({
 });
 
 const npcTypeSchema = z.strictObject({
-  corpse: id,
+  name: z.string().min(1),
+  corpse: id.optional(),
   infects: z.boolean(),
   strength: z.int().positive(),
   hp: z.number().positive(),
   radius: z.number().positive(),
-  speed: z.number().positive(),
-  fleeSpeed: z.number().positive(),
+  speed: z.number().nonnegative(),
+  fleeSpeed: z.number().positive().optional(),
+  attack: z
+    .strictObject({
+      damage: z.number().nonnegative(),
+      attackIntervalSec: z.number().positive(),
+      attackRange: z.number().nonnegative(),
+      aggroRange: z.number().positive(),
+      leashDistance: z.number().positive(),
+    })
+    .optional(),
 });
 
 const unitsSchema = z.strictObject({
@@ -149,7 +159,22 @@ const worldSchema = z.strictObject({
 });
 
 const eventsSchema = z.strictObject({
-  events: z.record(id, z.strictObject({})),
+  events: z.record(
+    id,
+    z.strictObject({
+      boss: id,
+      minion: id,
+      firstDelaySec: z.number().nonnegative(),
+      intervalSec: z.number().positive(),
+      lifetimeSec: z.number().positive(),
+      safeDistance: z.number().nonnegative(),
+      summonIntervalSec: z.number().positive(),
+      summonCount: z.int().nonnegative(),
+      maxMinions: z.int().nonnegative(),
+      summonRadius: z.number().positive(),
+      rewardSouls: z.number().nonnegative(),
+    }),
+  ),
 });
 
 export const maxParticipants = 254;
@@ -235,6 +260,7 @@ export const clientSettingsSchema = z.strictObject({
       death: effectSchema,
       rise: effectSchema,
       scream: effectSchema,
+      boss: effectSchema,
     }),
   }),
   screamer: z.strictObject({
@@ -242,6 +268,8 @@ export const clientSettingsSchema = z.strictObject({
     durationMs: z.int().positive(),
     vibrateMs: z.array(z.int().positive()),
   }),
+  announceMs: z.int().positive(),
+  arrowMargin: z.number().nonnegative(),
 });
 
 export const configSchema = z.strictObject({
@@ -270,6 +298,7 @@ export const clientConfigSchema = z.strictObject({
     units: z.array(id),
     npcs: z.array(id),
     pointsOfInterest: z.array(id),
+    events: z.array(z.strictObject({ id, name: z.string().min(1) })),
   }),
 });
 
@@ -293,6 +322,10 @@ export const toClientConfig = (config: Config): ClientConfig => ({
     units: Object.keys(config.units.units),
     npcs: Object.keys(config.units.npcs),
     pointsOfInterest: Object.keys(config.world.pointsOfInterest),
+    events: Object.entries(config.events.events).map(([eventId, event]) => ({
+      id: eventId,
+      name: config.units.npcs[event.boss]?.name ?? eventId,
+    })),
   },
 });
 

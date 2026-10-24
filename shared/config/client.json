@@ -35,12 +35,15 @@
       "hit": { "url": "audio/hit.mp3", "volume": 0.4, "gapMs": 250 },
       "death": { "url": "audio/death.mp3", "volume": 0.6, "gapMs": 200 },
       "rise": { "url": "audio/rise.mp3", "volume": 0.5, "gapMs": 300 },
-      "scream": { "url": "audio/scream.mp3", "volume": 1, "gapMs": 0 }
+      "scream": { "url": "audio/scream.mp3", "volume": 1, "gapMs": 0 },
+      "boss": { "url": "audio/boss.mp3", "volume": 0.8, "gapMs": 0 }
     }
   },
   "screamer": {
     "image": "screamer/face.png",
     "durationMs": 800,
     "vibrateMs": [200, 60, 400]
-  }
+  },
+  "announceMs": 4000,
+  "arrowMargin": 40
 }

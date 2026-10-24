@@ -1,1 +1,17 @@
-{ "events": {} }
+{
+  "events": {
+    "pumpkin": {
+      "boss": "evil-pumpkin",
+      "minion": "jack-o-lantern",
+      "firstDelaySec": 120,
+      "intervalSec": 360,
+      "lifetimeSec": 180,
+      "safeDistance": 40,
+      "summonIntervalSec": 10,
+      "summonCount": 3,
+      "maxMinions": 9,
+      "summonRadius": 5,
+      "rewardSouls": 200
+    }
+  }
+}

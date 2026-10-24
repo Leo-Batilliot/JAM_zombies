@@ -9,6 +9,7 @@ import { CueTracker } from "../audio/cues.js";
 import type { AudioEngine } from "../audio/engine.js";
 import { Music, musicMix } from "../audio/music.js";
 import { DeathScreen } from "../death.js";
+import { EventDisplay } from "../events.js";
 import { Hud } from "../hud.js";
 import type { Connection } from "../net/connection.js";
 import { Screamer } from "../screamer.js";
@@ -63,6 +64,16 @@ export const startGame = async (
   const screamer = new Screamer(ui, audio);
   const music = new Music(audio);
   const cues = new CueTracker();
+  const events = new EventDisplay(ui);
+  const eventName = (event: number): string =>
+    config().content.events[event]?.name ?? "";
+  connection.onEventStarted = (start) => {
+    events.start(start, eventName(start.event), config().client.announceMs);
+    audio.play("boss", performance.now());
+  };
+  connection.onEventEnded = (end) => {
+    events.end(end, eventName(end.event), config().client.announceMs);
+  };
   const configureAudio = (): void => {
     audio.configure(config().client.audio);
     music.configure(config().client.audio);
@@ -146,7 +157,7 @@ export const startGame = async (
       audio.play("rise", now);
     }
     const { combatFullUnits, fadeSec } = config().client.audio;
-    music.update(musicMix(fighting, combatFullUnits, false), fadeSec);
+    music.update(musicMix(fighting, combatFullUnits, events.active), fadeSec);
   };
 
   const camera = { x: config().world.width / 2, y: config().world.height / 2 };
@@ -176,5 +187,13 @@ export const startGame = async (
     entities.update(frame, view, now);
     marker.update(now);
     playCues(view, now);
+    events.update({
+      cameraX: camera.x,
+      cameraY: camera.y,
+      scale,
+      width: app.screen.width,
+      height: app.screen.height,
+      margin: config().client.arrowMargin,
+    });
   });
 };

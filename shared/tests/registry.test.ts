@@ -33,6 +33,7 @@ const unit = (
 });
 
 const npc = (corpse: string) => ({
+  name: "Civilian",
   corpse,
   infects: true,
   strength: 1,
@@ -44,7 +45,12 @@ const npc = (corpse: string) => ({
 
 const withUnits = (units: Config["units"]): Config => {
   const config = loadSharedConfig();
-  return { ...config, units, world: { ...config.world, populations: [] } };
+  return {
+    ...config,
+    units,
+    world: { ...config.world, populations: [] },
+    events: { events: {} },
+  };
 };
 
 describe("buildRegistries", () => {
@@ -92,6 +98,26 @@ describe("buildRegistries", () => {
         world: { ...config.world, massGrave: "ghost" },
       }),
     ).toThrow(/Mass grave[\s\S]*ghost/);
+  });
+
+  test("fails on a population that cannot flee", () => {
+    const config = loadSharedConfig();
+    delete config.units.npcs["civilian"]?.fleeSpeed;
+    expect(() => buildRegistries(config)).toThrow(/fleeSpeed/);
+  });
+
+  test("fails on an event with a missing boss", () => {
+    const config = loadSharedConfig();
+    for (const event of Object.values(config.events.events)) {
+      event.boss = "ghost";
+    }
+    expect(() => buildRegistries(config)).toThrow(/Boss of event[\s\S]*ghost/);
+  });
+
+  test("accepts an npc without corpse", () => {
+    const config = loadSharedConfig();
+    expect(config.units.npcs["evil-pumpkin"]?.corpse).toBeUndefined();
+    expect(() => buildRegistries(config)).not.toThrow();
   });
 
   test("fails when the mage respawns before the end of the screamer", () => {

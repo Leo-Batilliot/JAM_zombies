@@ -4,6 +4,48 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Musique du boss pendant tout l'événement | G.WI
+
+- **Quoi** : tant qu'une Citrouille maléfique est en jeu, la couche du boss remplace la couche exploration pour tous les joueurs, où qu'ils soient. La couche combat continue de s'ajouter par-dessus.
+- **Pourquoi** : l'événement concerne toute la carte (annonce et flèche pour tous), la musique le fait sentir à chacun.
+- **Impact** : un joueur loin du boss entend son thème pendant toute la durée de vie de l'événement (3 min au plus).
+- **Avis** : À vérifier. À limiter à une distance du boss si c'est trop envahissant.
+
+### Événements envoyés par différence d'état | G.WI
+
+- **Quoi** : à chaque tick, le serveur compare pour chaque joueur le boss en jeu avec le dernier qu'il lui a annoncé. Il envoie un début (position du boss) ou une fin (victoire ou départ, âmes gagnées par ce joueur). Un joueur qui arrive pendant l'événement reçoit son début.
+- **Pourquoi** : même principe que la mort du mage, sans file de messages à gérer. Le boss ne bouge pas, sa position suffit pour la flèche même hors de la vue.
+- **Impact** : un boss mobile demandera d'envoyer sa position régulièrement.
+- **Avis** : Validée.
+
+### Contribution relative au boss | G.WI
+
+- **Quoi** : chaque coup porté au boss ajoute à l'armée les dégâts divisés par sa force totale (au moins 1). À la mort du boss, les âmes de `rewardSouls` sont partagées au prorata des contributions. Le coup fatal rapporte en plus les âmes normales du boss au tueur. Un boss qui part sans être tué ne rapporte rien.
+- **Pourquoi** : c'est la règle du concept, une petite armée qui participe gagne autant qu'une grosse. Les lanternes ne comptent pas, pour ne pas récompenser le farm des sbires.
+- **Impact** : le premier du classement gagne moins par dégât infligé, sans perdre ce qu'il a.
+- **Avis** : À vérifier. Récompense et PV du boss à équilibrer en jeu.
+
+### Citrouille maléfique immobile qui invoque des lanternes | G.WI
+
+- **Quoi** : le boss et les lanternes sont des PNJ hostiles du registre (champ `attack`). Ils ciblent l'unité ou le mage le plus proche dans leur portée, sans s'éloigner de leur point d'attache au-delà de leur laisse. Le boss a une vitesse nulle : il ne se déplace pas et les autres corps ne le poussent pas. Il apparaît loin des mages, invoque des lanternes autour de lui jusqu'à un maximum, et disparaît avec elles après sa durée de vie. Ni le boss ni les lanternes ne laissent de cadavre.
+- **Pourquoi** : un boss fixe est facile à trouver avec la flèche et à encercler par plusieurs armées. Le comportement hostile servira aussi aux camps armés (6.06).
+- **Impact** : une unité tuée par le boss ou une lanterne reste à son camp (règle 8), un mage tué affiche le nom du PNJ.
+- **Avis** : À vérifier. PV, dégâts, fréquence et nombre d'invocations à équilibrer en jeu.
+
+### Bots qui ignorent les PNJ hostiles | G.WI
+
+- **Quoi** : un bot ne chasse que les PNJ sans attaque. Ses unités se battent quand même contre les lanternes ou le boss qui arrivent à leur portée.
+- **Pourquoi** : la priorité des bots est de chasser les civils, et un bot qui fonce sur le boss y perd son armée.
+- **Impact** : le boss est surtout attaqué par les joueurs. Les bots pourront le viser plus tard (4.14).
+- **Avis** : À vérifier.
+
+### PNJ immobiles hors du rayon de séparation | G.WI
+
+- **Quoi** : la recherche de voisins de la séparation n'utilise que le rayon des corps mobiles. Un PNJ immobile cherche lui-même les corps qui le touchent et les repousse.
+- **Pourquoi** : avec le rayon de 2 m du boss dans cette recherche, le temps de tick du test de charge passait d'environ 18 à 29 ms, boss absent.
+- **Impact** : le temps de tick revient à environ 20 ms dans les mêmes conditions.
+- **Avis** : Validée.
+
 ### Screamer avant l'écran de mort | G.WI
 
 - **Quoi** : à la réception du message de mort, le client affiche le visage en plein écran, joue le cri et fait vibrer le téléphone pendant la durée de `client.json`, puis affiche l'écran de mort. Le chargement de la config échoue si la réapparition du mage est plus courte que le screamer.

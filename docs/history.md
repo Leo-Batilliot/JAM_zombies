@@ -4,6 +4,29 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Citrouille maléfique | 3.04-3.06 | G.WI
+
+- `shared/src/config/schema.ts` : PNJ hostiles (nom, attaque, cadavre et fuite optionnels, vitesse nulle possible), événements de boss, annonce et flèche du client, liste des événements envoyée au client.
+- `shared/config/units.json` : Citrouille maléfique immobile, citrouilles-lanternes, nom de chaque PNJ.
+- `shared/config/events.json` : événement `pumpkin` toutes les 6 min (première apparition après 2 min), 3 min de durée de vie, invocations, 200 âmes de récompense.
+- `shared/config/client.json` : son du boss, durée de l'annonce, marge de la flèche.
+- `shared/src/registry.ts` : vérification du boss et du sbire de chaque événement, vitesse de fuite obligatoire pour une population, cadavre optionnel.
+- `shared/src/protocol/messages.ts` : messages de début (position du boss) et de fin d'événement (victoire, âmes gagnées).
+- `server/src/world/world.ts` : PNJ d'événement avec point d'attache, cible et recharge, liste des PNJ hostiles, état des événements.
+- `server/src/systems/events.ts` : apparition loin des mages, invocation des lanternes, fin à la mort ou après la durée de vie, contribution relative, âmes au prorata.
+- `server/src/systems/hostiles.ts` : ciblage, poursuite en laisse et attaque des PNJ hostiles.
+- `server/src/systems/death.ts`, `server/src/systems/mage.ts` : contribution enregistrée à chaque coup sur le boss, nom du PNJ tueur, PNJ sans cadavre.
+- `server/src/systems/separation.ts`, `server/src/systems/bodies.ts` : un PNJ immobile repousse les corps sans bouger, rayon de recherche limité aux corps mobiles.
+- `server/src/systems/civilians.ts` : vitesse de fuite lue avec la vitesse normale par défaut.
+- `server/src/lobby/bots.ts` : les bots ne chassent que les PNJ non hostiles.
+- `server/src/net/interest.ts` : drapeau de combat des PNJ.
+- `server/src/net/sockets.ts` : début et fin d'événement envoyés à chaque joueur, y compris à son arrivée.
+- `server/src/world/loop.ts` : systèmes des événements et des PNJ hostiles.
+- `client/src/events.ts`, `client/src/style.css` : annonce à l'écran, flèche au bord de l'écran vers le boss.
+- `client/src/net/connection.ts`, `client/src/game/game.ts` : réception des événements, son du boss, bascule sur la couche musicale du boss.
+- `client/public/atlas/` : atlas agrandi à 512 x 256, Citrouille maléfique et citrouilles-lanternes.
+- `server/tests/`, `shared/tests/`, `client/tests/` : apparition, invocations, fin sans récompense, partage des âmes, PNJ hostiles, boss immobile, messages d'événement, bots, flèche et annonces.
+
 ### Audio, musique dynamique et screamer | 3.01-3.03 | G.WI
 
 - `shared/src/config/schema.ts` : volumes, fondu, couches de musique, effets (volume et écart minimal), réglages du screamer.

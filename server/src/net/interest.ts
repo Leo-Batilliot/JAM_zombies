@@ -48,6 +48,8 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
           ? EntityFlag.Rising
           : 0)
       );
+    case EntityKind.Npc:
+      return entity.fighting ? EntityFlag.Fighting : 0;
     case EntityKind.PointOfInterest:
       return entity.searchedBy.has(viewer) ? EntityFlag.Searched : 0;
     default:

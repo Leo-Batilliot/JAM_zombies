@@ -6,6 +6,7 @@
   --accent: #8e44ad;
   --accent-light: #b36ad4;
   --danger: #e0605a;
+  --pumpkin: #ff9a1f;
 }
 
 * {
@@ -40,7 +41,9 @@ body {
 
 #ui > .hud,
 #ui > .death,
-#ui > .screamer {
+#ui > .screamer,
+#ui > .event-banner,
+#ui > .event-arrow {
   pointer-events: none;
 }
 
@@ -286,5 +289,51 @@ body.share p {
   }
   100% {
     transform: translate(-1%, 2%) scale(1.08);
+  }
+}
+
+.event-banner {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  max-width: 90vw;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.5rem;
+  background: rgb(20 16 24 / 80%);
+  color: var(--pumpkin);
+  font-size: clamp(1rem, 3.5vw, 1.8rem);
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 0 0.6rem rgb(255 150 30 / 70%);
+  transform: translateX(-50%);
+  animation: event-banner-in 0.4s ease-out;
+}
+
+.event-banner[hidden],
+.event-arrow[hidden] {
+  display: none;
+}
+
+@keyframes event-banner-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.3);
+  }
+}
+
+.event-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 0.9rem solid transparent;
+  border-bottom: 0.9rem solid transparent;
+  border-left: 1.6rem solid var(--pumpkin);
+  filter: drop-shadow(0 0 0.4rem rgb(255 150 30 / 80%));
+  animation: event-arrow-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes event-arrow-pulse {
+  to {
+    opacity: 0.55;
   }
 }

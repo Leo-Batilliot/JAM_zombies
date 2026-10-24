@@ -1,5 +1,6 @@
 import { EntityKind } from "@horde/shared";
 import type { Army, Mage, Npc, Unit, World } from "../world/world.js";
+import { eventNpcKilled, recordContribution } from "./events.js";
 import { damageMage } from "./mage.js";
 import { grantSouls } from "./souls.js";
 
@@ -35,6 +36,12 @@ export const kill = (
     );
   }
   world.removeEntity(victim);
+  if (victim.kind === EntityKind.Npc && victim.event !== undefined) {
+    eventNpcKilled(world, victim);
+  }
+  if (raisedAs === undefined) {
+    return;
+  }
   if (infects && killer !== undefined) {
     world.addUnit(killer, raisedAs, victim.x, victim.y).raisedAt = world.time;
     return;
@@ -50,10 +57,14 @@ export const damage = (
   target: Mage | Unit | Npc,
   amount: number,
   attacker: Army | undefined,
+  attackerName = attacker?.name ?? "",
 ): void => {
   if (target.kind === EntityKind.Mage) {
-    damageMage(world, target, amount, attacker);
+    damageMage(world, target, amount, attacker, attackerName);
     return;
+  }
+  if (target.kind === EntityKind.Npc && attacker !== undefined) {
+    recordContribution(world, target, attacker, amount);
   }
   target.hp -= amount;
   if (target.hp <= 0) {

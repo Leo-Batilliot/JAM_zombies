@@ -75,12 +75,35 @@ export interface Npc {
   id: number;
   kind: EntityKind.Npc;
   type: string;
-  group: NpcGroup;
+  group: NpcGroup | undefined;
+  event: string | undefined;
   offsetX: number;
   offsetY: number;
+  homeX: number;
+  homeY: number;
   x: number;
   y: number;
   hp: number;
+  targetId: number | undefined;
+  retargetAt: number;
+  cooldown: number;
+  fighting: boolean;
+}
+
+export interface EventResult {
+  defeated: boolean;
+  rewards: Map<Army, number>;
+}
+
+export interface BossEvent {
+  type: string;
+  nextAt: number;
+  boss: Npc | undefined;
+  minions: Set<Npc>;
+  endsAt: number;
+  summonAt: number;
+  contributions: Map<Army, number>;
+  result: EventResult | undefined;
 }
 
 export interface Corpse {
@@ -126,6 +149,8 @@ export class World {
   readonly npcGroups = new Set<NpcGroup>();
   readonly points = new Set<PointOfInterest>();
   readonly populationSpawnAt = new Map<number, number>();
+  readonly hostiles = new Set<Npc>();
+  readonly events = new Map<string, BossEvent>();
   readonly reconnects = new Map<string, Reconnect>();
   readonly grid: SpatialGrid;
   #nextId = 1;
@@ -249,21 +274,55 @@ export class World {
     return group;
   }
 
-  addNpc(group: NpcGroup, type: string, offsetX: number, offsetY: number): Npc {
+  #addNpc(
+    type: string,
+    x: number,
+    y: number,
+    group: NpcGroup | undefined,
+    event: string | undefined,
+  ): Npc {
+    const stats = this.registries.npcs.get(type);
     const npc: Npc = {
       id: this.#nextId++,
       kind: EntityKind.Npc,
       type,
       group,
-      offsetX,
-      offsetY,
-      x: this.clampX(group.x + offsetX),
-      y: this.clampY(group.y + offsetY),
-      hp: this.registries.npcs.get(type).hp,
+      event,
+      offsetX: 0,
+      offsetY: 0,
+      homeX: this.clampX(x),
+      homeY: this.clampY(y),
+      x: this.clampX(x),
+      y: this.clampY(y),
+      hp: stats.hp,
+      targetId: undefined,
+      retargetAt: this.time,
+      cooldown: 0,
+      fighting: false,
     };
-    group.members.add(npc);
+    if (stats.attack !== undefined) {
+      this.hostiles.add(npc);
+    }
     this.#add(npc);
     return npc;
+  }
+
+  addNpc(group: NpcGroup, type: string, offsetX: number, offsetY: number): Npc {
+    const npc = this.#addNpc(
+      type,
+      group.x + offsetX,
+      group.y + offsetY,
+      group,
+      undefined,
+    );
+    npc.offsetX = offsetX;
+    npc.offsetY = offsetY;
+    group.members.add(npc);
+    return npc;
+  }
+
+  addEventNpc(type: string, x: number, y: number, event: string): Npc {
+    return this.#addNpc(type, x, y, undefined, event);
   }
 
   addCorpse(
@@ -336,9 +395,12 @@ export class World {
         entity.army.units.delete(entity);
         break;
       case EntityKind.Npc:
-        entity.group.members.delete(entity);
-        if (entity.group.members.size === 0) {
-          this.npcGroups.delete(entity.group);
+        this.hostiles.delete(entity);
+        if (entity.group !== undefined) {
+          entity.group.members.delete(entity);
+          if (entity.group.members.size === 0) {
+            this.npcGroups.delete(entity.group);
+          }
         }
         break;
       case EntityKind.Corpse:
@@ -357,6 +419,9 @@ export class World {
     this.clearArmy(army);
     for (const point of this.points) {
       point.searchedBy.delete(army);
+    }
+    for (const event of this.events.values()) {
+      event.contributions.delete(army);
     }
     for (const [token, reconnect] of this.reconnects) {
       if (reconnect.army === army) {
