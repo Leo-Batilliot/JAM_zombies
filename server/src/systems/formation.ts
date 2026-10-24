@@ -2,6 +2,7 @@ import type { Config } from "@horde/shared";
 import type { Army, Unit, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 import { reachDistance } from "./combat.js";
+import { interceptPoint, tunnelSlots } from "./retreat.js";
 import { currentTarget, type Target } from "./targeting.js";
 
 export interface SlotOffset {
@@ -42,10 +43,11 @@ export const slotOffsets = (
 export const formationSlots = (
   world: World,
   army: Army,
+  units: Iterable<Unit> = army.units,
 ): Map<Unit, { x: number; y: number }> => {
   const front: Unit[] = [];
   const back: Unit[] = [];
-  for (const unit of army.units) {
+  for (const unit of units) {
     const { rank } = world.registries.units.get(unit.type);
     (rank === "front" ? front : back).push(unit);
   }
@@ -94,15 +96,61 @@ const chase = (world: World, unit: Unit, target: Target, step: number) => {
   }
 };
 
+const regroupStep = (
+  world: World,
+  unit: Unit,
+  slot: { x: number; y: number },
+  step: number,
+): number => {
+  const {
+    distance: far,
+    arriveDistance,
+    speedMultiplier,
+  } = world.config.gameplay.regroup;
+  const gap = Math.hypot(slot.x - unit.x, slot.y - unit.y);
+  if (gap > far) {
+    unit.returning = true;
+  } else if (gap <= arriveDistance) {
+    unit.returning = false;
+  }
+  return unit.returning ? step * speedMultiplier : step;
+};
+
 export const followMages = (world: World, dt: number): void => {
   for (const army of world.armies.values()) {
-    for (const [unit, slot] of formationSlots(world, army)) {
+    const tunnel = tunnelSlots(world, army);
+    const formation = formationSlots(
+      world,
+      army,
+      [...army.units].filter(
+        (unit) => unit.group === undefined && !tunnel.has(unit),
+      ),
+    );
+    for (const unit of army.units) {
       const step = world.registries.units.get(unit.type).speed * dt;
       const target = currentTarget(world, unit);
-      if (target === undefined) {
-        moveToward(world, unit, slot.x, slot.y, step);
-      } else {
+      const wall = tunnel.get(unit);
+      const slot = formation.get(unit);
+      if (wall !== undefined) {
+        const goal = interceptPoint(world, unit, wall);
+        moveToward(
+          world,
+          unit,
+          goal.x,
+          goal.y,
+          regroupStep(world, unit, goal, step),
+        );
+      } else if (target !== undefined) {
+        unit.returning = false;
         chase(world, unit, target, step);
+      } else if (slot !== undefined) {
+        moveToward(
+          world,
+          unit,
+          slot.x,
+          slot.y,
+          regroupStep(world, unit, slot, step),
+        );
       }
     }
   }

@@ -1,6 +1,7 @@
 import type { Army, World } from "../world/world.js";
 import { setMageTarget } from "./movement.js";
 
+export { orderRetreat } from "./retreat.js";
 export { orderAttack } from "./targeting.js";
 
 export const orderMove = (
@@ -10,5 +11,6 @@ export const orderMove = (
   y: number,
 ): void => {
   army.focusId = undefined;
+  army.retreat = undefined;
   setMageTarget(world, army.mage, x, y);
 };

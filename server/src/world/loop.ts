@@ -1,6 +1,7 @@
 import { runBots } from "../lobby/bots.js";
 import { updateLobby } from "../lobby/lobby.js";
 import { maintainPopulations, moveCivilians } from "../systems/civilians.js";
+import { updateBattles } from "../systems/battle.js";
 import { fight } from "../systems/combat.js";
 import { runEvents } from "../systems/events.js";
 import { updateHostiles } from "../systems/hostiles.js";
@@ -27,6 +28,7 @@ export const systems: System[] = [
   updateHostiles,
   separateBodies,
   fight,
+  updateBattles,
   reanimate,
   regenerateMages,
   searchPoints,

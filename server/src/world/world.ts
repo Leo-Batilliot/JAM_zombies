@@ -16,6 +16,47 @@ export interface Army {
   killerName: string;
   search: Search | undefined;
   bot: Bot | undefined;
+  groups: Set<AbandonedGroup>;
+  battle: Battle | undefined;
+  retreat: Retreat | undefined;
+}
+
+export interface AbandonedGroup {
+  army: Army;
+  units: Set<Unit>;
+  corpses: Set<Corpse>;
+  anchorX: number;
+  anchorY: number;
+  engagedAt: number;
+}
+
+export interface Force {
+  army: Army | undefined;
+  bodies: Body[];
+  x: number;
+  y: number;
+  radius: number;
+}
+
+export interface Battle {
+  engagedAt: number;
+  foes: Force[];
+  encircled: boolean;
+  freeSector: number;
+  escapeAngle: number;
+}
+
+export interface Retreat {
+  exitX: number;
+  exitY: number;
+  originX: number;
+  originY: number;
+  dirX: number;
+  dirY: number;
+  left: Unit[];
+  right: Unit[];
+  escort: Unit[] | undefined;
+  released: number;
 }
 
 export interface Bot {
@@ -44,6 +85,7 @@ export interface Mage {
   facingY: number;
   hp: number;
   hitAt: number;
+  lossBudget: number;
 }
 
 export interface Unit {
@@ -59,6 +101,8 @@ export interface Unit {
   cooldown: number;
   raisedAt: number;
   fighting: boolean;
+  group: AbandonedGroup | undefined;
+  returning: boolean;
 }
 
 export interface NpcGroup {
@@ -112,6 +156,7 @@ export interface Corpse {
   type: string;
   owner: Army;
   killer: Army | undefined;
+  group: AbandonedGroup | undefined;
   diedAt: number;
   x: number;
   y: number;
@@ -221,6 +266,9 @@ export class World {
       killerName: "",
       search: undefined,
       bot: undefined,
+      groups: new Set(),
+      battle: undefined,
+      retreat: undefined,
     } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
@@ -234,6 +282,9 @@ export class World {
       facingY: 1,
       hp: this.config.gameplay.mage.baseHp,
       hitAt: -Infinity,
+      lossBudget:
+        this.config.gameplay.mage.baseHp *
+        this.config.gameplay.soulLink.maxLossPerSec,
     };
     this.armies.set(army.slot, army);
     this.#add(army.mage);
@@ -254,6 +305,8 @@ export class World {
       cooldown: 0,
       raisedAt: -Infinity,
       fighting: false,
+      group: undefined,
+      returning: false,
     };
     army.units.add(unit);
     this.#add(unit);
@@ -338,6 +391,7 @@ export class World {
       type,
       owner,
       killer,
+      group: undefined,
       diedAt: this.time,
       x: this.clampX(x),
       y: this.clampY(y),
@@ -377,6 +431,9 @@ export class World {
     }
     army.units.clear();
     army.corpses.clear();
+    army.groups.clear();
+    army.battle = undefined;
+    army.retreat = undefined;
     this.remove(army.mage.id);
   }
 
@@ -393,6 +450,7 @@ export class World {
     switch (entity.kind) {
       case EntityKind.Unit:
         entity.army.units.delete(entity);
+        entity.group?.units.delete(entity);
         break;
       case EntityKind.Npc:
         this.hostiles.delete(entity);
@@ -405,6 +463,7 @@ export class World {
         break;
       case EntityKind.Corpse:
         entity.owner.corpses.delete(entity);
+        entity.group?.corpses.delete(entity);
         break;
       case EntityKind.PointOfInterest:
         this.points.delete(entity);

@@ -47,6 +47,44 @@ const focusTarget = (world: World, army: Army): Target | undefined => {
   return target;
 };
 
+const leashCenter = (unit: Unit): { x: number; y: number } =>
+  unit.group === undefined
+    ? unit.army.mage
+    : { x: unit.group.anchorX, y: unit.group.anchorY };
+
+const fromLeash = (unit: Unit, target: Target): number => {
+  const center = leashCenter(unit);
+  return Math.hypot(target.x - center.x, target.y - center.y);
+};
+
+export const nearestPrey = <T extends Entity>(
+  from: Entity,
+  ids: number[],
+  resolve: (id: number) => T | undefined,
+): T | undefined => {
+  let best: T | undefined;
+  let bestDistance = Infinity;
+  let mage: T | undefined;
+  let mageDistance = Infinity;
+  for (const id of ids) {
+    const candidate = resolve(id);
+    if (candidate === undefined) {
+      continue;
+    }
+    const candidateDistance = distance(candidate, from);
+    if (candidate.kind === EntityKind.Mage) {
+      if (candidateDistance < mageDistance) {
+        mage = candidate;
+        mageDistance = candidateDistance;
+      }
+    } else if (candidateDistance < bestDistance) {
+      best = candidate;
+      bestDistance = candidateDistance;
+    }
+  }
+  return best ?? mage;
+};
+
 const nearestEnemy = (
   world: World,
   unit: Unit,
@@ -56,23 +94,12 @@ const nearestEnemy = (
   const { leashDistance } = world.config.gameplay.combat;
   near.length = 0;
   world.grid.queryRadius(unit.x, unit.y, range, near);
-  let best: Target | undefined;
-  let bestDistance = Infinity;
-  for (const id of near) {
+  return nearestPrey(unit, near, (id) => {
     const enemy = asEnemy(unit.army, world.entities.get(id));
-    if (
-      enemy === undefined ||
-      distance(enemy, unit.army.mage) > leashDistance
-    ) {
-      continue;
-    }
-    const enemyDistance = distance(enemy, unit);
-    if (enemyDistance < bestDistance) {
-      best = enemy;
-      bestDistance = enemyDistance;
-    }
-  }
-  return best;
+    return enemy !== undefined && fromLeash(unit, enemy) <= leashDistance
+      ? enemy
+      : undefined;
+  });
 };
 
 export const currentTarget = (world: World, unit: Unit): Target | undefined =>
@@ -86,7 +113,7 @@ export const updateTargets = (world: World): void => {
   for (const army of world.armies.values()) {
     const focus = focusTarget(world, army);
     for (const unit of army.units) {
-      if (focus !== undefined) {
+      if (focus !== undefined && unit.group === undefined) {
         unit.targetId = focus.id;
         continue;
       }
@@ -94,7 +121,7 @@ export const updateTargets = (world: World): void => {
       const target = currentTarget(world, unit);
       if (
         target === undefined ||
-        distance(target, army.mage) > leashDistance ||
+        fromLeash(unit, target) > leashDistance ||
         distance(target, unit) > aggroRange
       ) {
         unit.targetId = undefined;

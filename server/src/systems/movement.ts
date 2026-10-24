@@ -1,4 +1,5 @@
-import type { Mage, World } from "../world/world.js";
+import type { Army, Mage, World } from "../world/world.js";
+import { aggroCircles, clampToCircles } from "./battle.js";
 
 export const setMageTarget = (
   world: World,
@@ -17,26 +18,42 @@ export const setMageTarget = (
   }
 };
 
+const endRetreat = (world: World, army: Army): void => {
+  const { retreat, mage } = army;
+  if (
+    retreat !== undefined &&
+    Math.hypot(retreat.exitX - mage.x, retreat.exitY - mage.y) <=
+      world.config.gameplay.retreat.arriveDistance
+  ) {
+    army.retreat = undefined;
+  }
+};
+
 export const moveMages = (world: World, dt: number): void => {
   const step = world.config.gameplay.mage.speed * dt;
-  for (const { alive, mage } of world.armies.values()) {
+  for (const army of world.armies.values()) {
+    const { alive, mage } = army;
     if (!alive) {
       continue;
     }
+    endRetreat(world, army);
     const dx = mage.targetX - mage.x;
     const dy = mage.targetY - mage.y;
     const distance = Math.hypot(dx, dy);
     if (distance === 0) {
       continue;
     }
-    if (distance <= step) {
-      world.setPosition(mage, mage.targetX, mage.targetY);
-    } else {
-      world.setPosition(
-        mage,
-        mage.x + (dx / distance) * step,
-        mage.y + (dy / distance) * step,
-      );
-    }
+    const next =
+      distance <= step
+        ? { x: mage.targetX, y: mage.targetY }
+        : {
+            x: mage.x + (dx / distance) * step,
+            y: mage.y + (dy / distance) * step,
+          };
+    const { x, y } =
+      army.battle !== undefined && army.retreat === undefined
+        ? clampToCircles(aggroCircles(world, army), mage, next)
+        : next;
+    world.setPosition(mage, x, y);
   }
 };
