@@ -44,6 +44,37 @@ const gameplaySchema = z.strictObject({
     raiseRadius: z.number().positive(),
     riseSec: z.number().positive(),
   }),
+  battle: z.strictObject({
+    engageRadius: z.number().positive(),
+    circleMargin: z.number().nonnegative(),
+    endDelaySec: z.number().nonnegative(),
+    freeSectorDeg: z.number().positive().max(360),
+  }),
+  soulLink: z.strictObject({
+    guardRadius: z.number().positive(),
+    share: z.number().min(0).max(1),
+    maxLossPerSec: z.number().positive(),
+  }),
+  transfer: z.strictObject({
+    share: z.number().min(0).max(1),
+  }),
+  retreat: z.strictObject({
+    minTunnelUnits: z.int().positive(),
+    corridorWidth: z.number().positive(),
+    spacing: z.number().positive(),
+    baseOffset: z.number().nonnegative(),
+    wingRows: z.int().nonnegative(),
+    wingFlare: z.number().nonnegative(),
+    wingReach: z.number().positive(),
+    foldMargin: z.number().nonnegative(),
+    escortRadius: z.number().positive(),
+    arriveDistance: z.number().positive(),
+  }),
+  regroup: z.strictObject({
+    distance: z.number().positive(),
+    arriveDistance: z.number().positive(),
+    speedMultiplier: z.number().min(1),
+  }),
   souls: z.strictObject({
     perStrength: z.number().nonnegative(),
     levelBase: z.number().positive(),
@@ -204,6 +235,11 @@ const lobbySchema = z
       wanderDistance: z.number().positive(),
       huntRange: z.number().positive(),
       lootRange: z.number().positive(),
+      attackRange: z.number().positive(),
+      attackRatio: z.number().positive(),
+      fleeRatio: z.number().positive(),
+      avoidSectorDeg: z.number().nonnegative().max(360),
+      fleeDistance: z.number().positive(),
     }),
     leaderboard: z.strictObject({
       intervalSec: z.number().positive(),
@@ -289,6 +325,9 @@ export const clientSettingsSchema = z.strictObject({
     boss: z.string().length(1),
     units: z.string().length(1),
   }),
+  retreatKey: z.string().length(1),
+  sizeScaleStep: z.number().nonnegative(),
+  aggroPulseMs: z.int().positive(),
 });
 
 export const configSchema = z.strictObject({

@@ -50,5 +50,8 @@
     "screamer": "k",
     "boss": "p",
     "units": "u"
-  }
+  },
+  "retreatKey": "r",
+  "sizeScaleStep": 0.25,
+  "aggroPulseMs": 900
 }
