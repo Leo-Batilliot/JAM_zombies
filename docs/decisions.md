@@ -4,6 +4,111 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Taille du charnier sur une échelle logarithmique | A.PI
+
+- **Quoi** : le serveur envoie pour chaque point d'intérêt un niveau de taille égal au logarithme en base 2 de son nombre de cadavres, de 0 à 7, dans les 3 bits libres des drapeaux. Le client agrandit le sprite de 25 % par niveau : 1 cadavre au niveau 0, 2 à 3 au niveau 1, 45 (le charnier d'une armée pleine) au niveau 5, 128 et plus au niveau 7, soit 2,75 fois la taille de base.
+- **Pourquoi** : aucun octet de plus dans le snapshot, et l'échelle logarithmique distingue les petits charniers sans rendre les gros énormes.
+- **Impact** : seul l'affichage change, le rayon de fouille reste celui de `world.json`. Les drapeaux n'ont plus de bit libre.
+- **Avis** : À vérifier. Agrandissement à régler en jeu.
+
+### Snapshots en delta par joueur | A.PI
+
+- **Quoi** : le serveur garde pour chaque joueur le dernier état envoyé de chaque entité. Un snapshot ne contient plus que les entités nouvelles ou qui ont changé de genre, de type ou d'armée (12 octets), celles dont la position quantifiée ou les drapeaux ont changé (9 octets) et les identifiants de celles qui ont quitté la vue (4 octets). Le client reconstruit l'état complet avant l'interpolation.
+- **Pourquoi** : le WebSocket est fiable et ordonné, un delta ne peut donc pas se perdre. Les entités immobiles faisaient l'essentiel du débit.
+- **Impact** : débit mesuré sous 64 Ko/s au pire (voir `docs/load-test.md`). Le format du snapshot de la décision « Snapshot à 12 octets par entité » ne s'applique plus qu'aux nouvelles entités.
+- **Avis** : À vérifier. Le test de charge ne fait pas encore marcher les armées. Si le débit dépasse la cible en jeu réel, envoyer un snapshot tous les 2 ticks.
+
+### Contrôle de la Retraite en deux temps | A.PI
+
+- **Quoi** : la touche R ou le bouton Retraite (en bas à droite) passe en mode visée, et le clic ou le tap suivant donne le point de sortie. Le bouton est grisé hors bataille ou si l'armée est encerclée. Pendant la retraite, le client dessine une flèche du mage vers le point de sortie qu'il a envoyé.
+- **Pourquoi** : même geste sur PC et sur téléphone, et le concept demande de choisir la direction de fuite.
+- **Impact** : le serveur ignore une retraite hors bataille. Le cercle d'aggro et l'état du bouton viennent de l'état du joueur, envoyé à chaque tick.
+- **Avis** : Validée.
+
+### Bots : fuir, attaquer plus faible, puis piller | A.PI
+
+- **Quoi** : en bataille, un bot bat en retraite par le plus grand secteur libre si les ennemis engagés sont plus de 1,3 fois plus forts que lui, ou si le secteur libre passe sous 120° face à une force au moins égale. Hors bataille, il marche sur l'armée la plus proche à moins de 40 m si elle a moins de 70 % de sa force, sinon il pille, chasse ou erre comme avant.
+- **Pourquoi** : c'est la machine à états du concept, avec les mêmes ordres qu'un joueur.
+- **Impact** : les bots fuient aussi la citrouille et ses lanternes quand ils sont trop faibles. Tous les seuils sont dans `lobby.json`.
+- **Avis** : À vérifier. Seuils à équilibrer en jeu.
+
+### Tunnel de retraite fixé au départ | A.PI
+
+- **Quoi** : à l'ordre, le tunnel est posé dans le monde, de la position du mage vers le point de sortie. Les unités non engagées sont réparties en deux murs selon leur côté, puis en rangées selon leur position. Les 2 premières rangées s'évasent en ailes, qui se placent entre le mage et un ennemi qui contourne le mur de leur côté. Une rangée se replie dès que le mage l'a dépassée, et ses unités reprennent leur place autour de lui. Quand une unité meurt, son mur glisse vers la base. Sous 6 unités, le reste forme une escorte en cercle autour du mage.
+- **Pourquoi** : un tunnel fixe ne suit pas le mage, il le laisse courir dedans, et le repli de la base vers la pointe vient du suivi de sa progression.
+- **Impact** : les murs ne poursuivent personne, ils se battent seulement contre un ennemi à leur portée. Les unités rejoignent leur place avec la vitesse de retour (x2,5) si elles en sont loin.
+- **Avis** : À vérifier. Largeur, espacement et ailes à régler en jeu.
+
+### Retour au mage selon la distance à sa place | A.PI
+
+- **Quoi** : une unité sans cible à plus de 8 m de sa place y retourne à 2,5 fois sa vitesse, jusqu'à en être à moins de 1,5 m. La même règle vaut pour les places du tunnel.
+- **Pourquoi** : la distance à la place couvre tous les cas (groupe abandonné libéré, unités transférées, tunnel) sans état en plus.
+- **Impact** : une armée qui suit son mage normalement n'est jamais accélérée.
+- **Avis** : À vérifier. Distances à régler en jeu.
+
+### Groupes abandonnés autonomes | A.PI
+
+- **Quoi** : les unités au contact lors d'une retraite forment un groupe. Il ne suit plus le mage et tient sa position quand il n'a pas de cible, avec une laisse autour du point d'abandon. Il a gagné après 1 s sans contact : ses unités redeviennent normales et ses cadavres restent à son camp. S'il est détruit, chaque cadavre passe à son tueur s'il est une armée en jeu, sinon il reste au camp d'origine.
+- **Pourquoi** : c'est la règle 5 du concept. Le délai évite qu'un trou de ciblage d'une fraction de seconde fasse gagner le groupe.
+- **Impact** : les cadavres d'un groupe ne se relèvent pas tant que son issue n'est pas connue.
+- **Avis** : Validée.
+
+### Retraite seulement en bataille | A.PI
+
+- **Quoi** : la Retraite n'est possible qu'en bataille et sans encerclement. Elle abandonne les unités au contact, transfère à leur tueur les cadavres tués par une armée de cette bataille, et laisse le mage sortir du cercle jusqu'au point de sortie. Elle se termine quand il y arrive, ou plus tôt si le joueur donne un ordre de déplacement.
+- **Pourquoi** : hors bataille, il n'y a rien à fuir, et un ordre ignoré évite un tap malheureux sur téléphone.
+- **Impact** : si une armée ennemie le rattrape après la sortie, le mage est de nouveau en bataille et doit refaire une retraite.
+- **Avis** : Validée.
+
+### Armée du mage tué : 70 % au tueur, le reste en charnier | A.PI
+
+- **Quoi** : à la mort du mage, ses unités et ses cadavres sont mélangés au hasard. 70 % d'entre eux passent à leur destinataire : le tueur du mage pour les unités, le tueur du cadavre pour un cadavre (le tueur du mage à défaut). Le reste, et tout ce qui n'a aucune armée en jeu pour le recevoir, forme un charnier à la position du mage.
+- **Pourquoi** : c'est la règle 3 du concept. Un mage tué par un PNJ laisse tout dans le charnier, puisque les PNJ ne récupèrent rien.
+- **Impact** : le screamer du mode démo ne fait plus disparaître l'armée, il laisse un charnier. `concept.md` §4.2 règle 3 mis à jour.
+- **Avis** : Validée.
+
+### Lien d'âme avec un budget de perte | A.PI
+
+- **Quoi** : quand le mage subit des dégâts, 80 % vont à l'unité de son armée la plus proche à moins de 6 m (hors unités abandonnées). Le reste est limité par un budget qui se remplit de 8 % des PV max par seconde, plafonné à cette valeur. Le plafond vaut pour tous les dégâts, PNJ compris.
+- **Pourquoi** : un budget est simple à suivre par tick et donne bien les ~12 s de focus minimum du concept.
+- **Impact** : seul le mode démo tue un mage d'un coup (il passe directement par la mort).
+- **Avis** : À vérifier. Part, rayon et plafond à équilibrer en jeu.
+
+### Le mage visé en dernier | A.PI
+
+- **Quoi** : une unité ou un PNJ hostile ne choisit un mage comme cible que si aucun autre ennemi n'est à portée. L'ordre d'attaque explicite sur un mage reste prioritaire.
+- **Pourquoi** : c'est la règle de ciblage du §4.3 du concept.
+- **Impact** : un mage dont l'armée est détruite redevient la cible de tout le monde.
+- **Avis** : Validée.
+
+### Encerclement et secteur de fuite | A.PI
+
+- **Quoi** : les ennemis engagés contre l'armée sont repérés par leur angle autour du centre de l'armée (mage et unités non abandonnées). Le plus grand écart entre deux angles est le secteur libre. Sous 60°, l'armée est encerclée. Le milieu de ce secteur sert de direction de fuite aux bots.
+- **Pourquoi** : c'est la définition du concept, avec les ennemis déjà connus par la détection de bataille.
+- **Impact** : le client est prévenu par un drapeau de l'état du joueur, qui grise le bouton Retraite.
+- **Avis** : À vérifier. À confirmer en jeu avec de grosses armées.
+
+### Cercle d'aggro par force engagée | A.PI
+
+- **Quoi** : chaque force ennemie engagée (corps principal d'une armée, groupe abandonné, ou boss et sbires d'un même événement) donne un cercle autour de ses corps, plus la marge de 8 m. Le mage peut aller partout dans l'union de ces cercles. S'il est dehors au début de la bataille, il ne peut que s'en rapprocher.
+- **Pourquoi** : un cercle autour d'une armée entière engloberait ses groupes abandonnés loin de là. Le mage dehors au départ ne doit pas être téléporté au bord.
+- **Impact** : les cercles sont envoyés au client dans l'état du joueur.
+- **Avis** : Validée.
+
+### Bataille détectée par les cibles | A.PI
+
+- **Quoi** : une force est en bataille quand une de ses unités cible un ennemi à moins de 8 m, ou qu'un ennemi la cible à cette distance. Les PNJ hostiles (citrouille, lanternes, futurs camps) comptent comme une armée, les civils non. La bataille se termine après 1 s sans engagement.
+- **Pourquoi** : le ciblage cherche déjà l'ennemi le plus proche, il n'y a aucune requête spatiale à ajouter. Le délai absorbe les trous du ciblage échelonné.
+- **Impact** : la réanimation et le blocage dans le cercle concernent aussi les combats contre les PNJ hostiles. `concept.md` §4.4 mis à jour.
+- **Avis** : Validée.
+
+### Âme seulement sur les cadavres en attente | A.PI
+
+- **Quoi** : un cadavre porte le drapeau « en attente » une fois son délai de réanimation écoulé, c'est-à-dire quand il ne se relève pas à cause d'une bataille ou de l'issue d'un groupe abandonné. Le client n'affiche l'âme que sur ces cadavres.
+- **Pourquoi** : c'est le comportement du concept, prévu par la décision provisoire de la phase 2.
+- **Impact** : remplace la décision « Âme affichée sur chaque cadavre ».
+- **Avis** : Validée.
+
 ### Raccourcis du mode démo | G.WI
 
 - **Quoi** : avec `?demo=1`, le client affiche 3 boutons en bas à gauche et écoute les touches de `client.json` (K, P, U). Le serveur n'exécute ces commandes que si `DEMO_MODE=true`, sinon il les ignore. Screamer : le mage meurt pour de vrai, tué par le nom de `gameplay.json`. Citrouille : l'événement démarre près du mage et remplace le boss en cours. Unités : des zombies se relèvent autour du mage.
@@ -191,7 +296,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 - **Quoi** : tout cadavre au sol affiche une âme qui flotte, puisque tous attendent leur relève.
 - **Pourquoi** : en phase 2, aucun cadavre n'est bloqué par une bataille, il n'y a donc rien à distinguer.
 - **Impact** : la réanimation bloquée en bataille (4.03) devra ajouter un drapeau pour ne montrer l'âme que sur les cadavres en attente.
-- **Avis** : Provisoire. À revoir en 4.03.
+- **Avis** : Validée. Remplacée en 4.03 par « Âme seulement sur les cadavres en attente ».
 
 ### Cadavre d'un PNJ au tueur | L.BA
 

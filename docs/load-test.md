@@ -22,3 +22,21 @@ Vue téléphone (36 x 17 m) :
 
 - Le temps de tick tient dans le budget à 20 ticks par seconde, avec peu de marge au pire. Avant le décalage aléatoire du ciblage, toutes les unités cherchaient leur cible au même tick et le pire montait à 100 ms.
 - Le débit dépasse la cible de ~64 Ko/s dès qu'un client voit plusieurs armées pleines. La réduction est prévue à l'étape 4.15.
+
+## Résultats de la phase 4
+
+Machine : AMD Ryzen 5 7535HS, Node 22.23 (le projet demande Node 24, non disponible sur cette machine). Mêmes paramètres que la phase 2. Pour comparer sur la même machine, la version de la phase 3 (avant le delta et les règles de bataille) a été mesurée elle aussi.
+
+Phase 3, sur cette machine :
+- vue PC : tick de 15,4 ms en moyenne (27 ms au pire), débit de 104 Ko/s en moyenne et 230 Ko/s au pire ;
+- vue téléphone : tick de 14,5 ms en moyenne (26 ms au pire), débit de 53 Ko/s en moyenne et 103 Ko/s au pire.
+
+Phase 4, avec les snapshots en delta et les règles de bataille, deux passages en vue PC et cinq en vue téléphone :
+- vue PC : tick de 17,3 à 17,4 ms en moyenne, 22 ms au 95e centile, 25 à 32 ms au pire, débit de 14 à 15 Ko/s en moyenne et 49 à 51 Ko/s au pire ;
+- vue téléphone : tick de 16,6 à 19,5 ms en moyenne, 20 à 26 ms au 95e centile, 25 à 35 ms au pire, débit de 7 à 13 Ko/s en moyenne et 29 à 41 Ko/s au pire. Un passage a eu un tick isolé à 164 ms, qui n'est pas revenu sur les quatre autres.
+
+## Conclusions de la phase 4
+
+- Le débit passe sous les ~64 Ko/s visés, au pire comme en moyenne. Le gain vient surtout des entités immobiles (unités au repos, cadavres, points d'intérêt), qui ne sont plus renvoyées. La fréquence d'envoi n'a pas eu besoin d'être réduite.
+- Dans ce test, les mages ne bougent pas : seules les unités qui se battent changent de position. Une armée entière en marche coûte 9 octets par unité et par tick au lieu de 12, soit environ 75 % du débit de la phase 3 dans le pire cas. Le test ne mesure pas encore ce cas.
+- Les règles de bataille ajoutent environ 2 ms par tick, le budget de 50 ms reste large.

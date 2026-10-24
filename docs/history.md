@@ -4,6 +4,47 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Taille du charnier selon son contenu | 4.06 | A.PI
+
+- `shared/src/protocol/messages.ts` : niveau de taille de 0 à 7 dans les 3 bits libres des drapeaux.
+- `shared/src/config/schema.ts`, `shared/config/client.json` : agrandissement du sprite par niveau (25 %).
+- `server/src/net/interest.ts` : niveau d'un point d'intérêt selon le nombre de cadavres qu'il contient.
+- `client/src/game/entities.ts` : sprite agrandi selon le niveau, test de visibilité sur la taille affichée.
+- `server/tests/`, `shared/tests/` : niveau selon le contenu, lecture et écriture du niveau.
+
+### Règles de bataille et de nécromancie, réduction du débit | 4.01-4.15 | A.PI
+
+- `shared/src/config/schema.ts` : réglages de bataille, Lien d'âme, transfert, retraite, retour au mage, combat des bots, touche de retraite et pulsation du cercle.
+- `shared/config/gameplay.json` : engagement à 8 m, marge de 8 m, fin de bataille après 1 s, secteur libre de 60°, garde de 6 m, 80 % transférés, 8 % de PV par seconde, transfert de 70 %, tunnel et escorte, retour à x2,5.
+- `shared/config/lobby.json` : portée d'attaque, rapports de force pour attaquer et fuir, secteur d'alerte et distance de fuite des bots.
+- `shared/config/client.json` : touche R et pulsation du cercle d'aggro.
+- `shared/src/protocol/messages.ts` : drapeaux en attente et abandonnée, état de bataille et cercles d'aggro dans l'état du joueur, snapshot en delta (nouvelles entités, mises à jour, retraits).
+- `server/src/world/world.ts` : bataille, retraite et groupes abandonnés de l'armée, groupe d'une unité ou d'un cadavre, retour au mage, budget de perte de PV du mage.
+- `server/src/systems/battle.ts` : forces engagées déduites des cibles (armées, groupes abandonnés, PNJ hostiles), fin de bataille, encerclement et secteur de fuite, issue des groupes abandonnés, cercles d'aggro et blocage du mage.
+- `server/src/systems/retreat.ts` : ordre de retraite, abandon des unités au contact, transfert des cadavres de la bataille, murs du tunnel, ailes qui coupent la route, repli rangée par rangée, escorte.
+- `server/src/systems/transfer.ts` : changement de camp d'une unité ou d'un cadavre.
+- `server/src/systems/mage.ts` : transfert de 70 % de l'armée au tueur et charnier pour le reste, garde du Lien d'âme, plafond de perte de PV par seconde.
+- `server/src/systems/death.ts` : part des dégâts du mage reportée sur la garde, cadavre marqué pour une unité abandonnée.
+- `server/src/systems/targeting.ts`, `server/src/systems/hostiles.ts` : le mage n'est visé que si aucun autre ennemi n'est à portée, laisse des unités abandonnées autour de leur point d'abandon.
+- `server/src/systems/formation.ts` : places du tunnel, unités abandonnées qui tiennent leur position, retour accéléré vers sa place.
+- `server/src/systems/movement.ts`, `server/src/systems/orders.ts` : mage bloqué dans le cercle d'aggro, fin de la retraite au point de sortie, un déplacement annule la retraite.
+- `server/src/systems/reanimation.ts` : pas de réanimation en bataille ni pour un cadavre en attente de l'issue d'un groupe abandonné.
+- `server/src/systems/strength.ts` : force d'un corps et d'une liste de corps.
+- `server/src/world/loop.ts` : système de bataille après le combat.
+- `server/src/lobby/bots.ts` : fuite par la retraite face à plus fort ou avant d'être encerclé, attaque d'une armée plus faible.
+- `server/src/net/delta.ts` : delta de snapshot par joueur par rapport au dernier envoi.
+- `server/src/net/interest.ts` : drapeaux en attente et abandonnée.
+- `server/src/net/sockets.ts` : ordre de retraite, état de bataille et cercles envoyés, snapshots en delta.
+- `client/src/net/snapshots.ts`, `client/src/net/connection.ts` : état complet reconstruit à partir des deltas.
+- `client/src/game/battle.ts` : cercle d'aggro rouge pulsant, flèche de retraite.
+- `client/src/retreat.ts` : bouton Retraite et touche R, choix du point de sortie, bouton grisé hors bataille ou encerclé.
+- `client/src/game/entities.ts` : âme seulement sur les cadavres en attente, drapeau en berne sur les unités abandonnées.
+- `client/src/game/game.ts`, `client/src/style.css` : branchement de la retraite et de l'affichage de la bataille.
+- `client/public/atlas/` : drapeau en berne.
+- `docs/load-test.md` : mesures de la phase 4.
+- `docs/concept.md` : bataille contre les PNJ hostiles, mort du mage sans armée tueuse.
+- `server/tests/`, `shared/tests/`, `client/tests/` : bataille, cercle, encerclement, réanimation bloquée, Lien d'âme, transfert, retraite, groupes abandonnés, retour, tunnel, bots, delta, drapeaux et protocole.
+
 ### Références aux films et mode démo | 3.07-3.08 | G.WI
 
 - `shared/src/config/schema.ts` : décor à position fixe, réglages et touches du mode démo.
