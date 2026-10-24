@@ -1,6 +1,7 @@
 import type { Server } from "node:http";
 import { WebSocket, WebSocketServer, type RawData } from "ws";
 import {
+  BattleFlag,
   ClientMessageType,
   JoinRejection,
   ProtocolError,
@@ -16,10 +17,12 @@ import { validatePlayerName } from "../lobby/name.js";
 import { rankArmies } from "../lobby/leaderboard.js";
 import { joinLobby, leaveLobby } from "../lobby/lobby.js";
 import { runDemo } from "../systems/demo.js";
-import { orderAttack, orderMove } from "../systems/orders.js";
+import { aggroCircles } from "../systems/battle.js";
+import { orderAttack, orderMove, orderRetreat } from "../systems/orders.js";
 import { maxHp } from "../systems/souls.js";
 import { armyStrength } from "../systems/strength.js";
 import type { Army, World } from "../world/world.js";
+import { SnapshotDelta } from "./delta.js";
 import { visibleEntities, type View } from "./interest.js";
 
 const protocolErrorCode = 1008;
@@ -30,6 +33,7 @@ interface Session {
   deaths: number;
   view: View;
   bosses: Map<string, number | undefined>;
+  delta: SnapshotDelta;
 }
 
 const toBytes = (data: RawData): Uint8Array =>
@@ -38,6 +42,11 @@ const toBytes = (data: RawData): Uint8Array =>
     : data instanceof ArrayBuffer
       ? new Uint8Array(data)
       : data;
+
+const battleFlags = (army: Army): number =>
+  (army.battle === undefined ? 0 : BattleFlag.InBattle) |
+  (army.battle?.encircled === true ? BattleFlag.Encircled : 0) |
+  (army.retreat === undefined ? 0 : BattleFlag.Retreating);
 
 export interface SocketOptions {
   demo: boolean;
@@ -151,6 +160,9 @@ export const attachSockets = (
       case ClientMessageType.Target:
         orderAttack(world, session.army, message.entityId);
         break;
+      case ClientMessageType.Retreat:
+        orderRetreat(world, session.army, message.x, message.y);
+        break;
       case ClientMessageType.Demo:
         if (options.demo) {
           runDemo(world, session.army, message.command);
@@ -167,6 +179,7 @@ export const attachSockets = (
       deaths: 0,
       view: { width: 0, height: 0 },
       bosses: new Map(),
+      delta: new SnapshotDelta(),
     };
     sessions.add(session);
     socket.on("message", (data, isBinary) => {
@@ -231,11 +244,16 @@ export const attachSockets = (
           souls: army.souls,
           units: army.units.size,
           strength: armyStrength(world, army),
+          battle: battleFlags(army),
+          circles: aggroCircles(world, army),
         });
         send(session, {
           type: ServerMessageType.Snapshot,
           tick: world.tick,
-          entities: visibleEntities(world, army, session.view),
+          ...session.delta.next(
+            visibleEntities(world, army, session.view),
+            world.config.world,
+          ),
         });
       }
     },

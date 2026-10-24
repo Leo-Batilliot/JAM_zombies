@@ -2,6 +2,7 @@ import {
   EntityFlag,
   EntityKind,
   neutralArmy,
+  sizeFlags,
   type SnapshotEntity,
 } from "@horde/shared";
 import type { Army, Entity, World } from "../world/world.js";
@@ -46,12 +47,21 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
         (world.time - entity.raisedAt <
         world.config.gameplay.reanimation.riseSec
           ? EntityFlag.Rising
-          : 0)
+          : 0) |
+        (entity.group === undefined ? 0 : EntityFlag.Abandoned)
       );
+    case EntityKind.Corpse:
+      return world.time - entity.diedAt >=
+        world.config.gameplay.reanimation.delaySec
+        ? EntityFlag.Waiting
+        : 0;
     case EntityKind.Npc:
       return entity.fighting ? EntityFlag.Fighting : 0;
     case EntityKind.PointOfInterest:
-      return entity.searchedBy.has(viewer) ? EntityFlag.Searched : 0;
+      return (
+        (entity.searchedBy.has(viewer) ? EntityFlag.Searched : 0) |
+        sizeFlags(Math.log2(Math.max(1, entity.corpses.length)))
+      );
     default:
       return 0;
   }
