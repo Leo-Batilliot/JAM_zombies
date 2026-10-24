@@ -1,0 +1,13 @@
+{
+  "name": "@horde/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --conditions=development src/main.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@horde/shared": "*"
+  }
+}
