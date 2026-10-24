@@ -1,0 +1,150 @@
+:root {
+  --background: #141018;
+  --panel: #241c2c;
+  --text: #ece3f5;
+  --muted: #a99bb8;
+  --accent: #8e44ad;
+  --accent-light: #b36ad4;
+  --danger: #e0605a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--background);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  touch-action: none;
+  user-select: none;
+}
+
+#game,
+#ui {
+  position: fixed;
+  inset: 0;
+}
+
+#ui {
+  pointer-events: none;
+}
+
+#ui > * {
+  pointer-events: auto;
+}
+
+.home {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1rem;
+  background: var(--background);
+  text-align: center;
+}
+
+.home h1 {
+  margin: 0;
+  font-size: clamp(2rem, 8vw, 4rem);
+  letter-spacing: 0.05em;
+}
+
+.home form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.home input,
+.home button {
+  font: inherit;
+  font-size: 1.1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--accent);
+}
+
+.home input {
+  background: var(--panel);
+  color: var(--text);
+  width: min(60vw, 16rem);
+}
+
+.home button {
+  background: var(--accent);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.home button:hover {
+  background: var(--accent-light);
+}
+
+.home button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.home blockquote {
+  margin: 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.home cite {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  font-style: normal;
+}
+
+.home .error {
+  min-height: 1.2em;
+  margin: 0;
+  color: var(--danger);
+}
+
+#rotate {
+  display: none;
+}
+
+@media (orientation: portrait) and (pointer: coarse) {
+  #rotate {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background);
+    font-size: 1.5rem;
+  }
+}
+
+body.share {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  overflow: auto;
+  touch-action: auto;
+  user-select: auto;
+}
+
+body.share canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+body.share p {
+  font-size: 1.4rem;
+  word-break: break-all;
+}

@@ -1,1 +1,16 @@
-export {};
+import "./style.css";
+import { getElement } from "./dom.js";
+import { loadAtlas } from "./game/assets.js";
+import { startGame } from "./game/game.js";
+import { showHome } from "./home.js";
+import { join } from "./net/connection.js";
+
+const atlas = loadAtlas();
+
+showHome(getElement("#ui", HTMLElement), async (name) => {
+  const connection = await join(name);
+  connection.onClose = () => {
+    location.reload();
+  };
+  await startGame(getElement("#game", HTMLElement), connection, await atlas);
+});
