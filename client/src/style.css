@@ -6,6 +6,7 @@
   --accent: #8e44ad;
   --accent-light: #b36ad4;
   --danger: #e0605a;
+  --pumpkin: #ff9a1f;
 }
 
 * {
@@ -39,7 +40,10 @@ body {
 }
 
 #ui > .hud,
-#ui > .death {
+#ui > .death,
+#ui > .screamer,
+#ui > .event-banner,
+#ui > .event-arrow {
   pointer-events: none;
 }
 
@@ -253,4 +257,102 @@ body.share p {
 .hud-board li.self {
   color: var(--text);
   font-weight: bold;
+}
+
+.screamer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+}
+
+.screamer[hidden] {
+  display: none;
+}
+
+.screamer img {
+  height: 115vh;
+  image-rendering: pixelated;
+  animation: screamer-shake 0.08s steps(2) infinite;
+}
+
+@keyframes screamer-shake {
+  0% {
+    transform: translate(-2%, 1%) scale(1.05);
+  }
+  50% {
+    transform: translate(2%, -1%) scale(1.12);
+  }
+  100% {
+    transform: translate(-1%, 2%) scale(1.08);
+  }
+}
+
+.event-banner {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  max-width: 90vw;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.5rem;
+  background: rgb(20 16 24 / 80%);
+  color: var(--pumpkin);
+  font-size: clamp(1rem, 3.5vw, 1.8rem);
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 0 0.6rem rgb(255 150 30 / 70%);
+  transform: translateX(-50%);
+  animation: event-banner-in 0.4s ease-out;
+}
+
+.event-banner[hidden],
+.event-arrow[hidden] {
+  display: none;
+}
+
+@keyframes event-banner-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.3);
+  }
+}
+
+.event-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 0.9rem solid transparent;
+  border-bottom: 0.9rem solid transparent;
+  border-left: 1.6rem solid var(--pumpkin);
+  filter: drop-shadow(0 0 0.4rem rgb(255 150 30 / 80%));
+  animation: event-arrow-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes event-arrow-pulse {
+  to {
+    opacity: 0.55;
+  }
+}
+
+.demo {
+  position: absolute;
+  bottom: max(0.6rem, env(safe-area-inset-bottom));
+  left: max(0.6rem, env(safe-area-inset-left));
+  display: flex;
+  gap: 0.4rem;
+}
+
+.demo button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.4rem;
+  background: rgb(36 28 44 / 80%);
+  color: var(--text);
+  cursor: pointer;
 }

@@ -57,7 +57,9 @@ const moveGroup = (
   dt: number,
   near: number[],
 ): void => {
-  const { speed, fleeSpeed } = world.registries.npcs.get(population.npc);
+  const { speed, fleeSpeed = speed } = world.registries.npcs.get(
+    population.npc,
+  );
   let awayX = 0;
   let awayY = 0;
   for (const npc of group.members) {

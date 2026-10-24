@@ -4,6 +4,60 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Références aux films et mode démo | 3.07-3.08 | G.WI
+
+- `shared/src/config/schema.ts` : décor à position fixe, réglages et touches du mode démo.
+- `shared/config/world.json` : pub *Winchester* près du centre de la carte.
+- `shared/config/gameplay.json` : nom du tueur du screamer de démo, événement et distance de la citrouille, unités ajoutées.
+- `shared/config/client.json` : touches K, P et U du mode démo.
+- `shared/src/registry.ts` : vérification de l'événement et de l'unité du mode démo.
+- `shared/src/protocol/messages.ts` : commandes de démo (screamer, citrouille, unités), commande inconnue refusée.
+- `server/src/env.ts`, `server/src/main.ts` : variable `DEMO_MODE` lue et transmise aux sockets.
+- `server/src/systems/demo.ts` : mort du mage, citrouille près du mage, unités ajoutées.
+- `server/src/net/sockets.ts` : commandes de démo exécutées seulement en mode démo.
+- `client/src/demo.ts`, `client/src/style.css`, `client/src/game/game.ts` : boutons et raccourcis clavier avec `?demo=1`.
+- `client/src/game/decor.ts` : décor à position fixe.
+- `client/public/atlas/` : pub *Winchester*.
+- `docs/credits.md`, `docs/deploy.md` : références aux films, lancement en mode démo.
+- `server/tests/`, `shared/tests/`, `client/tests/` : commandes de démo avec et sans mode démo, décor fixe, touches.
+
+### Citrouille maléfique | 3.04-3.06 | G.WI
+
+- `shared/src/config/schema.ts` : PNJ hostiles (nom, attaque, cadavre et fuite optionnels, vitesse nulle possible), événements de boss, annonce et flèche du client, liste des événements envoyée au client.
+- `shared/config/units.json` : Citrouille maléfique immobile, citrouilles-lanternes, nom de chaque PNJ.
+- `shared/config/events.json` : événement `pumpkin` toutes les 6 min (première apparition après 2 min), 3 min de durée de vie, invocations, 200 âmes de récompense.
+- `shared/config/client.json` : son du boss, durée de l'annonce, marge de la flèche.
+- `shared/src/registry.ts` : vérification du boss et du sbire de chaque événement, vitesse de fuite obligatoire pour une population, cadavre optionnel.
+- `shared/src/protocol/messages.ts` : messages de début (position du boss) et de fin d'événement (victoire, âmes gagnées).
+- `server/src/world/world.ts` : PNJ d'événement avec point d'attache, cible et recharge, liste des PNJ hostiles, état des événements.
+- `server/src/systems/events.ts` : apparition loin des mages, invocation des lanternes, fin à la mort ou après la durée de vie, contribution relative, âmes au prorata.
+- `server/src/systems/hostiles.ts` : ciblage, poursuite en laisse et attaque des PNJ hostiles.
+- `server/src/systems/death.ts`, `server/src/systems/mage.ts` : contribution enregistrée à chaque coup sur le boss, nom du PNJ tueur, PNJ sans cadavre.
+- `server/src/systems/separation.ts`, `server/src/systems/bodies.ts` : un PNJ immobile repousse les corps sans bouger, rayon de recherche limité aux corps mobiles.
+- `server/src/systems/civilians.ts` : vitesse de fuite lue avec la vitesse normale par défaut.
+- `server/src/lobby/bots.ts` : les bots ne chassent que les PNJ non hostiles.
+- `server/src/net/interest.ts` : drapeau de combat des PNJ.
+- `server/src/net/sockets.ts` : début et fin d'événement envoyés à chaque joueur, y compris à son arrivée.
+- `server/src/world/loop.ts` : systèmes des événements et des PNJ hostiles.
+- `client/src/events.ts`, `client/src/style.css` : annonce à l'écran, flèche au bord de l'écran vers le boss.
+- `client/src/net/connection.ts`, `client/src/game/game.ts` : réception des événements, son du boss, bascule sur la couche musicale du boss.
+- `client/public/atlas/` : atlas agrandi à 512 x 256, Citrouille maléfique et citrouilles-lanternes.
+- `server/tests/`, `shared/tests/`, `client/tests/` : apparition, invocations, fin sans récompense, partage des âmes, PNJ hostiles, boss immobile, messages d'événement, bots, flèche et annonces.
+
+### Audio, musique dynamique et screamer | 3.01-3.03 | G.WI
+
+- `shared/src/config/schema.ts` : volumes, fondu, couches de musique, effets (volume et écart minimal), réglages du screamer.
+- `shared/config/client.json` : chemins des sons, volumes, screamer de 0,8 s avec vibration.
+- `shared/src/registry.ts` : vérification que la réapparition du mage dure plus longtemps que le screamer.
+- `client/src/audio/engine.ts` : moteur Web Audio, déblocage au clic sur Play, pause quand la page est cachée, effets limités dans le temps.
+- `client/src/audio/music.ts` : couches exploration, combat et boss jouées en boucle et synchronisées, fondus entre elles.
+- `client/src/audio/cues.ts` : coups, morts et relèves visibles déduits des snapshots.
+- `client/src/screamer.ts`, `client/src/style.css` : visage plein écran qui tremble, cri et vibration, puis écran de mort.
+- `client/src/main.ts`, `client/src/game/game.ts` : déblocage de l'audio, musique selon les unités qui se battent, effets, screamer à la mort.
+- `client/public/audio/`, `client/public/screamer/` : musiques, effets et visage générés par script.
+- `docs/credits.md` : sons et visage générés.
+- `shared/tests/`, `client/tests/` : config du client, délai de réapparition, mélange des couches, limite des effets, détection des coups, morts et relèves.
+
 ### Infection des civils, clic gauche et clics bloqués par le HUD | 2.07-2.17 | L.BA
 
 - `shared/src/config/schema.ts`, `shared/config/units.json` : option `infects` des PNJ, activée pour le civil.

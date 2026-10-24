@@ -23,6 +23,18 @@ export interface Leaderboard {
   entries: LeaderboardEntry[];
 }
 
+export interface EventStart {
+  event: number;
+  x: number;
+  y: number;
+}
+
+export interface EventEnd {
+  event: number;
+  defeated: boolean;
+  souls: number;
+}
+
 const tokenKey = "horde.reconnect";
 
 const loadToken = (): string => {
@@ -57,6 +69,8 @@ export class Connection {
   onConfig: (config: ClientConfig) => void = () => undefined;
   onLeaderboard: (leaderboard: Leaderboard) => void = () => undefined;
   onStatus: (status: Status) => void = () => undefined;
+  onEventStarted: (start: EventStart) => void = () => undefined;
+  onEventEnded: (end: EventEnd) => void = () => undefined;
 
   constructor(
     readonly socket: WebSocket,
@@ -119,6 +133,12 @@ export const join = (name: string): Promise<Connection> =>
           break;
         case ServerMessageType.Status:
           connection?.onStatus(message);
+          break;
+        case ServerMessageType.EventStarted:
+          connection?.onEventStarted(message);
+          break;
+        case ServerMessageType.EventEnded:
+          connection?.onEventEnded(message);
           break;
       }
     });

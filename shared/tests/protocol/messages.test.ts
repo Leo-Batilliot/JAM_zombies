@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import {
   ClientMessageType,
+  DemoCommand,
   EntityKind,
   JoinRejection,
   ServerMessageType,
@@ -29,7 +30,7 @@ const clientMessages: ClientMessage[] = [
   { type: ClientMessageType.Formation, formation: 3 },
   { type: ClientMessageType.Retreat, x: 0, y: 300 },
   { type: ClientMessageType.Evolve, evolution: "fat-zombie" },
-  { type: ClientMessageType.Demo, command: 2 },
+  { type: ClientMessageType.Demo, command: DemoCommand.Boss },
 ];
 
 const serverMessages: ServerMessage[] = [
@@ -70,11 +71,38 @@ const serverMessages: ServerMessage[] = [
         deathMs: 900,
         soulBobMs: 1200,
         grimoireBobMs: 1600,
+        audio: {
+          masterVolume: 1,
+          musicVolume: 0.5,
+          effectsVolume: 0.5,
+          fadeSec: 1,
+          combatFullUnits: 20,
+          music: {
+            exploration: "audio/a.mp3",
+            combat: "audio/b.mp3",
+            boss: "audio/c.mp3",
+          },
+          effects: {
+            hit: { url: "audio/hit.mp3", volume: 1, gapMs: 100 },
+            death: { url: "audio/death.mp3", volume: 1, gapMs: 100 },
+            rise: { url: "audio/rise.mp3", volume: 1, gapMs: 100 },
+            scream: { url: "audio/scream.mp3", volume: 1, gapMs: 0 },
+            boss: { url: "audio/boss.mp3", volume: 1, gapMs: 0 },
+          },
+        },
+        screamer: { image: "face.png", durationMs: 800, vibrateMs: [200] },
+        announceMs: 4000,
+        arrowMargin: 40,
+        demoKeys: { screamer: "k", boss: "p", units: "u" },
       },
       world: {
         width: 400,
         height: 300,
-        decor: { seed: 1, scattered: [{ sprite: "decor-tree", count: 3 }] },
+        decor: {
+          seed: 1,
+          scattered: [{ sprite: "decor-tree", count: 3 }],
+          fixed: [{ sprite: "decor-winchester", x: 10, y: 20 }],
+        },
       },
       network: { tickRate: 20, interpolationDelayMs: 100 },
       gameplay: { riseSec: 0.8 },
@@ -82,8 +110,21 @@ const serverMessages: ServerMessage[] = [
         units: ["zombie"],
         npcs: ["civilian"],
         pointsOfInterest: ["mass-grave"],
+        events: [{ id: "pumpkin", name: "the Evil Pumpkin" }],
       },
     },
+  },
+  {
+    type: ServerMessageType.EventStarted,
+    event: 2,
+    x: 120,
+    y: 80,
+  },
+  {
+    type: ServerMessageType.EventEnded,
+    event: 0,
+    defeated: true,
+    souls: 137,
   },
   {
     type: ServerMessageType.Snapshot,
@@ -185,6 +226,7 @@ describe("invalid data", () => {
     ["truncated", [ClientMessageType.Move, 0x01]],
     ["trailing bytes", [ClientMessageType.Formation, 1, 2]],
     ["invalid UTF-8", [ClientMessageType.Join, 1, 0xff]],
+    ["unknown demo command", [ClientMessageType.Demo, 0x7f]],
   ])("rejects %s", (_label, bytes) => {
     expect(() => decodeClientMessage(new Uint8Array(bytes), bounds)).toThrow(
       ProtocolError,

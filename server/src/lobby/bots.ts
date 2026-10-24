@@ -32,6 +32,7 @@ const nearestCivilian = (
     const entity = world.entities.get(id);
     if (
       entity?.kind === EntityKind.Npc &&
+      world.registries.npcs.get(entity.type).attack === undefined &&
       (best === undefined ||
         distance(entity, army.mage) < distance(best, army.mage))
     ) {

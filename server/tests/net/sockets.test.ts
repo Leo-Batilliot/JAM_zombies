@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { WebSocket } from "ws";
 import {
   ClientMessageType,
+  DemoCommand,
   JoinRejection,
   ServerMessageType,
   decodeServerMessage,
@@ -14,6 +15,8 @@ import {
   type ServerMessage,
 } from "@horde/shared";
 import { attachSockets } from "../../src/net/sockets.js";
+import { damage } from "../../src/systems/death.js";
+import { startEvent } from "../../src/systems/events.js";
 import { killMage } from "../../src/systems/mage.js";
 import { createBench, type Bench } from "../support/bench.js";
 
@@ -22,10 +25,10 @@ let server: Server;
 let sockets: ReturnType<typeof attachSockets>;
 let url: string;
 
-const start = async (patch?: (config: Config) => void) => {
+const start = async (patch?: (config: Config) => void, demo = false) => {
   bench = createBench(patch);
   server = createServer();
-  sockets = attachSockets(server, bench.world);
+  sockets = attachSockets(server, bench.world, { demo });
   await new Promise<void>((resolve) => server.listen(0, resolve));
   url = `ws://localhost:${String((server.address() as AddressInfo).port)}${socketPath}`;
 };
@@ -178,6 +181,79 @@ describe("playing", () => {
       expect(client.of(ServerMessageType.Died)).toEqual([
         { type: ServerMessageType.Died, killer: "Evil Ash" },
       ]);
+    });
+    client.socket.close();
+  });
+});
+
+describe("events", () => {
+  test("the player is told when the boss appears and dies", async () => {
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    const state = startEvent(bench.world, "pumpkin", 150, 120);
+    if (army === undefined || state.boss === undefined) {
+      throw new Error("Expected an army and a boss");
+    }
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      expect(client.of(ServerMessageType.EventStarted)).toHaveLength(1);
+    });
+    const [started] = client.of(ServerMessageType.EventStarted);
+    expect(started?.event).toBe(0);
+    expect(started?.x).toBeCloseTo(150, 1);
+    damage(bench.world, state.boss, 1e9, army);
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      expect(client.of(ServerMessageType.EventEnded)).toEqual([
+        {
+          type: ServerMessageType.EventEnded,
+          event: 0,
+          defeated: true,
+          souls: bench.config.events.events["pumpkin"]?.rewardSouls,
+        },
+      ]);
+    });
+    client.socket.close();
+  });
+
+  test("a player who joins during the event is told about the boss", async () => {
+    startEvent(bench.world, "pumpkin", 150, 120);
+    const client = await joined();
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      expect(client.of(ServerMessageType.EventStarted)).toHaveLength(1);
+    });
+    expect(client.of(ServerMessageType.EventEnded)).toHaveLength(0);
+    client.socket.close();
+  });
+});
+
+describe("demo mode", () => {
+  test("demo commands are ignored outside demo mode", async () => {
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    const units = army?.units.size;
+    client.send({ type: ClientMessageType.Demo, command: DemoCommand.Units });
+    client.send({ type: ClientMessageType.Move, x: 5, y: 5 });
+    await vi.waitFor(() => {
+      expect(army?.mage.targetX).toBeCloseTo(5, 0);
+    });
+    expect(army?.units.size).toBe(units);
+    client.socket.close();
+  });
+
+  test("demo commands run in demo mode", async () => {
+    await sockets.close();
+    await new Promise((resolve) => server.close(resolve));
+    await start(undefined, true);
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    const units = army?.units.size ?? 0;
+    client.send({ type: ClientMessageType.Demo, command: DemoCommand.Units });
+    await vi.waitFor(() => {
+      expect(army?.units.size).toBe(
+        units + bench.config.gameplay.demo.unitCount,
+      );
     });
     client.socket.close();
   });

@@ -15,6 +15,7 @@ import {
 import { validatePlayerName } from "../lobby/name.js";
 import { rankArmies } from "../lobby/leaderboard.js";
 import { joinLobby, leaveLobby } from "../lobby/lobby.js";
+import { runDemo } from "../systems/demo.js";
 import { orderAttack, orderMove } from "../systems/orders.js";
 import { maxHp } from "../systems/souls.js";
 import { armyStrength } from "../systems/strength.js";
@@ -28,6 +29,7 @@ interface Session {
   army?: Army;
   deaths: number;
   view: View;
+  bosses: Map<string, number | undefined>;
 }
 
 const toBytes = (data: RawData): Uint8Array =>
@@ -37,7 +39,15 @@ const toBytes = (data: RawData): Uint8Array =>
       ? new Uint8Array(data)
       : data;
 
-export const attachSockets = (server: Server, world: World) => {
+export interface SocketOptions {
+  demo: boolean;
+}
+
+export const attachSockets = (
+  server: Server,
+  world: World,
+  options: SocketOptions = { demo: false },
+) => {
   const sessions = new Set<Session>();
   const sockets = new WebSocketServer({
     server,
@@ -95,6 +105,34 @@ export const attachSockets = (server: Server, world: World) => {
     }
   };
 
+  const sendEvents = (session: Session, army: Army): void => {
+    for (const [type, state] of world.events) {
+      const bossId = state.boss?.id;
+      const known = session.bosses.get(type);
+      if (bossId === known || !world.registries.events.has(type)) {
+        continue;
+      }
+      const event = world.registries.events.index(type);
+      if (known !== undefined) {
+        send(session, {
+          type: ServerMessageType.EventEnded,
+          event,
+          defeated: state.result?.defeated ?? false,
+          souls: state.result?.rewards.get(army) ?? 0,
+        });
+      }
+      if (state.boss !== undefined) {
+        send(session, {
+          type: ServerMessageType.EventStarted,
+          event,
+          x: state.boss.x,
+          y: state.boss.y,
+        });
+      }
+      session.bosses.set(type, bossId);
+    }
+  };
+
   const handle = (session: Session, message: ClientMessage): void => {
     if (session.army === undefined) {
       if (message.type !== ClientMessageType.Join) {
@@ -113,6 +151,11 @@ export const attachSockets = (server: Server, world: World) => {
       case ClientMessageType.Target:
         orderAttack(world, session.army, message.entityId);
         break;
+      case ClientMessageType.Demo:
+        if (options.demo) {
+          runDemo(world, session.army, message.command);
+        }
+        break;
       default:
         break;
     }
@@ -123,6 +166,7 @@ export const attachSockets = (server: Server, world: World) => {
       socket,
       deaths: 0,
       view: { width: 0, height: 0 },
+      bosses: new Map(),
     };
     sessions.add(session);
     socket.on("message", (data, isBinary) => {
@@ -177,6 +221,7 @@ export const attachSockets = (server: Server, world: World) => {
             killer: army.killerName,
           });
         }
+        sendEvents(session, army);
         send(session, {
           type: ServerMessageType.Status,
           army: army.slot,

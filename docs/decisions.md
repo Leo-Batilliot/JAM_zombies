@@ -4,6 +4,97 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Raccourcis du mode démo | G.WI
+
+- **Quoi** : avec `?demo=1`, le client affiche 3 boutons en bas à gauche et écoute les touches de `client.json` (K, P, U). Le serveur n'exécute ces commandes que si `DEMO_MODE=true`, sinon il les ignore. Screamer : le mage meurt pour de vrai, tué par le nom de `gameplay.json`. Citrouille : l'événement démarre près du mage et remplace le boss en cours. Unités : des zombies se relèvent autour du mage.
+- **Pourquoi** : montrer le vrai screamer et le vrai écran de mort au jury, au moment choisi. Les boutons servent sur téléphone.
+- **Impact** : le screamer de démo fait perdre l'armée, le raccourci Unités permet de la reconstruire.
+- **Avis** : Validée.
+
+### Thème du boss : composition originale au piano | G.WI
+
+- **Quoi** : la couche boss de la musique (3.02) est un ostinato de piano en 5/4 dans l'esprit du thème d'*Halloween*, mais avec une mélodie originale (arpèges descendants en la mineur, accords la mineur, fa, ré mineur, mi).
+- **Pourquoi** : la référence doit être reconnaissable sans reprendre le thème de Carpenter, qui n'est pas libre de droits.
+- **Impact** : le critère 3.07 s'appuie sur ce thème et sur le pub *Winchester*.
+- **Avis** : Validée.
+
+### Décor à position fixe | G.WI
+
+- **Quoi** : `world.json` liste des éléments de décor avec leur position (`decor.fixed`), placés par le client en plus du décor aléatoire. Le premier est le pub *Winchester* de *Shaun of the Dead*.
+- **Pourquoi** : la décision sur le décor généré depuis une graine prévoyait une liste de placements pour les décors uniques.
+- **Impact** : pas de collision, comme le reste du décor. Un élément aléatoire peut chevaucher le pub.
+- **Avis** : Validée.
+
+### Musique du boss pendant tout l'événement | G.WI
+
+- **Quoi** : tant qu'une Citrouille maléfique est en jeu, la couche du boss remplace la couche exploration pour tous les joueurs, où qu'ils soient. La couche combat continue de s'ajouter par-dessus.
+- **Pourquoi** : l'événement concerne toute la carte (annonce et flèche pour tous), la musique le fait sentir à chacun.
+- **Impact** : un joueur loin du boss entend son thème pendant toute la durée de vie de l'événement (3 min au plus).
+- **Avis** : À vérifier. À limiter à une distance du boss si c'est trop envahissant.
+
+### Événements envoyés par différence d'état | G.WI
+
+- **Quoi** : à chaque tick, le serveur compare pour chaque joueur le boss en jeu avec le dernier qu'il lui a annoncé. Il envoie un début (position du boss) ou une fin (victoire ou départ, âmes gagnées par ce joueur). Un joueur qui arrive pendant l'événement reçoit son début.
+- **Pourquoi** : même principe que la mort du mage, sans file de messages à gérer. Le boss ne bouge pas, sa position suffit pour la flèche même hors de la vue.
+- **Impact** : un boss mobile demandera d'envoyer sa position régulièrement.
+- **Avis** : Validée.
+
+### Contribution relative au boss | G.WI
+
+- **Quoi** : chaque coup porté au boss ajoute à l'armée les dégâts divisés par sa force totale (au moins 1). À la mort du boss, les âmes de `rewardSouls` sont partagées au prorata des contributions. Le coup fatal rapporte en plus les âmes normales du boss au tueur. Un boss qui part sans être tué ne rapporte rien.
+- **Pourquoi** : c'est la règle du concept, une petite armée qui participe gagne autant qu'une grosse. Les lanternes ne comptent pas, pour ne pas récompenser le farm des sbires.
+- **Impact** : le premier du classement gagne moins par dégât infligé, sans perdre ce qu'il a.
+- **Avis** : À vérifier. Récompense et PV du boss à équilibrer en jeu.
+
+### Citrouille maléfique immobile qui invoque des lanternes | G.WI
+
+- **Quoi** : le boss et les lanternes sont des PNJ hostiles du registre (champ `attack`). Ils ciblent l'unité ou le mage le plus proche dans leur portée, sans s'éloigner de leur point d'attache au-delà de leur laisse. Le boss a une vitesse nulle : il ne se déplace pas et les autres corps ne le poussent pas. Il apparaît loin des mages, invoque des lanternes autour de lui jusqu'à un maximum, et disparaît avec elles après sa durée de vie. Ni le boss ni les lanternes ne laissent de cadavre.
+- **Pourquoi** : un boss fixe est facile à trouver avec la flèche et à encercler par plusieurs armées. Le comportement hostile servira aussi aux camps armés (6.06).
+- **Impact** : une unité tuée par le boss ou une lanterne reste à son camp (règle 8), un mage tué affiche le nom du PNJ.
+- **Avis** : À vérifier. PV, dégâts, fréquence et nombre d'invocations à équilibrer en jeu.
+
+### Bots qui ignorent les PNJ hostiles | G.WI
+
+- **Quoi** : un bot ne chasse que les PNJ sans attaque. Ses unités se battent quand même contre les lanternes ou le boss qui arrivent à leur portée.
+- **Pourquoi** : la priorité des bots est de chasser les civils, et un bot qui fonce sur le boss y perd son armée.
+- **Impact** : le boss est surtout attaqué par les joueurs. Les bots pourront le viser plus tard (4.14).
+- **Avis** : À vérifier.
+
+### PNJ immobiles hors du rayon de séparation | G.WI
+
+- **Quoi** : la recherche de voisins de la séparation n'utilise que le rayon des corps mobiles. Un PNJ immobile cherche lui-même les corps qui le touchent et les repousse.
+- **Pourquoi** : avec le rayon de 2 m du boss dans cette recherche, le temps de tick du test de charge passait d'environ 18 à 29 ms, boss absent.
+- **Impact** : le temps de tick revient à environ 20 ms dans les mêmes conditions.
+- **Avis** : Validée.
+
+### Screamer avant l'écran de mort | G.WI
+
+- **Quoi** : à la réception du message de mort, le client affiche le visage en plein écran, joue le cri et fait vibrer le téléphone pendant la durée de `client.json`, puis affiche l'écran de mort. Le chargement de la config échoue si la réapparition du mage est plus courte que le screamer.
+- **Pourquoi** : le screamer doit être vu en entier, et le mage ne doit pas réapparaître pendant qu'il est affiché.
+- **Impact** : la vibration ne marche que sur Android, iOS ne la propose pas aux pages web.
+- **Avis** : Validée.
+
+### Effets sonores déduits des snapshots | G.WI
+
+- **Quoi** : le client joue un coup quand une entité visible porte le drapeau de combat, une mort quand un corps visible disparaît du snapshot, une relève quand une entité visible commence à se relever. Chaque effet a un écart minimal entre deux lectures (`gapMs`).
+- **Pourquoi** : pas de nouveau message à envoyer, et des centaines d'unités ne doivent pas jouer des centaines de sons.
+- **Impact** : une téléportation de la caméra (réapparition) peut jouer une mort de trop. Les coups ne dépendent pas du nombre d'unités, la musique de combat s'en charge.
+- **Avis** : À vérifier. Écarts et volumes à régler en jeu.
+
+### Musique en 3 couches synchronisées | G.WI
+
+- **Quoi** : les 3 couches (exploration, combat, boss) ont le même tempo (120 BPM en 5/4), la même tonalité (la mineur) et la même durée (20 s). Elles démarrent ensemble en boucle et seul leur volume change, en fondu. Exploration et boss s'échangent, la couche combat s'ajoute par-dessus selon le nombre d'entités visibles en train de se battre (`combatFullUnits` pour le volume maximal).
+- **Pourquoi** : des boucles calées entre elles restent musicales quel que soit le moment du changement.
+- **Impact** : une vraie musique de remplacement doit respecter le même tempo, la même tonalité et la même durée pour les 3 couches.
+- **Avis** : Validée.
+
+### Sons et musiques générés en attendant les assets libres | G.WI
+
+- **Quoi** : musiques, effets et visage du screamer sont générés par un script jetable (synthèse en Python, dessin pixel art), et les sons sont encodés en MP3. Les chemins sont dans `client.json`.
+- **Pourquoi** : les assets libres n'ont pas pu être téléchargés pendant la phase, et le MP3 se lit sur tous les navigateurs.
+- **Impact** : remplacer un son revient à déposer un fichier et changer son chemin. Chromium décode les boucles MP3 sans blanc, Safari n'a pas été testé.
+- **Avis** : Provisoire. À remplacer par des assets libres (Pixabay, freesound, incompetech) si le temps le permet.
+
 ### Civils infectés sur place | L.BA
 
 - **Quoi** : un PNJ marqué `infects` dans `units.json` ne meurt pas : quand une armée le tue, il devient tout de suite une unité du type `corpse` de cette armée, à l'endroit où il est tombé, avec l'animation de relève. Les civils sont marqués ainsi. Les autres PNJ (chasseurs et soldats des camps, 6.06) laisseront un cadavre normal.

@@ -93,10 +93,23 @@ export const buildRegistries = (config: Config): Registries => {
     }
   }
   for (const [npcId, npc] of registries.npcs.entries()) {
-    checkReference(registries.units, npc.corpse, `Corpse of npc "${npcId}"`);
+    if (npc.corpse !== undefined) {
+      checkReference(registries.units, npc.corpse, `Corpse of npc "${npcId}"`);
+    }
   }
   for (const { npc } of config.world.populations) {
     checkReference(registries.npcs, npc, "Population");
+    if (registries.npcs.get(npc).fleeSpeed === undefined) {
+      throw new RegistryError(`Population npc "${npc}" has no fleeSpeed`);
+    }
+  }
+  for (const [eventId, event] of registries.events.entries()) {
+    checkReference(registries.npcs, event.boss, `Boss of event "${eventId}"`);
+    checkReference(
+      registries.npcs,
+      event.minion,
+      `Minion of event "${eventId}"`,
+    );
   }
   checkReference(
     registries.pointsOfInterest,
@@ -105,6 +118,14 @@ export const buildRegistries = (config: Config): Registries => {
   );
   for (const { unit } of config.gameplay.army.startingUnits) {
     checkReference(registries.units, unit, "Starting army");
+  }
+  checkReference(registries.events, config.gameplay.demo.event, "Demo");
+  checkReference(registries.units, config.gameplay.demo.unit, "Demo");
+  if (
+    config.gameplay.respawn.delaySec * 1000 <=
+    config.client.screamer.durationMs
+  ) {
+    throw new RegistryError("Respawn delay must exceed the screamer duration");
   }
 
   return registries;

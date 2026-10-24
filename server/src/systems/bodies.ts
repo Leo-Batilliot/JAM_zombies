@@ -12,11 +12,18 @@ export const bodyRadius = (world: World, body: Body): number => {
   }
 };
 
-export const largestRadius = (world: World): number =>
+export const isFixedNpc = (world: World, body: Body): boolean =>
+  body.kind === EntityKind.Npc &&
+  world.registries.npcs.get(body.type).speed === 0;
+
+export const largestMovingRadius = (world: World): number =>
   Math.max(
     world.config.gameplay.mage.radius,
     ...world.registries.units.entries().map(([, unit]) => unit.radius),
-    ...world.registries.npcs.entries().map(([, npc]) => npc.radius),
+    ...world.registries.npcs
+      .entries()
+      .filter(([, npc]) => npc.speed > 0)
+      .map(([, npc]) => npc.radius),
   );
 
 export const distance = (a: Entity, b: Entity): number =>

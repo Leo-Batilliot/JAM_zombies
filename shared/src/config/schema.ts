@@ -49,6 +49,13 @@ const gameplaySchema = z.strictObject({
     levelBase: z.number().positive(),
     levelGrowth: z.number().min(1),
   }),
+  demo: z.strictObject({
+    killerName: z.string(),
+    event: id,
+    eventDistance: z.number().nonnegative(),
+    unit: id,
+    unitCount: z.int().positive(),
+  }),
 });
 
 const formationsSchema = z.strictObject({
@@ -80,13 +87,23 @@ const unitTypeSchema = z.strictObject({
 });
 
 const npcTypeSchema = z.strictObject({
-  corpse: id,
+  name: z.string().min(1),
+  corpse: id.optional(),
   infects: z.boolean(),
   strength: z.int().positive(),
   hp: z.number().positive(),
   radius: z.number().positive(),
-  speed: z.number().positive(),
-  fleeSpeed: z.number().positive(),
+  speed: z.number().nonnegative(),
+  fleeSpeed: z.number().positive().optional(),
+  attack: z
+    .strictObject({
+      damage: z.number().nonnegative(),
+      attackIntervalSec: z.number().positive(),
+      attackRange: z.number().nonnegative(),
+      aggroRange: z.number().positive(),
+      leashDistance: z.number().positive(),
+    })
+    .optional(),
 });
 
 const unitsSchema = z.strictObject({
@@ -143,13 +160,35 @@ const worldSchema = z.strictObject({
         count: z.int().nonnegative(),
       }),
     ),
+    fixed: z.array(
+      z.strictObject({
+        sprite: id,
+        x: z.number(),
+        y: z.number(),
+      }),
+    ),
   }),
   pointsOfInterest: z.record(id, pointOfInterestSchema),
   massGrave: id,
 });
 
 const eventsSchema = z.strictObject({
-  events: z.record(id, z.strictObject({})),
+  events: z.record(
+    id,
+    z.strictObject({
+      boss: id,
+      minion: id,
+      firstDelaySec: z.number().nonnegative(),
+      intervalSec: z.number().positive(),
+      lifetimeSec: z.number().positive(),
+      safeDistance: z.number().nonnegative(),
+      summonIntervalSec: z.number().positive(),
+      summonCount: z.int().nonnegative(),
+      maxMinions: z.int().nonnegative(),
+      summonRadius: z.number().positive(),
+      rewardSouls: z.number().nonnegative(),
+    }),
+  ),
 });
 
 export const maxParticipants = 254;
@@ -199,6 +238,14 @@ const networkSchema = z.strictObject({
 });
 
 const color = z.string().regex(/^#[0-9a-f]{6}$/i);
+const url = z.string().min(1);
+const volume = z.number().min(0).max(1);
+
+const effectSchema = z.strictObject({
+  url,
+  volume,
+  gapMs: z.int().nonnegative(),
+});
 
 export const clientSettingsSchema = z.strictObject({
   maxPixelRatio: z.number().positive(),
@@ -211,6 +258,37 @@ export const clientSettingsSchema = z.strictObject({
   deathMs: z.int().positive(),
   soulBobMs: z.int().positive(),
   grimoireBobMs: z.int().positive(),
+  audio: z.strictObject({
+    masterVolume: volume,
+    musicVolume: volume,
+    effectsVolume: volume,
+    fadeSec: z.number().positive(),
+    combatFullUnits: z.int().positive(),
+    music: z.strictObject({
+      exploration: url,
+      combat: url,
+      boss: url,
+    }),
+    effects: z.strictObject({
+      hit: effectSchema,
+      death: effectSchema,
+      rise: effectSchema,
+      scream: effectSchema,
+      boss: effectSchema,
+    }),
+  }),
+  screamer: z.strictObject({
+    image: url,
+    durationMs: z.int().positive(),
+    vibrateMs: z.array(z.int().positive()),
+  }),
+  announceMs: z.int().positive(),
+  arrowMargin: z.number().nonnegative(),
+  demoKeys: z.strictObject({
+    screamer: z.string().length(1),
+    boss: z.string().length(1),
+    units: z.string().length(1),
+  }),
 });
 
 export const configSchema = z.strictObject({
@@ -239,6 +317,7 @@ export const clientConfigSchema = z.strictObject({
     units: z.array(id),
     npcs: z.array(id),
     pointsOfInterest: z.array(id),
+    events: z.array(z.strictObject({ id, name: z.string().min(1) })),
   }),
 });
 
@@ -262,6 +341,10 @@ export const toClientConfig = (config: Config): ClientConfig => ({
     units: Object.keys(config.units.units),
     npcs: Object.keys(config.units.npcs),
     pointsOfInterest: Object.keys(config.world.pointsOfInterest),
+    events: Object.entries(config.events.events).map(([eventId, event]) => ({
+      id: eventId,
+      name: config.units.npcs[event.boss]?.name ?? eventId,
+    })),
   },
 });
 

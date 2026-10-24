@@ -33,6 +33,7 @@ const unit = (
 });
 
 const npc = (corpse: string) => ({
+  name: "Civilian",
   corpse,
   infects: true,
   strength: 1,
@@ -44,7 +45,16 @@ const npc = (corpse: string) => ({
 
 const withUnits = (units: Config["units"]): Config => {
   const config = loadSharedConfig();
-  return { ...config, units, world: { ...config.world, populations: [] } };
+  const eventNpcs = Object.fromEntries(
+    Object.entries(config.units.npcs).filter(
+      ([, npc]) => npc.attack !== undefined,
+    ),
+  );
+  return {
+    ...config,
+    units: { units: units.units, npcs: { ...eventNpcs, ...units.npcs } },
+    world: { ...config.world, populations: [] },
+  };
 };
 
 describe("buildRegistries", () => {
@@ -59,7 +69,7 @@ describe("buildRegistries", () => {
       }),
     );
     expect(registries.units.get("fat").strength).toBe(5);
-    expect(registries.npcs.ids()).toEqual(["civilian"]);
+    expect(registries.npcs.ids()).toContain("civilian");
   });
 
   test("gives each id its position", () => {
@@ -92,6 +102,38 @@ describe("buildRegistries", () => {
         world: { ...config.world, massGrave: "ghost" },
       }),
     ).toThrow(/Mass grave[\s\S]*ghost/);
+  });
+
+  test("fails on a population that cannot flee", () => {
+    const config = loadSharedConfig();
+    delete config.units.npcs["civilian"]?.fleeSpeed;
+    expect(() => buildRegistries(config)).toThrow(/fleeSpeed/);
+  });
+
+  test("fails on an event with a missing boss", () => {
+    const config = loadSharedConfig();
+    for (const event of Object.values(config.events.events)) {
+      event.boss = "ghost";
+    }
+    expect(() => buildRegistries(config)).toThrow(/Boss of event[\s\S]*ghost/);
+  });
+
+  test("accepts an npc without corpse", () => {
+    const config = loadSharedConfig();
+    expect(config.units.npcs["evil-pumpkin"]?.corpse).toBeUndefined();
+    expect(() => buildRegistries(config)).not.toThrow();
+  });
+
+  test("fails on a demo with an unknown event", () => {
+    const config = loadSharedConfig();
+    config.gameplay.demo.event = "ghost";
+    expect(() => buildRegistries(config)).toThrow(/Demo[\s\S]*ghost/);
+  });
+
+  test("fails when the mage respawns before the end of the screamer", () => {
+    const config = loadSharedConfig();
+    config.gameplay.respawn.delaySec = 0.5;
+    expect(() => buildRegistries(config)).toThrow(/screamer/);
   });
 
   test("fails on an unknown id", () => {

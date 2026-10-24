@@ -28,6 +28,15 @@ describe("bots", () => {
     expect(army.mage.targetX).toBeCloseTo(120);
   });
 
+  test("do not hunt hostile npcs", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    bench.world.addEventNpc("jack-o-lantern", 105, 100, "pumpkin");
+    const civilian = [...bench.addCivilians(130, 100, 1).members][0];
+    runBots(bench.world);
+    expect(army.focusId).toBe(civilian?.id);
+  });
+
   test("loot a point of interest before hunting", () => {
     const bench = createBench();
     const army = botArmy(bench);

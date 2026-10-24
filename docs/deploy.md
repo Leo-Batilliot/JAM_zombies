@@ -17,6 +17,15 @@ Le serveur tourne sur un PC de l'équipe, exposé en HTTPS par un tunnel Cloudfl
 
 L'URL change à chaque lancement du tunnel, la page `/share` suit automatiquement. Le PC doit rester allumé et connecté pendant toute la démo.
 
+## Mode démo
+
+Mettre `DEMO_MODE=true` dans le `.env`, puis ouvrir le jeu avec `?demo=1` à la fin de l'URL. Trois boutons apparaissent en bas à gauche, avec leurs touches :
+- `K` : screamer (le mage meurt pour de vrai) ;
+- `P` : la Citrouille maléfique apparaît près du mage ;
+- `U` : des zombies se relèvent autour du mage.
+
+Sans `DEMO_MODE=true`, les boutons s'affichent mais le serveur ignore les commandes.
+
 ## Développement
 
 `npm run dev` lance le serveur (`tsx watch`) et Vite. Vite redirige le WebSocket vers le serveur, le jeu est sur l'URL affichée par Vite.

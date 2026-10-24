@@ -29,6 +29,14 @@ export enum ServerMessageType {
   Died,
   Leaderboard,
   Status,
+  EventStarted,
+  EventEnded,
+}
+
+export enum DemoCommand {
+  Screamer = 1,
+  Boss,
+  Units,
 }
 
 export enum EntityKind {
@@ -60,7 +68,7 @@ export type ClientMessage =
   | { type: ClientMessageType.Formation; formation: number }
   | { type: ClientMessageType.Retreat; x: number; y: number }
   | { type: ClientMessageType.Evolve; evolution: string }
-  | { type: ClientMessageType.Demo; command: number };
+  | { type: ClientMessageType.Demo; command: DemoCommand };
 
 export interface SnapshotEntity {
   id: number;
@@ -104,7 +112,19 @@ export type ServerMessage =
       total: number;
       entries: LeaderboardEntry[];
     }
-  | ({ type: ServerMessageType.Status } & Status);
+  | ({ type: ServerMessageType.Status } & Status)
+  | {
+      type: ServerMessageType.EventStarted;
+      event: number;
+      x: number;
+      y: number;
+    }
+  | {
+      type: ServerMessageType.EventEnded;
+      event: number;
+      defeated: boolean;
+      souls: number;
+    };
 
 const snapshotEntityBytes = 12;
 
@@ -197,7 +217,10 @@ export const decodeClientMessage = (
       message = { type, evolution: reader.shortString() };
       break;
     case ClientMessageType.Demo:
-      message = { type, command: reader.uint8() };
+      message = {
+        type,
+        command: readEnum(reader.uint8(), DemoCommand, "demo command"),
+      };
       break;
   }
   reader.end();
@@ -276,6 +299,20 @@ export const encodeServerMessage = (
         .uint32(Math.floor(message.souls))
         .uint16(message.units)
         .uint32(message.strength)
+        .finish();
+    case ServerMessageType.EventStarted:
+      return new ByteWriter(6)
+        .uint8(message.type)
+        .uint8(message.event)
+        .uint16(quantizeX(message.x, bounds))
+        .uint16(quantizeY(message.y, bounds))
+        .finish();
+    case ServerMessageType.EventEnded:
+      return new ByteWriter(7)
+        .uint8(message.type)
+        .uint8(message.event)
+        .uint8(message.defeated ? 1 : 0)
+        .uint32(Math.floor(message.souls))
         .finish();
   }
 };
@@ -361,6 +398,24 @@ export const decodeServerMessage = (
         souls: reader.uint32(),
         units: reader.uint16(),
         strength: reader.uint32(),
+      };
+      break;
+    case ServerMessageType.EventStarted: {
+      const eventBounds = requireBounds(bounds);
+      message = {
+        type,
+        event: reader.uint8(),
+        x: dequantizeX(reader.uint16(), eventBounds),
+        y: dequantizeY(reader.uint16(), eventBounds),
+      };
+      break;
+    }
+    case ServerMessageType.EventEnded:
+      message = {
+        type,
+        event: reader.uint8(),
+        defeated: reader.uint8() !== 0,
+        souls: reader.uint32(),
       };
       break;
   }

@@ -15,6 +15,7 @@
   },
   "npcs": {
     "civilian": {
+      "name": "Civilian",
       "corpse": "zombie",
       "infects": true,
       "strength": 1,
@@ -22,6 +23,36 @@
       "radius": 0.4,
       "speed": 1.5,
       "fleeSpeed": 4.5
+    },
+    "evil-pumpkin": {
+      "name": "the Evil Pumpkin",
+      "infects": false,
+      "strength": 50,
+      "hp": 3000,
+      "radius": 2,
+      "speed": 0,
+      "attack": {
+        "damage": 25,
+        "attackIntervalSec": 1.2,
+        "attackRange": 1.2,
+        "aggroRange": 6,
+        "leashDistance": 8
+      }
+    },
+    "jack-o-lantern": {
+      "name": "a Jack-o'-lantern",
+      "infects": false,
+      "strength": 2,
+      "hp": 20,
+      "radius": 0.4,
+      "speed": 5,
+      "attack": {
+        "damage": 6,
+        "attackIntervalSec": 1,
+        "attackRange": 0.3,
+        "aggroRange": 10,
+        "leashDistance": 25
+      }
     }
   }
 }
