@@ -9,6 +9,7 @@ import {
   type ClientMessage,
   type LeaderboardEntry,
   type SnapshotEntity,
+  type Status,
 } from "@horde/shared";
 
 export interface Snapshot {
@@ -55,6 +56,7 @@ export class Connection {
 
   onConfig: (config: ClientConfig) => void = () => undefined;
   onLeaderboard: (leaderboard: Leaderboard) => void = () => undefined;
+  onStatus: (status: Status) => void = () => undefined;
 
   constructor(
     readonly socket: WebSocket,
@@ -114,6 +116,9 @@ export const join = (name: string): Promise<Connection> =>
           break;
         case ServerMessageType.Leaderboard:
           connection?.onLeaderboard(message);
+          break;
+        case ServerMessageType.Status:
+          connection?.onStatus(message);
           break;
       }
     });

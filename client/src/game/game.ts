@@ -6,6 +6,7 @@ import {
 } from "pixi.js";
 import { ClientMessageType, type SnapshotEntity } from "@horde/shared";
 import { DeathScreen } from "../death.js";
+import { Hud } from "../hud.js";
 import type { Connection } from "../net/connection.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
@@ -46,6 +47,13 @@ export const startGame = async (
   world.addChild(map.container, marker.graphics, entities.container);
   app.stage.addChild(world);
 
+  const hud = new Hud(ui);
+  connection.onStatus = (status) => {
+    hud.setStatus(status);
+  };
+  connection.onLeaderboard = (leaderboard) => {
+    hud.setLeaderboard(leaderboard);
+  };
   const death = new DeathScreen(ui);
   connection.onDied = (killer) => {
     death.show(killer);

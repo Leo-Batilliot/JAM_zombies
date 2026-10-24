@@ -28,6 +28,15 @@ describe("pickEnemy", () => {
     expect(pickEnemy(entities, 0, 0, 0.3, 1)).toBeUndefined();
   });
 
+  test("picks an enemy mage but never its own", () => {
+    const mages = [
+      entity(5, EntityKind.Mage, 1, 0),
+      entity(6, EntityKind.Mage, 3, 0.2),
+    ];
+    expect(pickEnemy(mages, 0, 0, 1, 1)?.id).toBe(6);
+    expect(pickEnemy(mages, 0, 0, 1, 3)?.id).toBe(5);
+  });
+
   test("ignores entities outside the radius", () => {
     expect(pickEnemy(entities, 5, 0, 1, 1)).toBeUndefined();
   });

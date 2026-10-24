@@ -125,7 +125,7 @@ export const moveCivilians = (world: World, dt: number): void => {
   }
 };
 
-export const spawnGroup = (
+const spawnGroup = (
   world: World,
   index: number,
   population: Population,

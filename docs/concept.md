@@ -90,7 +90,7 @@ Ces règles sont au cœur du jeu et doivent être implémentées telles quelles.
    - si le groupe abandonné **remporte finalement le combat**, les marques sont levées : ses morts restent à son camp d'origine. Les mages ennemis qui fuient ou meurent face à lui transfèrent leurs cadavres selon les règles 3 et 4. Le groupe convertit donc des ennemis **même loin de son mage** ;
    - si le groupe abandonné est entièrement détruit, tous ses cadavres passent à leurs tueurs.
 6. **Retour au mage** : un groupe d'unités qui n'est plus en combat et se trouve loin de son mage le rejoint à **vitesse fortement augmentée** (×2,5) jusqu'à reprendre sa place dans la formation.
-7. **Réapparition du mage** : il réapparaît à un endroit aléatoire éloigné des grosses armées, avec 5 zombies, et perd son équipement et ses troupes.
+7. **Réapparition du mage** : il réapparaît à un endroit aléatoire éloigné des grosses armées, avec 5 zombies, et perd son équipement, ses troupes, ses âmes et son niveau.
 8. **Combats contre les PNJ** (civils, camps armés) : les mêmes règles s'appliquent, mais les PNJ ne récupèrent jamais de cadavres. Une unité tuée par un PNJ reste à son camp.
 
 ### 4.3 Protection du mage : le Lien d'âme

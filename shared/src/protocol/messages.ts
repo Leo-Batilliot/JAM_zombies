@@ -28,6 +28,7 @@ export enum ServerMessageType {
   Snapshot,
   Died,
   Leaderboard,
+  Status,
 }
 
 export enum EntityKind {
@@ -77,6 +78,16 @@ export interface LeaderboardEntry {
   strength: number;
 }
 
+export interface Status {
+  army: number;
+  hp: number;
+  maxHp: number;
+  level: number;
+  souls: number;
+  units: number;
+  strength: number;
+}
+
 export type ServerMessage =
   | { type: ServerMessageType.Welcome; mageId: number; token: string }
   | { type: ServerMessageType.Rejected; reason: JoinRejection }
@@ -92,7 +103,8 @@ export type ServerMessage =
       rank: number;
       total: number;
       entries: LeaderboardEntry[];
-    };
+    }
+  | ({ type: ServerMessageType.Status } & Status);
 
 const snapshotEntityBytes = 12;
 
@@ -254,6 +266,17 @@ export const encodeServerMessage = (
       }
       return writer.finish();
     }
+    case ServerMessageType.Status:
+      return new ByteWriter(22)
+        .uint8(message.type)
+        .uint8(message.army)
+        .uint32(Math.ceil(Math.max(message.hp, 0)))
+        .uint32(Math.ceil(message.maxHp))
+        .uint16(message.level)
+        .uint32(Math.floor(message.souls))
+        .uint16(message.units)
+        .uint32(message.strength)
+        .finish();
   }
 };
 
@@ -328,6 +351,18 @@ export const decodeServerMessage = (
       message = { type, rank, total, entries };
       break;
     }
+    case ServerMessageType.Status:
+      message = {
+        type,
+        army: reader.uint8(),
+        hp: reader.uint32(),
+        maxHp: reader.uint32(),
+        level: reader.uint16(),
+        souls: reader.uint32(),
+        units: reader.uint16(),
+        strength: reader.uint32(),
+      };
+      break;
   }
   reader.end();
   return message;

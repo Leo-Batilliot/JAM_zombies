@@ -33,6 +33,16 @@ const clientMessages: ClientMessage[] = [
 ];
 
 const serverMessages: ServerMessage[] = [
+  {
+    type: ServerMessageType.Status,
+    army: 7,
+    hp: 85,
+    maxHp: 140,
+    level: 3,
+    souls: 42,
+    units: 23,
+    strength: 31,
+  },
   { type: ServerMessageType.Died, killer: "Evil Ash" },
   { type: ServerMessageType.Welcome, mageId: 42, token: "a1b2" },
   {

@@ -41,6 +41,8 @@ export const runTick = (world: World, dt: number): void => {
 export interface TickStats {
   lastMs: number;
   maxMs: number;
+  totalMs: number;
+  ticks: number;
 }
 
 export interface Loop {
@@ -49,7 +51,7 @@ export interface Loop {
 }
 
 export const startLoop = (world: World, afterTick: () => void): Loop => {
-  const stats: TickStats = { lastMs: 0, maxMs: 0 };
+  const stats: TickStats = { lastMs: 0, maxMs: 0, totalMs: 0, ticks: 0 };
   let next = performance.now();
   let timer: NodeJS.Timeout | undefined;
 
@@ -60,6 +62,8 @@ export const startLoop = (world: World, afterTick: () => void): Loop => {
     afterTick();
     stats.lastMs = performance.now() - start;
     stats.maxMs = Math.max(stats.maxMs, stats.lastMs);
+    stats.totalMs += stats.lastMs;
+    stats.ticks++;
     if (stats.lastMs > intervalMs) {
       console.warn(
         `Tick ${String(world.tick)} took ${stats.lastMs.toFixed(1)} ms (budget ${intervalMs.toFixed(1)} ms)`,

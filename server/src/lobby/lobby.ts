@@ -39,7 +39,7 @@ const botName = (world: World): string => {
   }
 };
 
-export const removeBot = (world: World, army: Army): void => {
+const removeBot = (world: World, army: Army): void => {
   const corpses = [
     ...[...army.units].map((unit) => unit.type),
     ...[...army.corpses].map((corpse) => corpse.type),

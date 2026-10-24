@@ -4,6 +4,20 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### État du joueur envoyé à chaque tick | L.BA
+
+- **Quoi** : avec chaque snapshot, le serveur envoie au joueur l'emplacement de son armée, ses PV et PV max, son niveau, ses âmes, son nombre d'unités et sa force (22 octets). Le HUD affiche ces valeurs en haut à gauche et le classement en haut à droite.
+- **Pourquoi** : ces valeurs changent souvent en combat, et un message aussi petit ne pèse pas sur le débit.
+- **Impact** : le client ne calcule rien lui-même. Le joueur est mis en avant dans le classement, et ajouté sous le top 10 avec son rang s'il n'y figure pas.
+- **Avis** : Validée.
+
+### Test de charge avec des clients dans un processus séparé | L.BA
+
+- **Quoi** : le script de test de charge lance le serveur dans son propre processus et les faux clients dans un processus enfant. Les paramètres (participants, unités, durée, vue) sont passés en arguments par `server/package.json`. La boucle de tick garde maintenant la somme et le nombre de ticks pour donner une moyenne.
+- **Pourquoi** : décoder les snapshots des 40 clients dans le même processus aurait gonflé le temps de tick mesuré.
+- **Impact** : les résultats sont dans `docs/load-test.md`, à refaire après 4.15.
+- **Avis** : Validée.
+
 ### Jeton de reprise et remplacement des bots | L.BA
 
 - **Quoi** : à l'entrée en jeu, le serveur donne un jeton aléatoire de 16 octets que le navigateur garde. À la déconnexion, un bot prend l'armée et le jeton reste valable pendant le délai de grâce. Un jeton ne rend l'armée que si un bot la pilote. Un nouveau joueur remplace le bot le plus faible, mais jamais un bot qui garde l'armée d'un joueur en délai de grâce. Le lobby refuse un joueur quand il compte déjà le maximum de participants.
@@ -36,7 +50,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 - **Quoi** : à sa mort, le mage perd ses troupes, ses cadavres, ses âmes et son niveau. Il réapparaît au niveau 1.
 - **Pourquoi** : comme dans un .io classique, mourir remet le joueur au départ. Le concept ne citait que les troupes et l'équipement.
-- **Impact** : le niveau ne s'accumule pas d'une vie à l'autre. `concept.md` §4.2 règle 7 reste à compléter.
+- **Impact** : le niveau ne s'accumule pas d'une vie à l'autre. `concept.md` §4.2 règle 7 mis à jour.
 - **Avis** : Validée.
 
 ### Réapparition automatique loin des grosses armées | L.BA
@@ -83,9 +97,9 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ### Ciblage échelonné, laisse et ordre d'attaque | L.BA
 
-- **Quoi** : chaque unité cherche l'ennemi le plus proche dans sa portée d'aggro toutes les 0,5 s, à un moment qui lui est propre. Elle ne poursuit pas un ennemi à plus de 18 m de son mage. Un ordre d'attaque vise une cible jusqu'à 30 m du mage pour toute l'armée, et un ordre de déplacement l'annule.
+- **Quoi** : chaque unité cherche l'ennemi le plus proche dans sa portée d'aggro toutes les 0,25 à 0,75 s, tirées au hasard pour que les unités ne cherchent pas toutes au même tick. Elle ne poursuit pas un ennemi à plus de 18 m de son mage. Un ordre d'attaque vise une cible jusqu'à 30 m du mage pour toute l'armée, et un ordre de déplacement l'annule.
 - **Pourquoi** : chercher une cible à chaque tick pour des milliers d'unités coûte trop cher, et sans laisse l'armée se disperse sur la carte.
-- **Impact** : une unité réagit avec jusqu'à 0,5 s de retard. Le mage ennemi est une cible comme une autre, le Lien d'âme (4.05) le protégera.
+- **Impact** : une unité réagit avec jusqu'à 0,75 s de retard. Le mage ennemi est une cible comme une autre, le Lien d'âme (4.05) le protégera.
 - **Avis** : À vérifier. Intervalle, laisse et portée de l'ordre à ajuster en jeu.
 
 ### Population de civils en groupes | L.BA
@@ -107,7 +121,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 - **Quoi** : chaque entité du snapshot porte son type (position dans son registre), l'emplacement de son armée et des drapeaux d'état, en plus de son identifiant, de son genre et de sa position. L'orientation et la marche sont déduites par le client à partir du déplacement.
 - **Pourquoi** : le client doit savoir quel sprite dessiner et de quelle couleur, sans message supplémentaire.
 - **Impact** : avec ~400 entités visibles, le débit monte à ~96 Ko/s, au-dessus des ~64 Ko/s prévus. Le registre est limité à 256 types par genre, et le lobby à 255 armées.
-- **Avis** : À vérifier. Le test de charge (2.18) dira s'il faut réduire le format.
+- **Avis** : À vérifier. Le test de charge (2.18) mesure ~55 Ko/s en moyenne avec une vue de téléphone et 80 à 90 Ko/s avec une vue de PC, avec des pointes au-delà de 100 Ko/s. Réduction prévue en 4.15.
 
 ### Emplacement d'armée et couleur d'aura | L.BA
 
@@ -128,7 +142,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 - **Quoi** : la taille des cellules de la grille spatiale passe de 10 à 4 m.
 - **Pourquoi** : la séparation fait une requête de rayon très court par unité. Avec 10 m, une cellule contient toute une armée serrée.
 - **Impact** : les requêtes de la gestion d'intérêt parcourent plus de cellules.
-- **Avis** : À vérifier. À confirmer par le test de charge (2.18).
+- **Avis** : À vérifier. Le test de charge (2.18) tient dans le budget du tick avec ces cellules (29 ms en moyenne pour 50 ms).
 
 ### Décor placé par le client depuis une graine | L.BA
 

@@ -66,7 +66,7 @@ export const formationSlots = (
   return slots;
 };
 
-export const moveToward = (
+const moveToward = (
   world: World,
   unit: Unit,
   x: number,

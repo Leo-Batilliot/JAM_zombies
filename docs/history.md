@@ -4,6 +4,23 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### HUD et test de charge | 2.17-2.18 | L.BA
+
+- `shared/src/protocol/messages.ts` : message d'état du joueur (armée, PV, niveau, âmes, unités, force).
+- `server/src/net/sockets.ts` : état du joueur envoyé avec chaque snapshot.
+- `server/src/systems/targeting.ts` : intervalle de ciblage tiré au hasard pour étaler la charge sur les ticks.
+- `server/src/world/loop.ts` : somme et nombre de ticks pour le temps moyen.
+- `server/scripts/load-test.ts` : serveur et faux clients dans deux processus, mesure du temps de tick et du débit par client.
+- `server/package.json`, `server/tsconfig.json` : script `load-test` et ses paramètres, dossier `scripts` vérifié.
+- `client/src/hud.ts`, `client/src/leaderboard.ts`, `client/src/style.css` : PV et niveau du mage, taille et force de l'armée, classement en direct.
+- `client/src/net/connection.ts`, `client/src/game/game.ts` : réception de l'état du joueur.
+- `client/src/game/picking.ts` : un mage ennemi peut être choisi comme cible.
+- `server/src/world/world.ts` : retrait d'une fonction inutilisée.
+- `docs/load-test.md` : méthode et résultats.
+- `docs/plan.md` : étape 4.15 de réduction du débit.
+- `docs/concept.md` : âmes et niveau perdus à la mort du mage.
+- `shared/tests/`, `client/tests/` : message d'état, lignes du classement.
+
 ### Lobby, bots, diffusion de la config et classement | 2.13-2.16 | L.BA
 
 - `shared/src/config/schema.ts` : minimum, maximum (254 au plus) et délai de grâce du lobby, réglages des bots et du classement.

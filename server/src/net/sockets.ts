@@ -16,6 +16,8 @@ import { validatePlayerName } from "../lobby/name.js";
 import { rankArmies } from "../lobby/leaderboard.js";
 import { joinLobby, leaveLobby } from "../lobby/lobby.js";
 import { orderAttack, orderMove } from "../systems/orders.js";
+import { maxHp } from "../systems/souls.js";
+import { armyStrength } from "../systems/strength.js";
 import type { Army, World } from "../world/world.js";
 import { visibleEntities, type View } from "./interest.js";
 
@@ -175,6 +177,16 @@ export const attachSockets = (server: Server, world: World) => {
             killer: army.killerName,
           });
         }
+        send(session, {
+          type: ServerMessageType.Status,
+          army: army.slot,
+          hp: army.alive ? army.mage.hp : 0,
+          maxHp: maxHp(world, army),
+          level: army.level,
+          souls: army.souls,
+          units: army.units.size,
+          strength: armyStrength(world, army),
+        });
         send(session, {
           type: ServerMessageType.Snapshot,
           tick: world.tick,

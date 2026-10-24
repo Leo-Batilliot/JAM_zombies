@@ -1,6 +1,6 @@
 import { EntityKind, type SnapshotEntity } from "@horde/shared";
 
-const targetable = new Set([EntityKind.Unit, EntityKind.Npc]);
+const targetable = new Set([EntityKind.Mage, EntityKind.Unit, EntityKind.Npc]);
 
 export const pickEnemy = (
   entities: SnapshotEntity[],

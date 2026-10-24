@@ -8,7 +8,7 @@ const lifetime = (world: World, type: PointType): number =>
   type.lifetimeSec.min +
   world.random() * (type.lifetimeSec.max - type.lifetimeSec.min);
 
-export const spawnPoint = (
+const spawnPoint = (
   world: World,
   typeId: string,
   x: number,

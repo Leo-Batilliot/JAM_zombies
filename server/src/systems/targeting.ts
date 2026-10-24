@@ -4,7 +4,7 @@ import { distance } from "./bodies.js";
 
 export type Target = Mage | Unit | Npc;
 
-export const asEnemy = (
+const asEnemy = (
   army: Army,
   entity: Entity | undefined,
 ): Target | undefined => {
@@ -100,7 +100,8 @@ export const updateTargets = (world: World): void => {
         unit.targetId = undefined;
       }
       if (world.time >= unit.retargetAt) {
-        unit.retargetAt = world.time + retargetIntervalSec;
+        unit.retargetAt =
+          world.time + retargetIntervalSec * (0.5 + world.random());
         unit.targetId = nearestEnemy(world, unit, aggroRange, near)?.id;
       }
     }

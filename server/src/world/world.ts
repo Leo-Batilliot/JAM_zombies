@@ -118,11 +118,6 @@ export const isBody = (entity: Entity): entity is Body =>
   entity.kind === EntityKind.Unit ||
   entity.kind === EntityKind.Npc;
 
-export const armyOf = (entity: Entity): Army | undefined =>
-  entity.kind === EntityKind.Mage || entity.kind === EntityKind.Unit
-    ? entity.army
-    : undefined;
-
 export class World {
   tick = 0;
   time = 0;

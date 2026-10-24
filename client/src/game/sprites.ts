@@ -49,7 +49,7 @@ export const spriteName = (
   }
 };
 
-export const parseColor = (color: string): number =>
+const parseColor = (color: string): number =>
   Number.parseInt(color.slice(1), 16);
 
 export const armyColor = (colors: string[], army: number): number =>
