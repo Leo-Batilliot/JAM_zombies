@@ -27,6 +27,7 @@ export enum ServerMessageType {
   Config,
   Snapshot,
   Died,
+  Leaderboard,
 }
 
 export enum EntityKind {
@@ -47,10 +48,11 @@ export const neutralArmy = 0;
 
 export enum JoinRejection {
   InvalidName = 1,
+  Full,
 }
 
 export type ClientMessage =
-  | { type: ClientMessageType.Join; name: string }
+  | { type: ClientMessageType.Join; name: string; token: string }
   | { type: ClientMessageType.View; width: number; height: number }
   | { type: ClientMessageType.Move; x: number; y: number }
   | { type: ClientMessageType.Target; entityId: number }
@@ -69,8 +71,14 @@ export interface SnapshotEntity {
   y: number;
 }
 
+export interface LeaderboardEntry {
+  army: number;
+  name: string;
+  strength: number;
+}
+
 export type ServerMessage =
-  | { type: ServerMessageType.Welcome; mageId: number }
+  | { type: ServerMessageType.Welcome; mageId: number; token: string }
   | { type: ServerMessageType.Rejected; reason: JoinRejection }
   | { type: ServerMessageType.Config; config: ClientConfig }
   | {
@@ -78,7 +86,13 @@ export type ServerMessage =
       tick: number;
       entities: SnapshotEntity[];
     }
-  | { type: ServerMessageType.Died; killer: string };
+  | { type: ServerMessageType.Died; killer: string }
+  | {
+      type: ServerMessageType.Leaderboard;
+      rank: number;
+      total: number;
+      entries: LeaderboardEntry[];
+    };
 
 const snapshotEntityBytes = 12;
 
@@ -108,7 +122,7 @@ export const encodeClientMessage = (
   const writer = new ByteWriter(16).uint8(message.type);
   switch (message.type) {
     case ClientMessageType.Join:
-      writer.shortString(message.name);
+      writer.shortString(message.name).shortString(message.token);
       break;
     case ClientMessageType.View:
       writer.float32(message.width).float32(message.height);
@@ -144,7 +158,11 @@ export const decodeClientMessage = (
   let message: ClientMessage;
   switch (type) {
     case ClientMessageType.Join:
-      message = { type, name: reader.shortString() };
+      message = {
+        type,
+        name: reader.shortString(),
+        token: reader.shortString(),
+      };
       break;
     case ClientMessageType.View:
       message = { type, width: reader.float32(), height: reader.float32() };
@@ -180,9 +198,10 @@ export const encodeServerMessage = (
 ): ArrayBuffer => {
   switch (message.type) {
     case ServerMessageType.Welcome:
-      return new ByteWriter(5)
+      return new ByteWriter(40)
         .uint8(message.type)
         .uint32(message.mageId)
+        .shortString(message.token)
         .finish();
     case ServerMessageType.Rejected:
       return new ByteWriter(2)
@@ -221,6 +240,20 @@ export const encodeServerMessage = (
         .uint8(message.type)
         .shortString(message.killer)
         .finish();
+    case ServerMessageType.Leaderboard: {
+      if (message.entries.length > 0xff) {
+        throw new ProtocolError("Too many leaderboard entries");
+      }
+      const writer = new ByteWriter(64)
+        .uint8(message.type)
+        .uint16(message.rank)
+        .uint16(message.total)
+        .uint8(message.entries.length);
+      for (const entry of message.entries) {
+        writer.uint8(entry.army).uint32(entry.strength).shortString(entry.name);
+      }
+      return writer.finish();
+    }
   }
 };
 
@@ -247,7 +280,7 @@ export const decodeServerMessage = (
   let message: ServerMessage;
   switch (type) {
     case ServerMessageType.Welcome:
-      message = { type, mageId: reader.uint32() };
+      message = { type, mageId: reader.uint32(), token: reader.shortString() };
       break;
     case ServerMessageType.Rejected:
       message = {
@@ -280,6 +313,21 @@ export const decodeServerMessage = (
     case ServerMessageType.Died:
       message = { type, killer: reader.shortString() };
       break;
+    case ServerMessageType.Leaderboard: {
+      const rank = reader.uint16();
+      const total = reader.uint16();
+      const count = reader.uint8();
+      const entries: LeaderboardEntry[] = [];
+      for (let index = 0; index < count; index++) {
+        entries.push({
+          army: reader.uint8(),
+          strength: reader.uint32(),
+          name: reader.shortString(),
+        });
+      }
+      message = { type, rank, total, entries };
+      break;
+    }
   }
   reader.end();
   return message;

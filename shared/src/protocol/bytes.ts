@@ -26,22 +26,26 @@ export class ByteWriter {
   }
 
   uint8(value: number): this {
-    this.#view.setUint8(this.#reserve(1), value);
+    const offset = this.#reserve(1);
+    this.#view.setUint8(offset, value);
     return this;
   }
 
   uint16(value: number): this {
-    this.#view.setUint16(this.#reserve(2), value);
+    const offset = this.#reserve(2);
+    this.#view.setUint16(offset, value);
     return this;
   }
 
   uint32(value: number): this {
-    this.#view.setUint32(this.#reserve(4), value);
+    const offset = this.#reserve(4);
+    this.#view.setUint32(offset, value);
     return this;
   }
 
   float32(value: number): this {
-    this.#view.setFloat32(this.#reserve(4), value);
+    const offset = this.#reserve(4);
+    this.#view.setFloat32(offset, value);
     return this;
   }
 

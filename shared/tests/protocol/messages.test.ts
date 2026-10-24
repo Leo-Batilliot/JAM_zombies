@@ -11,13 +11,18 @@ import {
   type ClientMessage,
   type ServerMessage,
 } from "../../src/protocol/messages.js";
-import { ProtocolError } from "../../src/protocol/bytes.js";
+import {
+  ByteReader,
+  ByteWriter,
+  ProtocolError,
+} from "../../src/protocol/bytes.js";
 
 const bounds = { width: 400, height: 300 };
 const step = 400 / 0xffff;
 
 const clientMessages: ClientMessage[] = [
-  { type: ClientMessageType.Join, name: "Léa la nécro" },
+  { type: ClientMessageType.Join, name: "Léa la nécro", token: "" },
+  { type: ClientMessageType.Join, name: "Ash", token: "00ff" },
   { type: ClientMessageType.View, width: 80, height: 45 },
   { type: ClientMessageType.Move, x: 120.5, y: 33.25 },
   { type: ClientMessageType.Target, entityId: 123456 },
@@ -29,8 +34,18 @@ const clientMessages: ClientMessage[] = [
 
 const serverMessages: ServerMessage[] = [
   { type: ServerMessageType.Died, killer: "Evil Ash" },
-  { type: ServerMessageType.Welcome, mageId: 42 },
+  { type: ServerMessageType.Welcome, mageId: 42, token: "a1b2" },
+  {
+    type: ServerMessageType.Leaderboard,
+    rank: 12,
+    total: 40,
+    entries: [
+      { army: 3, name: "Ash", strength: 150 },
+      { army: 200, name: "Léa", strength: 70000 },
+    ],
+  },
   { type: ServerMessageType.Rejected, reason: JoinRejection.InvalidName },
+  { type: ServerMessageType.Rejected, reason: JoinRejection.Full },
   {
     type: ServerMessageType.Config,
     config: {
@@ -192,5 +207,19 @@ describe("invalid data", () => {
       bounds,
     );
     expect(() => decodeServerMessage(data, bounds)).toThrow(ProtocolError);
+  });
+});
+
+describe("ByteWriter", () => {
+  test("grows past its initial capacity on any write", () => {
+    const writer = new ByteWriter(1).uint8(1).uint16(2).uint32(3).float32(4);
+    const reader = new ByteReader(writer.finish());
+    expect([
+      reader.uint8(),
+      reader.uint16(),
+      reader.uint32(),
+      reader.float32(),
+    ]).toEqual([1, 2, 3, 4]);
+    reader.end();
   });
 });

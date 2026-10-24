@@ -4,6 +4,34 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Jeton de reprise et remplacement des bots | L.BA
+
+- **Quoi** : à l'entrée en jeu, le serveur donne un jeton aléatoire de 16 octets que le navigateur garde. À la déconnexion, un bot prend l'armée et le jeton reste valable pendant le délai de grâce. Un jeton ne rend l'armée que si un bot la pilote. Un nouveau joueur remplace le bot le plus faible, mais jamais un bot qui garde l'armée d'un joueur en délai de grâce. Le lobby refuse un joueur quand il compte déjà le maximum de participants.
+- **Pourquoi** : c'est la règle de reprise décidée en phase 0. Le maximum, plafonné à 254 dans le schéma, empêche aussi de manquer d'emplacements d'armée.
+- **Impact** : un deuxième onglet avec le même jeton reçoit une nouvelle armée. Les troupes et les cadavres d'un bot remplacé forment un charnier à la position de son mage.
+- **Avis** : Validée.
+
+### Priorités des bots | L.BA
+
+- **Quoi** : toutes les 0,5 à 1,5 s, un bot va fouiller le point d'intérêt le plus proche à moins de 40 m, sinon il attaque le civil le plus proche à moins de 40 m, sinon il erre jusqu'à 60 m. Il passe par les mêmes ordres qu'un joueur.
+- **Pourquoi** : c'est la machine à états de base du concept. Le délai aléatoire étale le travail des bots sur les ticks.
+- **Impact** : les bots s'attaquent entre eux seulement quand leurs unités se croisent. Combat volontaire et fuite arrivent en 4.14.
+- **Avis** : À vérifier. Portées et fréquence à ajuster en jeu.
+
+### Classement envoyé chaque seconde | L.BA
+
+- **Quoi** : chaque seconde, le serveur classe toutes les armées par force totale (égalité départagée par l'emplacement) et envoie à chaque joueur le top 10 et son propre rang.
+- **Pourquoi** : la force change lentement, un envoi par seconde suffit et reste léger.
+- **Impact** : le classement affiché peut avoir jusqu'à une seconde de retard.
+- **Avis** : Validée.
+
+### Config complète renvoyée au rechargement | L.BA
+
+- **Quoi** : après chaque rechargement réussi, quel que soit le fichier, le serveur renvoie toute la config du client à tous les joueurs. Le client remplace la sienne, reconstruit la carte et met à jour le délai d'interpolation.
+- **Pourquoi** : la config du client est petite, un seul message évite de suivre quel fichier touche quelle valeur.
+- **Impact** : le client doit toujours lire sa config via la connexion, jamais en garder une copie.
+- **Avis** : Validée.
+
 ### Âmes et niveau perdus à la mort du mage | L.BA
 
 - **Quoi** : à sa mort, le mage perd ses troupes, ses cadavres, ses âmes et son niveau. Il réapparaît au niveau 1.

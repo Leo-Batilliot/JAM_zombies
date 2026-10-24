@@ -4,6 +4,22 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Lobby, bots, diffusion de la config et classement | 2.13-2.16 | L.BA
+
+- `shared/src/config/schema.ts` : minimum, maximum (254 au plus) et délai de grâce du lobby, réglages des bots et du classement.
+- `shared/config/lobby.json` : 12 à 40 participants, 60 s de grâce, noms des bots tirés des films de zombies.
+- `shared/src/protocol/messages.ts` : jeton de reprise dans l'entrée en jeu et la bienvenue, refus pour lobby plein, message de classement.
+- `shared/src/protocol/bytes.ts` : correction de l'écriture qui tombait hors du tampon quand il devait s'agrandir.
+- `server/src/lobby/lobby.ts` : bots ajoutés jusqu'au minimum, remplacement du bot le plus faible par un charnier, refus au-delà du maximum, reprise par un bot à la déconnexion, retour avec le jeton pendant le délai de grâce.
+- `server/src/lobby/bots.ts` : machine à états des bots (piller, chasser les civils, errer) avec les commandes d'un joueur.
+- `server/src/lobby/leaderboard.ts` : classement par force totale, top 10 et rang de chaque armée.
+- `server/src/world/world.ts` : armée pilotée par un bot, jetons de reprise.
+- `server/src/net/sockets.ts`, `server/src/main.ts` : entrée par le lobby, classement périodique, config renvoyée après chaque rechargement.
+- `client/src/net/connection.ts` : jeton gardé dans le navigateur, config et classement reçus en cours de partie.
+- `client/src/game/game.ts`, `client/src/game/interpolation.ts` : délai d'interpolation et carte mis à jour au rechargement.
+- `client/src/home.ts` : message de lobby plein.
+- `server/tests/`, `shared/tests/` : lobby, bots, classement, sockets, agrandissement du tampon, banc de la grille mesuré sur le meilleur passage.
+
 ### Mort du mage, rendu du combat et points d'intérêt | 2.09-2.12 | L.BA
 
 - `shared/src/config/schema.ts` : régénération et réapparition du mage, durée de relève, types de points d'intérêt et charnier, durées d'animation du client.

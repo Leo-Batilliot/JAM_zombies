@@ -12,20 +12,21 @@ const env = loadEnv();
 const config = loadConfig(env.CONFIG_DIR);
 const registries = buildRegistries(config);
 
-watchConfig(env.CONFIG_DIR, config, {
-  delayMs: env.CONFIG_RELOAD_DELAY_MS,
-  validate: buildRegistries,
-  onReload: () => {
-    Object.assign(registries, buildRegistries(config));
-  },
-});
-
 const world = new World(config, registries);
 const serveStatic = createStaticHandler(env.CLIENT_DIR);
 const server = createServer((request, response) => {
   void serveStatic(request, response);
 });
 const sockets = attachSockets(server, world);
+
+watchConfig(env.CONFIG_DIR, config, {
+  delayMs: env.CONFIG_RELOAD_DELAY_MS,
+  validate: buildRegistries,
+  onReload: () => {
+    Object.assign(registries, buildRegistries(config));
+    sockets.broadcastConfig();
+  },
+});
 startLoop(world, sockets.sendSnapshots);
 
 server.listen(env.PORT, () => {

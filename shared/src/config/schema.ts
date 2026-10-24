@@ -151,23 +151,43 @@ const eventsSchema = z.strictObject({
   events: z.record(id, z.strictObject({})),
 });
 
-const lobbySchema = z.strictObject({
-  playerName: z.strictObject({
-    minLength: z.int().positive(),
-    maxLength: z.int().positive().max(255),
-    pattern: z.string().refine(
-      (value) => {
-        try {
-          new RegExp(value, "u");
-          return true;
-        } catch {
-          return false;
-        }
-      },
-      { message: "Invalid regular expression" },
-    ),
-  }),
-});
+export const maxParticipants = 254;
+
+const lobbySchema = z
+  .strictObject({
+    minParticipants: z.int().nonnegative(),
+    maxParticipants: z.int().positive().max(maxParticipants),
+    graceSec: z.number().nonnegative(),
+    bots: z.strictObject({
+      names: z.array(z.string().min(1)).min(1),
+      thinkIntervalSec: z.number().positive(),
+      wanderDistance: z.number().positive(),
+      huntRange: z.number().positive(),
+      lootRange: z.number().positive(),
+    }),
+    leaderboard: z.strictObject({
+      intervalSec: z.number().positive(),
+      size: z.int().positive().max(255),
+    }),
+    playerName: z.strictObject({
+      minLength: z.int().positive(),
+      maxLength: z.int().positive().max(255),
+      pattern: z.string().refine(
+        (value) => {
+          try {
+            new RegExp(value, "u");
+            return true;
+          } catch {
+            return false;
+          }
+        },
+        { message: "Invalid regular expression" },
+      ),
+    }),
+  })
+  .refine((lobby) => lobby.minParticipants <= lobby.maxParticipants, {
+    message: "minParticipants must not exceed maxParticipants",
+  });
 
 const networkSchema = z.strictObject({
   tickRate: structural(z.int().positive().max(255)),

@@ -4,6 +4,7 @@ import { JoinError } from "./net/connection.js";
 const errorMessages: Record<JoinRejection, string> = {
   [JoinRejection.InvalidName]:
     "This name is not allowed. Use letters, digits, spaces, _ or -.",
+  [JoinRejection.Full]: "The game is full. Try again in a moment.",
 };
 
 export const showHome = (

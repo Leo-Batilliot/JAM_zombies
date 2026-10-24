@@ -15,6 +15,16 @@ export interface Army {
   deaths: number;
   killerName: string;
   search: Search | undefined;
+  bot: Bot | undefined;
+}
+
+export interface Bot {
+  thinkAt: number;
+}
+
+export interface Reconnect {
+  army: Army;
+  expiresAt: number;
 }
 
 export interface Search {
@@ -121,6 +131,7 @@ export class World {
   readonly npcGroups = new Set<NpcGroup>();
   readonly points = new Set<PointOfInterest>();
   readonly populationSpawnAt = new Map<number, number>();
+  readonly reconnects = new Map<string, Reconnect>();
   readonly grid: SpatialGrid;
   #nextId = 1;
 
@@ -189,6 +200,7 @@ export class World {
       deaths: 0,
       killerName: "",
       search: undefined,
+      bot: undefined,
     } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
@@ -350,6 +362,11 @@ export class World {
     this.clearArmy(army);
     for (const point of this.points) {
       point.searchedBy.delete(army);
+    }
+    for (const [token, reconnect] of this.reconnects) {
+      if (reconnect.army === army) {
+        this.reconnects.delete(token);
+      }
     }
     this.armies.delete(army.slot);
   }

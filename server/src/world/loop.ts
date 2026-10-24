@@ -1,3 +1,5 @@
+import { runBots } from "../lobby/bots.js";
+import { updateLobby } from "../lobby/lobby.js";
 import { maintainPopulations, moveCivilians } from "../systems/civilians.js";
 import { fight } from "../systems/combat.js";
 import { regenerateMages, respawnMages } from "../systems/mage.js";
@@ -12,6 +14,8 @@ import type { World } from "./world.js";
 export type System = (world: World, dt: number) => void;
 
 export const systems: System[] = [
+  updateLobby,
+  runBots,
   maintainPopulations,
   moveCivilians,
   moveMages,

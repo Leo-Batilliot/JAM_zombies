@@ -25,6 +25,7 @@ export const createBench = (
 ): Bench => {
   const config = loadConfig(sharedConfigDir);
   config.world.populations = [];
+  config.lobby.minParticipants = 0;
   patch(config);
   const world = new World(config, buildRegistries(config), seededRandom(seed));
   return {

@@ -1,4 +1,39 @@
 {
+  "minParticipants": 12,
+  "maxParticipants": 40,
+  "graceSec": 60,
+  "bots": {
+    "names": [
+      "Herbert West",
+      "Ash Williams",
+      "Barbara",
+      "Johnny",
+      "Ben",
+      "Shaun",
+      "Ed",
+      "Liz",
+      "Selena",
+      "Jim",
+      "Laurie",
+      "Michael",
+      "Henrietta",
+      "Annie",
+      "Scotty",
+      "Cheryl",
+      "Linda",
+      "Jake",
+      "Bub",
+      "Rhodes"
+    ],
+    "thinkIntervalSec": 1,
+    "wanderDistance": 60,
+    "huntRange": 40,
+    "lootRange": 40
+  },
+  "leaderboard": {
+    "intervalSec": 1,
+    "size": 10
+  },
   "playerName": {
     "minLength": 2,
     "maxLength": 16,

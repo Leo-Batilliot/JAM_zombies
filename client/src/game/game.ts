@@ -52,6 +52,11 @@ export const startGame = async (
   };
 
   const buffer = new SnapshotBuffer(config().network);
+  connection.onConfig = (next) => {
+    buffer.settings = next.network;
+    map.build(next);
+    sendView();
+  };
   connection.onSnapshot = (snapshot) => {
     buffer.push(snapshot.tick, snapshot.entities, performance.now());
   };

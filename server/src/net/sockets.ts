@@ -13,7 +13,8 @@ import {
   type ServerMessage,
 } from "@horde/shared";
 import { validatePlayerName } from "../lobby/name.js";
-import { spawnArmy } from "../systems/army.js";
+import { rankArmies } from "../lobby/leaderboard.js";
+import { joinLobby, leaveLobby } from "../lobby/lobby.js";
 import { orderAttack, orderMove } from "../systems/orders.js";
 import type { Army, World } from "../world/world.js";
 import { visibleEntities, type View } from "./interest.js";
@@ -48,7 +49,7 @@ export const attachSockets = (server: Server, world: World) => {
     }
   };
 
-  const join = (session: Session, name: string): void => {
+  const join = (session: Session, name: string, token: string): void => {
     const validName = validatePlayerName(name, world.config.lobby.playerName);
     if (validName === undefined) {
       send(session, {
@@ -57,10 +58,20 @@ export const attachSockets = (server: Server, world: World) => {
       });
       return;
     }
-    session.army = spawnArmy(world, validName);
+    const result = joinLobby(world, validName, token);
+    if ("rejection" in result) {
+      send(session, {
+        type: ServerMessageType.Rejected,
+        reason: result.rejection,
+      });
+      return;
+    }
+    session.army = result.army;
+    session.deaths = result.army.deaths;
     send(session, {
       type: ServerMessageType.Welcome,
-      mageId: session.army.mage.id,
+      mageId: result.army.mage.id,
+      token: result.token,
     });
     send(session, {
       type: ServerMessageType.Config,
@@ -68,12 +79,26 @@ export const attachSockets = (server: Server, world: World) => {
     });
   };
 
+  const sendLeaderboards = (): void => {
+    const ranking = rankArmies(world);
+    for (const session of sessions) {
+      if (session.army !== undefined) {
+        send(session, {
+          type: ServerMessageType.Leaderboard,
+          rank: ranking.ranks.get(session.army) ?? ranking.total,
+          total: ranking.total,
+          entries: ranking.entries,
+        });
+      }
+    }
+  };
+
   const handle = (session: Session, message: ClientMessage): void => {
     if (session.army === undefined) {
       if (message.type !== ClientMessageType.Join) {
         throw new ProtocolError("Message before join");
       }
-      join(session, message.name);
+      join(session, message.name, message.token);
       return;
     }
     switch (message.type) {
@@ -114,14 +139,30 @@ export const attachSockets = (server: Server, world: World) => {
     socket.on("close", () => {
       sessions.delete(session);
       if (session.army !== undefined) {
-        world.removeArmy(session.army);
+        leaveLobby(world, session.army);
       }
     });
   });
 
+  let leaderboardAt = -Infinity;
+
   return {
     sessions,
+    broadcastConfig: (): void => {
+      for (const session of sessions) {
+        if (session.army !== undefined) {
+          send(session, {
+            type: ServerMessageType.Config,
+            config: toClientConfig(world.config),
+          });
+        }
+      }
+    },
     sendSnapshots: (): void => {
+      if (world.time >= leaderboardAt) {
+        leaderboardAt = world.time + world.config.lobby.leaderboard.intervalSec;
+        sendLeaderboards();
+      }
       for (const session of sessions) {
         if (session.army === undefined) {
           continue;
