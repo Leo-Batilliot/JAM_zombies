@@ -24,8 +24,10 @@ export const farPoint = (
 
 export const distanceToMages = (world: World, x: number, y: number): number => {
   let nearest = Infinity;
-  for (const { mage } of world.armies.values()) {
-    nearest = Math.min(nearest, Math.hypot(mage.x - x, mage.y - y));
+  for (const { alive, mage } of world.armies.values()) {
+    if (alive) {
+      nearest = Math.min(nearest, Math.hypot(mage.x - x, mage.y - y));
+    }
   }
   return nearest;
 };

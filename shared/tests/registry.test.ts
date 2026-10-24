@@ -83,6 +83,16 @@ describe("buildRegistries", () => {
     ).toThrow(/Population[\s\S]*civilian/);
   });
 
+  test("fails on an unknown mass grave", () => {
+    const config = loadSharedConfig();
+    expect(() =>
+      buildRegistries({
+        ...config,
+        world: { ...config.world, massGrave: "ghost" },
+      }),
+    ).toThrow(/Mass grave[\s\S]*ghost/);
+  });
+
   test("fails on an unknown id", () => {
     const registries = buildRegistries(loadSharedConfig());
     expect(() => registries.units.get("ghost")).toThrow(/unit "ghost"/);

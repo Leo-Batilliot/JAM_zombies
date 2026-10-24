@@ -28,6 +28,7 @@ const clientMessages: ClientMessage[] = [
 ];
 
 const serverMessages: ServerMessage[] = [
+  { type: ServerMessageType.Died, killer: "Evil Ash" },
   { type: ServerMessageType.Welcome, mageId: 42 },
   { type: ServerMessageType.Rejected, reason: JoinRejection.InvalidName },
   {
@@ -40,6 +41,9 @@ const serverMessages: ServerMessage[] = [
         pickRadius: 1,
         armyColors: ["#ff0000"],
         walkFrameMs: 150,
+        attackFrameMs: 200,
+        deathMs: 900,
+        soulBobMs: 1200,
         grimoireBobMs: 1600,
       },
       world: {
@@ -48,7 +52,12 @@ const serverMessages: ServerMessage[] = [
         decor: { seed: 1, scattered: [{ sprite: "decor-tree", count: 3 }] },
       },
       network: { tickRate: 20, interpolationDelayMs: 100 },
-      content: { units: ["zombie"], npcs: ["civilian"] },
+      gameplay: { riseSec: 0.8 },
+      content: {
+        units: ["zombie"],
+        npcs: ["civilian"],
+        pointsOfInterest: ["mass-grave"],
+      },
     },
   },
   {

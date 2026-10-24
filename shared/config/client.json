@@ -16,5 +16,8 @@
     "#7a6ae0"
   ],
   "walkFrameMs": 150,
+  "attackFrameMs": 200,
+  "deathMs": 900,
+  "soulBobMs": 1200,
   "grimoireBobMs": 1600
 }

@@ -23,6 +23,7 @@ const protocolErrorCode = 1008;
 interface Session {
   socket: WebSocket;
   army?: Army;
+  deaths: number;
   view: View;
 }
 
@@ -91,7 +92,11 @@ export const attachSockets = (server: Server, world: World) => {
   };
 
   sockets.on("connection", (socket) => {
-    const session: Session = { socket, view: { width: 0, height: 0 } };
+    const session: Session = {
+      socket,
+      deaths: 0,
+      view: { width: 0, height: 0 },
+    };
     sessions.add(session);
     socket.on("message", (data, isBinary) => {
       try {
@@ -121,11 +126,18 @@ export const attachSockets = (server: Server, world: World) => {
         if (session.army === undefined) {
           continue;
         }
-        const { mage } = session.army;
+        const { army } = session;
+        if (army.deaths !== session.deaths) {
+          session.deaths = army.deaths;
+          send(session, {
+            type: ServerMessageType.Died,
+            killer: army.killerName,
+          });
+        }
         send(session, {
           type: ServerMessageType.Snapshot,
           tick: world.tick,
-          entities: visibleEntities(world, mage.x, mage.y, session.view),
+          entities: visibleEntities(world, army, session.view),
         });
       }
     },

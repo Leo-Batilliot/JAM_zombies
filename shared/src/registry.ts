@@ -98,6 +98,11 @@ export const buildRegistries = (config: Config): Registries => {
   for (const { npc } of config.world.populations) {
     checkReference(registries.npcs, npc, "Population");
   }
+  checkReference(
+    registries.pointsOfInterest,
+    config.world.massGrave,
+    "Mass grave",
+  );
   for (const { unit } of config.gameplay.army.startingUnits) {
     checkReference(registries.units, unit, "Starting army");
   }

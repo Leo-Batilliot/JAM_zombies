@@ -26,6 +26,7 @@ export enum ServerMessageType {
   Rejected,
   Config,
   Snapshot,
+  Died,
 }
 
 export enum EntityKind {
@@ -33,6 +34,13 @@ export enum EntityKind {
   Unit,
   Npc,
   Corpse,
+  PointOfInterest,
+}
+
+export enum EntityFlag {
+  Fighting = 1,
+  Rising = 2,
+  Searched = 4,
 }
 
 export const neutralArmy = 0;
@@ -69,7 +77,8 @@ export type ServerMessage =
       type: ServerMessageType.Snapshot;
       tick: number;
       entities: SnapshotEntity[];
-    };
+    }
+  | { type: ServerMessageType.Died; killer: string };
 
 const snapshotEntityBytes = 12;
 
@@ -207,6 +216,11 @@ export const encodeServerMessage = (
       }
       return writer.finish();
     }
+    case ServerMessageType.Died:
+      return new ByteWriter(16)
+        .uint8(message.type)
+        .shortString(message.killer)
+        .finish();
   }
 };
 
@@ -263,6 +277,9 @@ export const decodeServerMessage = (
       message = { type, tick, entities };
       break;
     }
+    case ServerMessageType.Died:
+      message = { type, killer: reader.shortString() };
+      break;
   }
   reader.end();
   return message;

@@ -41,5 +41,17 @@
       }
     ]
   },
-  "pointsOfInterest": {}
+  "pointsOfInterest": {
+    "mass-grave": {
+      "count": 0,
+      "radius": 3,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 120,
+        "max": 240
+      },
+      "reward": "corpses"
+    }
+  },
+  "massGrave": "mass-grave"
 }

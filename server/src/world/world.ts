@@ -10,6 +10,16 @@ export interface Army {
   souls: number;
   level: number;
   focusId: number | undefined;
+  alive: boolean;
+  respawnAt: number;
+  deaths: number;
+  killerName: string;
+  search: Search | undefined;
+}
+
+export interface Search {
+  pointId: number;
+  progress: number;
 }
 
 export interface Mage {
@@ -23,6 +33,7 @@ export interface Mage {
   facingX: number;
   facingY: number;
   hp: number;
+  hitAt: number;
 }
 
 export interface Unit {
@@ -36,6 +47,8 @@ export interface Unit {
   targetId: number | undefined;
   retargetAt: number;
   cooldown: number;
+  raisedAt: number;
+  fighting: boolean;
 }
 
 export interface NpcGroup {
@@ -71,7 +84,18 @@ export interface Corpse {
   y: number;
 }
 
-export type Entity = Mage | Unit | Npc | Corpse;
+export interface PointOfInterest {
+  id: number;
+  kind: EntityKind.PointOfInterest;
+  type: string;
+  x: number;
+  y: number;
+  expiresAt: number;
+  searchedBy: Set<Army>;
+  corpses: string[];
+}
+
+export type Entity = Mage | Unit | Npc | Corpse | PointOfInterest;
 export type Body = Mage | Unit | Npc;
 
 const maxArmySlot = 0xff;
@@ -80,7 +104,9 @@ const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
 export const isBody = (entity: Entity): entity is Body =>
-  entity.kind !== EntityKind.Corpse;
+  entity.kind === EntityKind.Mage ||
+  entity.kind === EntityKind.Unit ||
+  entity.kind === EntityKind.Npc;
 
 export const armyOf = (entity: Entity): Army | undefined =>
   entity.kind === EntityKind.Mage || entity.kind === EntityKind.Unit
@@ -93,6 +119,7 @@ export class World {
   readonly entities = new Map<number, Entity>();
   readonly armies = new Map<number, Army>();
   readonly npcGroups = new Set<NpcGroup>();
+  readonly points = new Set<PointOfInterest>();
   readonly populationSpawnAt = new Map<number, number>();
   readonly grid: SpatialGrid;
   #nextId = 1;
@@ -157,6 +184,11 @@ export class World {
       souls: 0,
       level: 1,
       focusId: undefined,
+      alive: true,
+      respawnAt: 0,
+      deaths: 0,
+      killerName: "",
+      search: undefined,
     } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
@@ -169,6 +201,7 @@ export class World {
       facingX: 0,
       facingY: 1,
       hp: this.config.gameplay.mage.baseHp,
+      hitAt: -Infinity,
     };
     this.armies.set(army.slot, army);
     this.#add(army.mage);
@@ -187,6 +220,8 @@ export class World {
       targetId: undefined,
       retargetAt: this.time,
       cooldown: 0,
+      raisedAt: -Infinity,
+      fighting: false,
     };
     army.units.add(unit);
     this.#add(unit);
@@ -246,6 +281,48 @@ export class World {
     return corpse;
   }
 
+  addPointOfInterest(
+    type: string,
+    x: number,
+    y: number,
+    lifetimeSec: number,
+  ): PointOfInterest {
+    const point: PointOfInterest = {
+      id: this.#nextId++,
+      kind: EntityKind.PointOfInterest,
+      type,
+      x: this.clampX(x),
+      y: this.clampY(y),
+      expiresAt: this.time + lifetimeSec,
+      searchedBy: new Set(),
+      corpses: [],
+    };
+    this.points.add(point);
+    this.#add(point);
+    return point;
+  }
+
+  clearArmy(army: Army): void {
+    for (const unit of army.units) {
+      this.remove(unit.id);
+    }
+    for (const corpse of army.corpses) {
+      this.remove(corpse.id);
+    }
+    army.units.clear();
+    army.corpses.clear();
+    this.remove(army.mage.id);
+  }
+
+  placeMage(army: Army, x: number, y: number): void {
+    const { mage } = army;
+    mage.x = this.clampX(x);
+    mage.y = this.clampY(y);
+    mage.targetX = mage.x;
+    mage.targetY = mage.y;
+    this.#add(mage);
+  }
+
   removeEntity(entity: Entity): void {
     switch (entity.kind) {
       case EntityKind.Unit:
@@ -260,6 +337,9 @@ export class World {
       case EntityKind.Corpse:
         entity.owner.corpses.delete(entity);
         break;
+      case EntityKind.PointOfInterest:
+        this.points.delete(entity);
+        break;
       case EntityKind.Mage:
         break;
     }
@@ -267,15 +347,10 @@ export class World {
   }
 
   removeArmy(army: Army): void {
-    for (const unit of army.units) {
-      this.remove(unit.id);
+    this.clearArmy(army);
+    for (const point of this.points) {
+      point.searchedBy.delete(army);
     }
-    for (const corpse of army.corpses) {
-      this.remove(corpse.id);
-    }
-    army.units.clear();
-    army.corpses.clear();
-    this.remove(army.mage.id);
     this.armies.delete(army.slot);
   }
 

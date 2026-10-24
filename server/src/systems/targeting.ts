@@ -1,8 +1,8 @@
 import { EntityKind } from "@horde/shared";
-import type { Army, Entity, Npc, Unit, World } from "../world/world.js";
+import type { Army, Entity, Mage, Npc, Unit, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 
-export type Target = Unit | Npc;
+export type Target = Mage | Unit | Npc;
 
 export const asEnemy = (
   army: Army,
@@ -11,7 +11,10 @@ export const asEnemy = (
   if (entity?.kind === EntityKind.Npc) {
     return entity;
   }
-  if (entity?.kind === EntityKind.Unit && entity.army !== army) {
+  if (
+    (entity?.kind === EntityKind.Unit || entity?.kind === EntityKind.Mage) &&
+    entity.army !== army
+  ) {
     return entity;
   }
   return undefined;

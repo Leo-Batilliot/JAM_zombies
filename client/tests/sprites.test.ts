@@ -40,7 +40,11 @@ describe("frameAt", () => {
 });
 
 describe("spriteName", () => {
-  const content = { units: ["zombie", "fat-zombie"], npcs: ["civilian"] };
+  const content = {
+    units: ["zombie", "fat-zombie"],
+    npcs: ["civilian"],
+    pointsOfInterest: ["mass-grave"],
+  };
   const entity = { id: 1, type: 1, army: 1, flags: 0, x: 0, y: 0 };
 
   test("names units after their type", () => {
@@ -53,6 +57,15 @@ describe("spriteName", () => {
     expect(
       spriteName({ ...entity, type: 0, kind: EntityKind.Npc }, content),
     ).toBe("npc-civilian");
+  });
+
+  test("names points of interest after their type", () => {
+    expect(
+      spriteName(
+        { ...entity, type: 0, kind: EntityKind.PointOfInterest },
+        content,
+      ),
+    ).toBe("poi-mass-grave");
   });
 
   test("names the mage", () => {

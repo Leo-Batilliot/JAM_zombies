@@ -5,6 +5,7 @@ import {
   type Spritesheet,
 } from "pixi.js";
 import { ClientMessageType, type SnapshotEntity } from "@horde/shared";
+import { DeathScreen } from "../death.js";
 import type { Connection } from "../net/connection.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
@@ -16,6 +17,7 @@ const rightButton = 2;
 
 export const startGame = async (
   root: HTMLElement,
+  ui: HTMLElement,
   connection: Connection,
   atlas: Spritesheet,
 ): Promise<void> => {
@@ -43,6 +45,11 @@ export const startGame = async (
   const marker = new ClickMarker(() => config().client.markerDurationMs);
   world.addChild(map.container, marker.graphics, entities.container);
   app.stage.addChild(world);
+
+  const death = new DeathScreen(ui);
+  connection.onDied = (killer) => {
+    death.show(killer);
+  };
 
   const buffer = new SnapshotBuffer(config().network);
   connection.onSnapshot = (snapshot) => {
@@ -106,6 +113,7 @@ export const startGame = async (
     if (self !== undefined) {
       camera.x = self.x;
       camera.y = self.y;
+      death.hide();
     }
     world.scale.set(scale);
     world.position.set(

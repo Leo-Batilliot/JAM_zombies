@@ -14,6 +14,13 @@ const gameplaySchema = z.strictObject({
     radius: z.number().positive(),
     baseHp: z.number().positive(),
     hpPerLevel: z.number().nonnegative(),
+    regenDelaySec: z.number().nonnegative(),
+    regenPerSec: z.number().nonnegative(),
+  }),
+  respawn: z.strictObject({
+    delaySec: z.number().nonnegative(),
+    bigArmyStrength: z.number().nonnegative(),
+    safeDistance: z.number().nonnegative(),
   }),
   army: z.strictObject({
     startingUnits: z.array(
@@ -35,6 +42,7 @@ const gameplaySchema = z.strictObject({
   reanimation: z.strictObject({
     delaySec: z.number().nonnegative(),
     raiseRadius: z.number().positive(),
+    riseSec: z.number().positive(),
   }),
   souls: z.strictObject({
     perStrength: z.number().nonnegative(),
@@ -89,6 +97,20 @@ const equipmentSchema = z.strictObject({
   items: z.record(id, z.strictObject({})),
 });
 
+export const rewards = ["corpses"] as const;
+
+const pointOfInterestSchema = z.strictObject({
+  count: z.int().nonnegative(),
+  radius: z.number().positive(),
+  searchSec: z.number().nonnegative(),
+  lifetimeSec: z
+    .strictObject({ min: z.number().positive(), max: z.number().positive() })
+    .refine((lifetime) => lifetime.min <= lifetime.max, {
+      message: "min must not exceed max",
+    }),
+  reward: z.enum(rewards),
+});
+
 const worldSchema = z.strictObject({
   width: structural(z.int().positive()),
   height: structural(z.int().positive()),
@@ -121,7 +143,8 @@ const worldSchema = z.strictObject({
       }),
     ),
   }),
-  pointsOfInterest: z.record(id, z.strictObject({})),
+  pointsOfInterest: z.record(id, pointOfInterestSchema),
+  massGrave: id,
 });
 
 const eventsSchema = z.strictObject({
@@ -163,6 +186,9 @@ export const clientSettingsSchema = z.strictObject({
   pickRadius: z.number().positive(),
   armyColors: z.array(color).min(1),
   walkFrameMs: z.int().positive(),
+  attackFrameMs: z.int().positive(),
+  deathMs: z.int().positive(),
+  soulBobMs: z.int().positive(),
   grimoireBobMs: z.int().positive(),
 });
 
@@ -185,9 +211,13 @@ export const clientConfigSchema = z.strictObject({
   client: clientSettingsSchema,
   world: worldSchema.pick({ width: true, height: true, decor: true }),
   network: networkSchema.pick({ tickRate: true, interpolationDelayMs: true }),
+  gameplay: z.strictObject({
+    riseSec: z.number().positive(),
+  }),
   content: z.strictObject({
     units: z.array(id),
     npcs: z.array(id),
+    pointsOfInterest: z.array(id),
   }),
 });
 
@@ -204,9 +234,13 @@ export const toClientConfig = (config: Config): ClientConfig => ({
     tickRate: config.network.tickRate,
     interpolationDelayMs: config.network.interpolationDelayMs,
   },
+  gameplay: {
+    riseSec: config.gameplay.reanimation.riseSec,
+  },
   content: {
     units: Object.keys(config.units.units),
     npcs: Object.keys(config.units.npcs),
+    pointsOfInterest: Object.keys(config.world.pointsOfInterest),
   },
 });
 

@@ -1,5 +1,6 @@
 import { EntityKind } from "@horde/shared";
-import type { Army, Npc, Unit, World } from "../world/world.js";
+import type { Army, Mage, Npc, Unit, World } from "../world/world.js";
+import { damageMage } from "./mage.js";
 import { grantSouls } from "./souls.js";
 
 const victimProfile = (world: World, victim: Unit | Npc) => {
@@ -36,10 +37,14 @@ export const kill = (
 
 export const damage = (
   world: World,
-  target: Unit | Npc,
+  target: Mage | Unit | Npc,
   amount: number,
   attacker: Army | undefined,
 ): void => {
+  if (target.kind === EntityKind.Mage) {
+    damageMage(world, target, amount, attacker);
+    return;
+  }
   target.hp -= amount;
   if (target.hp <= 0) {
     kill(world, target, attacker);

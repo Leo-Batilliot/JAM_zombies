@@ -25,6 +25,7 @@ export class JoinError extends Error {
 
 export class Connection {
   onSnapshot: (snapshot: Snapshot) => void = () => undefined;
+  onDied: (killer: string) => void = () => undefined;
   onClose: () => void = () => undefined;
 
   constructor(
@@ -72,6 +73,9 @@ export const join = (name: string): Promise<Connection> =>
           break;
         case ServerMessageType.Snapshot:
           connection?.onSnapshot(message);
+          break;
+        case ServerMessageType.Died:
+          connection?.onDied(message.killer);
           break;
       }
     });

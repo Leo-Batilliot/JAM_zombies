@@ -4,6 +4,48 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Âmes et niveau perdus à la mort du mage | L.BA
+
+- **Quoi** : à sa mort, le mage perd ses troupes, ses cadavres, ses âmes et son niveau. Il réapparaît au niveau 1.
+- **Pourquoi** : comme dans un .io classique, mourir remet le joueur au départ. Le concept ne citait que les troupes et l'équipement.
+- **Impact** : le niveau ne s'accumule pas d'une vie à l'autre. `concept.md` §4.2 règle 7 reste à compléter.
+- **Avis** : Validée.
+
+### Réapparition automatique loin des grosses armées | L.BA
+
+- **Quoi** : le mage réapparaît seul après 3 s, au point le plus éloigné des armées de force 20 ou plus parmi quelques tirages, avec son armée de départ et ses PV pleins. Le joueur garde le même identifiant de mage.
+- **Pourquoi** : pas d'écran à valider, le joueur revient vite dans la partie. Le screamer de 3.03 se jouera pendant ce délai.
+- **Impact** : le délai doit rester plus long que le screamer et l'écran de mort.
+- **Avis** : À vérifier. Délai, seuil de force et distance à ajuster en jeu.
+
+### Régénération du mage hors combat | L.BA
+
+- **Quoi** : le mage regagne 4 PV/s après 5 s sans subir de dégât, jusqu'à ses PV max.
+- **Pourquoi** : sans régénération, un mage blessé le resterait jusqu'à sa mort ou à sa prochaine montée de niveau.
+- **Impact** : fuir un combat assez longtemps permet de revenir à pleine santé.
+- **Avis** : À vérifier. Délai et vitesse à équilibrer en jeu.
+
+### Fouille automatique et charnier au premier pilleur | L.BA
+
+- **Quoi** : un mage qui reste près d'un point d'intérêt qu'il n'a pas encore fouillé le fouille tout seul, et la fouille repart de zéro s'il subit des dégâts. Le charnier fait exception au butin individuel : le premier qui le fouille relève tous ses cadavres et le charnier disparaît.
+- **Pourquoi** : aucun bouton à ajouter sur téléphone. Un charnier copié pour chaque pilleur dupliquerait des armées entières.
+- **Impact** : le type de récompense (`reward`) de chaque point d'intérêt choisit son effet. Seul `corpses` existe pour l'instant.
+- **Avis** : Validée.
+
+### Premier message ponctuel : la mort du mage | L.BA
+
+- **Quoi** : le serveur envoie au joueur un message séparé à sa mort, avec le nom de son tueur (vide si aucun). Les autres états visibles (combat, relève, déjà fouillé) passent par les drapeaux du snapshot.
+- **Pourquoi** : la mort doit déclencher l'écran du joueur une seule fois, sans dépendre d'un snapshot.
+- **Impact** : les autres joueurs voient le mage disparaître dans un fondu. Le screamer (3.03) s'appuiera sur ce message.
+- **Avis** : Validée.
+
+### Âme affichée sur chaque cadavre | L.BA
+
+- **Quoi** : tout cadavre au sol affiche une âme qui flotte, puisque tous attendent leur relève.
+- **Pourquoi** : en phase 2, aucun cadavre n'est bloqué par une bataille, il n'y a donc rien à distinguer.
+- **Impact** : la réanimation bloquée en bataille (4.03) devra ajouter un drapeau pour ne montrer l'âme que sur les cadavres en attente.
+- **Avis** : Provisoire. À revoir en 4.03.
+
 ### Cadavre d'un PNJ au tueur | L.BA
 
 - **Quoi** : le cadavre d'une unité appartient à son armée. Le cadavre d'un PNJ appartient directement à l'armée qui l'a tué, et se relève avec le type donné par `corpse` dans `units.json`. Un PNJ tué sans armée (plus tard par un autre PNJ) ne laisse pas de cadavre.
@@ -15,7 +57,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 - **Quoi** : chaque unité cherche l'ennemi le plus proche dans sa portée d'aggro toutes les 0,5 s, à un moment qui lui est propre. Elle ne poursuit pas un ennemi à plus de 18 m de son mage. Un ordre d'attaque vise une cible jusqu'à 30 m du mage pour toute l'armée, et un ordre de déplacement l'annule.
 - **Pourquoi** : chercher une cible à chaque tick pour des milliers d'unités coûte trop cher, et sans laisse l'armée se disperse sur la carte.
-- **Impact** : une unité réagit avec jusqu'à 0,5 s de retard. Le mage n'est pas une cible tant que sa mort n'existe pas (2.09).
+- **Impact** : une unité réagit avec jusqu'à 0,5 s de retard. Le mage ennemi est une cible comme une autre, le Lien d'âme (4.05) le protégera.
 - **Avis** : À vérifier. Intervalle, laisse et portée de l'ordre à ajuster en jeu.
 
 ### Population de civils en groupes | L.BA

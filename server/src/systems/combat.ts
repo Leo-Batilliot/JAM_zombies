@@ -18,11 +18,10 @@ export const fight = (world: World, dt: number): void => {
     for (const unit of army.units) {
       unit.cooldown = Math.max(0, unit.cooldown - dt);
       const target = currentTarget(world, unit);
-      if (
-        target === undefined ||
-        unit.cooldown > 0 ||
-        distance(unit, target) > reachDistance(world, unit, target)
-      ) {
+      unit.fighting =
+        target !== undefined &&
+        distance(unit, target) <= reachDistance(world, unit, target);
+      if (target === undefined || !unit.fighting || unit.cooldown > 0) {
         continue;
       }
       const stats = world.registries.units.get(unit.type);

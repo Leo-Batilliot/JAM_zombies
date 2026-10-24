@@ -3,7 +3,14 @@
     "speed": 6,
     "radius": 0.6,
     "baseHp": 100,
-    "hpPerLevel": 20
+    "hpPerLevel": 20,
+    "regenDelaySec": 5,
+    "regenPerSec": 4
+  },
+  "respawn": {
+    "delaySec": 3,
+    "bigArmyStrength": 20,
+    "safeDistance": 80
   },
   "army": {
     "startingUnits": [
@@ -24,7 +31,8 @@
   },
   "reanimation": {
     "delaySec": 30,
-    "raiseRadius": 3
+    "raiseRadius": 3,
+    "riseSec": 0.8
   },
   "souls": {
     "perStrength": 1,

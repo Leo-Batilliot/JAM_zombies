@@ -19,7 +19,10 @@ export const setMageTarget = (
 
 export const moveMages = (world: World, dt: number): void => {
   const step = world.config.gameplay.mage.speed * dt;
-  for (const { mage } of world.armies.values()) {
+  for (const { alive, mage } of world.armies.values()) {
+    if (!alive) {
+      continue;
+    }
     const dx = mage.targetX - mage.x;
     const dy = mage.targetY - mage.y;
     const distance = Math.hypot(dx, dy);

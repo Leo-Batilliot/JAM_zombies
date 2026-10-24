@@ -9,7 +9,7 @@ export const reanimate = (world: World): void => {
       }
       const { x, y } = world.randomNear(army.mage.x, army.mage.y, raiseRadius);
       world.removeEntity(corpse);
-      world.addUnit(army, corpse.type, x, y);
+      world.addUnit(army, corpse.type, x, y).raisedAt = world.time;
     }
   }
 };

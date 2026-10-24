@@ -1,5 +1,7 @@
 import { maintainPopulations, moveCivilians } from "../systems/civilians.js";
 import { fight } from "../systems/combat.js";
+import { regenerateMages, respawnMages } from "../systems/mage.js";
+import { maintainPoints, searchPoints } from "../systems/points.js";
 import { followMages } from "../systems/formation.js";
 import { moveMages } from "../systems/movement.js";
 import { reanimate } from "../systems/reanimation.js";
@@ -18,6 +20,10 @@ export const systems: System[] = [
   separateBodies,
   fight,
   reanimate,
+  regenerateMages,
+  searchPoints,
+  maintainPoints,
+  respawnMages,
 ];
 
 export const runTick = (world: World, dt: number): void => {

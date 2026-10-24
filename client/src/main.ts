@@ -7,10 +7,17 @@ import { join } from "./net/connection.js";
 
 const atlas = loadAtlas();
 
-showHome(getElement("#ui", HTMLElement), async (name) => {
+const ui = getElement("#ui", HTMLElement);
+
+showHome(ui, async (name) => {
   const connection = await join(name);
   connection.onClose = () => {
     location.reload();
   };
-  await startGame(getElement("#game", HTMLElement), connection, await atlas);
+  await startGame(
+    getElement("#game", HTMLElement),
+    ui,
+    connection,
+    await atlas,
+  );
 });

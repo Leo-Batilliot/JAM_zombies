@@ -44,6 +44,8 @@ export const spriteName = (
       return `npc-${content.npcs[entity.type] ?? ""}`;
     case EntityKind.Corpse:
       return "corpse";
+    case EntityKind.PointOfInterest:
+      return `poi-${content.pointsOfInterest[entity.type] ?? ""}`;
   }
 };
 
