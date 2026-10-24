@@ -11,12 +11,13 @@
     "node": ">=24"
   },
   "scripts": {
-    "dev": "npm run dev --workspace server",
+    "dev": "npm run dev --workspace server & npm run dev --workspace client",
     "build": "npm run build --workspaces --if-present",
+    "demo": "npm run build && npm run start --workspace server",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "npm run typecheck --workspaces",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
