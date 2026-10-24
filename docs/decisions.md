@@ -4,6 +4,41 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Positions en mètres, sprites à leur taille native | T.BE
+
+- **Quoi** : le serveur et la config travaillent en mètres. Le client met le monde à l'échelle avec `pixelsPerMeter` (`client.json`) et affiche chaque sprite à sa taille en pixels.
+- **Pourquoi** : les distances du concept sont en mètres (8 m, 6 m). Les sprites de 32 à 64 px restent nets.
+- **Impact** : la carte fait 400 x 400 m au départ. Le protocole quantifie les positions sur la taille de la carte.
+- **Avis** : À vérifier. Taille de carte, vitesse du mage et échelle à ajuster en jeu.
+
+### Nommage des sprites et atlas provisoire | T.BE
+
+- **Quoi** : chaque sprite est nommé `<catégorie>-<nom>`, avec `-<animation>-<image>` pour les animations (par exemple `unit-zombie-walk-0`). L'atlas provisoire est généré par un script jetable, pas par Free Texture Packer.
+- **Pourquoi** : les noms restent lisibles et triables dans l'atlas. Le script évite d'installer l'application pour des formes provisoires.
+- **Impact** : le premier vrai atlas devra être produit avec Free Texture Packer, avec l'extension retirée des noms.
+- **Avis** : Provisoire. À remplacer avec les vrais sprites.
+
+### Messages hors périmètre ignorés par le serveur | T.BE
+
+- **Quoi** : le protocole contient déjà tous les messages prévus (cible, formation, retraite, évolution, démo), mais le serveur n'en traite que trois : rejoindre, taille de vue, déplacement. Les autres sont décodés puis ignorés. Un message mal formé ou envoyé avant d'avoir rejoint ferme la connexion.
+- **Pourquoi** : le format est fixé une fois, chaque étape suivante ne fait que brancher son traitement.
+- **Impact** : les événements ponctuels (mort, relève, loot) n'ont pas encore de message, ils seront ajoutés avec leur premier usage.
+- **Avis** : Validée.
+
+### Chemins du serveur relatifs à server/ | T.BE
+
+- **Quoi** : les scripts du serveur tournent depuis `server/`, et `CONFIG_DIR` et `CLIENT_DIR` sont relatifs à ce dossier. Toutes les variables de `.env.example` sont obligatoires.
+- **Pourquoi** : npm lance les scripts d'un workspace depuis son dossier, aucun chemin n'est écrit en dur.
+- **Impact** : il faut un `.env` pour lancer le serveur. Une variable d'environnement déjà définie prend le pas sur le `.env`.
+- **Avis** : Validée.
+
+### Schéma de config dans shared/src | T.BE
+
+- **Quoi** : les fichiers JSON restent dans `shared/config/`, mais le schéma zod est dans `shared/src/config/schema.ts`. Chaque objet est strict : une clé inconnue fait échouer le chargement. Le dossier de config est donné par la variable `CONFIG_DIR`, obligatoire.
+- **Pourquoi** : tout le code TypeScript de `shared/` est compilé depuis `src/`. Une clé mal orthographiée serait sinon ignorée sans erreur.
+- **Impact** : `concept.md` §9.5 et `plan.md` (1.03) mis à jour. Il faut copier `.env.example` en `.env` avant de lancer le serveur.
+- **Avis** : Validée.
+
 ### TypeScript 6.0 au lieu de 7 | T.BE
 
 - **Quoi** : TypeScript est fixé en 6.0.3.

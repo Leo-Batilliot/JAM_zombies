@@ -3,9 +3,17 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@horde/shared": "*"
+    "@horde/shared": "*",
+    "pixi.js": "8.22.0",
+    "qrcode": "1.5.4"
+  },
+  "devDependencies": {
+    "@types/qrcode": "1.5.6",
+    "vite": "8.3.5"
   }
 }

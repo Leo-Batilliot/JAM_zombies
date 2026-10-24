@@ -346,7 +346,7 @@ Tous les nombres de ce document (durées, rayons, pourcentages, seuils, statisti
 | `network.json` | Ticks par seconde (20), délai d'interpolation (100 ms), marge de la gestion d'intérêt |
 | `client.json` | Volumes audio, densité de pixels maximale (2), durée du screamer (0,8 s) |
 
-- **Validation** : chaque fichier est décrit par un schéma zod (`shared/config/schema.ts`) et validé au démarrage. Un fichier invalide fait échouer le démarrage avec un message clair.
+- **Validation** : chaque fichier est décrit par un schéma zod (`shared/src/config/schema.ts`) et validé au démarrage. Un fichier invalide fait échouer le démarrage avec un message clair.
 - **Rechargement à chaud** : le serveur surveille `shared/config/` et recharge les fichiers modifiés **en pleine partie**, puis envoie les valeurs utiles aux clients connectés. Si un fichier rechargé est invalide, le serveur garde l'ancienne config et journalise l'erreur.
 - **Exceptions** : les valeurs structurelles (`network.json`, taille de la carte) demandent un redémarrage. Elles sont signalées comme telles dans le schéma.
 - **Accès dans le code** : les valeurs passent toujours par l'objet de config (`config.gameplay.reanimation.delaySec`), jamais par une copie locale. C'est ce qui permet au rechargement à chaud de fonctionner.
