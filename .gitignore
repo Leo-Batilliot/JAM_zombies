@@ -1,0 +1,34 @@
+ressources/*
+!ressources/exemples/
+!ressources/exemples/**
+!ressources/prompts/
+!ressources/prompts/**
+
+# Dépendances
+node_modules/
+
+# Builds
+dist/
+*.tsbuildinfo
+.vite/
+
+# Tests
+coverage/
+
+# Environnement
+.env
+.env.*
+!.env.example
+
+# Journaux
+*.log
+npm-debug.log*
+
+# Système et éditeurs
+.DS_Store
+Thumbs.db
+.idea/
+
+# Réglages locaux
+.claude/settings.local.json
+
