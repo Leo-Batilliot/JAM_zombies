@@ -1,0 +1,7 @@
+{
+  "tickRate": 20,
+  "interpolationDelayMs": 100,
+  "interestMargin": 10,
+  "maxViewSize": 120,
+  "maxMessageBytes": 1024
+}

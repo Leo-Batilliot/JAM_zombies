@@ -36,7 +36,7 @@ Workflow GitHub Actions qui lance lint, typecheck, tests et build sur chaque pus
 
 ### 1.03 Chargement et validation de la config | P1
 
-`shared/config/schema.ts` avec un schéma zod par fichier, les 9 fichiers JSON du concept (§9.5) remplis avec les valeurs nécessaires à la phase 1. Les étapes suivantes ajoutent leurs propres clés et schémas. Chargement au démarrage, échec avec un message clair si un fichier est invalide, valeurs structurelles marquées dans le schéma.
+`shared/src/config/schema.ts` avec un schéma zod par fichier, les 9 fichiers JSON du concept (§9.5) remplis avec les valeurs nécessaires à la phase 1. Les étapes suivantes ajoutent leurs propres clés et schémas. Chargement au démarrage, échec avec un message clair si un fichier est invalide, valeurs structurelles marquées dans le schéma.
 
 ### 1.04 Rechargement à chaud de la config | P1
 
