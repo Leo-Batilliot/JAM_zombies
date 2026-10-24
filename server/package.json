@@ -6,7 +6,8 @@
     "dev": "tsx watch --conditions=development --env-file-if-exists=../.env src/main.ts",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "start": "node --env-file-if-exists=../.env dist/main.js"
+    "start": "node --env-file-if-exists=../.env dist/main.js",
+    "load-test": "tsx --conditions=development --env-file-if-exists=../.env scripts/load-test.ts --participants 40 --units 150 --seconds 20 --warmup 3 --view 80x45"
   },
   "dependencies": {
     "@horde/shared": "*",

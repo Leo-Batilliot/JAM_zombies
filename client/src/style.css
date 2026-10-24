@@ -38,6 +38,11 @@ body {
   pointer-events: auto;
 }
 
+#ui > .hud,
+#ui > .death {
+  pointer-events: none;
+}
+
 .home {
   position: absolute;
   inset: 0;
@@ -147,4 +152,105 @@ body.share canvas {
 body.share p {
   font-size: 1.4rem;
   word-break: break-all;
+}
+
+.death {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(20 16 24 / 70%);
+  color: var(--danger);
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  text-align: center;
+}
+
+.death[hidden] {
+  display: none;
+}
+
+.hud {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: max(0.6rem, env(safe-area-inset-top))
+    max(0.6rem, env(safe-area-inset-right)) 0.6rem
+    max(0.6rem, env(safe-area-inset-left));
+  font-size: clamp(0.7rem, 1.6vw, 0.95rem);
+}
+
+.hud section {
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.5rem;
+  background: rgb(36 28 44 / 75%);
+}
+
+.hud-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hud-level {
+  font-weight: bold;
+  color: var(--accent-light);
+}
+
+.hud-hp {
+  position: relative;
+  width: clamp(7rem, 22vw, 12rem);
+  height: 1.1em;
+  overflow: hidden;
+  border-radius: 0.3rem;
+  background: rgb(0 0 0 / 50%);
+}
+
+.hud-hp-fill {
+  height: 100%;
+  background: var(--danger);
+  transition: width 0.15s;
+}
+
+.hud-hp span {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  font-size: 0.85em;
+  line-height: 1.3;
+}
+
+.hud-army {
+  margin-top: 0.3rem;
+  color: var(--muted);
+}
+
+.hud-board {
+  min-width: 9rem;
+}
+
+.hud-rank {
+  margin-bottom: 0.2rem;
+  font-weight: bold;
+}
+
+.hud-board ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hud-board li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  color: var(--muted);
+}
+
+.hud-board li.self {
+  color: var(--text);
+  font-weight: bold;
 }

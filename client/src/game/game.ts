@@ -1,37 +1,35 @@
 import {
   Application,
   Container,
-  TilingSprite,
   type FederatedPointerEvent,
   type Spritesheet,
-  type Texture,
 } from "pixi.js";
-import { ClientMessageType, EntityKind } from "@horde/shared";
+import { ClientMessageType, type SnapshotEntity } from "@horde/shared";
+import { DeathScreen } from "../death.js";
+import { Hud } from "../hud.js";
 import type { Connection } from "../net/connection.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
+import { MapLayer } from "./map.js";
 import { ClickMarker } from "./marker.js";
+import { pickEnemy } from "./picking.js";
 
-const rightButton = 2;
-
-const getTexture = (atlas: Spritesheet, name: string): Texture => {
-  const texture = atlas.textures[name];
-  if (texture === undefined) {
-    throw new Error(`Missing sprite ${name}`);
-  }
-  return texture;
-};
+const leftButton = 0;
 
 export const startGame = async (
   root: HTMLElement,
+  ui: HTMLElement,
   connection: Connection,
   atlas: Spritesheet,
 ): Promise<void> => {
-  const { config } = connection;
+  const config = () => connection.config;
   const app = new Application();
   await app.init({
     resizeTo: window,
-    resolution: Math.min(window.devicePixelRatio, config.client.maxPixelRatio),
+    resolution: Math.min(
+      window.devicePixelRatio,
+      config().client.maxPixelRatio,
+    ),
     autoDensity: true,
     antialias: true,
     background: "#141018",
@@ -42,65 +40,93 @@ export const startGame = async (
   });
 
   const world = new Container();
-  const ground = new TilingSprite({
-    texture: getTexture(atlas, "ground"),
-    width: config.world.width * config.client.pixelsPerMeter,
-    height: config.world.height * config.client.pixelsPerMeter,
-  });
-  ground.scale.set(1 / config.client.pixelsPerMeter);
-  const entities = new EntityLayer(
-    { [EntityKind.Mage]: getTexture(atlas, "mage") },
-    () => config.client.pixelsPerMeter,
-  );
-  const marker = new ClickMarker(() => config.client.markerDurationMs);
-  world.addChild(ground, marker.graphics, entities.container);
+  const map = new MapLayer(atlas.textures);
+  map.build(config());
+  const entities = new EntityLayer(atlas.textures, connection);
+  const marker = new ClickMarker(() => config().client.markerDurationMs);
+  world.addChild(map.container, marker.graphics, entities.container);
   app.stage.addChild(world);
 
-  const buffer = new SnapshotBuffer(config.network);
+  const hud = new Hud(ui);
+  connection.onStatus = (status) => {
+    hud.setStatus(status);
+  };
+  connection.onLeaderboard = (leaderboard) => {
+    hud.setLeaderboard(leaderboard);
+  };
+  const death = new DeathScreen(ui);
+  connection.onDied = (killer) => {
+    death.show(killer);
+  };
+
+  const buffer = new SnapshotBuffer(config().network);
+  connection.onConfig = (next) => {
+    buffer.settings = next.network;
+    map.build(next);
+    sendView();
+  };
   connection.onSnapshot = (snapshot) => {
     buffer.push(snapshot.tick, snapshot.entities, performance.now());
   };
 
   const sendView = (): void => {
+    const { pixelsPerMeter } = config().client;
     connection.send({
       type: ClientMessageType.View,
-      width: app.screen.width / config.client.pixelsPerMeter,
-      height: app.screen.height / config.client.pixelsPerMeter,
+      width: app.screen.width / pixelsPerMeter,
+      height: app.screen.height / pixelsPerMeter,
     });
   };
   sendView();
   app.renderer.on("resize", sendView);
 
-  const moveTo = (event: FederatedPointerEvent): void => {
+  let frame: SnapshotEntity[] = [];
+
+  const command = (event: FederatedPointerEvent): void => {
+    const { width, height } = config().world;
     const point = world.toLocal(event.global);
-    const x = Math.min(Math.max(point.x, 0), config.world.width);
-    const y = Math.min(Math.max(point.y, 0), config.world.height);
-    connection.send({ type: ClientMessageType.Move, x, y });
-    marker.show(x, y, performance.now());
+    const x = Math.min(Math.max(point.x, 0), width);
+    const y = Math.min(Math.max(point.y, 0), height);
+    const self = frame.find((entity) => entity.id === connection.mageId);
+    const enemy = pickEnemy(
+      frame,
+      x,
+      y,
+      config().client.pickRadius,
+      self?.army,
+    );
+    if (enemy === undefined) {
+      connection.send({ type: ClientMessageType.Move, x, y });
+      marker.show(x, y, performance.now(), false);
+    } else {
+      connection.send({ type: ClientMessageType.Target, entityId: enemy.id });
+      marker.show(enemy.x, enemy.y, performance.now(), true);
+    }
   };
 
   app.stage.eventMode = "static";
   app.stage.hitArea = app.screen;
   app.stage.on("pointerdown", (event) => {
-    if (event.pointerType === "mouse" && event.button === rightButton) {
-      moveTo(event);
+    if (event.pointerType === "mouse" && event.button === leftButton) {
+      command(event);
     }
   });
   app.stage.on("pointertap", (event) => {
     if (event.pointerType !== "mouse") {
-      moveTo(event);
+      command(event);
     }
   });
 
-  const camera = { x: config.world.width / 2, y: config.world.height / 2 };
+  const camera = { x: config().world.width / 2, y: config().world.height / 2 };
   app.ticker.add(() => {
     const now = performance.now();
-    const scale = config.client.pixelsPerMeter;
-    const frame = buffer.sample(now);
+    const scale = config().client.pixelsPerMeter;
+    frame = buffer.sample(now);
     const self = frame.find((entity) => entity.id === connection.mageId);
     if (self !== undefined) {
       camera.x = self.x;
       camera.y = self.y;
+      death.hide();
     }
     world.scale.set(scale);
     world.position.set(
@@ -115,7 +141,7 @@ export const startGame = async (
       maxX: camera.x + halfWidth,
       maxY: camera.y + halfHeight,
     };
-    entities.update(frame, view);
+    entities.update(frame, view, now);
     marker.update(now);
   });
 };

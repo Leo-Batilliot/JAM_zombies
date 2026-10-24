@@ -270,6 +270,10 @@ Touche R et bouton Retraite séparé sur mobile, choix du point de sortie, bouto
 
 Les bots attaquent plus faible qu'eux, fuient plus fort avec la Retraite et évitent de se faire encercler.
 
+### 4.15 Réduction du débit | P1
+
+Débit par client ramené sous ~64 Ko/s avec 40 participants et des armées pleines (voir `docs/load-test.md`) : snapshots en delta ou à fréquence réduite, identifiants plus courts, marge d'intérêt ajustée. Nouvelle mesure avec le script de test de charge.
+
 ## Phase 5 : Monde et équipement du MVP
 
 Objectif : le MVP du concept (§11) est complet et testé à 4 joueurs et 8 bots sur téléphone.

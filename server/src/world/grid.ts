@@ -1,4 +1,5 @@
 interface GridItem {
+  id: number;
   x: number;
   y: number;
   cell: number;
@@ -7,7 +8,7 @@ interface GridItem {
 const cellOffset = 0x8000;
 
 export class SpatialGrid {
-  readonly #cells = new Map<number, Set<number>>();
+  readonly #cells = new Map<number, Set<GridItem>>();
   readonly #items = new Map<number, GridItem>();
 
   constructor(readonly cellSize: number) {}
@@ -24,20 +25,20 @@ export class SpatialGrid {
     return this.#key(this.#coord(x), this.#coord(y));
   }
 
-  #addToCell(cell: number, id: number): void {
-    let ids = this.#cells.get(cell);
-    if (ids === undefined) {
-      ids = new Set();
-      this.#cells.set(cell, ids);
+  #addToCell(item: GridItem): void {
+    let items = this.#cells.get(item.cell);
+    if (items === undefined) {
+      items = new Set();
+      this.#cells.set(item.cell, items);
     }
-    ids.add(id);
+    items.add(item);
   }
 
-  #removeFromCell(cell: number, id: number): void {
-    const ids = this.#cells.get(cell);
-    ids?.delete(id);
-    if (ids?.size === 0) {
-      this.#cells.delete(cell);
+  #removeFromCell(item: GridItem): void {
+    const items = this.#cells.get(item.cell);
+    items?.delete(item);
+    if (items?.size === 0) {
+      this.#cells.delete(item.cell);
     }
   }
 
@@ -50,9 +51,9 @@ export class SpatialGrid {
       this.update(id, x, y);
       return;
     }
-    const cell = this.#cellOf(x, y);
-    this.#items.set(id, { x, y, cell });
-    this.#addToCell(cell, id);
+    const item = { id, x, y, cell: this.#cellOf(x, y) };
+    this.#items.set(id, item);
+    this.#addToCell(item);
   }
 
   update(id: number, x: number, y: number): void {
@@ -63,9 +64,9 @@ export class SpatialGrid {
     }
     const cell = this.#cellOf(x, y);
     if (cell !== item.cell) {
-      this.#removeFromCell(item.cell, id);
-      this.#addToCell(cell, id);
+      this.#removeFromCell(item);
       item.cell = cell;
+      this.#addToCell(item);
     }
     item.x = x;
     item.y = y;
@@ -76,7 +77,7 @@ export class SpatialGrid {
     if (item === undefined) {
       return;
     }
-    this.#removeFromCell(item.cell, id);
+    this.#removeFromCell(item);
     this.#items.delete(id);
   }
 
@@ -93,19 +94,18 @@ export class SpatialGrid {
     const endY = this.#coord(maxY);
     for (let cx = startX; cx <= endX; cx++) {
       for (let cy = startY; cy <= endY; cy++) {
-        const ids = this.#cells.get(this.#key(cx, cy));
-        if (ids === undefined) {
+        const items = this.#cells.get(this.#key(cx, cy));
+        if (items === undefined) {
           continue;
         }
-        for (const id of ids) {
-          const item = this.#items.get(id) as GridItem;
+        for (const item of items) {
           if (
             item.x >= minX &&
             item.x <= maxX &&
             item.y >= minY &&
             item.y <= maxY
           ) {
-            out.push(id);
+            out.push(item.id);
           }
         }
       }
@@ -126,16 +126,15 @@ export class SpatialGrid {
     const radiusSquared = radius * radius;
     for (let cx = startX; cx <= endX; cx++) {
       for (let cy = startY; cy <= endY; cy++) {
-        const ids = this.#cells.get(this.#key(cx, cy));
-        if (ids === undefined) {
+        const items = this.#cells.get(this.#key(cx, cy));
+        if (items === undefined) {
           continue;
         }
-        for (const id of ids) {
-          const item = this.#items.get(id) as GridItem;
+        for (const item of items) {
           const dx = item.x - x;
           const dy = item.y - y;
           if (dx * dx + dy * dy <= radiusSquared) {
-            out.push(id);
+            out.push(item.id);
           }
         }
       }

@@ -4,6 +4,106 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Infection des civils, clic gauche et clics bloqués par le HUD | 2.07-2.17 | L.BA
+
+- `shared/src/config/schema.ts`, `shared/config/units.json` : option `infects` des PNJ, activée pour le civil.
+- `server/src/systems/death.ts` : un PNJ qui infecte devient une unité de son tueur sur place, sans cadavre.
+- `client/src/game/game.ts` : déplacement et attaque au clic gauche.
+- `client/src/style.css` : le HUD et l'écran de mort laissent passer les clics vers le canvas.
+- `client/index.html` : message de rotation masqué avant le chargement de la CSS.
+- `docs/concept.md` : infection des civils, contrôles au clic gauche.
+- `server/tests/`, `shared/tests/` : infection immédiate, PNJ sans infection.
+
+### HUD et test de charge | 2.17-2.18 | L.BA
+
+- `shared/src/protocol/messages.ts` : message d'état du joueur (armée, PV, niveau, âmes, unités, force).
+- `server/src/net/sockets.ts` : état du joueur envoyé avec chaque snapshot.
+- `server/src/systems/targeting.ts` : intervalle de ciblage tiré au hasard pour étaler la charge sur les ticks.
+- `server/src/world/loop.ts` : somme et nombre de ticks pour le temps moyen.
+- `server/scripts/load-test.ts` : serveur et faux clients dans deux processus, mesure du temps de tick et du débit par client.
+- `server/package.json`, `server/tsconfig.json` : script `load-test` et ses paramètres, dossier `scripts` vérifié.
+- `client/src/hud.ts`, `client/src/leaderboard.ts`, `client/src/style.css` : PV et niveau du mage, taille et force de l'armée, classement en direct.
+- `client/src/net/connection.ts`, `client/src/game/game.ts` : réception de l'état du joueur.
+- `client/src/game/picking.ts` : un mage ennemi peut être choisi comme cible.
+- `server/src/world/world.ts` : retrait d'une fonction inutilisée.
+- `docs/load-test.md` : méthode et résultats.
+- `docs/plan.md` : étape 4.15 de réduction du débit.
+- `docs/concept.md` : âmes et niveau perdus à la mort du mage.
+- `shared/tests/`, `client/tests/` : message d'état, lignes du classement.
+
+### Lobby, bots, diffusion de la config et classement | 2.13-2.16 | L.BA
+
+- `shared/src/config/schema.ts` : minimum, maximum (254 au plus) et délai de grâce du lobby, réglages des bots et du classement.
+- `shared/config/lobby.json` : 12 à 40 participants, 60 s de grâce, noms des bots tirés des films de zombies.
+- `shared/src/protocol/messages.ts` : jeton de reprise dans l'entrée en jeu et la bienvenue, refus pour lobby plein, message de classement.
+- `shared/src/protocol/bytes.ts` : correction de l'écriture qui tombait hors du tampon quand il devait s'agrandir.
+- `server/src/lobby/lobby.ts` : bots ajoutés jusqu'au minimum, remplacement du bot le plus faible par un charnier, refus au-delà du maximum, reprise par un bot à la déconnexion, retour avec le jeton pendant le délai de grâce.
+- `server/src/lobby/bots.ts` : machine à états des bots (piller, chasser les civils, errer) avec les commandes d'un joueur.
+- `server/src/lobby/leaderboard.ts` : classement par force totale, top 10 et rang de chaque armée.
+- `server/src/world/world.ts` : armée pilotée par un bot, jetons de reprise.
+- `server/src/net/sockets.ts`, `server/src/main.ts` : entrée par le lobby, classement périodique, config renvoyée après chaque rechargement.
+- `client/src/net/connection.ts` : jeton gardé dans le navigateur, config et classement reçus en cours de partie.
+- `client/src/game/game.ts`, `client/src/game/interpolation.ts` : délai d'interpolation et carte mis à jour au rechargement.
+- `client/src/home.ts` : message de lobby plein.
+- `server/tests/`, `shared/tests/` : lobby, bots, classement, sockets, agrandissement du tampon, banc de la grille mesuré sur le meilleur passage.
+
+### Mort du mage, rendu du combat et points d'intérêt | 2.09-2.12 | L.BA
+
+- `shared/src/config/schema.ts` : régénération et réapparition du mage, durée de relève, types de points d'intérêt et charnier, durées d'animation du client.
+- `shared/config/` : réapparition après 3 s loin des armées de force 20, régénération de 4 PV/s après 5 s sans dégât, charnier.
+- `shared/src/registry.ts` : vérification du type de charnier.
+- `shared/src/protocol/messages.ts` : entité de point d'intérêt, drapeaux combat, relève et déjà fouillé, message de mort du mage.
+- `server/src/world/world.ts` : état de vie de l'armée, nom du tueur, fouille en cours, points d'intérêt.
+- `server/src/systems/mage.ts` : dégâts au mage, mort, réapparition loin des grosses armées, régénération hors combat.
+- `server/src/systems/strength.ts` : force totale d'une armée.
+- `server/src/systems/points.ts` : fouille à proximité interrompue par une attaque, une fouille par armée, durée de vie et réapparition ailleurs, charnier qui réanime ses cadavres pour le premier pilleur.
+- `server/src/systems/targeting.ts`, `server/src/systems/combat.ts` : le mage ennemi devient une cible, état de combat de chaque unité.
+- `server/src/net/` : drapeaux par spectateur, message de mort envoyé au joueur.
+- `client/src/game/entities.ts` : animation d'attaque, animation de relève, cadavres avec leur âme, points d'intérêt, disparition du mage.
+- `client/src/death.ts`, `client/src/style.css` : écran de mort jusqu'à la réapparition.
+- `client/src/net/connection.ts` : réception de la mort du mage.
+- `server/tests/`, `shared/tests/`, `client/tests/` : mort et réapparition, régénération, fouille, charnier, drapeaux.
+
+### Civils, combat, cadavres et âmes | 2.05-2.08 | L.BA
+
+- `shared/src/config/schema.ts` : statistiques de combat des unités, PNJ, populations, combat, réanimation, âmes et niveaux, PV du mage, rayon de sélection d'un ennemi.
+- `shared/config/` : civil, population de 150 civils, PV et dégâts du zombie, délai de réanimation de 30 s, coût des niveaux.
+- `shared/src/registry.ts` : vérification du PNJ de chaque population.
+- `shared/src/protocol/messages.ts` : entités de PNJ et de cadavre.
+- `server/src/world/world.ts` : PNJ et groupes, cadavres avec propriétaire et tueur, PV des unités et du mage, âmes et niveau de l'armée.
+- `server/src/world/grid.ts` : éléments stockés directement dans les cellules, plus rapide sur les requêtes.
+- `server/src/world/spawn.ts` : choix d'un point loin des mages.
+- `server/src/systems/civilians.ts` : groupes qui errent et fuient les armées, population maintenue.
+- `server/src/systems/targeting.ts` : ciblage échelonné de l'ennemi le plus proche, laisse autour du mage, ordre d'attaque.
+- `server/src/systems/combat.ts` : poursuite et attaques selon la cadence et les dégâts du registre.
+- `server/src/systems/death.ts` : mort d'une unité ou d'un PNJ, âmes du tueur, cadavre.
+- `server/src/systems/reanimation.ts` : relève près du mage propriétaire après le délai.
+- `server/src/systems/souls.ts` : niveau selon les âmes, PV max selon le niveau.
+- `server/src/systems/orders.ts` : ordres de déplacement et d'attaque.
+- `server/src/net/` : ordre d'attaque, PNJ et cadavres dans le snapshot.
+- `client/src/game/picking.ts`, `client/src/game/game.ts` : clic ou tap sur un ennemi pour l'attaquer.
+- `client/src/game/marker.ts` : marqueur rouge pour un ordre d'attaque.
+- `server/tests/`, `shared/tests/`, `client/tests/` : civils, ciblage, combat, cadavres, réanimation, âmes, sélection d'un ennemi.
+
+### Armées, suivi du mage et carte | 2.01-2.04 | L.BA
+
+- `shared/src/config/schema.ts` : armée de départ, rayon du mage, séparation, placement par défaut, statistiques de déplacement des unités, décor, palette d'auras et durées d'animation, types d'unités envoyés au client.
+- `shared/config/` : zombie, armée de départ de 5 zombies, placement par défaut, décor, cellules de grille de 4 m, palette d'auras.
+- `shared/src/registry.ts` : position de chaque type dans son registre, vérification de l'armée de départ.
+- `shared/src/random.ts` : générateur pseudo-aléatoire avec graine, partagé par le serveur et le client.
+- `shared/src/protocol/messages.ts` : entité d'unité, snapshot à 12 octets par entité (type, armée, drapeaux).
+- `server/src/world/world.ts` : armées avec un emplacement unique, mage orienté, unités typées.
+- `server/src/systems/army.ts` : apparition d'une armée avec ses unités de départ autour du mage.
+- `server/src/systems/formation.ts` : places par défaut relatives au mage, steering vers sa place.
+- `server/src/systems/separation.ts` : séparation des unités entre elles et avec les mages.
+- `server/src/systems/movement.ts` : orientation du mage vers sa cible.
+- `server/src/net/` : une armée par joueur, type et armée de chaque entité dans le snapshot.
+- `client/src/game/entities.ts` : sprites par type, aura colorée par armée, grimoire flottant, orientation et marche.
+- `client/src/game/map.ts`, `client/src/game/decor.ts` : sol, décor placé depuis la graine de config, bords de la carte.
+- `client/src/game/sprites.ts` : animations lues dans l'atlas, couleur d'armée.
+- `client/public/atlas/` : atlas provisoire de la phase 2 (marche, attaque, grimoire, aura, âme, cadavre, charnier, décor).
+- `server/tests/`, `shared/tests/`, `client/tests/` : armée de départ, places, suivi, séparation, protocole, animations, décor.
+
 ### Socle technique de la phase 1 | 1.04-1.18 | T.BE
 
 - `shared/src/config/schema.ts` : clés de la phase 1 (mage, monde, lobby, réseau, client), registres de contenu, sous-ensemble de config envoyé au client, liste des valeurs structurelles.

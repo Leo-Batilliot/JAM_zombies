@@ -36,7 +36,7 @@ Il faut en implémenter au moins 3, on fait les 4 pour être sûr d'en avoir au 
 ## 3. Boucle de jeu
 
 1. Le joueur arrive sur la page (QR code pendant la démo), choisit un pseudo et apparaît avec **son mage et 5 zombies**.
-2. Il se déplace en cliquant (§4.1) et tue des civils qui se relèvent dans son armée.
+2. Il se déplace en cliquant (§4.1) et infecte des civils, qui rejoignent aussitôt son armée.
 3. Il fouille les points d'intérêt (voitures, coffres, cimetières) pour s'équiper.
 4. Il fait évoluer ses troupes, choisit ses formations, attaque des camps humains puis d'autres joueurs.
 5. Les événements de la carte (brume, bombardements, boss citrouille) le forcent à bouger et ouvrent des occasions de remonter au classement.
@@ -57,8 +57,8 @@ Il faut en implémenter au moins 3, on fait les 4 pour être sûr d'en avoir au 
 
 | Action | PC | Téléphone |
 |---|---|---|
-| Déplacer le mage et l'armée | Clic droit sur le sol | Tap sur le sol |
-| Attaquer une cible | Clic droit sur un ennemi | Tap sur un ennemi |
+| Déplacer le mage et l'armée | Clic gauche sur le sol | Tap sur le sol |
+| Attaquer une cible | Clic gauche sur un ennemi | Tap sur un ennemi |
 | Changer de formation | Touches 1 à 4 | 4 boutons en bas de l'écran |
 | Battre en retraite | Touche R | Bouton Retraite, distinct des formations |
 | Choisir une évolution | Clic dans la popup | Tap dans la popup |
@@ -72,7 +72,7 @@ Il faut en implémenter au moins 3, on fait les 4 pour être sûr d'en avoir au 
 
 Ces règles sont au cœur du jeu et doivent être implémentées telles quelles.
 
-1. **Réanimation** : toute unité tuée laisse un cadavre qui se relève **30 s après sa mort**, **près du mage** du camp propriétaire, avec son équipement.
+1. **Réanimation** : toute unité tuée laisse un cadavre qui se relève **30 s après sa mort**, **près du mage** du camp propriétaire, avec son équipement. Les civils font exception : ils ne meurent pas, ils sont **infectés** et deviennent des zombies sur place, aussitôt, dans l'armée qui les a infectés.
    **Le mage ne peut pas réanimer tant qu'il est lui-même en bataille** (§4.4). Ses cadavres attendent alors sous forme d'âme qui flotte au-dessus du corps, et se relèvent dès qu'il sort de bataille, si leurs 30 s sont écoulées.
 2. **Propriété des cadavres** : un cadavre appartient par défaut au camp de l'unité morte. Il **ne change de propriétaire que dans deux cas : la fuite (Retraite) ou la mort du mage.**
    Chaque cadavre retient le camp qui lui a porté le coup fatal (son **tueur**). C'est ce camp qui le récupère lors d'un transfert, ce qui règle aussi les batailles à 3 armées ou plus.
@@ -90,7 +90,7 @@ Ces règles sont au cœur du jeu et doivent être implémentées telles quelles.
    - si le groupe abandonné **remporte finalement le combat**, les marques sont levées : ses morts restent à son camp d'origine. Les mages ennemis qui fuient ou meurent face à lui transfèrent leurs cadavres selon les règles 3 et 4. Le groupe convertit donc des ennemis **même loin de son mage** ;
    - si le groupe abandonné est entièrement détruit, tous ses cadavres passent à leurs tueurs.
 6. **Retour au mage** : un groupe d'unités qui n'est plus en combat et se trouve loin de son mage le rejoint à **vitesse fortement augmentée** (×2,5) jusqu'à reprendre sa place dans la formation.
-7. **Réapparition du mage** : il réapparaît à un endroit aléatoire éloigné des grosses armées, avec 5 zombies, et perd son équipement et ses troupes.
+7. **Réapparition du mage** : il réapparaît à un endroit aléatoire éloigné des grosses armées, avec 5 zombies, et perd son équipement, ses troupes, ses âmes et son niveau.
 8. **Combats contre les PNJ** (civils, camps armés) : les mêmes règles s'appliquent, mais les PNJ ne récupèrent jamais de cadavres. Une unité tuée par un PNJ reste à son camp.
 
 ### 4.3 Protection du mage : le Lien d'âme

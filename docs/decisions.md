@@ -4,6 +4,174 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Civils infectés sur place | L.BA
+
+- **Quoi** : un PNJ marqué `infects` dans `units.json` ne meurt pas : quand une armée le tue, il devient tout de suite une unité du type `corpse` de cette armée, à l'endroit où il est tombé, avec l'animation de relève. Les civils sont marqués ainsi. Les autres PNJ (chasseurs et soldats des camps, 6.06) laisseront un cadavre normal.
+- **Pourquoi** : pour un civil, c'est une infection et non une mort. L'armée grossit aussitôt, ce qui rend la chasse plus satisfaisante.
+- **Impact** : le délai de réanimation de 30 s ne concerne plus que les unités tuées. `concept.md` §3 et §4.2 règle 1 mis à jour.
+- **Avis** : Validée.
+
+### Déplacement et attaque au clic gauche | L.BA
+
+- **Quoi** : sur PC, le clic gauche déplace le mage sur le sol et lance une attaque sur un ennemi. Le clic droit ne fait plus rien, et le menu contextuel reste désactivé sur le canvas.
+- **Pourquoi** : plus naturel pour un jeu .io joué au navigateur que le clic droit à la League of Legends.
+- **Impact** : `concept.md` §4.1 mis à jour. Le tap sur téléphone ne change pas.
+- **Avis** : Validée.
+
+### État du joueur envoyé à chaque tick | L.BA
+
+- **Quoi** : avec chaque snapshot, le serveur envoie au joueur l'emplacement de son armée, ses PV et PV max, son niveau, ses âmes, son nombre d'unités et sa force (22 octets). Le HUD affiche ces valeurs en haut à gauche et le classement en haut à droite.
+- **Pourquoi** : ces valeurs changent souvent en combat, et un message aussi petit ne pèse pas sur le débit.
+- **Impact** : le client ne calcule rien lui-même. Le joueur est mis en avant dans le classement, et ajouté sous le top 10 avec son rang s'il n'y figure pas.
+- **Avis** : Validée.
+
+### Test de charge avec des clients dans un processus séparé | L.BA
+
+- **Quoi** : le script de test de charge lance le serveur dans son propre processus et les faux clients dans un processus enfant. Les paramètres (participants, unités, durée, vue) sont passés en arguments par `server/package.json`. La boucle de tick garde maintenant la somme et le nombre de ticks pour donner une moyenne.
+- **Pourquoi** : décoder les snapshots des 40 clients dans le même processus aurait gonflé le temps de tick mesuré.
+- **Impact** : les résultats sont dans `docs/load-test.md`, à refaire après 4.15.
+- **Avis** : Validée.
+
+### Jeton de reprise et remplacement des bots | L.BA
+
+- **Quoi** : à l'entrée en jeu, le serveur donne un jeton aléatoire de 16 octets que le navigateur garde. À la déconnexion, un bot prend l'armée et le jeton reste valable pendant le délai de grâce. Un jeton ne rend l'armée que si un bot la pilote. Un nouveau joueur remplace le bot le plus faible, mais jamais un bot qui garde l'armée d'un joueur en délai de grâce. Le lobby refuse un joueur quand il compte déjà le maximum de participants.
+- **Pourquoi** : c'est la règle de reprise décidée en phase 0. Le maximum, plafonné à 254 dans le schéma, empêche aussi de manquer d'emplacements d'armée.
+- **Impact** : un deuxième onglet avec le même jeton reçoit une nouvelle armée. Les troupes et les cadavres d'un bot remplacé forment un charnier à la position de son mage.
+- **Avis** : Validée.
+
+### Priorités des bots | L.BA
+
+- **Quoi** : toutes les 0,5 à 1,5 s, un bot va fouiller le point d'intérêt le plus proche à moins de 40 m, sinon il attaque le civil le plus proche à moins de 40 m, sinon il erre jusqu'à 60 m. Il passe par les mêmes ordres qu'un joueur.
+- **Pourquoi** : c'est la machine à états de base du concept. Le délai aléatoire étale le travail des bots sur les ticks.
+- **Impact** : les bots s'attaquent entre eux seulement quand leurs unités se croisent. Combat volontaire et fuite arrivent en 4.14.
+- **Avis** : À vérifier. Portées et fréquence à ajuster en jeu.
+
+### Classement envoyé chaque seconde | L.BA
+
+- **Quoi** : chaque seconde, le serveur classe toutes les armées par force totale (égalité départagée par l'emplacement) et envoie à chaque joueur le top 10 et son propre rang.
+- **Pourquoi** : la force change lentement, un envoi par seconde suffit et reste léger.
+- **Impact** : le classement affiché peut avoir jusqu'à une seconde de retard.
+- **Avis** : Validée.
+
+### Config complète renvoyée au rechargement | L.BA
+
+- **Quoi** : après chaque rechargement réussi, quel que soit le fichier, le serveur renvoie toute la config du client à tous les joueurs. Le client remplace la sienne, reconstruit la carte et met à jour le délai d'interpolation.
+- **Pourquoi** : la config du client est petite, un seul message évite de suivre quel fichier touche quelle valeur.
+- **Impact** : le client doit toujours lire sa config via la connexion, jamais en garder une copie.
+- **Avis** : Validée.
+
+### Âmes et niveau perdus à la mort du mage | L.BA
+
+- **Quoi** : à sa mort, le mage perd ses troupes, ses cadavres, ses âmes et son niveau. Il réapparaît au niveau 1.
+- **Pourquoi** : comme dans un .io classique, mourir remet le joueur au départ. Le concept ne citait que les troupes et l'équipement.
+- **Impact** : le niveau ne s'accumule pas d'une vie à l'autre. `concept.md` §4.2 règle 7 mis à jour.
+- **Avis** : Validée.
+
+### Réapparition automatique loin des grosses armées | L.BA
+
+- **Quoi** : le mage réapparaît seul après 3 s, au point le plus éloigné des armées de force 20 ou plus parmi quelques tirages, avec son armée de départ et ses PV pleins. Le joueur garde le même identifiant de mage.
+- **Pourquoi** : pas d'écran à valider, le joueur revient vite dans la partie. Le screamer de 3.03 se jouera pendant ce délai.
+- **Impact** : le délai doit rester plus long que le screamer et l'écran de mort.
+- **Avis** : À vérifier. Délai, seuil de force et distance à ajuster en jeu.
+
+### Régénération du mage hors combat | L.BA
+
+- **Quoi** : le mage regagne 4 PV/s après 5 s sans subir de dégât, jusqu'à ses PV max.
+- **Pourquoi** : sans régénération, un mage blessé le resterait jusqu'à sa mort ou à sa prochaine montée de niveau.
+- **Impact** : fuir un combat assez longtemps permet de revenir à pleine santé.
+- **Avis** : À vérifier. Délai et vitesse à équilibrer en jeu.
+
+### Fouille automatique et charnier au premier pilleur | L.BA
+
+- **Quoi** : un mage qui reste près d'un point d'intérêt qu'il n'a pas encore fouillé le fouille tout seul, et la fouille repart de zéro s'il subit des dégâts. Le charnier fait exception au butin individuel : le premier qui le fouille relève tous ses cadavres et le charnier disparaît.
+- **Pourquoi** : aucun bouton à ajouter sur téléphone. Un charnier copié pour chaque pilleur dupliquerait des armées entières.
+- **Impact** : le type de récompense (`reward`) de chaque point d'intérêt choisit son effet. Seul `corpses` existe pour l'instant.
+- **Avis** : Validée.
+
+### Premier message ponctuel : la mort du mage | L.BA
+
+- **Quoi** : le serveur envoie au joueur un message séparé à sa mort, avec le nom de son tueur (vide si aucun). Les autres états visibles (combat, relève, déjà fouillé) passent par les drapeaux du snapshot.
+- **Pourquoi** : la mort doit déclencher l'écran du joueur une seule fois, sans dépendre d'un snapshot.
+- **Impact** : les autres joueurs voient le mage disparaître dans un fondu. Le screamer (3.03) s'appuiera sur ce message.
+- **Avis** : Validée.
+
+### Âme affichée sur chaque cadavre | L.BA
+
+- **Quoi** : tout cadavre au sol affiche une âme qui flotte, puisque tous attendent leur relève.
+- **Pourquoi** : en phase 2, aucun cadavre n'est bloqué par une bataille, il n'y a donc rien à distinguer.
+- **Impact** : la réanimation bloquée en bataille (4.03) devra ajouter un drapeau pour ne montrer l'âme que sur les cadavres en attente.
+- **Avis** : Provisoire. À revoir en 4.03.
+
+### Cadavre d'un PNJ au tueur | L.BA
+
+- **Quoi** : le cadavre d'une unité appartient à son armée. Le cadavre d'un PNJ appartient directement à l'armée qui l'a tué, et se relève avec le type donné par `corpse` dans `units.json`. Un PNJ tué sans armée (plus tard par un autre PNJ) ne laisse pas de cadavre. Les PNJ marqués `infects` ne laissent pas de cadavre (voir l'infection des civils).
+- **Pourquoi** : les PNJ ne récupèrent jamais de cadavres, et tuer des civils doit faire grossir l'armée.
+- **Impact** : chaque cadavre garde aussi son tueur, utilisé par les transferts des phases suivantes. Les cadavres disparaissent avec leur armée.
+- **Avis** : Validée.
+
+### Ciblage échelonné, laisse et ordre d'attaque | L.BA
+
+- **Quoi** : chaque unité cherche l'ennemi le plus proche dans sa portée d'aggro toutes les 0,25 à 0,75 s, tirées au hasard pour que les unités ne cherchent pas toutes au même tick. Elle ne poursuit pas un ennemi à plus de 18 m de son mage. Un ordre d'attaque vise une cible jusqu'à 30 m du mage pour toute l'armée, et un ordre de déplacement l'annule.
+- **Pourquoi** : chercher une cible à chaque tick pour des milliers d'unités coûte trop cher, et sans laisse l'armée se disperse sur la carte.
+- **Impact** : une unité réagit avec jusqu'à 0,75 s de retard. Le mage ennemi est une cible comme une autre, le Lien d'âme (4.05) le protégera.
+- **Avis** : À vérifier. Intervalle, laisse et portée de l'ordre à ajuster en jeu.
+
+### Population de civils en groupes | L.BA
+
+- **Quoi** : chaque population de `world.json` maintient un nombre de PNJ en groupes de 3 à 6. Elle est remplie d'un coup au démarrage, puis un groupe réapparaît toutes les 2 s tant qu'il en manque, au point le plus éloigné des mages parmi quelques tirages. Un groupe erre, et chaque membre fuit l'unité ou le mage le plus proche à moins de 10 m.
+- **Pourquoi** : la ressource de base doit rester disponible partout, sans réapparaître sous les yeux d'un joueur.
+- **Impact** : les civils fuient à 4,5 m/s et les zombies courent à 7 m/s, il faut donc les approcher pour les attraper.
+- **Avis** : À vérifier. Nombre, vitesses et rayon de fuite à ajuster en jeu.
+
+### Coût des niveaux en progression géométrique | L.BA
+
+- **Quoi** : chaque ennemi tué rapporte sa force multipliée par `perStrength` en âmes. Le niveau 2 coûte 10 âmes, puis chaque niveau coûte 1,5 fois le précédent. Le mage gagne 20 PV max par niveau et récupère la différence en montant.
+- **Pourquoi** : la progression est rapide au début et ralentit ensuite, sans plafond de niveau à fixer.
+- **Impact** : le niveau sert aux PV max du mage. Les âmes du surplus au-delà du plafond (5.08) passeront par la même fonction.
+- **Avis** : À vérifier. À équilibrer en jeu.
+
+### Snapshot à 12 octets par entité | L.BA
+
+- **Quoi** : chaque entité du snapshot porte son type (position dans son registre), l'emplacement de son armée et des drapeaux d'état, en plus de son identifiant, de son genre et de sa position. L'orientation et la marche sont déduites par le client à partir du déplacement.
+- **Pourquoi** : le client doit savoir quel sprite dessiner et de quelle couleur, sans message supplémentaire.
+- **Impact** : avec ~400 entités visibles, le débit monte à ~96 Ko/s, au-dessus des ~64 Ko/s prévus. Le registre est limité à 256 types par genre, et le lobby à 255 armées.
+- **Avis** : À vérifier. Le test de charge (2.18) mesure ~55 Ko/s en moyenne avec une vue de téléphone et 80 à 90 Ko/s avec une vue de PC, avec des pointes au-delà de 100 Ko/s. Réduction prévue en 4.15.
+
+### Emplacement d'armée et couleur d'aura | L.BA
+
+- **Quoi** : chaque armée reçoit le plus petit emplacement libre entre 1 et 255, envoyé sur un octet. L'emplacement 0 désigne les entités neutres. La couleur d'aura est prise dans la palette de `client.json` selon l'emplacement.
+- **Pourquoi** : un octet suffit pour reconnaître son armée, celle des autres et les neutres, et la couleur reste stable pendant toute la partie.
+- **Impact** : si la palette est plus courte que le nombre d'armées, deux armées peuvent partager une couleur.
+- **Avis** : Validée.
+
+### Placement par défaut de l'armée | L.BA
+
+- **Quoi** : les unités de rang `front` se placent en rangées devant le mage, celles de rang `back` derrière, chaque rangée centrée sur lui. L'avant est la direction du dernier ordre de déplacement. Le rang est lu dans `units.json`.
+- **Pourquoi** : c'est la règle du concept (mêlée lourde devant, distance derrière) sans tester de type précis dans le code.
+- **Impact** : quand le mage fait demi-tour, toute l'armée le traverse pour reprendre sa place. Les formations de 6.07 remplaceront ce placement.
+- **Avis** : À vérifier. Espacement et distances au mage à ajuster en jeu.
+
+### Cellules de grille de 4 m | L.BA
+
+- **Quoi** : la taille des cellules de la grille spatiale passe de 10 à 4 m.
+- **Pourquoi** : la séparation fait une requête de rayon très court par unité. Avec 10 m, une cellule contient toute une armée serrée.
+- **Impact** : les requêtes de la gestion d'intérêt parcourent plus de cellules.
+- **Avis** : À vérifier. Le test de charge (2.18) tient dans le budget du tick avec ces cellules (29 ms en moyenne pour 50 ms).
+
+### Décor placé par le client depuis une graine | L.BA
+
+- **Quoi** : `world.json` donne une graine et un nombre d'éléments par sprite de décor. Le client place le décor lui-même avec un générateur pseudo-aléatoire partagé, le serveur ne le connaît pas.
+- **Pourquoi** : le décor n'a pas de collision, il n'a donc aucun effet sur la simulation et n'a pas à passer par le réseau.
+- **Impact** : tous les clients voient le même décor tant qu'ils ont la même config. Un décor à position fixe (pub *Winchester*, 3.07) demandera une liste de placements.
+- **Avis** : Validée.
+
+### Valeurs de départ des unités et du mage | L.BA
+
+- **Quoi** : zombie à 7 m/s et 0,45 m de rayon, mage à 6 m/s et 0,6 m de rayon, 5 zombies placés à 2 m du mage.
+- **Pourquoi** : les unités doivent aller un peu plus vite que le mage pour garder leur place pendant qu'il avance.
+- **Impact** : aucune autre valeur n'en dépend pour l'instant.
+- **Avis** : À vérifier. À équilibrer en jeu.
+
 ### Positions en mètres, sprites à leur taille native | T.BE
 
 - **Quoi** : le serveur et la config travaillent en mètres. Le client met le monde à l'échelle avec `pixelsPerMeter` (`client.json`) et affiche chaque sprite à sa taille en pixels.
@@ -20,7 +188,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ### Messages hors périmètre ignorés par le serveur | T.BE
 
-- **Quoi** : le protocole contient déjà tous les messages prévus (cible, formation, retraite, évolution, démo), mais le serveur n'en traite que trois : rejoindre, taille de vue, déplacement. Les autres sont décodés puis ignorés. Un message mal formé ou envoyé avant d'avoir rejoint ferme la connexion.
+- **Quoi** : le protocole contient déjà tous les messages prévus (cible, formation, retraite, évolution, démo), mais le serveur ne traite que ceux dont l'étape est faite : rejoindre, taille de vue, déplacement, cible (2.06). Les autres sont décodés puis ignorés. Un message mal formé ou envoyé avant d'avoir rejoint ferme la connexion.
 - **Pourquoi** : le format est fixé une fois, chaque étape suivante ne fait que brancher son traitement.
 - **Impact** : les événements ponctuels (mort, relève, loot) n'ont pas encore de message, ils seront ajoutés avec leur premier usage.
 - **Avis** : Validée.

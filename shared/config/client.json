@@ -1,5 +1,23 @@
 {
   "maxPixelRatio": 2,
   "pixelsPerMeter": 24,
-  "markerDurationMs": 600
+  "markerDurationMs": 600,
+  "pickRadius": 1.2,
+  "armyColors": [
+    "#e0605a",
+    "#4fa3e0",
+    "#6ad46a",
+    "#e0c04f",
+    "#c46ae0",
+    "#4fe0d0",
+    "#e08f4f",
+    "#e04fa3",
+    "#a3e04f",
+    "#7a6ae0"
+  ],
+  "walkFrameMs": 150,
+  "attackFrameMs": 200,
+  "deathMs": 900,
+  "soulBobMs": 1200,
+  "grimoireBobMs": 1600
 }

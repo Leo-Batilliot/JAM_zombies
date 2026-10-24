@@ -25,10 +25,8 @@ describe("loadConfig", () => {
   });
 
   test("returns validated values", () => {
-    dir.write(
-      "client",
-      '{ "maxPixelRatio": 1.5, "pixelsPerMeter": 20, "markerDurationMs": 300 }',
-    );
+    const { client } = loadConfig(dir.path);
+    dir.write("client", JSON.stringify({ ...client, maxPixelRatio: 1.5 }));
     expect(loadConfig(dir.path).client.maxPixelRatio).toBe(1.5);
   });
 

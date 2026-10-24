@@ -14,7 +14,7 @@ export class SnapshotBuffer {
   #snapshots: TimedSnapshot[] = [];
   #clockOffset: number | undefined;
 
-  constructor(readonly settings: InterpolationSettings) {}
+  constructor(public settings: InterpolationSettings) {}
 
   push(tick: number, entities: SnapshotEntity[], now: number): void {
     const time = (tick * 1000) / this.settings.tickRate;

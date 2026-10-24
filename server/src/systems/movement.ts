@@ -8,24 +8,34 @@ export const setMageTarget = (
 ): void => {
   mage.targetX = world.clampX(x);
   mage.targetY = world.clampY(y);
+  const dx = mage.targetX - mage.x;
+  const dy = mage.targetY - mage.y;
+  const distance = Math.hypot(dx, dy);
+  if (distance > 0) {
+    mage.facingX = dx / distance;
+    mage.facingY = dy / distance;
+  }
 };
 
 export const moveMages = (world: World, dt: number): void => {
   const step = world.config.gameplay.mage.speed * dt;
-  for (const entity of world.entities.values()) {
-    const dx = entity.targetX - entity.x;
-    const dy = entity.targetY - entity.y;
+  for (const { alive, mage } of world.armies.values()) {
+    if (!alive) {
+      continue;
+    }
+    const dx = mage.targetX - mage.x;
+    const dy = mage.targetY - mage.y;
     const distance = Math.hypot(dx, dy);
     if (distance === 0) {
       continue;
     }
     if (distance <= step) {
-      world.setPosition(entity, entity.targetX, entity.targetY);
+      world.setPosition(mage, mage.targetX, mage.targetY);
     } else {
       world.setPosition(
-        entity,
-        entity.x + (dx / distance) * step,
-        entity.y + (dy / distance) * step,
+        mage,
+        mage.x + (dx / distance) * step,
+        mage.y + (dy / distance) * step,
       );
     }
   }

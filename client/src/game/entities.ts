@@ -1,5 +1,12 @@
-import { Container, Sprite, type Texture } from "pixi.js";
-import type { EntityKind, SnapshotEntity } from "@horde/shared";
+import { Container, Sprite, Texture } from "pixi.js";
+import {
+  EntityFlag,
+  EntityKind,
+  neutralArmy,
+  type SnapshotEntity,
+} from "@horde/shared";
+import type { Connection } from "../net/connection.js";
+import { animationFrames, armyColor, frameAt, spriteName } from "./sprites.js";
 
 export interface Rect {
   minX: number;
@@ -8,55 +15,231 @@ export interface Rect {
   maxY: number;
 }
 
+const movingEpsilon = 0.001;
+const auraAlpha = 0.55;
+const searchedAlpha = 0.4;
+const grimoireOffset = { x: 14, y: -26 };
+const soulOffset = -16;
+const bobHeight = 3;
+const groundKinds = new Set([EntityKind.Corpse, EntityKind.PointOfInterest]);
+
+const bob = (now: number, periodMs: number): number =>
+  Math.sin((now / periodMs) * 2 * Math.PI) * bobHeight;
+
+class EntityView {
+  readonly container = new Container();
+  readonly aura = new Sprite();
+  readonly body = new Sprite();
+  readonly extra = new Sprite();
+  kind = EntityKind.Mage;
+  x = Number.NaN;
+  y = 0;
+  facing = 1;
+  movedAt = -Infinity;
+  risingSince: number | undefined;
+  diedAt: number | undefined;
+
+  constructor() {
+    this.aura.anchor.set(0.5);
+    this.aura.alpha = auraAlpha;
+    this.body.anchor.set(0.5, 0.6);
+    this.extra.anchor.set(0.5);
+    this.container.addChild(this.aura, this.body, this.extra);
+  }
+
+  reset(): void {
+    this.x = Number.NaN;
+    this.facing = 1;
+    this.movedAt = -Infinity;
+    this.risingSince = undefined;
+    this.diedAt = undefined;
+    this.container.alpha = 1;
+    this.body.alpha = 1;
+    this.body.scale.set(1);
+  }
+
+  track(x: number, y: number, now: number, holdMs: number): boolean {
+    const dx = x - this.x;
+    if (Math.abs(dx) > movingEpsilon || Math.abs(y - this.y) > movingEpsilon) {
+      this.movedAt = now;
+      if (Math.abs(dx) > movingEpsilon) {
+        this.facing = Math.sign(dx);
+      }
+    }
+    this.x = x;
+    this.y = y;
+    return now - this.movedAt < holdMs;
+  }
+}
+
 export class EntityLayer {
   readonly container = new Container();
-  readonly #active = new Map<number, Sprite>();
-  readonly #pool: Sprite[] = [];
+  readonly #ground = new Container();
+  readonly #bodies = new Container();
+  readonly #active = new Map<number, EntityView>();
+  readonly #dying = new Set<EntityView>();
+  readonly #pool: EntityView[] = [];
   readonly #seen = new Set<number>();
+  readonly #frames = new Map<string, Texture[]>();
 
   constructor(
-    readonly textures: Record<EntityKind, Texture>,
-    readonly scale: () => number,
-  ) {}
-
-  #acquire(): Sprite {
-    const sprite = this.#pool.pop() ?? new Sprite();
-    sprite.anchor.set(0.5);
-    this.container.addChild(sprite);
-    return sprite;
+    readonly textures: Partial<Record<string, Texture>>,
+    readonly connection: Connection,
+  ) {
+    this.#bodies.sortableChildren = true;
+    this.container.addChild(this.#ground, this.#bodies);
   }
 
-  #release(id: number, sprite: Sprite): void {
-    this.container.removeChild(sprite);
-    this.#pool.push(sprite);
-    this.#active.delete(id);
+  #animation(name: string, animation: string): Texture[] {
+    const key = `${name}:${animation}`;
+    let frames = this.#frames.get(key);
+    if (frames === undefined) {
+      frames = animationFrames(this.textures, name, animation);
+      if (frames.length === 0) {
+        frames = [Texture.WHITE];
+      }
+      this.#frames.set(key, frames);
+    }
+    return frames;
   }
 
-  update(entities: SnapshotEntity[], view: Rect): void {
-    const scale = 1 / this.scale();
+  #texture(name: string): Texture {
+    return this.textures[name] ?? Texture.WHITE;
+  }
+
+  #acquire(kind: EntityKind): EntityView {
+    const view = this.#pool.pop() ?? new EntityView();
+    view.reset();
+    view.kind = kind;
+    (groundKinds.has(kind) ? this.#ground : this.#bodies).addChild(
+      view.container,
+    );
+    return view;
+  }
+
+  #release(view: EntityView): void {
+    view.container.removeFromParent();
+    this.#pool.push(view);
+  }
+
+  #drawBody(view: EntityView, entity: SnapshotEntity, now: number): void {
+    const { client, content } = this.connection.config;
+    const name = spriteName(entity, content);
+    const moving = view.track(entity.x, entity.y, now, client.walkFrameMs);
+    const fighting = (entity.flags & EntityFlag.Fighting) !== 0;
+    const walk = this.#animation(name, "walk");
+    const frames = fighting ? this.#animation(name, "attack") : walk;
+    view.body.texture =
+      (moving || fighting
+        ? frameAt(
+            frames,
+            now,
+            fighting ? client.attackFrameMs : client.walkFrameMs,
+          )
+        : walk[0]) ?? Texture.WHITE;
+    view.body.scale.x = view.facing;
+
+    view.aura.visible = entity.army !== neutralArmy;
+    if (view.aura.visible) {
+      view.aura.texture = this.#texture("fx-aura");
+      view.aura.tint = armyColor(client.armyColors, entity.army);
+      view.aura.width = view.body.texture.width * 1.2;
+      view.aura.height = view.body.texture.height * 0.6;
+      view.aura.y = view.body.texture.height * 0.3;
+    }
+
+    view.extra.visible = entity.kind === EntityKind.Mage;
+    if (view.extra.visible) {
+      view.extra.texture = this.#texture("mage-grimoire");
+      view.extra.position.set(
+        grimoireOffset.x * view.facing,
+        grimoireOffset.y + bob(now, client.grimoireBobMs),
+      );
+    }
+
+    this.#drawRise(view, entity, now);
+  }
+
+  #drawRise(view: EntityView, entity: SnapshotEntity, now: number): void {
+    if ((entity.flags & EntityFlag.Rising) === 0) {
+      view.risingSince = undefined;
+      view.container.alpha = 1;
+      view.body.scale.y = 1;
+      return;
+    }
+    view.risingSince ??= now;
+    const riseMs = this.connection.config.gameplay.riseSec * 1000;
+    const progress = Math.min((now - view.risingSince) / riseMs, 1);
+    view.container.alpha = progress;
+    view.body.scale.y = progress;
+  }
+
+  #drawGround(view: EntityView, entity: SnapshotEntity, now: number): void {
+    const { client, content } = this.connection.config;
+    view.aura.visible = false;
+    view.body.texture = this.#texture(spriteName(entity, content));
+    view.body.alpha =
+      (entity.flags & EntityFlag.Searched) !== 0 ? searchedAlpha : 1;
+    view.extra.visible = entity.kind === EntityKind.Corpse;
+    if (view.extra.visible) {
+      view.extra.texture = this.#texture("soul");
+      view.extra.position.set(0, soulOffset + bob(now, client.soulBobMs));
+    }
+  }
+
+  #drawDying(now: number): void {
+    const { deathMs } = this.connection.config.client;
+    for (const view of this.#dying) {
+      const progress = (now - (view.diedAt ?? now)) / deathMs;
+      if (progress >= 1) {
+        this.#dying.delete(view);
+        this.#release(view);
+        continue;
+      }
+      view.container.alpha = 1 - progress;
+      view.body.scale.set(view.facing * (1 - progress / 2), 1 - progress / 2);
+    }
+  }
+
+  update(entities: SnapshotEntity[], view: Rect, now: number): void {
+    const scale = 1 / this.connection.config.client.pixelsPerMeter;
     this.#seen.clear();
     for (const entity of entities) {
       this.#seen.add(entity.id);
-      let sprite = this.#active.get(entity.id);
-      if (sprite === undefined) {
-        sprite = this.#acquire();
-        this.#active.set(entity.id, sprite);
+      let entityView = this.#active.get(entity.id);
+      if (entityView === undefined) {
+        entityView = this.#acquire(entity.kind);
+        this.#active.set(entity.id, entityView);
       }
-      sprite.texture = this.textures[entity.kind];
-      sprite.scale.set(scale);
-      sprite.position.set(entity.x, entity.y);
-      const halfWidth = (sprite.texture.width * scale) / 2;
-      const halfHeight = (sprite.texture.height * scale) / 2;
-      sprite.visible =
+      if (groundKinds.has(entity.kind)) {
+        this.#drawGround(entityView, entity, now);
+      } else {
+        this.#drawBody(entityView, entity, now);
+      }
+      const { container, body } = entityView;
+      container.scale.set(scale);
+      container.position.set(entity.x, entity.y);
+      container.zIndex = entity.y;
+      const halfWidth = (body.texture.width * scale) / 2;
+      const halfHeight = (body.texture.height * scale) / 2;
+      container.visible =
         entity.x + halfWidth >= view.minX &&
         entity.x - halfWidth <= view.maxX &&
         entity.y + halfHeight >= view.minY &&
         entity.y - halfHeight <= view.maxY;
     }
-    for (const [id, sprite] of this.#active) {
-      if (!this.#seen.has(id)) {
-        this.#release(id, sprite);
+    for (const [id, entityView] of this.#active) {
+      if (this.#seen.has(id)) {
+        continue;
+      }
+      this.#active.delete(id);
+      if (entityView.kind === EntityKind.Mage && entityView.container.visible) {
+        entityView.diedAt = now;
+        this.#dying.add(entityView);
+      } else {
+        this.#release(entityView);
       }
     }
+    this.#drawDying(now);
   }
 }

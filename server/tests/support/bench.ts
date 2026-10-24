@@ -1,29 +1,21 @@
 import { join } from "node:path";
-import type { Config } from "@horde/shared";
+import { buildRegistries, seededRandom, type Config } from "@horde/shared";
 import { loadConfig } from "../../src/config/load.js";
 import { runTick } from "../../src/world/loop.js";
-import { World, type Mage } from "../../src/world/world.js";
+import { World, type Army, type NpcGroup } from "../../src/world/world.js";
+
+export { seededRandom };
 
 export const sharedConfigDir = join(
   import.meta.dirname,
   "../../../shared/config",
 );
 
-export const seededRandom = (seed: number): (() => number) => {
-  let state = seed >>> 0;
-  return () => {
-    state = (state + 0x6d2b79f5) >>> 0;
-    let value = state;
-    value = Math.imul(value ^ (value >>> 15), value | 1);
-    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
-    return ((value ^ (value >>> 14)) >>> 0) / 0x100000000;
-  };
-};
-
 export interface Bench {
   config: Config;
   world: World;
-  addMage: (x: number, y: number) => Mage;
+  addArmy: (x: number, y: number, name?: string) => Army;
+  addCivilians: (x: number, y: number, count: number) => NpcGroup;
   step: (ticks?: number) => void;
 }
 
@@ -32,12 +24,21 @@ export const createBench = (
   seed = 1,
 ): Bench => {
   const config = loadConfig(sharedConfigDir);
+  config.world.populations = [];
+  config.lobby.minParticipants = 0;
   patch(config);
-  const world = new World(config, seededRandom(seed));
+  const world = new World(config, buildRegistries(config), seededRandom(seed));
   return {
     config,
     world,
-    addMage: (x, y) => world.addMage(x, y),
+    addArmy: (x, y, name = "Ash") => world.addArmy(name, x, y),
+    addCivilians: (x, y, count) => {
+      const group = world.addNpcGroup(0, x, y);
+      for (let index = 0; index < count; index++) {
+        world.addNpc(group, "civilian", 0, 0);
+      }
+      return group;
+    },
     step: (ticks = 1) => {
       for (let index = 0; index < ticks; index++) {
         runTick(world, 1 / config.network.tickRate);
