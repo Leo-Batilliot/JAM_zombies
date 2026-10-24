@@ -79,6 +79,7 @@ Ces règles sont au cœur du jeu et doivent être implémentées telles quelles.
 3. **Mort du mage** : ses troupes vivantes et ses cadavres en attente passent à son tueur, avec leur équipement, avec une perte (§7.5) :
    - **70 %** passent au tueur (les vivants changent de camp immédiatement, les cadavres se relèvent chez lui) ;
    - **30 %** s'effondrent en un **charnier**, que tout le monde peut piller (§7.1).
+   Ce qui n'a aucune armée pour le recevoir (mage tué par un PNJ, cadavre dont le tueur n'est plus en jeu) tombe aussi dans le charnier.
 4. **Retraite** : c'est le **seul moyen de quitter une bataille** (§4.4). Quand le joueur l'active :
    - les unités **au contact** (face à face avec un ennemi) restent sur place et deviennent **abandonnées**, marquées par un drapeau en berne ;
    - les unités **non engagées** forment un **tunnel de retraite** (§4.5) par lequel le mage s'enfuit ;
@@ -107,7 +108,7 @@ Le mage reste ainsi vulnérable s'il s'expose ou si son armée est détruite, et
 
 ### 4.4 Bataille et cercle d'aggro
 
-- **Être en bataille** : un mage est en bataille dès que lui ou ses unités sont engagés contre une armée ennemie, c'est-à-dire qu'une unité ennemie se trouve à moins de 8 m d'eux.
+- **Être en bataille** : un mage est en bataille dès que lui ou ses unités sont engagés contre une armée ennemie ou des PNJ hostiles (citrouille, lanternes, camps armés), c'est-à-dire qu'un ennemi se trouve à moins de 8 m d'eux. Les civils ne comptent pas.
 - **Cercle d'aggro** : un cercle qui englobe l'armée ennemie engagée, plus une marge de 8 m. Dans une bataille à 3 armées ou plus, c'est l'union des cercles de toutes les armées ennemies engagées.
 - **À l'intérieur du cercle**, le mage se déplace librement : il peut se repositionner, changer de formation ou reculer un peu.
 - **Il ne peut pas en sortir** sans la Retraite (règle 4) : un clic à l'extérieur l'amène jusqu'au bord, pas plus loin. Aucune fuite ne peut donc arriver par accident.

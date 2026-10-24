@@ -2,6 +2,8 @@ import { describe, expect, test } from "vitest";
 import {
   ClientMessageType,
   DemoCommand,
+  BattleFlag,
+  EntityFlag,
   EntityKind,
   JoinRejection,
   ServerMessageType,
@@ -9,6 +11,9 @@ import {
   decodeServerMessage,
   encodeClientMessage,
   encodeServerMessage,
+  maxSizeLevel,
+  sizeFlags,
+  sizeLevel,
   type ClientMessage,
   type ServerMessage,
 } from "../../src/protocol/messages.js";
@@ -43,6 +48,23 @@ const serverMessages: ServerMessage[] = [
     souls: 42,
     units: 23,
     strength: 31,
+    battle: 0,
+    circles: [],
+  },
+  {
+    type: ServerMessageType.Status,
+    army: 2,
+    hp: 10,
+    maxHp: 100,
+    level: 1,
+    souls: 0,
+    units: 4,
+    strength: 4,
+    battle: BattleFlag.InBattle | BattleFlag.Encircled,
+    circles: [
+      { x: 120, y: 80, radius: 17.25 },
+      { x: 0, y: 300, radius: 8 },
+    ],
   },
   { type: ServerMessageType.Died, killer: "Evil Ash" },
   { type: ServerMessageType.Welcome, mageId: 42, token: "a1b2" },
@@ -94,6 +116,9 @@ const serverMessages: ServerMessage[] = [
         announceMs: 4000,
         arrowMargin: 40,
         demoKeys: { screamer: "k", boss: "p", units: "u" },
+        retreatKey: "r",
+        sizeScaleStep: 0.25,
+        aggroPulseMs: 900,
       },
       world: {
         width: 400,
@@ -149,6 +174,8 @@ const serverMessages: ServerMessage[] = [
         y: 0.1,
       },
     ],
+    updates: [{ id: 5, flags: EntityFlag.Abandoned, x: 33.3, y: 44.4 }],
+    removed: [9, 70001],
   },
 ];
 
@@ -192,15 +219,34 @@ describe("server messages", () => {
     );
   });
 
-  test("a snapshot entity takes 12 bytes", () => {
+  test("a new entity takes 12 bytes, an update 9 and a removal 4", () => {
     const empty = encodeServerMessage(
-      { type: ServerMessageType.Snapshot, tick: 1, entities: [] },
+      {
+        type: ServerMessageType.Snapshot,
+        tick: 1,
+        entities: [],
+        updates: [],
+        removed: [],
+      },
       bounds,
     );
+    const changes = encodeServerMessage(
+      {
+        type: ServerMessageType.Snapshot,
+        tick: 1,
+        entities: [],
+        updates: [{ id: 1, flags: 0, x: 1, y: 1 }],
+        removed: [2],
+      },
+      bounds,
+    );
+    expect(changes.byteLength - empty.byteLength).toBe(13);
     const one = encodeServerMessage(
       {
         type: ServerMessageType.Snapshot,
         tick: 1,
+        updates: [],
+        removed: [],
         entities: [
           {
             id: 1,
@@ -216,6 +262,15 @@ describe("server messages", () => {
       bounds,
     );
     expect(one.byteLength - empty.byteLength).toBe(12);
+  });
+});
+
+describe("size level", () => {
+  test("is stored above the other flags and capped", () => {
+    expect(sizeLevel(sizeFlags(3) | EntityFlag.Searched)).toBe(3);
+    expect(sizeFlags(3) & 0x1f).toBe(0);
+    expect(sizeLevel(sizeFlags(99))).toBe(maxSizeLevel);
+    expect(sizeFlags(-1)).toBe(0);
   });
 });
 
@@ -244,7 +299,13 @@ describe("invalid data", () => {
 
   test("rejects a snapshot before the config", () => {
     const data = encodeServerMessage(
-      { type: ServerMessageType.Snapshot, tick: 1, entities: [] },
+      {
+        type: ServerMessageType.Snapshot,
+        tick: 1,
+        entities: [],
+        updates: [],
+        removed: [],
+      },
       bounds,
     );
     expect(() => decodeServerMessage(data, undefined)).toThrow(ProtocolError);

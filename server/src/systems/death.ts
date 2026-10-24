@@ -1,7 +1,7 @@
 import { EntityKind } from "@horde/shared";
 import type { Army, Mage, Npc, Unit, World } from "../world/world.js";
 import { eventNpcKilled, recordContribution } from "./events.js";
-import { damageMage } from "./mage.js";
+import { damageMage, nearestGuard } from "./mage.js";
 import { grantSouls } from "./souls.js";
 
 const victimProfile = (world: World, victim: Unit | Npc) => {
@@ -47,8 +47,19 @@ export const kill = (
     return;
   }
   const corpseOwner = owner ?? killer;
-  if (corpseOwner !== undefined) {
-    world.addCorpse(raisedAs, corpseOwner, killer, victim.x, victim.y);
+  if (corpseOwner === undefined) {
+    return;
+  }
+  const corpse = world.addCorpse(
+    raisedAs,
+    corpseOwner,
+    killer,
+    victim.x,
+    victim.y,
+  );
+  if (victim.kind === EntityKind.Unit && victim.group !== undefined) {
+    corpse.group = victim.group;
+    victim.group.corpses.add(corpse);
   }
 };
 
@@ -60,7 +71,13 @@ export const damage = (
   attackerName = attacker?.name ?? "",
 ): void => {
   if (target.kind === EntityKind.Mage) {
-    damageMage(world, target, amount, attacker, attackerName);
+    const guard = nearestGuard(world, target);
+    const shared =
+      guard === undefined ? 0 : amount * world.config.gameplay.soulLink.share;
+    if (guard !== undefined) {
+      damage(world, guard, shared, attacker, attackerName);
+    }
+    damageMage(world, target, amount - shared, attacker, attackerName);
     return;
   }
   if (target.kind === EntityKind.Npc && attacker !== undefined) {

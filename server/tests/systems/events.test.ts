@@ -148,6 +148,7 @@ describe("hostile npcs", () => {
         ...boss,
         attack: { ...boss.attack, damage: 1000 },
       };
+      config.gameplay.soulLink.maxLossPerSec = 100;
     });
     const army = addArmy(100, 100);
     startEvent(world, "pumpkin", 103, 100);

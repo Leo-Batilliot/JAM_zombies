@@ -1,9 +1,27 @@
-import type { Army, World } from "../world/world.js";
+import { EntityKind } from "@horde/shared";
+import type { Army, Body, World } from "../world/world.js";
 
-export const armyStrength = (world: World, army: Army): number => {
+const bodyStrength = (world: World, body: Body): number => {
+  switch (body.kind) {
+    case EntityKind.Mage:
+      return 0;
+    case EntityKind.Unit:
+      return world.registries.units.get(body.type).strength;
+    case EntityKind.Npc:
+      return world.registries.npcs.get(body.type).strength;
+  }
+};
+
+export const bodiesStrength = (
+  world: World,
+  bodies: Iterable<Body>,
+): number => {
   let strength = 0;
-  for (const unit of army.units) {
-    strength += world.registries.units.get(unit.type).strength;
+  for (const body of bodies) {
+    strength += bodyStrength(world, body);
   }
   return strength;
 };
+
+export const armyStrength = (world: World, army: Army): number =>
+  bodiesStrength(world, army.units);

@@ -11,6 +11,7 @@ import {
   type SnapshotEntity,
   type Status,
 } from "@horde/shared";
+import { SnapshotState } from "./snapshots.js";
 
 export interface Snapshot {
   tick: number;
@@ -92,6 +93,7 @@ export const join = (name: string): Promise<Connection> =>
     socket.binaryType = "arraybuffer";
     let mageId: number | undefined;
     let connection: Connection | undefined;
+    const snapshots = new SnapshotState();
 
     socket.addEventListener("open", () => {
       socket.send(
@@ -123,7 +125,10 @@ export const join = (name: string): Promise<Connection> =>
           }
           break;
         case ServerMessageType.Snapshot:
-          connection?.onSnapshot(message);
+          connection?.onSnapshot({
+            tick: message.tick,
+            entities: snapshots.apply(message),
+          });
           break;
         case ServerMessageType.Died:
           connection?.onDied(message.killer);

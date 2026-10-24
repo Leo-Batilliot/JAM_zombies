@@ -69,3 +69,105 @@ describe("bots", () => {
     expect(army.units.size).toBeGreaterThan(5);
   });
 });
+
+describe("bots in battle", () => {
+  const withUnits = (
+    bench: ReturnType<typeof createBench>,
+    army: ReturnType<ReturnType<typeof createBench>["addArmy"]>,
+    places: [number, number][],
+  ) => {
+    for (const [x, y] of places) {
+      bench.world.addUnit(army, "zombie", x, y);
+    }
+  };
+
+  const think = (
+    bench: ReturnType<typeof createBench>,
+    army: ReturnType<typeof botArmy>,
+  ) => {
+    bench.step();
+    if (army.bot !== undefined) {
+      army.bot.thinkAt = 0;
+    }
+    runBots(bench.world);
+  };
+
+  test("flee a stronger army with a retreat away from it", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    withUnits(bench, army, [[103, 100]]);
+    const enemy = bench.addArmy(114, 100, "Enemy");
+    withUnits(bench, enemy, [
+      [107, 99],
+      [107, 100],
+      [107, 101],
+      [108, 99],
+      [108, 100],
+      [108, 101],
+    ]);
+    think(bench, army);
+    expect(army.retreat).toBeDefined();
+    expect(army.mage.targetX).toBeLessThan(100);
+  });
+
+  test("stand their ground against a weaker army", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    withUnits(bench, army, [
+      [103, 99],
+      [103, 100],
+      [103, 101],
+      [102, 99],
+      [102, 100],
+      [102, 101],
+    ]);
+    const enemy = bench.addArmy(114, 100, "Enemy");
+    withUnits(bench, enemy, [[107, 100]]);
+    think(bench, army);
+    expect(army.battle).toBeDefined();
+    expect(army.retreat).toBeUndefined();
+  });
+
+  test("flee before an equal army closes the circle", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    withUnits(bench, army, [
+      [100, 101],
+      [101, 100],
+      [100, 99],
+      [99, 100],
+    ]);
+    const enemy = bench.addArmy(100, 112, "Enemy");
+    withUnits(bench, enemy, [
+      [104, 100],
+      [100, 104],
+      [96, 100],
+      [100, 96],
+    ]);
+    think(bench, army);
+    expect(army.battle?.encircled).toBe(false);
+    expect(army.retreat).toBeDefined();
+  });
+
+  test("attack a weaker army in range", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    withUnits(bench, army, [
+      [100, 101],
+      [101, 100],
+      [100, 99],
+    ]);
+    const prey = bench.addArmy(130, 100, "Prey");
+    runBots(bench.world);
+    expect(army.mage.targetX).toBeCloseTo(prey.mage.x);
+  });
+
+  test("leave a stronger army alone", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    const strong = bench.addArmy(130, 100, "Strong");
+    withUnits(bench, strong, [[130, 101]]);
+    runBots(bench.world);
+    expect(army.mage.targetX).not.toBeCloseTo(strong.mage.x);
+  });
+});

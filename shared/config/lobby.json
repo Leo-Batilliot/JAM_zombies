@@ -28,7 +28,12 @@
     "thinkIntervalSec": 1,
     "wanderDistance": 60,
     "huntRange": 40,
-    "lootRange": 40
+    "lootRange": 40,
+    "attackRange": 40,
+    "attackRatio": 0.7,
+    "fleeRatio": 1.3,
+    "avoidSectorDeg": 120,
+    "fleeDistance": 30
   },
   "leaderboard": {
     "intervalSec": 1,

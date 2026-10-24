@@ -2,6 +2,7 @@ import { EntityKind } from "@horde/shared";
 import type { Entity, Mage, Npc, Unit, World } from "../world/world.js";
 import { bodyRadius, distance } from "./bodies.js";
 import { damage } from "./death.js";
+import { nearestPrey } from "./targeting.js";
 
 type Prey = Mage | Unit;
 
@@ -13,7 +14,7 @@ const asPrey = (entity: Entity | undefined): Prey | undefined =>
 const fromHome = (npc: Npc, prey: Prey): number =>
   Math.hypot(prey.x - npc.homeX, prey.y - npc.homeY);
 
-const nearestPrey = (
+const preyInRange = (
   world: World,
   npc: Npc,
   range: number,
@@ -22,20 +23,12 @@ const nearestPrey = (
 ): Prey | undefined => {
   near.length = 0;
   world.grid.queryRadius(npc.x, npc.y, range, near);
-  let best: Prey | undefined;
-  let bestDistance = Infinity;
-  for (const id of near) {
+  return nearestPrey(npc, near, (id) => {
     const prey = asPrey(world.entities.get(id));
-    if (prey === undefined || fromHome(npc, prey) > leash) {
-      continue;
-    }
-    const preyDistance = distance(prey, npc);
-    if (preyDistance < bestDistance) {
-      best = prey;
-      bestDistance = preyDistance;
-    }
-  }
-  return best;
+    return prey !== undefined && fromHome(npc, prey) <= leash
+      ? prey
+      : undefined;
+  });
 };
 
 const moveToward = (
@@ -83,7 +76,7 @@ export const updateHostiles = (world: World, dt: number): void => {
     if (world.time >= npc.retargetAt) {
       npc.retargetAt =
         world.time + retargetIntervalSec * (0.5 + world.random());
-      target = nearestPrey(
+      target = preyInRange(
         world,
         npc,
         attack.aggroRange,

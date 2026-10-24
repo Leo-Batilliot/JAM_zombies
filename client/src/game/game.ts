@@ -4,7 +4,11 @@ import {
   type FederatedPointerEvent,
   type Spritesheet,
 } from "pixi.js";
-import { ClientMessageType, type SnapshotEntity } from "@horde/shared";
+import {
+  ClientMessageType,
+  type SnapshotEntity,
+  type Status,
+} from "@horde/shared";
 import { CueTracker } from "../audio/cues.js";
 import type { AudioEngine } from "../audio/engine.js";
 import { Music, musicMix } from "../audio/music.js";
@@ -13,7 +17,9 @@ import { isDemo, startDemo } from "../demo.js";
 import { EventDisplay } from "../events.js";
 import { Hud } from "../hud.js";
 import type { Connection } from "../net/connection.js";
+import { RetreatControl } from "../retreat.js";
 import { Screamer } from "../screamer.js";
+import { BattleLayer } from "./battle.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
 import { MapLayer } from "./map.js";
@@ -51,15 +57,26 @@ export const startGame = async (
   map.build(config());
   const entities = new EntityLayer(atlas.textures, connection);
   const marker = new ClickMarker(() => config().client.markerDurationMs);
-  world.addChild(map.container, marker.graphics, entities.container);
+  const battle = new BattleLayer();
+  world.addChild(
+    map.container,
+    battle.container,
+    marker.graphics,
+    entities.container,
+  );
   app.stage.addChild(world);
 
   const hud = new Hud(ui);
   if (isDemo(location.search)) {
     startDemo(ui, connection);
   }
-  connection.onStatus = (status) => {
-    hud.setStatus(status);
+  const retreat = new RetreatControl(ui, () => config().client.retreatKey);
+  let status: Status | undefined;
+  let exit: { x: number; y: number } | undefined;
+  connection.onStatus = (next) => {
+    status = next;
+    hud.setStatus(next);
+    retreat.setBattle(next.battle);
   };
   connection.onLeaderboard = (leaderboard) => {
     hud.setLeaderboard(leaderboard);
@@ -94,6 +111,7 @@ export const startGame = async (
   connection.onConfig = (next) => {
     buffer.settings = next.network;
     map.build(next);
+    retreat.setKey(next.client.retreatKey);
     configureAudio();
     sendView();
   };
@@ -119,6 +137,12 @@ export const startGame = async (
     const point = world.toLocal(event.global);
     const x = Math.min(Math.max(point.x, 0), width);
     const y = Math.min(Math.max(point.y, 0), height);
+    if (retreat.take()) {
+      connection.send({ type: ClientMessageType.Retreat, x, y });
+      marker.show(x, y, performance.now(), false);
+      exit = { x, y };
+      return;
+    }
     const self = frame.find((entity) => entity.id === connection.mageId);
     const enemy = pickEnemy(
       frame,
@@ -189,6 +213,14 @@ export const startGame = async (
       maxY: camera.y + halfHeight,
     };
     entities.update(frame, view, now);
+    battle.update(
+      status?.battle ?? 0,
+      status?.circles ?? [],
+      self,
+      exit,
+      now,
+      config().client.aggroPulseMs,
+    );
     marker.update(now);
     playCues(view, now);
     events.update({

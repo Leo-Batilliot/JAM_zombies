@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { EntityFlag, EntityKind } from "@horde/shared";
+import { EntityFlag, EntityKind, sizeLevel } from "@horde/shared";
 import { visibleEntities } from "../../src/net/interest.js";
+import { createMassGrave } from "../../src/systems/points.js";
 import { createBench } from "../support/bench.js";
 
 const viewAround = { width: 20, height: 20 };
@@ -80,5 +81,70 @@ describe("visibleEntities", () => {
       )?.flags ?? 0;
     expect(flagsFor(army) & EntityFlag.Searched).toBeTruthy();
     expect(flagsFor(other) & EntityFlag.Searched).toBeFalsy();
+  });
+});
+
+describe("phase 4 flags", () => {
+  test("a corpse past its delay is marked as waiting", () => {
+    const { world, config, addArmy } = createBench();
+    const army = addArmy(100, 100);
+    const fresh = world.addCorpse("zombie", army, undefined, 101, 100);
+    const old = world.addCorpse("zombie", army, undefined, 102, 100);
+    old.diedAt = world.time - config.gameplay.reanimation.delaySec;
+    const flags = new Map(
+      visibleEntities(world, army, viewAround).map((entity) => [
+        entity.id,
+        entity.flags,
+      ]),
+    );
+    expect(flags.get(fresh.id)).toBe(0);
+    expect(flags.get(old.id)).toBe(EntityFlag.Waiting);
+  });
+
+  test("an abandoned unit is marked as such", () => {
+    const { world, addArmy } = createBench();
+    const army = addArmy(100, 100);
+    const unit = world.addUnit(army, "zombie", 101, 100);
+    unit.group = {
+      army,
+      units: new Set([unit]),
+      corpses: new Set(),
+      anchorX: 101,
+      anchorY: 100,
+      engagedAt: 0,
+    };
+    const entity = visibleEntities(world, army, viewAround).find(
+      (candidate) => candidate.id === unit.id,
+    );
+    expect(entity?.kind).toBe(EntityKind.Unit);
+    expect((entity?.flags ?? 0) & EntityFlag.Abandoned).toBe(
+      EntityFlag.Abandoned,
+    );
+  });
+});
+
+describe("mass grave size", () => {
+  test("grows with the number of corpses inside", () => {
+    const { world, addArmy } = createBench();
+    const army = addArmy(100, 100);
+    const level = (count: number): number => {
+      const grave = createMassGrave(
+        world,
+        101,
+        100,
+        new Array<string>(count).fill("zombie"),
+      );
+      const entity = visibleEntities(world, army, viewAround).find(
+        (candidate) => candidate.id === grave?.id,
+      );
+      if (grave !== undefined) {
+        world.removeEntity(grave);
+      }
+      return sizeLevel(entity?.flags ?? 0);
+    };
+    expect(level(1)).toBe(0);
+    expect(level(3)).toBe(1);
+    expect(level(45)).toBe(5);
+    expect(level(1000)).toBe(7);
   });
 });

@@ -34,6 +34,37 @@
     "raiseRadius": 3,
     "riseSec": 0.8
   },
+  "battle": {
+    "engageRadius": 8,
+    "circleMargin": 8,
+    "endDelaySec": 1,
+    "freeSectorDeg": 60
+  },
+  "soulLink": {
+    "guardRadius": 6,
+    "share": 0.8,
+    "maxLossPerSec": 0.08
+  },
+  "transfer": {
+    "share": 0.7
+  },
+  "retreat": {
+    "minTunnelUnits": 6,
+    "corridorWidth": 2.4,
+    "spacing": 1.2,
+    "baseOffset": 1,
+    "wingRows": 2,
+    "wingFlare": 1.2,
+    "wingReach": 4,
+    "foldMargin": 1,
+    "escortRadius": 1.5,
+    "arriveDistance": 1
+  },
+  "regroup": {
+    "distance": 8,
+    "arriveDistance": 1.5,
+    "speedMultiplier": 2.5
+  },
   "souls": {
     "perStrength": 1,
     "levelBase": 10,
