@@ -699,6 +699,26 @@
         "w": 112,
         "h": 100
       }
+    },
+    "fx-flag": {
+      "frame": {
+        "x": 54,
+        "y": 212,
+        "w": 14,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 14,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 14,
+        "h": 20
+      }
     }
   },
   "meta": {

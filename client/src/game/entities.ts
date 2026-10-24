@@ -3,6 +3,7 @@ import {
   EntityFlag,
   EntityKind,
   neutralArmy,
+  sizeLevel,
   type SnapshotEntity,
 } from "@horde/shared";
 import type { Connection } from "../net/connection.js";
@@ -19,6 +20,7 @@ const movingEpsilon = 0.001;
 const auraAlpha = 0.55;
 const searchedAlpha = 0.4;
 const grimoireOffset = { x: 14, y: -26 };
+const flagOffset = { x: -8, y: -18 };
 const soulOffset = -16;
 const bobHeight = 3;
 const groundKinds = new Set([EntityKind.Corpse, EntityKind.PointOfInterest]);
@@ -148,13 +150,17 @@ export class EntityLayer {
       view.aura.y = view.body.texture.height * 0.3;
     }
 
-    view.extra.visible = entity.kind === EntityKind.Mage;
-    if (view.extra.visible) {
+    const abandoned = (entity.flags & EntityFlag.Abandoned) !== 0;
+    view.extra.visible = entity.kind === EntityKind.Mage || abandoned;
+    if (entity.kind === EntityKind.Mage) {
       view.extra.texture = this.#texture("mage-grimoire");
       view.extra.position.set(
         grimoireOffset.x * view.facing,
         grimoireOffset.y + bob(now, client.grimoireBobMs),
       );
+    } else if (abandoned) {
+      view.extra.texture = this.#texture("fx-flag");
+      view.extra.position.set(flagOffset.x, flagOffset.y);
     }
 
     this.#drawRise(view, entity, now);
@@ -178,9 +184,12 @@ export class EntityLayer {
     const { client, content } = this.connection.config;
     view.aura.visible = false;
     view.body.texture = this.#texture(spriteName(entity, content));
+    view.body.scale.set(1 + sizeLevel(entity.flags) * client.sizeScaleStep);
     view.body.alpha =
       (entity.flags & EntityFlag.Searched) !== 0 ? searchedAlpha : 1;
-    view.extra.visible = entity.kind === EntityKind.Corpse;
+    view.extra.visible =
+      entity.kind === EntityKind.Corpse &&
+      (entity.flags & EntityFlag.Waiting) !== 0;
     if (view.extra.visible) {
       view.extra.texture = this.#texture("soul");
       view.extra.position.set(0, soulOffset + bob(now, client.soulBobMs));
@@ -220,8 +229,8 @@ export class EntityLayer {
       container.scale.set(scale);
       container.position.set(entity.x, entity.y);
       container.zIndex = entity.y;
-      const halfWidth = (body.texture.width * scale) / 2;
-      const halfHeight = (body.texture.height * scale) / 2;
+      const halfWidth = (body.width * scale) / 2;
+      const halfHeight = (body.height * scale) / 2;
       container.visible =
         entity.x + halfWidth >= view.minX &&
         entity.x - halfWidth <= view.maxX &&
