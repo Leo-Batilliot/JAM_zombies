@@ -1,7 +1,15 @@
 import { EntityKind } from "@horde/shared";
+import { mainBodies } from "../systems/battle.js";
 import { distance } from "../systems/bodies.js";
-import { orderAttack, orderMove } from "../systems/orders.js";
-import type { Army, Entity, PointOfInterest, World } from "../world/world.js";
+import { orderAttack, orderMove, orderRetreat } from "../systems/orders.js";
+import { armyStrength, bodiesStrength } from "../systems/strength.js";
+import type {
+  Army,
+  Battle,
+  Entity,
+  PointOfInterest,
+  World,
+} from "../world/world.js";
 
 const nearestPoint = (
   world: World,
@@ -42,9 +50,62 @@ const nearestCivilian = (
   return best;
 };
 
+const flee = (world: World, army: Army, battle: Battle): void => {
+  const { fleeRatio, avoidSectorDeg, fleeDistance } = world.config.lobby.bots;
+  const own = bodiesStrength(world, mainBodies(army));
+  const foes = battle.foes.reduce(
+    (total, foe) => total + bodiesStrength(world, foe.bodies),
+    0,
+  );
+  const trapped =
+    battle.freeSector < (avoidSectorDeg * Math.PI) / 180 && foes >= own;
+  if (battle.encircled || (foes <= own * fleeRatio && !trapped)) {
+    return;
+  }
+  orderRetreat(
+    world,
+    army,
+    army.mage.x + Math.cos(battle.escapeAngle) * fleeDistance,
+    army.mage.y + Math.sin(battle.escapeAngle) * fleeDistance,
+  );
+};
+
+const weakerArmy = (world: World, army: Army): Army | undefined => {
+  const { attackRange, attackRatio } = world.config.lobby.bots;
+  const own = armyStrength(world, army);
+  let best: Army | undefined;
+  let bestDistance = attackRange;
+  for (const other of world.armies.values()) {
+    if (other === army || !other.alive) {
+      continue;
+    }
+    const otherDistance = distance(other.mage, army.mage);
+    if (
+      otherDistance <= bestDistance &&
+      armyStrength(world, other) < own * attackRatio
+    ) {
+      best = other;
+      bestDistance = otherDistance;
+    }
+  }
+  return best;
+};
+
 const think = (world: World, army: Army): void => {
   const { wanderDistance, huntRange, lootRange } = world.config.lobby.bots;
   const { mage } = army;
+  if (army.retreat !== undefined) {
+    return;
+  }
+  if (army.battle !== undefined) {
+    flee(world, army, army.battle);
+    return;
+  }
+  const prey = weakerArmy(world, army);
+  if (prey !== undefined) {
+    orderMove(world, army, prey.mage.x, prey.mage.y);
+    return;
+  }
   const point = nearestPoint(world, army, lootRange);
   if (point !== undefined) {
     orderMove(world, army, point.x, point.y);
