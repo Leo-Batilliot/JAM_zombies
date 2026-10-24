@@ -1,0 +1,255 @@
+import { clientConfigSchema, type ClientConfig } from "../config/schema.js";
+import { ByteReader, ByteWriter, ProtocolError } from "./bytes.js";
+import {
+  dequantizeX,
+  dequantizeY,
+  quantizeX,
+  quantizeY,
+  type Bounds,
+} from "./quantize.js";
+
+export const socketPath = "/ws";
+
+export enum ClientMessageType {
+  Join = 1,
+  View,
+  Move,
+  Target,
+  Formation,
+  Retreat,
+  Evolve,
+  Demo,
+}
+
+export enum ServerMessageType {
+  Welcome = 1,
+  Rejected,
+  Config,
+  Snapshot,
+}
+
+export enum EntityKind {
+  Mage = 1,
+}
+
+export enum JoinRejection {
+  InvalidName = 1,
+}
+
+export type ClientMessage =
+  | { type: ClientMessageType.Join; name: string }
+  | { type: ClientMessageType.View; width: number; height: number }
+  | { type: ClientMessageType.Move; x: number; y: number }
+  | { type: ClientMessageType.Target; entityId: number }
+  | { type: ClientMessageType.Formation; formation: number }
+  | { type: ClientMessageType.Retreat; x: number; y: number }
+  | { type: ClientMessageType.Evolve; evolution: string }
+  | { type: ClientMessageType.Demo; command: number };
+
+export interface SnapshotEntity {
+  id: number;
+  kind: EntityKind;
+  x: number;
+  y: number;
+}
+
+export type ServerMessage =
+  | { type: ServerMessageType.Welcome; mageId: number }
+  | { type: ServerMessageType.Rejected; reason: JoinRejection }
+  | { type: ServerMessageType.Config; config: ClientConfig }
+  | {
+      type: ServerMessageType.Snapshot;
+      tick: number;
+      entities: SnapshotEntity[];
+    };
+
+const snapshotEntityBytes = 9;
+
+const readEnum = <T extends number>(
+  value: number,
+  values: Record<string, T | string>,
+  label: string,
+): T => {
+  const match = Object.values(values).find((entry) => entry === value);
+  if (typeof match !== "number") {
+    throw new ProtocolError(`Unknown ${label} ${String(value)}`);
+  }
+  return match;
+};
+
+const requireBounds = (bounds: Bounds | undefined): Bounds => {
+  if (bounds === undefined) {
+    throw new ProtocolError("Position sent before config");
+  }
+  return bounds;
+};
+
+export const encodeClientMessage = (
+  message: ClientMessage,
+  bounds: Bounds | undefined,
+): ArrayBuffer => {
+  const writer = new ByteWriter(16).uint8(message.type);
+  switch (message.type) {
+    case ClientMessageType.Join:
+      writer.shortString(message.name);
+      break;
+    case ClientMessageType.View:
+      writer.float32(message.width).float32(message.height);
+      break;
+    case ClientMessageType.Move:
+    case ClientMessageType.Retreat:
+      writer
+        .uint16(quantizeX(message.x, requireBounds(bounds)))
+        .uint16(quantizeY(message.y, requireBounds(bounds)));
+      break;
+    case ClientMessageType.Target:
+      writer.uint32(message.entityId);
+      break;
+    case ClientMessageType.Formation:
+      writer.uint8(message.formation);
+      break;
+    case ClientMessageType.Evolve:
+      writer.shortString(message.evolution);
+      break;
+    case ClientMessageType.Demo:
+      writer.uint8(message.command);
+      break;
+  }
+  return writer.finish();
+};
+
+export const decodeClientMessage = (
+  data: ArrayBuffer | Uint8Array,
+  bounds: Bounds,
+): ClientMessage => {
+  const reader = new ByteReader(data);
+  const type = readEnum(reader.uint8(), ClientMessageType, "client message");
+  let message: ClientMessage;
+  switch (type) {
+    case ClientMessageType.Join:
+      message = { type, name: reader.shortString() };
+      break;
+    case ClientMessageType.View:
+      message = { type, width: reader.float32(), height: reader.float32() };
+      break;
+    case ClientMessageType.Move:
+    case ClientMessageType.Retreat:
+      message = {
+        type,
+        x: dequantizeX(reader.uint16(), bounds),
+        y: dequantizeY(reader.uint16(), bounds),
+      };
+      break;
+    case ClientMessageType.Target:
+      message = { type, entityId: reader.uint32() };
+      break;
+    case ClientMessageType.Formation:
+      message = { type, formation: reader.uint8() };
+      break;
+    case ClientMessageType.Evolve:
+      message = { type, evolution: reader.shortString() };
+      break;
+    case ClientMessageType.Demo:
+      message = { type, command: reader.uint8() };
+      break;
+  }
+  reader.end();
+  return message;
+};
+
+export const encodeServerMessage = (
+  message: ServerMessage,
+  bounds: Bounds,
+): ArrayBuffer => {
+  switch (message.type) {
+    case ServerMessageType.Welcome:
+      return new ByteWriter(5)
+        .uint8(message.type)
+        .uint32(message.mageId)
+        .finish();
+    case ServerMessageType.Rejected:
+      return new ByteWriter(2)
+        .uint8(message.type)
+        .uint8(message.reason)
+        .finish();
+    case ServerMessageType.Config:
+      return new ByteWriter(256)
+        .uint8(message.type)
+        .longString(JSON.stringify(message.config))
+        .finish();
+    case ServerMessageType.Snapshot: {
+      if (message.entities.length > 0xffff) {
+        throw new ProtocolError("Too many entities in snapshot");
+      }
+      const writer = new ByteWriter(
+        7 + message.entities.length * snapshotEntityBytes,
+      )
+        .uint8(message.type)
+        .uint32(message.tick)
+        .uint16(message.entities.length);
+      for (const entity of message.entities) {
+        writer
+          .uint32(entity.id)
+          .uint8(entity.kind)
+          .uint16(quantizeX(entity.x, bounds))
+          .uint16(quantizeY(entity.y, bounds));
+      }
+      return writer.finish();
+    }
+  }
+};
+
+const parseClientConfig = (json: string): ClientConfig => {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(json);
+  } catch {
+    throw new ProtocolError("Invalid config JSON");
+  }
+  const result = clientConfigSchema.safeParse(raw);
+  if (!result.success) {
+    throw new ProtocolError("Invalid config message");
+  }
+  return result.data;
+};
+
+export const decodeServerMessage = (
+  data: ArrayBuffer | Uint8Array,
+  bounds: Bounds | undefined,
+): ServerMessage => {
+  const reader = new ByteReader(data);
+  const type = readEnum(reader.uint8(), ServerMessageType, "server message");
+  let message: ServerMessage;
+  switch (type) {
+    case ServerMessageType.Welcome:
+      message = { type, mageId: reader.uint32() };
+      break;
+    case ServerMessageType.Rejected:
+      message = {
+        type,
+        reason: readEnum(reader.uint8(), JoinRejection, "join rejection"),
+      };
+      break;
+    case ServerMessageType.Config:
+      message = { type, config: parseClientConfig(reader.longString()) };
+      break;
+    case ServerMessageType.Snapshot: {
+      const snapshotBounds = requireBounds(bounds);
+      const tick = reader.uint32();
+      const count = reader.uint16();
+      const entities: SnapshotEntity[] = [];
+      for (let index = 0; index < count; index++) {
+        entities.push({
+          id: reader.uint32(),
+          kind: readEnum(reader.uint8(), EntityKind, "entity kind"),
+          x: dequantizeX(reader.uint16(), snapshotBounds),
+          y: dequantizeY(reader.uint16(), snapshotBounds),
+        });
+      }
+      message = { type, tick, entities };
+      break;
+    }
+  }
+  reader.end();
+  return message;
+};
