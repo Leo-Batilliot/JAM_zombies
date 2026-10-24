@@ -38,6 +38,11 @@ body {
   pointer-events: auto;
 }
 
+#ui > .hud,
+#ui > .death {
+  pointer-events: none;
+}
+
 .home {
   position: absolute;
   inset: 0;
@@ -160,7 +165,6 @@ body.share p {
   color: var(--danger);
   font-size: clamp(1.2rem, 4vw, 2rem);
   text-align: center;
-  pointer-events: none;
 }
 
 .death[hidden] {
@@ -177,7 +181,6 @@ body.share p {
     max(0.6rem, env(safe-area-inset-right)) 0.6rem
     max(0.6rem, env(safe-area-inset-left));
   font-size: clamp(0.7rem, 1.6vw, 0.95rem);
-  pointer-events: none;
 }
 
 .hud section {

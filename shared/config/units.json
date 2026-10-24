@@ -16,6 +16,7 @@
   "npcs": {
     "civilian": {
       "corpse": "zombie",
+      "infects": true,
       "strength": 1,
       "hp": 10,
       "radius": 0.4,

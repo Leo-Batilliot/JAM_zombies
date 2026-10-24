@@ -4,6 +4,20 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Civils infectés sur place | L.BA
+
+- **Quoi** : un PNJ marqué `infects` dans `units.json` ne meurt pas : quand une armée le tue, il devient tout de suite une unité du type `corpse` de cette armée, à l'endroit où il est tombé, avec l'animation de relève. Les civils sont marqués ainsi. Les autres PNJ (chasseurs et soldats des camps, 6.06) laisseront un cadavre normal.
+- **Pourquoi** : pour un civil, c'est une infection et non une mort. L'armée grossit aussitôt, ce qui rend la chasse plus satisfaisante.
+- **Impact** : le délai de réanimation de 30 s ne concerne plus que les unités tuées. `concept.md` §3 et §4.2 règle 1 mis à jour.
+- **Avis** : Validée.
+
+### Déplacement et attaque au clic gauche | L.BA
+
+- **Quoi** : sur PC, le clic gauche déplace le mage sur le sol et lance une attaque sur un ennemi. Le clic droit ne fait plus rien, et le menu contextuel reste désactivé sur le canvas.
+- **Pourquoi** : plus naturel pour un jeu .io joué au navigateur que le clic droit à la League of Legends.
+- **Impact** : `concept.md` §4.1 mis à jour. Le tap sur téléphone ne change pas.
+- **Avis** : Validée.
+
 ### État du joueur envoyé à chaque tick | L.BA
 
 - **Quoi** : avec chaque snapshot, le serveur envoie au joueur l'emplacement de son armée, ses PV et PV max, son niveau, ses âmes, son nombre d'unités et sa force (22 octets). Le HUD affiche ces valeurs en haut à gauche et le classement en haut à droite.
@@ -90,7 +104,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ### Cadavre d'un PNJ au tueur | L.BA
 
-- **Quoi** : le cadavre d'une unité appartient à son armée. Le cadavre d'un PNJ appartient directement à l'armée qui l'a tué, et se relève avec le type donné par `corpse` dans `units.json`. Un PNJ tué sans armée (plus tard par un autre PNJ) ne laisse pas de cadavre.
+- **Quoi** : le cadavre d'une unité appartient à son armée. Le cadavre d'un PNJ appartient directement à l'armée qui l'a tué, et se relève avec le type donné par `corpse` dans `units.json`. Un PNJ tué sans armée (plus tard par un autre PNJ) ne laisse pas de cadavre. Les PNJ marqués `infects` ne laissent pas de cadavre (voir l'infection des civils).
 - **Pourquoi** : les PNJ ne récupèrent jamais de cadavres, et tuer des civils doit faire grossir l'armée.
 - **Impact** : chaque cadavre garde aussi son tueur, utilisé par les transferts des phases suivantes. Les cadavres disparaissent avec leur armée.
 - **Avis** : Validée.

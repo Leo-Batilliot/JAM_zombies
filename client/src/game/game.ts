@@ -14,7 +14,7 @@ import { MapLayer } from "./map.js";
 import { ClickMarker } from "./marker.js";
 import { pickEnemy } from "./picking.js";
 
-const rightButton = 2;
+const leftButton = 0;
 
 export const startGame = async (
   root: HTMLElement,
@@ -107,7 +107,7 @@ export const startGame = async (
   app.stage.eventMode = "static";
   app.stage.hitArea = app.screen;
   app.stage.on("pointerdown", (event) => {
-    if (event.pointerType === "mouse" && event.button === rightButton) {
+    if (event.pointerType === "mouse" && event.button === leftButton) {
       command(event);
     }
   });

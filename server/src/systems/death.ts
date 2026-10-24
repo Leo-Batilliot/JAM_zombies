@@ -9,10 +9,16 @@ const victimProfile = (world: World, victim: Unit | Npc) => {
       strength: world.registries.units.get(victim.type).strength,
       owner: victim.army,
       raisedAs: victim.type,
+      infects: false,
     };
   }
   const npc = world.registries.npcs.get(victim.type);
-  return { strength: npc.strength, owner: undefined, raisedAs: npc.corpse };
+  return {
+    strength: npc.strength,
+    owner: undefined,
+    raisedAs: npc.corpse,
+    infects: npc.infects,
+  };
 };
 
 export const kill = (
@@ -20,7 +26,7 @@ export const kill = (
   victim: Unit | Npc,
   killer: Army | undefined,
 ): void => {
-  const { strength, owner, raisedAs } = victimProfile(world, victim);
+  const { strength, owner, raisedAs, infects } = victimProfile(world, victim);
   if (killer !== undefined) {
     grantSouls(
       world,
@@ -29,6 +35,10 @@ export const kill = (
     );
   }
   world.removeEntity(victim);
+  if (infects && killer !== undefined) {
+    world.addUnit(killer, raisedAs, victim.x, victim.y).raisedAt = world.time;
+    return;
+  }
   const corpseOwner = owner ?? killer;
   if (corpseOwner !== undefined) {
     world.addCorpse(raisedAs, corpseOwner, killer, victim.x, victim.y);

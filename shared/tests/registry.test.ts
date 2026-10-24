@@ -34,6 +34,7 @@ const unit = (
 
 const npc = (corpse: string) => ({
   corpse,
+  infects: true,
   strength: 1,
   hp: 5,
   radius: 0.4,

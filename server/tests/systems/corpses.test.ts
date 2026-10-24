@@ -26,7 +26,7 @@ describe("corpses", () => {
     });
   });
 
-  test("a killed civilian leaves a zombie corpse for its killer", () => {
+  test("a civilian is infected on the spot and joins its killer at once", () => {
     const { world, addArmy, addCivilians } = createBench();
     const killer = addArmy(100, 100);
     const npc = [...addCivilians(110, 100, 1).members][0];
@@ -34,6 +34,23 @@ describe("corpses", () => {
       throw new Error("Expected a civilian");
     }
     kill(world, npc, killer);
+    expect(corpses(world)).toHaveLength(0);
+    const [unit] = [...killer.units];
+    expect(unit).toMatchObject({ type: "zombie", x: 110, y: 100 });
+    expect(unit?.raisedAt).toBe(world.time);
+  });
+
+  test("an npc that does not infect leaves a corpse for its killer", () => {
+    const { world, addArmy, addCivilians } = createBench((config) => {
+      Object.assign(config.units.npcs["civilian"] ?? {}, { infects: false });
+    });
+    const killer = addArmy(100, 100);
+    const npc = [...addCivilians(110, 100, 1).members][0];
+    if (npc === undefined) {
+      throw new Error("Expected a civilian");
+    }
+    kill(world, npc, killer);
+    expect(killer.units.size).toBe(0);
     expect([...killer.corpses][0]).toMatchObject({ type: "zombie", killer });
   });
 

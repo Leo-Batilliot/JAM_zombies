@@ -81,6 +81,7 @@ const unitTypeSchema = z.strictObject({
 
 const npcTypeSchema = z.strictObject({
   corpse: id,
+  infects: z.boolean(),
   strength: z.int().positive(),
   hp: z.number().positive(),
   radius: z.number().positive(),

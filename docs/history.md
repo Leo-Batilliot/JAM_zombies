@@ -4,6 +4,16 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Infection des civils, clic gauche et clics bloqués par le HUD | 2.07-2.17 | L.BA
+
+- `shared/src/config/schema.ts`, `shared/config/units.json` : option `infects` des PNJ, activée pour le civil.
+- `server/src/systems/death.ts` : un PNJ qui infecte devient une unité de son tueur sur place, sans cadavre.
+- `client/src/game/game.ts` : déplacement et attaque au clic gauche.
+- `client/src/style.css` : le HUD et l'écran de mort laissent passer les clics vers le canvas.
+- `client/index.html` : message de rotation masqué avant le chargement de la CSS.
+- `docs/concept.md` : infection des civils, contrôles au clic gauche.
+- `server/tests/`, `shared/tests/` : infection immédiate, PNJ sans infection.
+
 ### HUD et test de charge | 2.17-2.18 | L.BA
 
 - `shared/src/protocol/messages.ts` : message d'état du joueur (armée, PV, niveau, âmes, unités, force).
