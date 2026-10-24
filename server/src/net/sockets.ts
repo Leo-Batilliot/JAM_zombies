@@ -15,6 +15,7 @@ import {
 import { validatePlayerName } from "../lobby/name.js";
 import { rankArmies } from "../lobby/leaderboard.js";
 import { joinLobby, leaveLobby } from "../lobby/lobby.js";
+import { runDemo } from "../systems/demo.js";
 import { orderAttack, orderMove } from "../systems/orders.js";
 import { maxHp } from "../systems/souls.js";
 import { armyStrength } from "../systems/strength.js";
@@ -38,7 +39,15 @@ const toBytes = (data: RawData): Uint8Array =>
       ? new Uint8Array(data)
       : data;
 
-export const attachSockets = (server: Server, world: World) => {
+export interface SocketOptions {
+  demo: boolean;
+}
+
+export const attachSockets = (
+  server: Server,
+  world: World,
+  options: SocketOptions = { demo: false },
+) => {
   const sessions = new Set<Session>();
   const sockets = new WebSocketServer({
     server,
@@ -141,6 +150,11 @@ export const attachSockets = (server: Server, world: World) => {
         break;
       case ClientMessageType.Target:
         orderAttack(world, session.army, message.entityId);
+        break;
+      case ClientMessageType.Demo:
+        if (options.demo) {
+          runDemo(world, session.army, message.command);
+        }
         break;
       default:
         break;

@@ -679,6 +679,26 @@
         "w": 24,
         "h": 24
       }
+    },
+    "decor-winchester": {
+      "frame": {
+        "x": 258,
+        "y": 2,
+        "w": 112,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 112,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 112,
+        "h": 100
+      }
     }
   },
   "meta": {

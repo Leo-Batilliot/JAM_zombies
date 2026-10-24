@@ -9,6 +9,7 @@ import { CueTracker } from "../audio/cues.js";
 import type { AudioEngine } from "../audio/engine.js";
 import { Music, musicMix } from "../audio/music.js";
 import { DeathScreen } from "../death.js";
+import { isDemo, startDemo } from "../demo.js";
 import { EventDisplay } from "../events.js";
 import { Hud } from "../hud.js";
 import type { Connection } from "../net/connection.js";
@@ -54,6 +55,9 @@ export const startGame = async (
   app.stage.addChild(world);
 
   const hud = new Hud(ui);
+  if (isDemo(location.search)) {
+    startDemo(ui, connection);
+  }
   connection.onStatus = (status) => {
     hud.setStatus(status);
   };

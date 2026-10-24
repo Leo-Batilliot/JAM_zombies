@@ -45,5 +45,10 @@
     "vibrateMs": [200, 60, 400]
   },
   "announceMs": 4000,
-  "arrowMargin": 40
+  "arrowMargin": 40,
+  "demoKeys": {
+    "screamer": "k",
+    "boss": "p",
+    "units": "u"
+  }
 }

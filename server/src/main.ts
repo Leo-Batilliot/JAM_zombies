@@ -17,7 +17,7 @@ const serveStatic = createStaticHandler(env.CLIENT_DIR);
 const server = createServer((request, response) => {
   void serveStatic(request, response);
 });
-const sockets = attachSockets(server, world);
+const sockets = attachSockets(server, world, { demo: env.DEMO_MODE });
 
 watchConfig(env.CONFIG_DIR, config, {
   delayMs: env.CONFIG_RELOAD_DELAY_MS,
@@ -30,5 +30,7 @@ watchConfig(env.CONFIG_DIR, config, {
 startLoop(world, sockets.sendSnapshots);
 
 server.listen(env.PORT, () => {
-  console.info(`Server listening on port ${String(env.PORT)}`);
+  console.info(
+    `Server listening on port ${String(env.PORT)}${env.DEMO_MODE ? " (demo mode)" : ""}`,
+  );
 });

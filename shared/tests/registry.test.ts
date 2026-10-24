@@ -45,11 +45,15 @@ const npc = (corpse: string) => ({
 
 const withUnits = (units: Config["units"]): Config => {
   const config = loadSharedConfig();
+  const eventNpcs = Object.fromEntries(
+    Object.entries(config.units.npcs).filter(
+      ([, npc]) => npc.attack !== undefined,
+    ),
+  );
   return {
     ...config,
-    units,
+    units: { units: units.units, npcs: { ...eventNpcs, ...units.npcs } },
     world: { ...config.world, populations: [] },
-    events: { events: {} },
   };
 };
 
@@ -65,7 +69,7 @@ describe("buildRegistries", () => {
       }),
     );
     expect(registries.units.get("fat").strength).toBe(5);
-    expect(registries.npcs.ids()).toEqual(["civilian"]);
+    expect(registries.npcs.ids()).toContain("civilian");
   });
 
   test("gives each id its position", () => {
@@ -118,6 +122,12 @@ describe("buildRegistries", () => {
     const config = loadSharedConfig();
     expect(config.units.npcs["evil-pumpkin"]?.corpse).toBeUndefined();
     expect(() => buildRegistries(config)).not.toThrow();
+  });
+
+  test("fails on a demo with an unknown event", () => {
+    const config = loadSharedConfig();
+    config.gameplay.demo.event = "ghost";
+    expect(() => buildRegistries(config)).toThrow(/Demo[\s\S]*ghost/);
   });
 
   test("fails when the mage respawns before the end of the screamer", () => {

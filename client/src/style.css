@@ -337,3 +337,22 @@ body.share p {
     opacity: 0.55;
   }
 }
+
+.demo {
+  position: absolute;
+  bottom: max(0.6rem, env(safe-area-inset-bottom));
+  left: max(0.6rem, env(safe-area-inset-left));
+  display: flex;
+  gap: 0.4rem;
+}
+
+.demo button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.4rem;
+  background: rgb(36 28 44 / 80%);
+  color: var(--text);
+  cursor: pointer;
+}

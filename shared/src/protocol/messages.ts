@@ -33,6 +33,12 @@ export enum ServerMessageType {
   EventEnded,
 }
 
+export enum DemoCommand {
+  Screamer = 1,
+  Boss,
+  Units,
+}
+
 export enum EntityKind {
   Mage = 1,
   Unit,
@@ -62,7 +68,7 @@ export type ClientMessage =
   | { type: ClientMessageType.Formation; formation: number }
   | { type: ClientMessageType.Retreat; x: number; y: number }
   | { type: ClientMessageType.Evolve; evolution: string }
-  | { type: ClientMessageType.Demo; command: number };
+  | { type: ClientMessageType.Demo; command: DemoCommand };
 
 export interface SnapshotEntity {
   id: number;
@@ -211,7 +217,10 @@ export const decodeClientMessage = (
       message = { type, evolution: reader.shortString() };
       break;
     case ClientMessageType.Demo:
-      message = { type, command: reader.uint8() };
+      message = {
+        type,
+        command: readEnum(reader.uint8(), DemoCommand, "demo command"),
+      };
       break;
   }
   reader.end();

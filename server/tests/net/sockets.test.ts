@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { WebSocket } from "ws";
 import {
   ClientMessageType,
+  DemoCommand,
   JoinRejection,
   ServerMessageType,
   decodeServerMessage,
@@ -24,10 +25,10 @@ let server: Server;
 let sockets: ReturnType<typeof attachSockets>;
 let url: string;
 
-const start = async (patch?: (config: Config) => void) => {
+const start = async (patch?: (config: Config) => void, demo = false) => {
   bench = createBench(patch);
   server = createServer();
-  sockets = attachSockets(server, bench.world);
+  sockets = attachSockets(server, bench.world, { demo });
   await new Promise<void>((resolve) => server.listen(0, resolve));
   url = `ws://localhost:${String((server.address() as AddressInfo).port)}${socketPath}`;
 };
@@ -223,6 +224,37 @@ describe("events", () => {
       expect(client.of(ServerMessageType.EventStarted)).toHaveLength(1);
     });
     expect(client.of(ServerMessageType.EventEnded)).toHaveLength(0);
+    client.socket.close();
+  });
+});
+
+describe("demo mode", () => {
+  test("demo commands are ignored outside demo mode", async () => {
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    const units = army?.units.size;
+    client.send({ type: ClientMessageType.Demo, command: DemoCommand.Units });
+    client.send({ type: ClientMessageType.Move, x: 5, y: 5 });
+    await vi.waitFor(() => {
+      expect(army?.mage.targetX).toBeCloseTo(5, 0);
+    });
+    expect(army?.units.size).toBe(units);
+    client.socket.close();
+  });
+
+  test("demo commands run in demo mode", async () => {
+    await sockets.close();
+    await new Promise((resolve) => server.close(resolve));
+    await start(undefined, true);
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    const units = army?.units.size ?? 0;
+    client.send({ type: ClientMessageType.Demo, command: DemoCommand.Units });
+    await vi.waitFor(() => {
+      expect(army?.units.size).toBe(
+        units + bench.config.gameplay.demo.unitCount,
+      );
+    });
     client.socket.close();
   });
 });

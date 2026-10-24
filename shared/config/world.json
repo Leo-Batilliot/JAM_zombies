@@ -39,6 +39,13 @@
         "sprite": "decor-grave",
         "count": 90
       }
+    ],
+    "fixed": [
+      {
+        "sprite": "decor-winchester",
+        "x": 228,
+        "y": 176
+      }
     ]
   },
   "pointsOfInterest": {

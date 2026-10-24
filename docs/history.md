@@ -4,6 +4,23 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Références aux films et mode démo | 3.07-3.08 | G.WI
+
+- `shared/src/config/schema.ts` : décor à position fixe, réglages et touches du mode démo.
+- `shared/config/world.json` : pub *Winchester* près du centre de la carte.
+- `shared/config/gameplay.json` : nom du tueur du screamer de démo, événement et distance de la citrouille, unités ajoutées.
+- `shared/config/client.json` : touches K, P et U du mode démo.
+- `shared/src/registry.ts` : vérification de l'événement et de l'unité du mode démo.
+- `shared/src/protocol/messages.ts` : commandes de démo (screamer, citrouille, unités), commande inconnue refusée.
+- `server/src/env.ts`, `server/src/main.ts` : variable `DEMO_MODE` lue et transmise aux sockets.
+- `server/src/systems/demo.ts` : mort du mage, citrouille près du mage, unités ajoutées.
+- `server/src/net/sockets.ts` : commandes de démo exécutées seulement en mode démo.
+- `client/src/demo.ts`, `client/src/style.css`, `client/src/game/game.ts` : boutons et raccourcis clavier avec `?demo=1`.
+- `client/src/game/decor.ts` : décor à position fixe.
+- `client/public/atlas/` : pub *Winchester*.
+- `docs/credits.md`, `docs/deploy.md` : références aux films, lancement en mode démo.
+- `server/tests/`, `shared/tests/`, `client/tests/` : commandes de démo avec et sans mode démo, décor fixe, touches.
+
 ### Citrouille maléfique | 3.04-3.06 | G.WI
 
 - `shared/src/config/schema.ts` : PNJ hostiles (nom, attaque, cadavre et fuite optionnels, vitesse nulle possible), événements de boss, annonce et flèche du client, liste des événements envoyée au client.

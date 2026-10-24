@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
   PORT: z.coerce.number().int().min(0).max(65535),
+  DEMO_MODE: z.enum(["true", "false"]).transform((value) => value === "true"),
   CONFIG_DIR: z.string().min(1),
   CONFIG_RELOAD_DELAY_MS: z.coerce.number().int().nonnegative(),
   CLIENT_DIR: z.string().min(1),

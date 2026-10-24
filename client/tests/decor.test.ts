@@ -10,6 +10,7 @@ const world = {
       { sprite: "decor-tree", count: 20 },
       { sprite: "decor-rock", count: 5 },
     ],
+    fixed: [{ sprite: "decor-pub", x: 40, y: 30 }],
   },
 };
 
@@ -28,6 +29,14 @@ describe("placeDecor", () => {
       expect(item.y).toBeGreaterThanOrEqual(0);
       expect(item.y).toBeLessThanOrEqual(50);
     }
+  });
+
+  test("places fixed items at their position", () => {
+    expect(placeDecor(world)).toContainEqual({
+      sprite: "decor-pub",
+      x: 40,
+      y: 30,
+    });
   });
 
   test("gives the same layout for the same seed", () => {

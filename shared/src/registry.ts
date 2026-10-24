@@ -119,6 +119,8 @@ export const buildRegistries = (config: Config): Registries => {
   for (const { unit } of config.gameplay.army.startingUnits) {
     checkReference(registries.units, unit, "Starting army");
   }
+  checkReference(registries.events, config.gameplay.demo.event, "Demo");
+  checkReference(registries.units, config.gameplay.demo.unit, "Demo");
   if (
     config.gameplay.respawn.delaySec * 1000 <=
     config.client.screamer.durationMs

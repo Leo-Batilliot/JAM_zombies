@@ -49,6 +49,13 @@ const gameplaySchema = z.strictObject({
     levelBase: z.number().positive(),
     levelGrowth: z.number().min(1),
   }),
+  demo: z.strictObject({
+    killerName: z.string(),
+    event: id,
+    eventDistance: z.number().nonnegative(),
+    unit: id,
+    unitCount: z.int().positive(),
+  }),
 });
 
 const formationsSchema = z.strictObject({
@@ -151,6 +158,13 @@ const worldSchema = z.strictObject({
       z.strictObject({
         sprite: id,
         count: z.int().nonnegative(),
+      }),
+    ),
+    fixed: z.array(
+      z.strictObject({
+        sprite: id,
+        x: z.number(),
+        y: z.number(),
       }),
     ),
   }),
@@ -270,6 +284,11 @@ export const clientSettingsSchema = z.strictObject({
   }),
   announceMs: z.int().positive(),
   arrowMargin: z.number().nonnegative(),
+  demoKeys: z.strictObject({
+    screamer: z.string().length(1),
+    boss: z.string().length(1),
+    units: z.string().length(1),
+  }),
 });
 
 export const configSchema = z.strictObject({

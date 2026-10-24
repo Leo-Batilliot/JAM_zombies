@@ -18,5 +18,6 @@ export const placeDecor = (world: ClientConfig["world"]): DecorItem[] => {
       });
     }
   }
+  items.push(...world.decor.fixed);
   return items.sort((a, b) => a.y - b.y);
 };

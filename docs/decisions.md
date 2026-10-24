@@ -4,6 +4,27 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Raccourcis du mode démo | G.WI
+
+- **Quoi** : avec `?demo=1`, le client affiche 3 boutons en bas à gauche et écoute les touches de `client.json` (K, P, U). Le serveur n'exécute ces commandes que si `DEMO_MODE=true`, sinon il les ignore. Screamer : le mage meurt pour de vrai, tué par le nom de `gameplay.json`. Citrouille : l'événement démarre près du mage et remplace le boss en cours. Unités : des zombies se relèvent autour du mage.
+- **Pourquoi** : montrer le vrai screamer et le vrai écran de mort au jury, au moment choisi. Les boutons servent sur téléphone.
+- **Impact** : le screamer de démo fait perdre l'armée, le raccourci Unités permet de la reconstruire.
+- **Avis** : Validée.
+
+### Thème du boss : composition originale au piano | G.WI
+
+- **Quoi** : la couche boss de la musique (3.02) est un ostinato de piano en 5/4 dans l'esprit du thème d'*Halloween*, mais avec une mélodie originale (arpèges descendants en la mineur, accords la mineur, fa, ré mineur, mi).
+- **Pourquoi** : la référence doit être reconnaissable sans reprendre le thème de Carpenter, qui n'est pas libre de droits.
+- **Impact** : le critère 3.07 s'appuie sur ce thème et sur le pub *Winchester*.
+- **Avis** : Validée.
+
+### Décor à position fixe | G.WI
+
+- **Quoi** : `world.json` liste des éléments de décor avec leur position (`decor.fixed`), placés par le client en plus du décor aléatoire. Le premier est le pub *Winchester* de *Shaun of the Dead*.
+- **Pourquoi** : la décision sur le décor généré depuis une graine prévoyait une liste de placements pour les décors uniques.
+- **Impact** : pas de collision, comme le reste du décor. Un élément aléatoire peut chevaucher le pub.
+- **Avis** : Validée.
+
 ### Musique du boss pendant tout l'événement | G.WI
 
 - **Quoi** : tant qu'une Citrouille maléfique est en jeu, la couche du boss remplace la couche exploration pour tous les joueurs, où qu'ils soient. La couche combat continue de s'ajouter par-dessus.

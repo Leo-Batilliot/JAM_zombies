@@ -38,5 +38,12 @@
     "perStrength": 1,
     "levelBase": 10,
     "levelGrowth": 1.5
+  },
+  "demo": {
+    "killerName": "the Evil Pumpkin",
+    "event": "pumpkin",
+    "eventDistance": 14,
+    "unit": "zombie",
+    "unitCount": 10
   }
 }
