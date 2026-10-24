@@ -16,6 +16,17 @@ const loadSharedConfig = (): Config =>
     ),
   );
 
+const unit = (
+  strength: number,
+  evolutions: { into: string; cost: number }[] = [],
+) => ({
+  strength,
+  rank: "front" as const,
+  speed: 1,
+  radius: 0.5,
+  evolutions,
+});
+
 const withUnits = (units: Config["units"]): Config => ({
   ...loadSharedConfig(),
   units,
@@ -26,14 +37,29 @@ describe("buildRegistries", () => {
     const registries = buildRegistries(
       withUnits({
         units: {
-          zombie: { strength: 1, evolutions: [{ into: "fat", cost: 5 }] },
-          fat: { strength: 5, evolutions: [] },
+          zombie: unit(1, [{ into: "fat", cost: 5 }]),
+          fat: unit(5),
         },
         npcs: { civilian: { corpse: "zombie" } },
       }),
     );
     expect(registries.units.get("fat").strength).toBe(5);
     expect(registries.npcs.ids()).toEqual(["civilian"]);
+  });
+
+  test("gives each id its position", () => {
+    const registries = buildRegistries(
+      withUnits({ units: { zombie: unit(1), fat: unit(5) }, npcs: {} }),
+    );
+    expect(registries.units.index("zombie")).toBe(0);
+    expect(registries.units.index("fat")).toBe(1);
+    expect(() => registries.units.index("ghost")).toThrow(RegistryError);
+  });
+
+  test("fails on a starting army with a missing unit", () => {
+    expect(() =>
+      buildRegistries(withUnits({ units: { fat: unit(5) }, npcs: {} })),
+    ).toThrow(/Starting army[\s\S]*zombie/);
   });
 
   test("fails on an unknown id", () => {
@@ -46,7 +72,7 @@ describe("buildRegistries", () => {
       buildRegistries(
         withUnits({
           units: {
-            zombie: { strength: 1, evolutions: [{ into: "golem", cost: 10 }] },
+            zombie: unit(1, [{ into: "golem", cost: 10 }]),
           },
           npcs: {},
         }),

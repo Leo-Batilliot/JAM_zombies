@@ -1,7 +1,16 @@
 {
   "width": 400,
   "height": 400,
-  "gridCellSize": 10,
+  "gridCellSize": 4,
   "spawnMargin": 20,
+  "decor": {
+    "seed": 1031,
+    "scattered": [
+      { "sprite": "decor-tree", "count": 260 },
+      { "sprite": "decor-bush", "count": 220 },
+      { "sprite": "decor-rock", "count": 140 },
+      { "sprite": "decor-grave", "count": 90 }
+    ]
+  },
   "pointsOfInterest": {}
 }

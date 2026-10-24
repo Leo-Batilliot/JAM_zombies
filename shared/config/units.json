@@ -1,4 +1,12 @@
 {
-  "units": {},
+  "units": {
+    "zombie": {
+      "strength": 1,
+      "rank": "front",
+      "speed": 7,
+      "radius": 0.45,
+      "evolutions": []
+    }
+  },
   "npcs": {}
 }

@@ -33,17 +33,45 @@ const serverMessages: ServerMessage[] = [
   {
     type: ServerMessageType.Config,
     config: {
-      client: { maxPixelRatio: 2, pixelsPerMeter: 24, markerDurationMs: 600 },
-      world: { width: 400, height: 300 },
+      client: {
+        maxPixelRatio: 2,
+        pixelsPerMeter: 24,
+        markerDurationMs: 600,
+        armyColors: ["#ff0000"],
+        walkFrameMs: 150,
+        grimoireBobMs: 1600,
+      },
+      world: {
+        width: 400,
+        height: 300,
+        decor: { seed: 1, scattered: [{ sprite: "decor-tree", count: 3 }] },
+      },
       network: { tickRate: 20, interpolationDelayMs: 100 },
+      content: { units: ["zombie"] },
     },
   },
   {
     type: ServerMessageType.Snapshot,
     tick: 99999,
     entities: [
-      { id: 1, kind: EntityKind.Mage, x: 10, y: 20 },
-      { id: 70000, kind: EntityKind.Mage, x: 399.9, y: 0.1 },
+      {
+        id: 1,
+        kind: EntityKind.Mage,
+        type: 0,
+        army: 3,
+        flags: 0,
+        x: 10,
+        y: 20,
+      },
+      {
+        id: 70000,
+        kind: EntityKind.Unit,
+        type: 2,
+        army: 255,
+        flags: 5,
+        x: 399.9,
+        y: 0.1,
+      },
     ],
   },
 ];
@@ -88,7 +116,7 @@ describe("server messages", () => {
     );
   });
 
-  test("a snapshot entity takes 9 bytes", () => {
+  test("a snapshot entity takes 12 bytes", () => {
     const empty = encodeServerMessage(
       { type: ServerMessageType.Snapshot, tick: 1, entities: [] },
       bounds,
@@ -97,11 +125,21 @@ describe("server messages", () => {
       {
         type: ServerMessageType.Snapshot,
         tick: 1,
-        entities: [{ id: 1, kind: EntityKind.Mage, x: 1, y: 1 }],
+        entities: [
+          {
+            id: 1,
+            kind: EntityKind.Mage,
+            type: 0,
+            army: 1,
+            flags: 0,
+            x: 1,
+            y: 1,
+          },
+        ],
       },
       bounds,
     );
-    expect(one.byteLength - empty.byteLength).toBe(9);
+    expect(one.byteLength - empty.byteLength).toBe(12);
   });
 });
 

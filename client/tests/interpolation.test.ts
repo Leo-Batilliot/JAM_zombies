@@ -6,6 +6,9 @@ const settings = { tickRate: 10, interpolationDelayMs: 100 };
 const mage = (id: number, x: number) => ({
   id,
   kind: EntityKind.Mage,
+  type: 0,
+  army: 1,
+  flags: 0,
   x,
   y: 0,
 });

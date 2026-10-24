@@ -4,6 +4,48 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Snapshot à 12 octets par entité | L.BA
+
+- **Quoi** : chaque entité du snapshot porte son type (position dans son registre), l'emplacement de son armée et des drapeaux d'état, en plus de son identifiant, de son genre et de sa position. L'orientation et la marche sont déduites par le client à partir du déplacement.
+- **Pourquoi** : le client doit savoir quel sprite dessiner et de quelle couleur, sans message supplémentaire.
+- **Impact** : avec ~400 entités visibles, le débit monte à ~96 Ko/s, au-dessus des ~64 Ko/s prévus. Le registre est limité à 256 types par genre, et le lobby à 255 armées.
+- **Avis** : À vérifier. Le test de charge (2.18) dira s'il faut réduire le format.
+
+### Emplacement d'armée et couleur d'aura | L.BA
+
+- **Quoi** : chaque armée reçoit le plus petit emplacement libre entre 1 et 255, envoyé sur un octet. L'emplacement 0 désigne les entités neutres. La couleur d'aura est prise dans la palette de `client.json` selon l'emplacement.
+- **Pourquoi** : un octet suffit pour reconnaître son armée, celle des autres et les neutres, et la couleur reste stable pendant toute la partie.
+- **Impact** : si la palette est plus courte que le nombre d'armées, deux armées peuvent partager une couleur.
+- **Avis** : Validée.
+
+### Placement par défaut de l'armée | L.BA
+
+- **Quoi** : les unités de rang `front` se placent en rangées devant le mage, celles de rang `back` derrière, chaque rangée centrée sur lui. L'avant est la direction du dernier ordre de déplacement. Le rang est lu dans `units.json`.
+- **Pourquoi** : c'est la règle du concept (mêlée lourde devant, distance derrière) sans tester de type précis dans le code.
+- **Impact** : quand le mage fait demi-tour, toute l'armée le traverse pour reprendre sa place. Les formations de 6.07 remplaceront ce placement.
+- **Avis** : À vérifier. Espacement et distances au mage à ajuster en jeu.
+
+### Cellules de grille de 4 m | L.BA
+
+- **Quoi** : la taille des cellules de la grille spatiale passe de 10 à 4 m.
+- **Pourquoi** : la séparation fait une requête de rayon très court par unité. Avec 10 m, une cellule contient toute une armée serrée.
+- **Impact** : les requêtes de la gestion d'intérêt parcourent plus de cellules.
+- **Avis** : À vérifier. À confirmer par le test de charge (2.18).
+
+### Décor placé par le client depuis une graine | L.BA
+
+- **Quoi** : `world.json` donne une graine et un nombre d'éléments par sprite de décor. Le client place le décor lui-même avec un générateur pseudo-aléatoire partagé, le serveur ne le connaît pas.
+- **Pourquoi** : le décor n'a pas de collision, il n'a donc aucun effet sur la simulation et n'a pas à passer par le réseau.
+- **Impact** : tous les clients voient le même décor tant qu'ils ont la même config. Un décor à position fixe (pub *Winchester*, 3.07) demandera une liste de placements.
+- **Avis** : Validée.
+
+### Valeurs de départ des unités et du mage | L.BA
+
+- **Quoi** : zombie à 7 m/s et 0,45 m de rayon, mage à 6 m/s et 0,6 m de rayon, 5 zombies placés à 2 m du mage.
+- **Pourquoi** : les unités doivent aller un peu plus vite que le mage pour garder leur place pendant qu'il avance.
+- **Impact** : aucune autre valeur n'en dépend pour l'instant.
+- **Avis** : À vérifier. À équilibrer en jeu.
+
 ### Positions en mètres, sprites à leur taille native | T.BE
 
 - **Quoi** : le serveur et la config travaillent en mètres. Le client met le monde à l'échelle avec `pixelsPerMeter` (`client.json`) et affiche chaque sprite à sa taille en pixels.

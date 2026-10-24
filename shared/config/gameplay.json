@@ -1,5 +1,13 @@
 {
   "mage": {
-    "speed": 6
+    "speed": 6,
+    "radius": 0.6
+  },
+  "army": {
+    "startingUnits": [{ "unit": "zombie", "count": 5 }],
+    "spawnRadius": 2
+  },
+  "movement": {
+    "separation": 0.5
   }
 }

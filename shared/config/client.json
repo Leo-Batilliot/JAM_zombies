@@ -1,5 +1,19 @@
 {
   "maxPixelRatio": 2,
   "pixelsPerMeter": 24,
-  "markerDurationMs": 600
+  "markerDurationMs": 600,
+  "armyColors": [
+    "#e0605a",
+    "#4fa3e0",
+    "#6ad46a",
+    "#e0c04f",
+    "#c46ae0",
+    "#4fe0d0",
+    "#e08f4f",
+    "#e04fa3",
+    "#a3e04f",
+    "#7a6ae0"
+  ],
+  "walkFrameMs": 150,
+  "grimoireBobMs": 1600
 }

@@ -4,6 +4,25 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Armées, suivi du mage et carte | 2.01-2.04 | L.BA
+
+- `shared/src/config/schema.ts` : armée de départ, rayon du mage, séparation, placement par défaut, statistiques de déplacement des unités, décor, palette d'auras et durées d'animation, types d'unités envoyés au client.
+- `shared/config/` : zombie, armée de départ de 5 zombies, placement par défaut, décor, cellules de grille de 4 m, palette d'auras.
+- `shared/src/registry.ts` : position de chaque type dans son registre, vérification de l'armée de départ.
+- `shared/src/random.ts` : générateur pseudo-aléatoire avec graine, partagé par le serveur et le client.
+- `shared/src/protocol/messages.ts` : entité d'unité, snapshot à 12 octets par entité (type, armée, drapeaux).
+- `server/src/world/world.ts` : armées avec un emplacement unique, mage orienté, unités typées.
+- `server/src/systems/army.ts` : apparition d'une armée avec ses unités de départ autour du mage.
+- `server/src/systems/formation.ts` : places par défaut relatives au mage, steering vers sa place.
+- `server/src/systems/separation.ts` : séparation des unités entre elles et avec les mages.
+- `server/src/systems/movement.ts` : orientation du mage vers sa cible.
+- `server/src/net/` : une armée par joueur, type et armée de chaque entité dans le snapshot.
+- `client/src/game/entities.ts` : sprites par type, aura colorée par armée, grimoire flottant, orientation et marche.
+- `client/src/game/map.ts`, `client/src/game/decor.ts` : sol, décor placé depuis la graine de config, bords de la carte.
+- `client/src/game/sprites.ts` : animations lues dans l'atlas, couleur d'armée.
+- `client/public/atlas/` : atlas provisoire de la phase 2 (marche, attaque, grimoire, aura, âme, cadavre, charnier, décor).
+- `server/tests/`, `shared/tests/`, `client/tests/` : armée de départ, places, suivi, séparation, protocole, animations, décor.
+
 ### Socle technique de la phase 1 | 1.04-1.18 | T.BE
 
 - `shared/src/config/schema.ts` : clés de la phase 1 (mage, monde, lobby, réseau, client), registres de contenu, sous-ensemble de config envoyé au client, liste des valeurs structurelles.

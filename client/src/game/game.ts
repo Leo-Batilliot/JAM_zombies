@@ -1,37 +1,31 @@
 import {
   Application,
   Container,
-  TilingSprite,
   type FederatedPointerEvent,
   type Spritesheet,
-  type Texture,
 } from "pixi.js";
-import { ClientMessageType, EntityKind } from "@horde/shared";
+import { ClientMessageType } from "@horde/shared";
 import type { Connection } from "../net/connection.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
+import { MapLayer } from "./map.js";
 import { ClickMarker } from "./marker.js";
 
 const rightButton = 2;
-
-const getTexture = (atlas: Spritesheet, name: string): Texture => {
-  const texture = atlas.textures[name];
-  if (texture === undefined) {
-    throw new Error(`Missing sprite ${name}`);
-  }
-  return texture;
-};
 
 export const startGame = async (
   root: HTMLElement,
   connection: Connection,
   atlas: Spritesheet,
 ): Promise<void> => {
-  const { config } = connection;
+  const config = () => connection.config;
   const app = new Application();
   await app.init({
     resizeTo: window,
-    resolution: Math.min(window.devicePixelRatio, config.client.maxPixelRatio),
+    resolution: Math.min(
+      window.devicePixelRatio,
+      config().client.maxPixelRatio,
+    ),
     autoDensity: true,
     antialias: true,
     background: "#141018",
@@ -42,39 +36,34 @@ export const startGame = async (
   });
 
   const world = new Container();
-  const ground = new TilingSprite({
-    texture: getTexture(atlas, "ground"),
-    width: config.world.width * config.client.pixelsPerMeter,
-    height: config.world.height * config.client.pixelsPerMeter,
-  });
-  ground.scale.set(1 / config.client.pixelsPerMeter);
-  const entities = new EntityLayer(
-    { [EntityKind.Mage]: getTexture(atlas, "mage") },
-    () => config.client.pixelsPerMeter,
-  );
-  const marker = new ClickMarker(() => config.client.markerDurationMs);
-  world.addChild(ground, marker.graphics, entities.container);
+  const map = new MapLayer(atlas.textures);
+  map.build(config());
+  const entities = new EntityLayer(atlas.textures, connection);
+  const marker = new ClickMarker(() => config().client.markerDurationMs);
+  world.addChild(map.container, marker.graphics, entities.container);
   app.stage.addChild(world);
 
-  const buffer = new SnapshotBuffer(config.network);
+  const buffer = new SnapshotBuffer(config().network);
   connection.onSnapshot = (snapshot) => {
     buffer.push(snapshot.tick, snapshot.entities, performance.now());
   };
 
   const sendView = (): void => {
+    const { pixelsPerMeter } = config().client;
     connection.send({
       type: ClientMessageType.View,
-      width: app.screen.width / config.client.pixelsPerMeter,
-      height: app.screen.height / config.client.pixelsPerMeter,
+      width: app.screen.width / pixelsPerMeter,
+      height: app.screen.height / pixelsPerMeter,
     });
   };
   sendView();
   app.renderer.on("resize", sendView);
 
   const moveTo = (event: FederatedPointerEvent): void => {
+    const { width, height } = config().world;
     const point = world.toLocal(event.global);
-    const x = Math.min(Math.max(point.x, 0), config.world.width);
-    const y = Math.min(Math.max(point.y, 0), config.world.height);
+    const x = Math.min(Math.max(point.x, 0), width);
+    const y = Math.min(Math.max(point.y, 0), height);
     connection.send({ type: ClientMessageType.Move, x, y });
     marker.show(x, y, performance.now());
   };
@@ -92,10 +81,10 @@ export const startGame = async (
     }
   });
 
-  const camera = { x: config.world.width / 2, y: config.world.height / 2 };
+  const camera = { x: config().world.width / 2, y: config().world.height / 2 };
   app.ticker.add(() => {
     const now = performance.now();
-    const scale = config.client.pixelsPerMeter;
+    const scale = config().client.pixelsPerMeter;
     const frame = buffer.sample(now);
     const self = frame.find((entity) => entity.id === connection.mageId);
     if (self !== undefined) {
@@ -115,7 +104,7 @@ export const startGame = async (
       maxX: camera.x + halfWidth,
       maxY: camera.y + halfHeight,
     };
-    entities.update(frame, view);
+    entities.update(frame, view, now);
     marker.update(now);
   });
 };

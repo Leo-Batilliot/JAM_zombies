@@ -13,16 +13,16 @@ import {
   type ServerMessage,
 } from "@horde/shared";
 import { validatePlayerName } from "../lobby/name.js";
+import { spawnArmy } from "../systems/army.js";
 import { setMageTarget } from "../systems/movement.js";
-import type { Mage, World } from "../world/world.js";
+import type { Army, World } from "../world/world.js";
 import { visibleEntities, type View } from "./interest.js";
 
 const protocolErrorCode = 1008;
 
 interface Session {
   socket: WebSocket;
-  name?: string;
-  mage?: Mage;
+  army?: Army;
   view: View;
 }
 
@@ -56,9 +56,11 @@ export const attachSockets = (server: Server, world: World) => {
       });
       return;
     }
-    session.name = validName;
-    session.mage = world.spawnMage();
-    send(session, { type: ServerMessageType.Welcome, mageId: session.mage.id });
+    session.army = spawnArmy(world, validName);
+    send(session, {
+      type: ServerMessageType.Welcome,
+      mageId: session.army.mage.id,
+    });
     send(session, {
       type: ServerMessageType.Config,
       config: toClientConfig(world.config),
@@ -66,7 +68,7 @@ export const attachSockets = (server: Server, world: World) => {
   };
 
   const handle = (session: Session, message: ClientMessage): void => {
-    if (session.mage === undefined) {
+    if (session.army === undefined) {
       if (message.type !== ClientMessageType.Join) {
         throw new ProtocolError("Message before join");
       }
@@ -78,7 +80,7 @@ export const attachSockets = (server: Server, world: World) => {
         session.view = { width: message.width, height: message.height };
         break;
       case ClientMessageType.Move:
-        setMageTarget(world, session.mage, message.x, message.y);
+        setMageTarget(world, session.army.mage, message.x, message.y);
         break;
       default:
         break;
@@ -103,8 +105,8 @@ export const attachSockets = (server: Server, world: World) => {
     });
     socket.on("close", () => {
       sessions.delete(session);
-      if (session.mage !== undefined) {
-        world.remove(session.mage.id);
+      if (session.army !== undefined) {
+        world.removeArmy(session.army);
       }
     });
   });
@@ -113,18 +115,14 @@ export const attachSockets = (server: Server, world: World) => {
     sessions,
     sendSnapshots: (): void => {
       for (const session of sessions) {
-        if (session.mage === undefined) {
+        if (session.army === undefined) {
           continue;
         }
+        const { mage } = session.army;
         send(session, {
           type: ServerMessageType.Snapshot,
           tick: world.tick,
-          entities: visibleEntities(
-            world,
-            session.mage.x,
-            session.mage.y,
-            session.view,
-          ),
+          entities: visibleEntities(world, mage.x, mage.y, session.view),
         });
       }
     },

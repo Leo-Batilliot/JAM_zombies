@@ -1,15 +1,18 @@
+import { followMages } from "../systems/formation.js";
 import { moveMages } from "../systems/movement.js";
+import { separateBodies } from "../systems/separation.js";
 import type { World } from "./world.js";
 
 export type System = (world: World, dt: number) => void;
 
-export const systems: System[] = [moveMages];
+export const systems: System[] = [moveMages, followMages, separateBodies];
 
 export const runTick = (world: World, dt: number): void => {
   for (const system of systems) {
     system(world, dt);
   }
   world.tick++;
+  world.time += dt;
 };
 
 export interface TickStats {

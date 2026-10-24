@@ -59,7 +59,7 @@ describe("sockets", () => {
         ServerMessageType.Config,
       ]);
     });
-    expect(bench.world.entities.size).toBe(1);
+    expect(bench.world.armies.size).toBe(1);
     client.socket.close();
   });
 
@@ -71,7 +71,7 @@ describe("sockets", () => {
         { type: ServerMessageType.Rejected, reason: JoinRejection.InvalidName },
       ]);
     });
-    expect(bench.world.entities.size).toBe(0);
+    expect(bench.world.armies.size).toBe(0);
     client.socket.close();
   });
 
@@ -95,7 +95,7 @@ describe("sockets", () => {
     if (welcome?.type !== ServerMessageType.Welcome) {
       throw new Error("Expected a welcome message");
     }
-    const mage = bench.world.entities.get(welcome.mageId);
+    const mage = [...bench.world.armies.values()][0]?.mage;
     client.send({ type: ClientMessageType.Move, x: 0, y: 0 });
     await vi.waitFor(() => {
       expect(mage?.targetX).toBe(0);
@@ -106,9 +106,9 @@ describe("sockets", () => {
       const snapshot = client.received[2];
       expect(snapshot?.type).toBe(ServerMessageType.Snapshot);
       if (snapshot?.type === ServerMessageType.Snapshot) {
-        expect(snapshot.entities.map((entity) => entity.id)).toEqual([
+        expect(snapshot.entities.map((entity) => entity.id)).toContain(
           welcome.mageId,
-        ]);
+        );
       }
     });
     client.socket.close();
@@ -118,7 +118,7 @@ describe("sockets", () => {
     const client = await connect();
     client.send({ type: ClientMessageType.Join, name: "Ash" });
     await vi.waitFor(() => {
-      expect(bench.world.entities.size).toBe(1);
+      expect(bench.world.armies.size).toBe(1);
     });
     client.socket.close();
     await vi.waitFor(() => {

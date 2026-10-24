@@ -1,10 +1,23 @@
-import type { SnapshotEntity } from "@horde/shared";
-import type { World } from "../world/world.js";
+import { EntityKind, type SnapshotEntity } from "@horde/shared";
+import type { Entity, World } from "../world/world.js";
 
 export interface View {
   width: number;
   height: number;
 }
+
+const toSnapshot = (world: World, entity: Entity): SnapshotEntity => ({
+  id: entity.id,
+  kind: entity.kind,
+  type:
+    entity.kind === EntityKind.Unit
+      ? world.registries.units.index(entity.type)
+      : 0,
+  army: entity.army.slot,
+  flags: 0,
+  x: entity.x,
+  y: entity.y,
+});
 
 export const visibleEntities = (
   world: World,
@@ -25,7 +38,7 @@ export const visibleEntities = (
   for (const id of ids) {
     const entity = world.entities.get(id);
     if (entity !== undefined) {
-      entities.push({ id, kind: entity.kind, x: entity.x, y: entity.y });
+      entities.push(toSnapshot(world, entity));
     }
   }
   return entities;

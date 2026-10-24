@@ -20,7 +20,7 @@ watchConfig(env.CONFIG_DIR, config, {
   },
 });
 
-const world = new World(config);
+const world = new World(config, registries);
 const serveStatic = createStaticHandler(env.CLIENT_DIR);
 const server = createServer((request, response) => {
   void serveStatic(request, response);

@@ -6,12 +6,14 @@ export class RegistryError extends Error {
 
 export class Registry<T> {
   readonly #entries: ReadonlyMap<string, T>;
+  readonly #indexes: ReadonlyMap<string, number>;
 
   constructor(
     readonly label: string,
     entries: Record<string, T>,
   ) {
     this.#entries = new Map(Object.entries(entries));
+    this.#indexes = new Map(Object.keys(entries).map((key, i) => [key, i]));
   }
 
   get(id: string): T {
@@ -20,6 +22,14 @@ export class Registry<T> {
       throw new RegistryError(`Unknown ${this.label} "${id}"`);
     }
     return entry;
+  }
+
+  index(id: string): number {
+    const index = this.#indexes.get(id);
+    if (index === undefined) {
+      throw new RegistryError(`Unknown ${this.label} "${id}"`);
+    }
+    return index;
   }
 
   has(id: string): boolean {
@@ -84,6 +94,9 @@ export const buildRegistries = (config: Config): Registries => {
   }
   for (const [npcId, npc] of registries.npcs.entries()) {
     checkReference(registries.units, npc.corpse, `Corpse of npc "${npcId}"`);
+  }
+  for (const { unit } of config.gameplay.army.startingUnits) {
+    checkReference(registries.units, unit, "Starting army");
   }
 
   return registries;

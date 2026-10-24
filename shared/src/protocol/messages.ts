@@ -30,7 +30,10 @@ export enum ServerMessageType {
 
 export enum EntityKind {
   Mage = 1,
+  Unit,
 }
+
+export const neutralArmy = 0;
 
 export enum JoinRejection {
   InvalidName = 1,
@@ -49,6 +52,9 @@ export type ClientMessage =
 export interface SnapshotEntity {
   id: number;
   kind: EntityKind;
+  type: number;
+  army: number;
+  flags: number;
   x: number;
   y: number;
 }
@@ -63,7 +69,7 @@ export type ServerMessage =
       entities: SnapshotEntity[];
     };
 
-const snapshotEntityBytes = 9;
+const snapshotEntityBytes = 12;
 
 const readEnum = <T extends number>(
   value: number,
@@ -191,6 +197,9 @@ export const encodeServerMessage = (
         writer
           .uint32(entity.id)
           .uint8(entity.kind)
+          .uint8(entity.type)
+          .uint8(entity.army)
+          .uint8(entity.flags)
           .uint16(quantizeX(entity.x, bounds))
           .uint16(quantizeY(entity.y, bounds));
       }
@@ -242,6 +251,9 @@ export const decodeServerMessage = (
         entities.push({
           id: reader.uint32(),
           kind: readEnum(reader.uint8(), EntityKind, "entity kind"),
+          type: reader.uint8(),
+          army: reader.uint8(),
+          flags: reader.uint8(),
           x: dequantizeX(reader.uint16(), snapshotBounds),
           y: dequantizeY(reader.uint16(), snapshotBounds),
         });

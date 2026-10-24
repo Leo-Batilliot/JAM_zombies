@@ -11,13 +11,37 @@ const id = z.string().min(1);
 const gameplaySchema = z.strictObject({
   mage: z.strictObject({
     speed: z.number().positive(),
+    radius: z.number().positive(),
+  }),
+  army: z.strictObject({
+    startingUnits: z.array(
+      z.strictObject({
+        unit: id,
+        count: z.int().positive(),
+      }),
+    ),
+    spawnRadius: z.number().positive(),
+  }),
+  movement: z.strictObject({
+    separation: z.number().positive().max(1),
   }),
 });
 
-const formationsSchema = z.strictObject({});
+const formationsSchema = z.strictObject({
+  default: z.strictObject({
+    spacing: z.number().positive(),
+    frontOffset: z.number().nonnegative(),
+    backOffset: z.number().nonnegative(),
+  }),
+});
+
+export const ranks = ["front", "back"] as const;
 
 const unitTypeSchema = z.strictObject({
   strength: z.int().positive(),
+  rank: z.enum(ranks),
+  speed: z.number().positive(),
+  radius: z.number().positive(),
   evolutions: z.array(
     z.strictObject({
       into: id,
@@ -44,6 +68,15 @@ const worldSchema = z.strictObject({
   height: structural(z.int().positive()),
   gridCellSize: structural(z.number().positive()),
   spawnMargin: z.number().nonnegative(),
+  decor: z.strictObject({
+    seed: z.int().nonnegative(),
+    scattered: z.array(
+      z.strictObject({
+        sprite: id,
+        count: z.int().nonnegative(),
+      }),
+    ),
+  }),
   pointsOfInterest: z.record(id, z.strictObject({})),
 });
 
@@ -77,10 +110,15 @@ const networkSchema = z.strictObject({
   maxMessageBytes: structural(z.int().positive()),
 });
 
+const color = z.string().regex(/^#[0-9a-f]{6}$/i);
+
 export const clientSettingsSchema = z.strictObject({
   maxPixelRatio: z.number().positive(),
   pixelsPerMeter: z.number().positive(),
   markerDurationMs: z.int().positive(),
+  armyColors: z.array(color).min(1),
+  walkFrameMs: z.int().positive(),
+  grimoireBobMs: z.int().positive(),
 });
 
 export const configSchema = z.strictObject({
@@ -100,18 +138,28 @@ export type ConfigFile = keyof Config;
 
 export const clientConfigSchema = z.strictObject({
   client: clientSettingsSchema,
-  world: worldSchema.pick({ width: true, height: true }),
+  world: worldSchema.pick({ width: true, height: true, decor: true }),
   network: networkSchema.pick({ tickRate: true, interpolationDelayMs: true }),
+  content: z.strictObject({
+    units: z.array(id),
+  }),
 });
 
 export type ClientConfig = z.infer<typeof clientConfigSchema>;
 
 export const toClientConfig = (config: Config): ClientConfig => ({
   client: config.client,
-  world: { width: config.world.width, height: config.world.height },
+  world: {
+    width: config.world.width,
+    height: config.world.height,
+    decor: config.world.decor,
+  },
   network: {
     tickRate: config.network.tickRate,
     interpolationDelayMs: config.network.interpolationDelayMs,
+  },
+  content: {
+    units: Object.keys(config.units.units),
   },
 });
 

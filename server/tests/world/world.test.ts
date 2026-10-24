@@ -2,37 +2,49 @@ import { describe, expect, test } from "vitest";
 import { createBench } from "../support/bench.js";
 
 describe("World", () => {
-  test("spawns mages inside the map, away from the edges", () => {
+  test("picks random points inside the map, away from the edges", () => {
     const { world, config } = createBench();
     const { width, height, spawnMargin } = config.world;
     for (let index = 0; index < 100; index++) {
-      const mage = world.spawnMage();
-      expect(mage.x).toBeGreaterThanOrEqual(spawnMargin);
-      expect(mage.x).toBeLessThanOrEqual(width - spawnMargin);
-      expect(mage.y).toBeGreaterThanOrEqual(spawnMargin);
-      expect(mage.y).toBeLessThanOrEqual(height - spawnMargin);
+      const { x, y } = world.randomPoint();
+      expect(x).toBeGreaterThanOrEqual(spawnMargin);
+      expect(x).toBeLessThanOrEqual(width - spawnMargin);
+      expect(y).toBeGreaterThanOrEqual(spawnMargin);
+      expect(y).toBeLessThanOrEqual(height - spawnMargin);
     }
   });
 
   test("gives each entity its own id and indexes it in the grid", () => {
-    const { world, addMage } = createBench();
-    const first = addMage(10, 10);
-    const second = addMage(10, 10);
-    expect(first.id).not.toBe(second.id);
+    const { world, addArmy } = createBench();
+    const first = addArmy(10, 10);
+    const second = addArmy(10, 10);
+    expect(first.mage.id).not.toBe(second.mage.id);
     expect(world.grid.queryRadius(10, 10, 1)).toHaveLength(2);
   });
 
-  test("removes an entity from the world and the grid", () => {
-    const { world, addMage } = createBench();
-    const mage = addMage(10, 10);
-    world.remove(mage.id);
-    expect(world.entities.size).toBe(0);
-    expect(world.grid.size).toBe(0);
+  test("gives each army its own slot and reuses freed slots", () => {
+    const { world, addArmy } = createBench();
+    const first = addArmy(10, 10);
+    const second = addArmy(10, 10);
+    expect(second.slot).not.toBe(first.slot);
+    world.removeArmy(first);
+    expect(addArmy(10, 10).slot).toBe(first.slot);
   });
 
-  test("counts ticks", () => {
-    const { world, step } = createBench();
-    step(5);
-    expect(world.tick).toBe(5);
+  test("removes an army with its mage and units", () => {
+    const { world, addArmy } = createBench();
+    const army = addArmy(10, 10);
+    world.addUnit(army, "zombie", 11, 10);
+    world.removeArmy(army);
+    expect(world.entities.size).toBe(0);
+    expect(world.grid.size).toBe(0);
+    expect(world.armies.size).toBe(0);
+  });
+
+  test("counts ticks and time", () => {
+    const { config, world, step } = createBench();
+    step(config.network.tickRate);
+    expect(world.tick).toBe(config.network.tickRate);
+    expect(world.time).toBeCloseTo(1);
   });
 });

@@ -1,1 +1,7 @@
-{}
+{
+  "default": {
+    "spacing": 1.2,
+    "frontOffset": 1.5,
+    "backOffset": 1.5
+  }
+}

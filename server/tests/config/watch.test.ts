@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { buildRegistries } from "@horde/shared";
+import { buildRegistries, type Config } from "@horde/shared";
 import { loadConfig } from "../../src/config/load.js";
 import { reloadConfigFile, watchConfig } from "../../src/config/watch.js";
 import { copyConfigDir, type ConfigDir } from "../support/config-dir.js";
@@ -18,6 +18,12 @@ afterEach(() => {
   dir.remove();
 });
 
+const withMageSpeed = (config: Config, speed: number): string =>
+  JSON.stringify({
+    ...config.gameplay,
+    mage: { ...config.gameplay.mage, speed },
+  });
+
 const options = (onReload = vi.fn()) => ({
   validate: buildRegistries,
   onReload,
@@ -27,7 +33,7 @@ describe("reloadConfigFile", () => {
   test("replaces the values in the config object", () => {
     const config = loadConfig(dir.path);
     const onReload = vi.fn();
-    dir.write("gameplay", '{ "mage": { "speed": 42 } }');
+    dir.write("gameplay", withMageSpeed(config, 42));
     reloadConfigFile(dir.path, config, "gameplay", options(onReload));
     expect(config.gameplay.mage.speed).toBe(42);
     expect(onReload).toHaveBeenCalledWith("gameplay");
@@ -37,7 +43,7 @@ describe("reloadConfigFile", () => {
     const config = loadConfig(dir.path);
     const previous = config.gameplay;
     const onReload = vi.fn();
-    dir.write("gameplay", '{ "mage": { "speed": -1 } }');
+    dir.write("gameplay", withMageSpeed(config, -1));
     reloadConfigFile(dir.path, config, "gameplay", options(onReload));
     expect(config.gameplay).toBe(previous);
     expect(onReload).not.toHaveBeenCalled();
@@ -46,12 +52,13 @@ describe("reloadConfigFile", () => {
 
   test("keeps the previous file when a reference is unknown", () => {
     const config = loadConfig(dir.path);
+    const previous = config.units;
     dir.write(
       "units",
       '{ "units": {}, "npcs": { "civilian": { "corpse": "zombie" } } }',
     );
     reloadConfigFile(dir.path, config, "units", options());
-    expect(config.units.npcs).toEqual({});
+    expect(config.units).toBe(previous);
   });
 
   test("keeps structural values and warns", () => {
@@ -78,7 +85,7 @@ describe("watchConfig", () => {
   test("reloads a file after it is saved", async () => {
     const config = loadConfig(dir.path);
     const stop = watchConfig(dir.path, config, { delayMs: 20, ...options() });
-    dir.write("gameplay", '{ "mage": { "speed": 13 } }');
+    dir.write("gameplay", withMageSpeed(config, 13));
     await vi.waitFor(() => {
       expect(config.gameplay.mage.speed).toBe(13);
     });
