@@ -365,7 +365,7 @@ export const startGame = async (
         color: armyHex(config().client.armyColors, mage.army),
       })),
       status?.champions ?? [],
-      map.layout && { layout: map.layout, look: config().client.city },
+      config().client.city.minimapGround,
     );
     marker.update(now);
     playCues(view, now);

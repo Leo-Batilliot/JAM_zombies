@@ -4,6 +4,11 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Minimap épurée | 14.07 | L.BA
+
+- `client/src/minimap.ts`, `client/src/game/game.ts` : fond uni sans lettres des lieux, petits points pour les autres, gros point pour le joueur.
+- `shared/src/config/schema.ts`, `shared/config/client.json` : repères des lieux retirés.
+
 ### Vue plus large et rendu allégé sur téléphone | 14.06 | L.BA
 
 - `client/src/game/camera.ts`, `game.ts` : sur petit écran, caméra 2 fois plus loin et rendu à 1 pixel physique par pixel.

@@ -230,7 +230,6 @@ const serverMessages: ServerMessage[] = [
             tree: { sprite: "obstacle-tree", scale: 2, anchorY: 0.85 },
           },
           minimapGround: "#232a1c",
-          landmarks: { cathedral: { symbol: "+", color: "#c7ccd1" } },
           ramparts: {
             tower: "obstacle-tower",
             towerSpacing: 50,

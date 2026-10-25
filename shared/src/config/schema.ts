@@ -681,10 +681,6 @@ const cityLookSchema = z.strictObject({
   ),
   obstacles: z.record(id, obstacleLookSchema),
   minimapGround: color,
-  landmarks: z.record(
-    id,
-    z.strictObject({ symbol: z.string().min(1).max(2), color }),
-  ),
   ramparts: z.strictObject({
     tower: id,
     towerSpacing: z.number().positive(),

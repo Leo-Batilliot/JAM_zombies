@@ -565,28 +565,6 @@
       }
     },
     "minimapGround": "#232a1c",
-    "landmarks": {
-      "cathedral": {
-        "symbol": "+",
-        "color": "#c7ccd1"
-      },
-      "castle": {
-        "symbol": "C",
-        "color": "#d4b48c"
-      },
-      "hospital": {
-        "symbol": "H",
-        "color": "#e0605a"
-      },
-      "barracks": {
-        "symbol": "B",
-        "color": "#b8936a"
-      },
-      "graveyard": {
-        "symbol": "t",
-        "color": "#a6adb6"
-      }
-    },
     "ramparts": {
       "tower": "obstacle-tower",
       "towerSpacing": 50,

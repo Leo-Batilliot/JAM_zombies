@@ -786,3 +786,7 @@ Les nouvelles cartes de level up restent visibles mais incliquables pendant un c
 ### 14.06 Téléphone : vue plus large et rendu allégé | L.BA
 
 Sur un écran de moins de 600 px de petit côté, caméra 2 fois plus loin et résolution limitée à 1, pour voir plus et alléger le rendu.
+
+### 14.07 Minimap épurée | L.BA
+
+Plus de lettres des lieux, points des autres plus petits que celui du joueur.
