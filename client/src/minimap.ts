@@ -3,10 +3,16 @@ export interface MinimapPoint {
   y: number;
 }
 
+export interface MinimapMage extends MinimapPoint {
+  color: string;
+}
+
 const selfColor = "#ece3f5";
 const bossColor = "#ff9a1f";
 const bountyColor = "#e0605a";
+const championColor = "#f6d660";
 const dotRadius = 3;
+const selfRadius = 5;
 
 export class Minimap {
   readonly canvas = document.createElement("canvas");
@@ -24,6 +30,9 @@ export class Minimap {
     self: MinimapPoint | undefined,
     bosses: MinimapPoint[],
     bounty: MinimapPoint | undefined,
+    mages: MinimapMage[],
+    champions: MinimapPoint[],
+    ground: string,
   ): void {
     const context = this.#context;
     if (context === null) {
@@ -37,20 +46,28 @@ export class Minimap {
       this.canvas.height = height;
     }
     context.clearRect(0, 0, width, height);
-    const dot = (point: MinimapPoint, color: string): void => {
+    context.fillStyle = ground;
+    context.fillRect(0, 0, width, height);
+    const dot = (point: MinimapPoint, color: string, radius = dotRadius) => {
       context.fillStyle = color;
       context.beginPath();
-      context.arc(point.x * scale, point.y * scale, dotRadius, 0, 2 * Math.PI);
+      context.arc(point.x * scale, point.y * scale, radius, 0, 2 * Math.PI);
       context.fill();
     };
+    for (const mage of mages) {
+      dot(mage, mage.color);
+    }
     for (const boss of bosses) {
       dot(boss, bossColor);
+    }
+    for (const champion of champions) {
+      dot(champion, championColor);
     }
     if (bounty !== undefined) {
       dot(bounty, bountyColor);
     }
     if (self !== undefined) {
-      dot(self, selfColor);
+      dot(self, selfColor, selfRadius);
     }
   }
 }

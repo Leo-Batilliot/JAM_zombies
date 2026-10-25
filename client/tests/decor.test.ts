@@ -1,71 +1,152 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, test } from "vitest";
-import { placeDecor } from "../src/game/decor.js";
+import {
+  configSchema,
+  toClientConfig,
+  type ClientConfig,
+  type ConfigFile,
+} from "@horde/shared";
+import { layoutCity } from "../src/game/decor.js";
 
-const world = {
-  width: 100,
-  height: 50,
-  decor: {
-    seed: 7,
-    scattered: [
-      { sprite: "decor-tree", count: 20 },
-      { sprite: "decor-rock", count: 5 },
-    ],
-    fixed: [{ sprite: "decor-pub", x: 40, y: 30 }],
-  },
-  crosses: {
-    count: 0,
-    radius: 6,
-    threshold: 40,
-    rechargeSec: 60,
-    spacing: 50,
-    lifetimeSec: { min: 480, max: 720 },
-  },
-  bombings: {
-    name: "the bombing",
-    firstDelaySec: 150,
-    intervalSec: { min: 75, max: 120 },
-    zones: 3,
-    radius: 7,
-    spread: 5,
-    delaySec: 10,
-    blastSec: 0.6,
-    damage: 20,
-    crowding: 0.03,
-    maxMultiplier: 3,
-  },
+const configDir = join(import.meta.dirname, "../../shared/config");
+const atlasDir = join(import.meta.dirname, "../public/atlas");
+
+const readJson = (path: string): unknown =>
+  JSON.parse(readFileSync(path, "utf8"));
+
+const loadClientConfig = (seed: number): ClientConfig => {
+  const files = Object.keys(configSchema.shape) as ConfigFile[];
+  const config = configSchema.parse(
+    Object.fromEntries(
+      files.map((file) => [file, readJson(join(configDir, `${file}.json`))]),
+    ),
+  );
+  return toClientConfig(config, seed);
 };
 
-describe("placeDecor", () => {
-  test("places the configured count of each sprite inside the map", () => {
-    const items = placeDecor(world);
-    expect(items.filter((item) => item.sprite === "decor-tree")).toHaveLength(
-      20,
+const atlasFrames = (): Set<string> => {
+  const manifest = readJson(join(atlasDir, "manifest.json")) as {
+    sheets: string[];
+  };
+  const names = new Set<string>();
+  for (const sheet of manifest.sheets) {
+    const data = readJson(join(atlasDir, sheet)) as {
+      frames: Record<string, unknown>;
+    };
+    Object.keys(data.frames).forEach((name) => names.add(name));
+  }
+  return names;
+};
+
+const config = loadClientConfig(1234);
+
+describe("layoutCity", () => {
+  test("gives the same layout for the same seed", () => {
+    expect(layoutCity(config)).toEqual(layoutCity(config));
+  });
+
+  test("changes with the city seed", () => {
+    expect(layoutCity(loadClientConfig(99)).city).not.toEqual(
+      layoutCity(config).city,
     );
-    expect(items.filter((item) => item.sprite === "decor-rock")).toHaveLength(
-      5,
-    );
-    for (const item of items) {
-      expect(item.x).toBeGreaterThanOrEqual(0);
-      expect(item.x).toBeLessThanOrEqual(100);
-      expect(item.y).toBeGreaterThanOrEqual(0);
-      expect(item.y).toBeLessThanOrEqual(50);
+  });
+
+  test("covers the streets, then every district with its ground", () => {
+    const { grounds, city } = layoutCity(config);
+    expect(grounds[0]).toMatchObject({
+      ground: config.world.city.streetGround,
+      width: config.world.width,
+    });
+    expect(grounds).toHaveLength(city.districts.length + 1);
+  });
+
+  test("sorts decor from back to front", () => {
+    const ys = layoutCity(config).decor.map((item) => item.y);
+    expect(ys).toEqual([...ys].sort((a, b) => a - b));
+  });
+
+  test("lights every lamp of the compositions", () => {
+    expect(layoutCity(config).lights.length).toBeGreaterThan(0);
+  });
+
+  test("keeps the outside trees out of the map", () => {
+    const { width, height } = config.world;
+    const { treeSpacing } = config.client.city.outside;
+    for (const tree of layoutCity(config).outside) {
+      const inside =
+        tree.x > treeSpacing &&
+        tree.x < width - treeSpacing &&
+        tree.y > treeSpacing &&
+        tree.y < height - treeSpacing;
+      expect(inside).toBe(false);
+    }
+  });
+});
+
+describe("city look", () => {
+  const look = config.client.city;
+  const templates = Object.values(config.world.city.templates);
+
+  test("has a look for every ground and obstacle of the city", () => {
+    const grounds = [
+      config.world.city.streetGround,
+      ...templates.map((template) => template.ground),
+    ];
+    for (const ground of grounds) {
+      expect(look.grounds).toHaveProperty(ground);
+    }
+    const kinds = new Set(layoutCity(config).city.obstacles.map((o) => o.kind));
+    for (const template of templates) {
+      template.obstacles.forEach((shape) => kinds.add(shape.kind));
+    }
+    for (const kind of kinds) {
+      expect(look.obstacles).toHaveProperty(kind);
     }
   });
 
-  test("places fixed items at their position", () => {
-    expect(placeDecor(world)).toContainEqual({
-      sprite: "decor-pub",
-      x: 40,
-      y: 30,
-    });
+  test("only uses sprites that are in the atlas", () => {
+    const frames = atlasFrames();
+    const sprites = [
+      ...Object.values(look.grounds).flatMap((g) => [g.tile, ...g.variants]),
+      ...Object.values(look.obstacles).flatMap((style) =>
+        "sprite" in style ? [style.sprite] : [style.roof, style.wall],
+      ),
+      look.ramparts.tower,
+      look.ramparts.gate,
+      look.outside.ground,
+      ...look.outside.trees,
+      ...Object.values(config.world.city.compositions).flatMap(
+        (composition) => [
+          ...composition.items.map((item) => item.sprite),
+          ...(composition.scatter?.sprites ?? []),
+        ],
+      ),
+    ];
+    for (const sprite of sprites) {
+      expect(frames, sprite).toContain(sprite);
+    }
   });
+});
 
-  test("gives the same layout for the same seed", () => {
-    expect(placeDecor(world)).toEqual(placeDecor(world));
-  });
+describe("content sprites", () => {
+  const frames = atlasFrames();
+  const drawable = (name: string): boolean => {
+    const sprite = config.client.spriteAliases[name]?.sprite ?? name;
+    return [`${sprite}-walk-s-0`, `${sprite}-walk-0`, sprite].some((frame) =>
+      frames.has(frame),
+    );
+  };
 
-  test("sorts items from back to front", () => {
-    const ys = placeDecor(world).map((item) => item.y);
-    expect(ys).toEqual([...ys].sort((a, b) => a - b));
+  test("every unit, npc, item, point and place can be drawn", () => {
+    const { content } = config;
+    const names = [
+      ...content.units.map((unit) => `unit-${unit.id}`),
+      ...content.npcs.map((npc) => `npc-${npc}`),
+      ...content.items.map((item) => `item-${item.id}`),
+      ...content.pointsOfInterest.map((point) => `poi-${point}`),
+      ...content.places.map((place) => `place-${place}`),
+    ];
+    expect(names.filter((name) => !drawable(name))).toEqual([]);
   });
 });

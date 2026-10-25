@@ -4,6 +4,244 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Vue et rendu adaptés au téléphone | L.BA
+
+- **Quoi** : quand le petit côté de l'écran fait moins de 600 px, la caméra est 2 fois plus loin (`camera.smallScreenZoom`) et le rendu est limité à 1 pixel physique par pixel (`camera.smallScreenPixelRatio`).
+- **Pourquoi** : retour de jeu, sur téléphone on voyait environ 20 m de large et le jeu ramait. Un lobby normal coûte 2,8 ms par tick au serveur, le lag vient du réseau ou du rendu.
+- **Impact** : plus d'entités visibles et plus de débit sur téléphone, mais environ 4 fois moins de pixels à dessiner.
+- **Avis** : À vérifier. Fps et lisibilité à confirmer sur le téléphone.
+
+### Cartes verrouillées 800 ms | L.BA
+
+- **Quoi** : à chaque nouveau tirage, les cartes s'affichent grisées et ne réagissent pas aux clics pendant `cardLockMs` (800 ms).
+- **Pourquoi** : retour de jeu, un clic de déplacement juste au moment du level up choisissait une carte par erreur.
+- **Impact** : aucun sur le serveur.
+- **Avis** : À vérifier. Délai à régler entre 500 et 1000 ms.
+
+### Abandon de la ville pour une forêt | L.BA
+
+- **Quoi** : la carte est une forêt d'herbe avec des arbres bloquants épars, sans rues, bâtiments ni remparts. La grille de quartiers reste en interne pour placer les lieux, les repaires et les sources, devenus des clairières.
+- **Pourquoi** : retour de jeu, la ville et ses grands bâtiments bloquants rendaient mal et gênaient les déplacements.
+- **Impact** : la DA de la cité fortifiée (ART-01, ART-02, ART-10) est abandonnée. Les mécaniques des lieux restent.
+- **Avis** : Validée. Demande de L.BA.
+
+### Départ sans danger et magie du mage | L.BA
+
+- **Quoi** : 130 civils, un groupe de 5 civils à 14 m du mage à chaque apparition, apparition loin des mages et des PNJ hostiles, points aléatoires à 8 m des coffres, camps et croix. Le mage tire un sort de base (6 dégâts toutes les 1,2 s, 7 m) sur le PNJ ciblé ou le plus proche.
+- **Pourquoi** : retour de jeu, on se faisait tuer au départ et un mage sans troupes ne pouvait plus rien faire.
+- **Impact** : 230 PNJ errants au total au lieu de 150, débit et tick à remesurer.
+- **Avis** : À vérifier. Valeurs à régler en jeu.
+
+### Caméra plus loin et créatures plus petites | L.BA
+
+- **Quoi** : la caméra est 30 % plus loin à tous les niveaux (`camera.baseZoom`), les unités et PNJ sont 20 % plus petits, le mage garde sa taille. La minimap passe sur un fond uni avec des points plus gros.
+- **Pourquoi** : retour de jeu.
+- **Impact** : vue jusqu'à environ 175 m de large au dézoom maximal, sous la limite de 200 m du serveur.
+- **Avis** : Validée. Demande de L.BA.
+
+### Sprites générés par modèles | L.BA
+
+- **Quoi** : tous les sprites (unités, PNJ, champions, mages, sols, bâtiments, décor) sont dessinés par `tools/assets/draw/` à partir de modèles paramétrés (humanoïde de face, bêtes, volants et engins de profil, spectres), décrits en données dans `creatures.json` et `city.json`, contour sombre et pixels doublés. Les packs LPC sont supprimés.
+- **Pourquoi** : la maquette dans l'esprit de l'atlas d'avant la V2 a été validée, et une seule chaîne garde un style cohérent pour tout le contenu.
+- **Impact** : l'atlas passe de 1 Mo à environ 100 Ko. Un nouveau sprite est une entrée de données.
+- **Avis** : Validée. Maquette validée, rendu en jeu à revoir après des parties.
+
+### Champions uniques en repaire | L.BA
+
+- **Quoi** : 4 champions hors lignées (Grand chevalier au musée, Bourreau sur la place, Évêque déchu à la crypte, Gargouille sur le rempart près de la caserne). Un repaire ne réapparaît que si le champion n'existe nulle part. À la mort de son mage, le champion passe entier au tueur, sinon il retourne au repaire, jamais en fosse commune. Capacités en config : charge, piqué sur les unités à distance, exécution sous 20 % de PV et frappe en arc, soins.
+- **Pourquoi** : CONT-11 et CONT-12, sans exception dans la fusion ni les mutations puisqu'une unité hors lignée n'est ni découpée ni fusionnée.
+- **Impact** : leurs positions partent dans le statut de chaque joueur pour la minimap. La grande barre de boss ne les montre pas encore.
+- **Avis** : À vérifier. Stats et capacités à régler en jeu.
+
+### Lieux en garnison | L.BA
+
+- **Quoi** : cathédrale, caserne, hôpital et cabane du chasseur sont des camps permanents liés à leur quartier : défenseurs, coffre au butin propre une fois vidés, retour plus tard. La caserne a une mitrailleuse et un mortier qui bombarde les armées proches, l'hôpital des patients et du gaz qui épargne volants et spectres. Caserne, place et forêt existent dans chaque ville.
+- **Pourquoi** : CONT-06 à CONT-10 en réutilisant les camps, les brumes et les bombardements.
+- **Impact** : les bots n'attaquent un lieu que s'ils sont assez forts, comme les camps.
+- **Avis** : À vérifier. Garnisons et délais à régler en jeu.
+
+### Bandes hostiles dans les populations | L.BA
+
+- **Quoi** : chiens errants, pillards, loups, corbeaux et chauves-souris sont des populations avec un comportement de raid : elles attaquent une armée moins forte que la bande (rapport en config), fuient une plus forte ou quand elles sont trop blessées. Les loups encerclent. Les moines défilent en file entre la cathédrale, les rues et la place. Le total reste à 150 PNJ errants : 90 civils et 60 pour les nouvelles sources.
+- **Pourquoi** : CONT-01 à CONT-05 sans nouveau système, et un tick déjà proche du budget sur la machine de mesure.
+- **Impact** : les nouvelles lignées s'obtiennent moins souvent que les zombies (EVO-18 partiel).
+- **Avis** : À vérifier. Budget de PNJ à revoir après des parties.
+
+### Couches des corps | L.BA
+
+- **Quoi** : chaque unité ou PNJ est au sol, en l'air ou éthéré. Les volants ignorent murs, remparts et séparation avec le sol. Les spectres traversent les rangs. Le triangle passe par des bonus de dégâts : volants contre squelettes, bêtes contre volants, spectres contre zombies, sorcellerie contre spectres.
+- **Pourquoi** : EVO-15 à EVO-17 sans réécrire le ciblage.
+- **Impact** : le client reçoit la couche dans le contenu pour l'ombre et la transparence, sans changement de snapshot.
+- **Avis** : À vérifier. Équilibre du triangle à régler.
+
+### Transferts limités sous le plafond des bots | L.BA
+
+- **Quoi** : un bot ne reçoit des unités ou cadavres que tant que sa force potentielle reste sous son plafond. Le surplus va à la fosse commune.
+- **Pourquoi** : en simulation, un bot sous le plafond qui tuait un mage passait de 37 à 67 de force en un tick.
+- **Impact** : le meilleur bot reste entre 40 et 42 de force sans joueur.
+- **Avis** : Validée.
+
+### Retour aux sprites générés | L.BA
+
+- **Quoi** : les visuels tirés des packs LPC (unités, bâtiments, rues, fontaine) seront remplacés par des sprites générés par script, dans l'esprit de l'atlas d'avant la V2. La passe se fait une fois, après les mécaniques du Lot 4 (étape 13.18). L'interface en cuir et parchemin est gardée.
+- **Pourquoi** : retour de jeu, les zombies LPC ressemblent à des extraterrestres gris et le décor rend mal. Aucun pack libre accessible ne couvre tout le contenu dans un même style.
+- **Impact** : les sprites LPC restent provisoires jusqu'à 13.18. La chaîne `tools/assets/` sert de base pour la génération.
+- **Avis** : Validée. L'interface plaît, le reste du Lot 3 visuel est à refaire.
+
+### Cibles et corps toujours à l'intérieur des remparts | L.BA
+
+- **Quoi** : un point libre est ramené à l'intérieur des remparts (bordure plus le rayon du corps), puis sorti des obstacles. Il sert aux corps repoussés par les murs, aux cibles de déplacement des joueurs et des bots, et aux apparitions. Un bot qui fuit essaie plusieurs directions pour ne pas se coincer contre un mur.
+- **Pourquoi** : la sortie la plus courte d'un rempart est vers l'extérieur. En simulation, des civils sortaient de la carte et des bots restaient collés aux remparts ou visaient un point dans un muret.
+- **Impact** : un clic sur un bâtiment amène le mage à son bord. Les mages s'arrêtent à 1,5 m du bord de la carte.
+- **Avis** : Validée. Moins de bots immobiles en simulation.
+
+### Animations de fusion et de level up en anneaux | L.BA
+
+- **Quoi** : un anneau vert nécrotique au moment où une unité évoluée se relève (fusion ou relève au même palier), un anneau violet autour du mage à chaque niveau. Couleurs, rayons et durées dans `client.effects`.
+- **Pourquoi** : ART-14 sans nouveau message réseau : le client voit déjà le drapeau de relève et le niveau.
+- **Impact** : une relève d'unité évoluée hors fusion montre aussi l'anneau.
+- **Avis** : Provisoire. À remplacer par de vraies animations si un asset convient.
+
+### Nuit en voile percé de halos, coupée si le jeu rame | L.BA
+
+- **Quoi** : un voile sombre est rendu à demi-résolution dans une texture, puis les halos l'effacent : lampadaires des compositions, mages, camps, points d'intérêt, croix, bombardements (rayons par type d'entité dans `client.night`). Le voile se coupe pour le reste de la partie si les fps restent sous 28 pendant 6 s.
+- **Pourquoi** : ART-12 avec un mode dégradé sans détection de modèle de téléphone.
+- **Impact** : un rendu de plus par image, à demi-résolution.
+- **Avis** : À vérifier. Fps et lisibilité à mesurer sur un vrai téléphone.
+
+### Ville dessinée depuis la graine du serveur | L.BA
+
+- **Quoi** : le client reconstruit la ville avec la même fonction que le serveur (`generateCity`) à partir de la graine reçue. Les bâtiments rectangulaires sont un toit en tuiles avec une façade en bas, les obstacles ronds (arbres, tours, fontaines) un sprite à leur taille. L'apparence de chaque sol et de chaque obstacle est dans `client.city`. Les rues passent en dalles pour se distinguer des quartiers pavés.
+- **Pourquoi** : les bâtiments bloquaient côté serveur mais étaient invisibles. Un test vérifie que le plan du client est celui du serveur et que chaque sprite existe dans l'atlas.
+- **Impact** : le décor reste sous les unités, même les grands arbres.
+- **Avis** : Provisoire. Les unités passent devant les arbres et les tours, à revoir si c'est gênant.
+
+### Interface en cuir et parchemin | L.BA
+
+- **Quoi** : fonds en cuir sombre, texte parchemin, accents laiton à la place du violet (`client/src/style.css`).
+- **Pourquoi** : ART-04, le violet est réservé à la magie des mages.
+- **Impact** : aucun changement de mise en page.
+- **Avis** : Validée. L'interface plaît.
+
+### Citrouille au parc ou en forêt | L.BA
+
+- **Quoi** : les événements peuvent cibler des quartiers (`districts`, comme les camps). La Citrouille apparaît au parc ou en forêt, où un champ de citrouilles est dessiné. Les croix deviennent des calvaires de pierre, les camps des palissades.
+- **Pourquoi** : ART-13, chaque élément a une raison d'être là.
+- **Impact** : la Citrouille n'apparaît plus au centre pavé.
+- **Avis** : À vérifier. Propositions du concept.
+
+### Chaîne d'assets LPC et ville en quartiers | A.PI
+
+- **Quoi** : les sprites viennent des packs LPC, découpés, recolorés et ramenés à une palette de nuit d'automne par `tools/assets/build.py`, puis paquetés en plusieurs atlas. La carte est une grille de 4 x 4 quartiers tirés parmi des gabarits de `world.json`, séparés par des rues, entourés de remparts. Les obstacles sont des rectangles et des cercles : les corps qui y entrent sont repoussés, sans pathfinding. Un bot qui n'avance plus fait un détour.
+- **Pourquoi** : ART-01, ART-02, ART-03 et ART-07 sans dessinateur dans l'équipe, avec un coût serveur faible.
+- **Impact** : nouvel outil Python (Pillow) pour régénérer l'atlas. Les assets LPC imposent les crédits et la licence CC-BY-SA.
+- **Avis** : À vérifier. Documenté par L.BA d'après le code, avis d'A.PI à recueillir. Les obstacles coûtent environ 2,5 % du tick.
+
+### Bots qui mutent la lignée en attente de fusion | A.PI
+
+- **Quoi** : un bot prend la carte de mutation de la lignée qui a le plus d'unités au palier le plus haut qu'elle a débloqué (toutes ses unités si elle n'a pas de mutation), à force égale celle qui pèse le plus. Si aucune mutation n'aide son armée, il prend un don.
+- **Pourquoi** : en simulation, les bots prenaient toujours les zombies, et les squelettes des cimetières restaient au palier de base sans jamais fusionner.
+- **Impact** : les armées des bots restent compactes. Les joueurs gardent le choix libre.
+- **Avis** : À vérifier. À confirmer avec la courbe d'expérience en jeu.
+
+### Courbe d'expérience moins raide | A.PI
+
+- **Quoi** : chaque niveau coûte 1,2 fois le précédent au lieu de 1,5 (`souls.levelGrowth`).
+- **Pourquoi** : à x1,5, le meilleur bot ne prenait qu'un niveau entre 10 et 16 min. Les mutations ne suivaient plus la taille de l'armée, et il faut 9 cartes de mutation pour finir 3 lignées.
+- **Impact** : touche aussi les joueurs, qui montent plus vite et voient plus de cartes.
+- **Avis** : À vérifier. À régler en jeu.
+
+### Cartes de level up en haut au centre, dépliées à chaque niveau | A.PI
+
+- **Quoi** : les 3 cartes s'affichent en haut au centre, sous le HUD, dépliées à chaque nouveau tirage, même en bataille, et le joueur peut les replier. Chaque carte montre son type, une image (sprite de l'unité, ou icône de l'effet pour un don ou un sort), sa lignée, sa branche et son palier, ses stats (PV, dégâts par seconde, vitesse, portée, équivalent en unités, ou recharge) et une description.
+- **Pourquoi** : retour de jeu, à la place de la ligne de boutons en bas à droite. Cela remplace la règle d'EVO-01 qui gardait les cartes repliées dans un coin pendant un combat.
+- **Impact** : le serveur envoie au client les stats des unités, les branches des lignées et les effets des dons et des sorts. Les icônes sont dans l'atlas, nommées par effet : un nouveau don au même effet réutilise son icône.
+- **Avis** : Validée.
+
+### Moins d'attraction vers un groupe plus fort | A.PI
+
+- **Quoi** : une unité ne prend pas d'elle-même pour cible un ennemi dont la force (armée entière, camp, boss et sbires) dépasse 1,5 fois celle de son armée, sauf s'il est à moins de 3 m ou s'il attaque une unité ou le mage de son armée. L'ordre d'attaque passe outre. Les forces sont calculées une fois par tick.
+- **Pourquoi** : retour de jeu : en passant près d'un groupe trop fort, les troupes allaient s'y suicider et ne suivaient plus le mage.
+- **Impact** : un groupe plus fort qui attaque reçoit une riposte, un groupe plus fort qui passe à côté est laissé tranquille.
+- **Avis** : À vérifier. Rapport et distance de contact à régler en jeu.
+
+### Bots calés sur le meilleur joueur humain | A.PI
+
+- **Quoi** : le plafond d'un bot vaut la force du meilleur joueur humain vivant multipliée par 1,2, plus 40 (seulement 40 sans humain). Le handicap se calcule sur la force potentielle du bot (troupes vivantes et cadavres). Entre 60 % et 100 % du plafond, ses âmes baissent jusqu'à zéro et il réfléchit jusqu'à 3 fois moins souvent. Au plafond, il ne gagne plus d'âmes, ne reçoit plus de troupes ni de cadavres (mort d'un mage, fuite), ne gagne rien sur les PNJ, ne fouille plus, ses unités ignorent les civils, et il se contente d'errer et de se défendre. Ses propres morts se relèvent toujours.
+- **Pourquoi** : retour de jeu : sans joueur, les bots progressaient sans frein (631 de force en 16 min de simulation). Avec la force vivante, un bot qui perdait des troupes repassait sous le plafond, grossissait, puis ses morts se relevaient par-dessus : d'où la force potentielle.
+- **Impact** : avec un joueur de force 5, les bots s'arrêtent à 46. Le plafond suit le meilleur joueur, un nouveau venu peut donc croiser des bots calés sur un autre joueur plus fort.
+- **Avis** : À vérifier. Marge et ratio à régler en jeu.
+
+### Réapparition sur demande du joueur | T.BE
+
+- **Quoi** : après sa mort, un joueur voit l'écran de fin de run et ne réapparaît qu'en cliquant sur Play again, une fois le délai écoulé. Les bots réapparaissent seuls, ainsi qu'un joueur déconnecté repris par un bot.
+- **Pourquoi** : l'écran de fin (UI-08) affiche les statistiques avant de rejouer, le mage ne doit pas réapparaître pendant que le joueur les lit.
+- **Impact** : nouveau message `Respawn`. Une armée de joueur morte et sans réponse reste morte.
+- **Avis** : Validée.
+
+### Mur d'os en PNJ obstacles | T.BE
+
+- **Quoi** : le mur d'os pose une rangée de PNJ fixes (`obstacle: true` dans `units.json`) derrière le mage, perpendiculaire à sa marche, pour la durée du sort. Personne ne les cible, la séparation des corps les rend infranchissables.
+- **Pourquoi** : réutilise les PNJ fixes et la séparation existants, sans système d'obstacles.
+- **Impact** : le client masque la barre de PV et le contour des obstacles (`content.obstacles`).
+- **Avis** : À vérifier. Longueur, durée et distance au mage à régler en jeu.
+
+### Capacités propres des paliers reportées | T.BE
+
+- **Quoi** : les 21 unités des trois lignées ont leurs statistiques, mais pas leurs capacités propres (dégâts de zone du pyromancien et de la catapulte, ralentissement de la liche, 3 cibles du Cerbère, bond du rôdeur, hurlement du seigneur-garou). Le don « fusion moins chère » n'est pas fait non plus : avec un ratio de 2, une fusion ne peut pas coûter moins.
+- **Pourquoi** : chaque capacité demande un mécanisme de combat nouveau, hors du périmètre du Lot 2.
+- **Impact** : les paliers se distinguent par leurs statistiques, leur vitesse et leur bonus du triangle de force.
+- **Avis** : Reportée. À reprendre avec le Lot 4 ou une étape dédiée.
+
+### Sprites empruntés pour les nouvelles unités | T.BE
+
+- **Quoi** : `client.json` contient `spriteAliases`, qui fait afficher un sprite existant (avec un facteur de taille) pour une unité, un PNJ ou un projectile sans sprite propre.
+- **Pourquoi** : choix de l'équipe en attendant les assets du Lot 3.
+- **Impact** : retirer l'alias suffit quand le vrai sprite arrive dans l'atlas.
+- **Avis** : Provisoire. À vider au Lot 3.
+
+### Arbres en force de puissance 2 | T.BE
+
+- **Quoi** : `units.json` décrit chaque lignée (`lineages`) : une base et deux branches de trois paliers. La force d'un palier vaut `fusionRatio` puissance palier (1, 2, 4, 8), vérifiée au chargement. Les PV et les dégâts suivent environ 2,2 puissance palier, soit un léger gain sur les unités remplacées. Le gros zombie et le golem de chair deviennent les paliers 1 et 2 de la branche Masse (le golem est renommé Abomination).
+- **Pourquoi** : EVO-04 et EVO-05 du concept V2.
+- **Impact** : les seuils du classement, des croix sacrées et des bots portent sur des forces plus basses qu'avant.
+- **Avis** : À vérifier. Statistiques et poids des cartes à équilibrer en jeu.
+
+### Classement complet envoyé aux clients | T.BE
+
+- **Quoi** : le message de classement contient toutes les armées avec leur puissance et leur puissance si tout revit. Le client n'en affiche que les `leaderboard.size` premières.
+- **Pourquoi** : les plaques des mages ennemis (UI-04) ont besoin du nom et de la puissance de toute armée visible.
+- **Impact** : environ 1 Ko par seconde et par client avec 40 armées.
+- **Avis** : Validée.
+
+### Contours calculés depuis l'atlas au chargement | T.BE
+
+- **Quoi** : au chargement, le client calcule pour chaque image de l'atlas un contour d'un pixel, rangé dans une seule texture. Chaque corps affiche son contour teinté (vert, rouge ou jaune) derrière lui.
+- **Pourquoi** : un filtre de contour sur des centaines de sprites coûterait cher sur téléphone (UI-02), un sprite de plus reste groupé au rendu.
+- **Impact** : aucun asset à produire, les contours suivent les futurs sprites.
+- **Avis** : À vérifier. Fps à mesurer sur un vrai téléphone (TECH-02).
+
+### Fuite libre déclenchée par l'éloignement | T.BE
+
+- **Quoi** : en bataille, le serveur retient la distance la plus courte entre le mage et un ennemi engagé. Quand le mage s'en éloigne de `battle.fleeDistance` (10 m), les unités de mêlée qui frappent restent sur place, abandonnées, et les cadavres tués par l'ennemi lui passent. Une unité qui se bat garde sa cible même au-delà de la laisse.
+- **Pourquoi** : un seuil absolu ferait fuir un mage resté derrière une grosse formation, et la laisse ferait décrocher les unités au contact avant la fuite.
+- **Impact** : plus de Retraite, de tunnel, d'encerclement ni de cercle d'aggro. Les bots fuient en marchant à l'opposé des ennemis.
+- **Avis** : À vérifier. Distance à régler en jeu.
+
+### Abandon des proies faibles par les bots seulement | T.BE
+
+- **Quoi** : un bot lâche une armée qu'il poursuit au bout d'un temps proportionnel au rapport de force (entre 4 et 20 s), puis l'ignore 30 s. Les PNJ hostiles gardent leur laisse autour de leur base.
+- **Pourquoi** : la laisse des PNJ les empêche déjà de poursuivre loin (MOV-06).
+- **Impact** : réglages dans `lobby.json` (`bots.giveUp`).
+- **Avis** : À vérifier. Durées à régler en jeu.
+
+### Marche commune et formation en bloc | T.BE
+
+- **Quoi** : hors combat, l'armée marche à la vitesse de son unité la plus lente (et du mage), multipliée par le ralentissement selon la force (courbe logarithmique, `army.slowdown`). Les places de formation sont attribuées une fois, au plus proche, et la formation ne pivote que pour un déplacement d'au moins 6 m à plus de 45°, à 120° par seconde. Une unité traverse son propre mage.
+- **Pourquoi** : MOV-01 à MOV-03 du concept V2. Sans passage à travers le mage, il bloquait ses propres unités au contact.
+- **Impact** : plus d'accélération de regroupement, sauf pour une unité abandonnée qui a gagné son combat (FIGHT-03).
+- **Avis** : À vérifier. Seuils de rotation et courbe de ralentissement à régler en jeu.
+
 ### Revamp du concept : V2 en différences, par lots | L.BA
 
 - **Quoi** : `docs/conceptV2.md` liste en cases à cocher tout ce qui change par rapport au concept V1, par thème et par lot de priorité. Choix principaux : vitesse constante et formation qui se déplace en bloc, ralentissement selon la force brute, fin du cercle d'aggro et de la Retraite au profit d'une fuite libre par distance, évolution permanente par level up à 3 cartes avec 5 lignées de 2 branches exclusives sur 3 paliers et fusion automatique des unités, tout perdu à la mort, contours vert, rouge et jaune, barres de PV permanentes, cité fortifiée maudite en pixel art d'environ 48 px sous une nuit éclairée, assets LPC, itch.io et générés, champions uniques au serveur.

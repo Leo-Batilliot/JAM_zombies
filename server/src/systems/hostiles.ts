@@ -1,7 +1,7 @@
 import { EntityKind } from "@horde/shared";
 import type { Entity, Mage, Npc, Unit, World } from "../world/world.js";
 import { bodyRadius, distance } from "./bodies.js";
-import { damage } from "./death.js";
+import { strike } from "./abilities.js";
 import { nearestPrey } from "./targeting.js";
 
 type Prey = Mage | Unit;
@@ -52,6 +52,26 @@ const moveToward = (
   );
 };
 
+const encirclePoint = (
+  world: World,
+  npc: Npc,
+  target: Prey,
+): { x: number; y: number } => {
+  const population =
+    npc.group === undefined
+      ? undefined
+      : world.config.world.populations[npc.group.population];
+  const ring = population?.raid?.encircle ?? 0;
+  const length = Math.hypot(npc.offsetX, npc.offsetY);
+  if (ring <= 0 || length === 0 || distance(npc, target) <= ring) {
+    return target;
+  }
+  return {
+    x: target.x + (npc.offsetX / length) * ring,
+    y: target.y + (npc.offsetY / length) * ring,
+  };
+};
+
 export const updateHostiles = (world: World, dt: number): void => {
   const { retargetIntervalSec } = world.config.gameplay.combat;
   const near: number[] = [];
@@ -62,6 +82,11 @@ export const updateHostiles = (world: World, dt: number): void => {
       continue;
     }
     npc.cooldown = Math.max(0, npc.cooldown - dt);
+    if (npc.group?.fleeingSince !== undefined) {
+      npc.targetId = undefined;
+      npc.fighting = false;
+      continue;
+    }
     let target =
       npc.targetId === undefined
         ? undefined
@@ -94,11 +119,12 @@ export const updateHostiles = (world: World, dt: number): void => {
       attack.attackRange + bodyRadius(world, npc) + bodyRadius(world, target);
     npc.fighting = distance(npc, target) <= reach;
     if (!npc.fighting) {
-      moveToward(world, npc, target.x, target.y, stats.speed * dt);
+      const aim = encirclePoint(world, npc, target);
+      moveToward(world, npc, aim.x, aim.y, stats.speed * dt);
     } else if (npc.cooldown <= 0) {
       npc.cooldown = attack.attackIntervalSec;
       if (attack.projectile === undefined) {
-        damage(world, target, attack.damage, undefined, stats.name);
+        strike(world, npc, target, attack.damage, stats.name);
       } else {
         world.addProjectile(
           attack.projectile,

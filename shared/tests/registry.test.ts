@@ -16,10 +16,7 @@ const loadSharedConfig = (): Config =>
     ),
   );
 
-const unit = (
-  strength: number,
-  evolutions: { into: string; cost: number }[] = [],
-) => ({
+const unit = (strength: number) => ({
   name: "Unit",
   family: "zombie",
   bonus: {},
@@ -32,7 +29,6 @@ const unit = (
   attackIntervalSec: 1,
   attackRange: 0.3,
   aggroRange: 5,
-  evolutions,
 });
 
 const npc = (corpse: string) => ({
@@ -44,21 +40,47 @@ const npc = (corpse: string) => ({
   radius: 0.4,
   speed: 1,
   fleeSpeed: 2,
+  obstacle: false,
 });
 
-const withUnits = (units: Pick<Config["units"], "units" | "npcs">): Config => {
+const zombieLineage = (
+  units: Config["units"]["units"],
+): Config["units"]["lineages"] =>
+  units["zombie"] === undefined
+    ? {}
+    : {
+        zombie: {
+          name: "Zombies",
+          base: "zombie",
+          branches: {
+            test: {
+              name: "Test",
+              tiers: Object.keys(units).filter((id) => id !== "zombie"),
+            },
+          },
+        },
+      };
+
+const withUnits = (
+  units: Pick<Config["units"], "units" | "npcs">,
+  lineages: Config["units"]["lineages"] = zombieLineage(units.units),
+): Config => {
   const config = loadSharedConfig();
-  const eventNpcs = Object.fromEntries(
+  const keptNpcs = Object.fromEntries(
     Object.entries(config.units.npcs).filter(
-      ([, npc]) => npc.attack !== undefined && npc.corpse === undefined,
+      ([, npc]) =>
+        npc.obstacle || (npc.attack !== undefined && npc.corpse === undefined),
     ),
   );
   return {
     ...config,
     units: {
       units: units.units,
-      npcs: { ...eventNpcs, ...units.npcs },
+      champions: {},
+      npcs: { ...keptNpcs, ...units.npcs },
       projectiles: config.units.projectiles,
+      fusionRatio: config.units.fusionRatio,
+      lineages,
     },
     world: {
       ...config.world,
@@ -72,6 +94,7 @@ const withUnits = (units: Pick<Config["units"], "units" | "npcs">): Config => {
         ...config.world.camps,
         defenders: [{ npc: "jack-o-lantern", count: 1 }],
       },
+      places: {},
     },
   };
 };
@@ -80,20 +103,22 @@ describe("buildRegistries", () => {
   test("builds a registry for each content type", () => {
     const registries = buildRegistries(
       withUnits({
-        units: {
-          zombie: unit(1, [{ into: "fat", cost: 5 }]),
-          fat: unit(5),
-        },
+        units: { zombie: unit(1), fat: unit(2) },
         npcs: { civilian: npc("zombie") },
       }),
     );
-    expect(registries.units.get("fat").strength).toBe(5);
+    expect(registries.units.get("fat").strength).toBe(2);
+    expect(registries.tree.get("fat")).toEqual({
+      lineage: "zombie",
+      branch: "test",
+      tier: 1,
+    });
     expect(registries.npcs.ids()).toContain("civilian");
   });
 
   test("gives each id its position", () => {
     const registries = buildRegistries(
-      withUnits({ units: { zombie: unit(1), fat: unit(5) }, npcs: {} }),
+      withUnits({ units: { zombie: unit(1), fat: unit(2) }, npcs: {} }),
     );
     expect(registries.units.index("zombie")).toBe(0);
     expect(registries.units.index("fat")).toBe(1);
@@ -160,17 +185,40 @@ describe("buildRegistries", () => {
     expect(() => registries.units.get("ghost")).toThrow(/unit "ghost"/);
   });
 
-  test("fails on an evolution toward a missing unit", () => {
+  test("fails on a lineage toward a missing unit", () => {
     expect(() =>
       buildRegistries(
-        withUnits({
-          units: {
-            zombie: unit(1, [{ into: "golem", cost: 10 }]),
+        withUnits(
+          { units: { zombie: unit(1) }, npcs: {} },
+          {
+            zombie: {
+              name: "Zombies",
+              base: "zombie",
+              branches: { test: { name: "Test", tiers: ["golem"] } },
+            },
           },
-          npcs: {},
-        }),
+        ),
       ),
-    ).toThrow(RegistryError);
+    ).toThrow(/golem/);
+  });
+
+  test("fails on a unit outside every lineage", () => {
+    expect(() =>
+      buildRegistries(
+        withUnits(
+          { units: { zombie: unit(1), fat: unit(2) }, npcs: {} },
+          { zombie: { name: "Zombies", base: "zombie", branches: {} } },
+        ),
+      ),
+    ).toThrow(/fat/);
+  });
+
+  test("fails on a tier whose strength does not follow the fusion ratio", () => {
+    expect(() =>
+      buildRegistries(
+        withUnits({ units: { zombie: unit(1), fat: unit(5) }, npcs: {} }),
+      ),
+    ).toThrow(/strength of 2/);
   });
 
   test("fails on a corpse of a missing unit", () => {
@@ -304,5 +352,41 @@ describe("config schema of the bonus content", () => {
     const raw = loadSharedConfig();
     raw.world.bombings.intervalSec = { min: 10, max: 5 };
     expect(configSchema.safeParse(raw).success).toBe(false);
+  });
+});
+
+describe("places", () => {
+  const withPlace = (
+    edit: (config: Config) => void = () => undefined,
+  ): Config => {
+    const config = loadSharedConfig();
+    edit(config);
+    return config;
+  };
+
+  test("accept the shared config", () => {
+    expect(() => buildRegistries(withPlace())).not.toThrow();
+  });
+
+  test("need their district in every city", () => {
+    const config = withPlace((edited) => {
+      const houses = edited.world.city.templates["houses"];
+      const barracks = edited.world.places["barracks"];
+      if (houses !== undefined && barracks !== undefined) {
+        barracks.district = "houses";
+        houses.min = 0;
+      }
+    });
+    expect(() => buildRegistries(config)).toThrow(/in every city/);
+  });
+
+  test("fire their mortar from one of their defenders", () => {
+    const config = withPlace((edited) => {
+      const barracks = edited.world.places["barracks"];
+      if (barracks?.mortar !== undefined) {
+        barracks.mortar.npc = "soldier-missing";
+      }
+    });
+    expect(() => buildRegistries(config)).toThrow(/is not a defender/);
   });
 });

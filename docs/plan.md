@@ -441,3 +441,352 @@ README : installation, lancement en développement, lancement de la démo. Créd
 ### 8.04 Répétition de la démo | Tous
 
 Déroulé de la présentation, lancement du tunnel, page `/share`, raccourcis du mode démo pour montrer chaque critère.
+
+## Phase 9 : Concept V2, Lot 1 (sensations et lisibilité)
+
+Objectif : les cases du Lot 1 de `docs/conceptV2.md`. Les identifiants entre parenthèses renvoient à ce document.
+
+### 9.01 Vitesse de marche commune | T.BE
+
+Hors combat, le mage et ses unités avancent à la vitesse de la plus lente, sans accélération pour rattraper une place (MOV-01).
+
+### 9.02 Formation qui se déplace en bloc | T.BE
+
+Places attribuées une fois et redistribuées seulement quand la composition change. Petit déplacement : la formation se translate. Long déplacement dans une nouvelle direction : rotation progressive (MOV-02).
+
+### 9.03 Ralentissement selon la force | T.BE
+
+Malus logarithmique de la force brute, pour le mage et les unités, à la place du ralentissement par nombre d'unités (MOV-03).
+
+### 9.04 Civils plus lents qui se fatiguent | T.BE
+
+Vitesse de fuite plus basse, ralentissement après quelques secondes de fuite (MOV-04).
+
+### 9.05 Formations instantanées avec recharge | T.BE
+
+Changement immédiat, recharge affichée sur les boutons (MOV-05, UI-09).
+
+### 9.06 Abandon des proies trop faibles | T.BE
+
+Bots et PNJ hostiles lâchent une proie beaucoup plus faible au bout d'un temps qui baisse avec l'écart de force (MOV-06).
+
+### 9.07 Fin du cercle d'aggro | T.BE
+
+Le mage se déplace librement en bataille. L'état en bataille reste calculé (FIGHT-01).
+
+### 9.08 Fuite libre par distance | T.BE
+
+Le mage qui s'éloigne assez des ennemis engagés laisse sur place les unités au corps à corps, les autres le suivent. Suppression de la Retraite, du tunnel, de l'encerclement et de leurs messages. Bots adaptés (FIGHT-02).
+
+### 9.09 Retour rapide après la victoire | T.BE
+
+Une unité abandonnée revient vite vers son mage seulement quand son adversaire est mort (FIGHT-03).
+
+### 9.10 Mage plus fragile | T.BE
+
+PV de base et par niveau baissés, Lien d'âme réglé en conséquence (FIGHT-04).
+
+### 9.11 PV des entités dans les snapshots | T.BE
+
+Un octet de PV quantifié par corps, envoyé seulement quand il change (UI-01).
+
+### 9.12 Barres de PV permanentes | T.BE
+
+Petite barre sous chaque corps, plus grande pour les unités évoluées, verte pour les alliés et rouge pour les ennemis (UI-01).
+
+### 9.13 Contours de couleur | T.BE
+
+Vert sur les alliés, rouge sur les ennemis, jaune sur ce qui est utile (UI-02).
+
+### 9.14 Grande barre des boss | T.BE
+
+Barre en haut de l'écran avec le nom et les PV du boss (UI-03).
+
+### 9.15 Plaque des mages ennemis | T.BE
+
+Nom dans la couleur de l'armée, puissance actuelle et puissance si tout revit, barre de PV (UI-04).
+
+### 9.16 HUD en haut au centre | T.BE
+
+Niveau, barre d'expérience, PV du mage, puissance actuelle et si tout revit, indicateur de lenteur (UI-05).
+
+### 9.17 Minimap agrandie et rayon de détection | T.BE
+
+Minimap plus grande, mages ennemis visibles seulement dans un rayon qui grandit avec la puissance (UI-06).
+
+### 9.18 Caméra qui dézoome avec la puissance | T.BE
+
+Dézoom continu entre un minimum et un maximum, gestion d'intérêt élargie (UI-07).
+
+### 9.19 Mesures de débit et de fps | T.BE
+
+Test de charge et mesure côté client, résultats dans `docs/load-test.md` (TECH-01, TECH-02).
+
+## Phase 10 : Concept V2, Lot 2 (évolution permanente)
+
+Objectif : les cases du Lot 2 de `docs/conceptV2.md`.
+
+### 10.01 Config des arbres, des cartes et des dons | T.BE
+
+Schémas zod et registres : lignées, branches, paliers, ratio de fusion, dons et sorts (TECH-04).
+
+### 10.02 XP et level up à 3 cartes | T.BE
+
+Les âmes deviennent l'expérience. Chaque niveau propose 3 cartes tirées au hasard, pondérées par les lignées présentes (EVO-01, EVO-02).
+
+### 10.03 Branches exclusives et mutation de lignée | T.BE
+
+Prendre un palier ferme l'autre branche, la mutation s'applique à toute la lignée. Suppression du sacrifice et de la popup d'évolution (EVO-03, EVO-04).
+
+### 10.04 Fusion automatique | T.BE
+
+Les unités fusionnent seules selon le ratio, en gardant le meilleur équipement (EVO-04).
+
+### 10.05 Force en équivalent d'unités de base | T.BE
+
+Une unité vaut le nombre d'unités de base qu'elle représente, partout (EVO-05).
+
+### 10.06 Transfert recalculé et réanimation au même palier | T.BE
+
+Une unité reçue est convertie selon les mutations du receveur, une unité mutée se relève au même palier (EVO-06, EVO-07).
+
+### 10.07 Remise à zéro à la mort et plafond après fusion | T.BE
+
+Niveau, mutations et dons perdus à la mort, plafond compté après fusion (EVO-08, EVO-09).
+
+### 10.08 Dons passifs | T.BE
+
+Soin des troupes proches, réanimation plus rapide, Lien d'âme renforcé, vitesse du mage, vue, butin, PV du mage, fusion moins chère (EVO-10).
+
+### 10.09 Sort actif | T.BE
+
+Un emplacement de sort (Espace ou bouton) : nova nécrotique, cri de ralliement, mur d'os, relève immédiate (EVO-10).
+
+### 10.10 Arbres Zombies, Squelettes et Bêtes | T.BE
+
+Les 21 unités des trois lignées, avec des sprites empruntés aux unités existantes en attendant le Lot 3 (EVO-12 à EVO-14).
+
+### 10.11 Bots qui choisissent leurs cartes | T.BE
+
+Lignée majoritaire d'abord (EVO-11).
+
+### 10.12 Cartes de level up côté client | T.BE
+
+Trois cartes sans pause ni masquer le centre, en attente dans un coin pendant un combat (EVO-01).
+
+### 10.13 Sort actif et recharges à l'écran | T.BE
+
+Bouton et touche du sort, recharge visible (UI-09).
+
+### 10.14 Écran de fin de run | T.BE
+
+Statistiques de la vie après le screamer, puis Rejouer (UI-08).
+
+## Phase 11 : Retours de jeu sur les Lots 1 et 2
+
+Objectif : corriger ce qui ressort des premières parties sur les Lots 1 et 2, avant le Lot 3. Les identifiants renvoient à `docs/conceptV2.md`.
+
+### 11.01 Bots calés sur les joueurs | A.PI
+
+Plafond de force des bots selon le meilleur joueur humain, âmes réduites et réflexion ralentie à l'approche, plus aucune croissance au plafond (MOV-07).
+
+### 11.02 Moins d'attraction vers un groupe plus fort | A.PI
+
+Pas de ciblage automatique d'un ennemi nettement plus fort que l'armée, sauf au contact ou s'il attaque (FIGHT-05).
+
+### 11.03 Cartes de level up illustrées | A.PI
+
+Cartes en haut au centre, dépliées à chaque niveau, avec image (sprite ou icône) et stats. Icônes des dons et des sorts dans l'atlas (EVO-01).
+
+### 11.04 Courbe d'expérience et choix des mutations des bots | A.PI
+
+Niveaux moins chers, bots qui mutent la lignée qui a le plus d'unités en attente de fusion (EVO-19).
+
+### 11.05 Vérification | A.PI
+
+Tests, simulation d'un lobby de bots avant et après, test de charge, documentation.
+
+## Phase 12 : Concept V2, Lot 3 (direction artistique)
+
+Objectif : les cases du Lot 3 de `docs/conceptV2.md`. Assets LPC téléchargés, licences relues et créditées, le reste généré par script. Les identifiants entre parenthèses renvoient à ce document.
+
+### 12.01 Recherche des assets | A.PI
+
+Liste par besoin (unité, tuile, décor, effet) avec la source retenue, sa licence et ce qui reste à générer, dans `docs/assets.md` (ART-08).
+
+### 12.02 Chaîne d'assets dans le dépôt | A.PI
+
+PNG LPC bruts et licences dans `assets/`, script de génération dans `tools/assets/` (Python et Pillow) : découpe des planches, recoloration, contour, palette, paquetage en plusieurs atlas. L'atlas actuel devient une source parmi d'autres (ART-07).
+
+### 12.03 Palette de référence | A.PI
+
+Palette de nuit d'automne dans `tools/assets/palette.json`, appliquée par la chaîne à tous les assets (ART-03).
+
+### 12.04 Atlas multiples côté client | A.PI
+
+Le client charge la liste d'atlas produite par la chaîne et réunit leurs textures (ART-07).
+
+### 12.05 Rendu en 4 directions | A.PI
+
+Animations nommées par direction (haut, bas, gauche, droite), choisies selon le déplacement, avec repli sur les sprites de profil existants (ART-06, ART-14).
+
+### 12.06 Plan de ville en gabarits de quartiers | A.PI
+
+Grille de quartiers tirés au hasard parmi des gabarits de `world.json` au démarrage du serveur, rues entre les quartiers, plan envoyé au client. Points d'intérêt placés dans les quartiers qui leur vont (ART-01).
+
+### 12.07 Bâtiments et murets bloquants | A.PI
+
+Obstacles en rectangles et cercles dans une grille dédiée. Les corps qui y entrent en sont repoussés et glissent le long. Apparitions hors des obstacles, bots qui se débloquent. Mesure du temps de tick (ART-02, TECH-03).
+
+### 12.08 Sol en tuiles | A.PI
+
+Pavés, terre, herbe, mousse et feuilles par quartier, transitions et variantes (ART-05).
+
+### 12.09 Mur d'enceinte | A.PI
+
+Remparts, tours et portes fermées autour de la carte, toits et forêt sombre au-delà (ART-10).
+
+### 12.10 Décor composé | A.PI
+
+Compositions décrites en config (tombes alignées, buissons le long des murs, bosquets, lampadaires, débris autour d'une voiture), placées par les gabarits (ART-11).
+
+### 12.11 Nuit éclairée | A.PI
+
+Voile sombre percé de halos (lanternes, feux, aura du mage, lieux importants), mode dégradé pour les téléphones faibles (ART-12).
+
+### 12.12 Sprites des unités, des PNJ et des mages | A.PI
+
+Les 21 unités, les PNJ et les apparences du mage à partir des personnages LPC, avec une silhouette par branche et un mage clairement zombie (ART-06, ART-09).
+
+### 12.13 Animations | A.PI
+
+Marche, attaque, mort et relève pour chaque unité, animations de fusion et de level up (ART-14).
+
+### 12.14 Mécaniques existantes dans la nouvelle DA | A.PI
+
+Croix en calvaires, camps en barricades, champ de citrouilles, brumes et bombardements dans la palette (ART-13).
+
+### 12.15 Interface dans le même style | A.PI
+
+Cuir, parchemin et métal vieilli à la place du violet (ART-04).
+
+### 12.16 Minimap avec le plan de la ville | A.PI
+
+Quartiers, remparts et icônes des lieux sur la minimap (UI-06).
+
+### 12.17 Mesures et vérification | A.PI
+
+Temps de tick avec les obstacles, débit, captures en headless, documentation (TECH-02, TECH-03).
+
+
+## Phase 13 : Concept V2, Lot 4 (nouveau contenu)
+
+Objectif : les cases du Lot 4 de `docs/conceptV2.md`, puis une passe de sprites générés pour tout le jeu à la place des packs LPC. Les identifiants entre parenthèses renvoient à ce document.
+
+### 13.01 Config et registres du Lot 4 | L.BA
+
+Couche des corps (sol, air, éthéré), comportement des populations (fuir, ou attaquer les petites armées et fuir les grosses), champions, lieux, nouvelles catégories d'objets. Gabarits qui portent un élément unique au moins une fois par ville, vérifié par le registre (TECH-04).
+
+### 13.02 Couches de déplacement | L.BA
+
+Les volants ignorent murs, remparts et séparation avec le sol, les spectres traversent les rangs. Couche envoyée dans le contenu client pour l'ombre et la transparence, sans changement de protocole.
+
+### 13.03 Lignée Volants | L.BA
+
+Volée de charognards, branches Nuée et Charogne, 7 unités fragiles qui harcèlent à distance (EVO-15).
+
+### 13.04 Lignée Spectres | L.BA
+
+Âme errante, branches Hantise et Ombre, 7 unités qui traversent les rangs (EVO-16).
+
+### 13.05 Triangle étendu | L.BA
+
+Volants et Spectres placés dans le triangle, en bonus de dégâts (EVO-17).
+
+### 13.06 Chiens errants et pillards | L.BA
+
+Bandes errantes qui attaquent les petites armées et fuient les grosses, réutilisant populations et hostiles (CONT-01, CONT-04).
+
+### 13.07 Loups en meute | L.BA
+
+Meutes au parc et en forêt, qui chassent en groupe et encerclent (CONT-02).
+
+### 13.08 Corbeaux et chauves-souris | L.BA
+
+Nuées volantes qui harcèlent puis fuient (CONT-03).
+
+### 13.09 Processions de moines | L.BA
+
+Moines et pèlerins entre la cathédrale et la ville (CONT-05).
+
+### 13.10 Sources réparties | L.BA
+
+Chaque lignée à peu près aussi fréquente que les zombies, sources repeuplées comme les civils. Total de PNJ errants gardé à 150 pour l'instant (EVO-18).
+
+### 13.11 Cathédrale, hôpital, forêt et parc | L.BA
+
+Défenseurs, coffres et butin de la cathédrale et sa crypte, de l'hôpital de quarantaine, de la cabane du chasseur (CONT-06, CONT-08, CONT-09).
+
+### 13.12 Caserne, mitrailleuse et mortier | L.BA
+
+Mitrailleuse fixe, mortier qui devient l'origine visible des bombardements (CONT-07).
+
+### 13.13 Pièges de gaz de l'hôpital | L.BA
+
+Zones de gaz qui blessent les troupes autour de l'hôpital (CONT-08).
+
+### 13.14 Règles des champions | L.BA
+
+Exemplaire unique dans son repaire, icône sur la minimap de tous, passage au tueur, retour au repaire, ni découpé, ni fusionné, ni muté, compté dans le plafond des bots (CONT-11).
+
+### 13.15 Les 4 champions | L.BA
+
+Grand chevalier (charge), Gargouille (piqué), Bourreau (exécution sous 20 % de PV), Évêque déchu (soins des morts-vivants) (CONT-10, CONT-12).
+
+### 13.16 Équipement et butin des lieux | L.BA
+
+Objets des Volants et des Spectres, tables de butin par lieu (CONT-13, CONT-14).
+
+### 13.17 Bots et nouveau contenu | L.BA
+
+Nouvelles lignées dans le choix des cartes, prudence devant les lieux trop forts, chasse aux champions quand ils sont assez forts.
+
+### 13.18 Sprites générés pour tout le jeu | L.BA
+
+Retour de jeu : les visuels LPC du Lot 3 ne conviennent pas. Sprites générés par script dans l'esprit de l'atlas d'avant la V2, pour les unités, PNJ, champions et la ville, maquette validée avant la passe complète (ART-06, ART-07).
+
+### 13.19 Vérification | L.BA
+
+Tests, simulation de bots, test de charge, budget de PNJ à revoir, documentation.
+
+## Phase 14 : Retours de jeu sur les Lots 3 et 4
+
+Objectif : corriger ce qui ressort des premières parties sur la ville, le nouveau contenu et les sprites générés.
+
+### 14.01 Carte toute en forêt | L.BA
+
+Plus de quartiers visibles, de rues, de bâtiments ni de remparts : sol d'herbe, arbres bloquants épars, lieux et repaires gardés comme clairières.
+
+### 14.02 Minimap, caméra et tailles | L.BA
+
+Minimap sur fond uni avec des points plus gros, caméra 30 % plus loin à tous les niveaux, créatures 20 % plus petites sauf le mage, voitures agrandies, goule en zombie accroupi.
+
+### 14.03 Départ sans danger | L.BA
+
+Plus de civils, groupe de civils près du mage à chaque apparition, apparition loin des mages et des ennemis, apparitions espacées entre elles.
+
+### 14.04 Attaque magique du mage | L.BA
+
+Tir de base du mage sur le PNJ ciblé ou le plus proche, pour se relancer sans troupes.
+
+### 14.05 Cartes verrouillées un instant | L.BA
+
+Les nouvelles cartes de level up restent visibles mais incliquables pendant un court délai, pour éviter un clic de déplacement pris pour un choix.
+
+### 14.06 Téléphone : vue plus large et rendu allégé | L.BA
+
+Sur un écran de moins de 600 px de petit côté, caméra 2 fois plus loin et résolution limitée à 1, pour voir plus et alléger le rendu.
+
+### 14.07 Minimap épurée | L.BA
+
+Plus de lettres des lieux, points des autres plus petits que celui du joueur.

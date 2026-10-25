@@ -3,12 +3,13 @@ import type { Camp, World } from "../world/world.js";
 import { spawnPoint } from "./points.js";
 
 const spawnCamp = (world: World): Camp => {
-  const { safeDistance, lifetimeSec, spread, defenders } =
+  const { safeDistance, lifetimeSec, spread, defenders, districts } =
     world.config.world.camps;
   const { x, y } = farPoint(
     world,
     (px, py) => distanceToMages(world, px, py),
     safeDistance,
+    districts,
   );
   const camp = world.addCamp(
     x,
@@ -28,7 +29,12 @@ const isQuiet = (camp: Camp): boolean =>
   [...camp.defenders].every((npc) => npc.targetId === undefined);
 
 export const maintainCamps = (world: World): void => {
+  let roaming = 0;
   for (const camp of world.camps) {
+    if (camp.marker > 0) {
+      continue;
+    }
+    roaming++;
     if (camp.defenders.size === 0) {
       spawnPoint(world, world.config.world.camps.chest, camp.x, camp.y);
       world.removeEntity(camp);
@@ -39,7 +45,7 @@ export const maintainCamps = (world: World): void => {
       world.removeEntity(camp);
     }
   }
-  while (world.camps.size < world.config.world.camps.count) {
+  for (; roaming < world.config.world.camps.count; roaming++) {
     spawnCamp(world);
   }
 };

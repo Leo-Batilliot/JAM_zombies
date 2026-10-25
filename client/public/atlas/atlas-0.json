@@ -1,0 +1,8413 @@
+{
+  "frames": {
+    "camp": {
+      "frame": {
+        "x": 174,
+        "y": 291,
+        "w": 84,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 6,
+        "w": 84,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 64
+      }
+    },
+    "corpse": {
+      "frame": {
+        "x": 1707,
+        "y": 599,
+        "w": 19,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 10,
+        "w": 19,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "cross": {
+      "frame": {
+        "x": 1085,
+        "y": 0,
+        "w": 32,
+        "h": 68
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 4,
+        "w": 32,
+        "h": 68
+      },
+      "sourceSize": {
+        "w": 40,
+        "h": 72
+      }
+    },
+    "decor-barrel": {
+      "frame": {
+        "x": 424,
+        "y": 559,
+        "w": 28,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 4,
+        "w": 28,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    },
+    "decor-bush": {
+      "frame": {
+        "x": 353,
+        "y": 599,
+        "w": 24,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 8,
+        "w": 24,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "decor-car": {
+      "frame": {
+        "x": 765,
+        "y": 0,
+        "w": 138,
+        "h": 72
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 9,
+        "w": 138,
+        "h": 72
+      },
+      "sourceSize": {
+        "w": 150,
+        "h": 84
+      }
+    },
+    "decor-grave": {
+      "frame": {
+        "x": 466,
+        "y": 515,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 4,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 44
+      }
+    },
+    "decor-lamp": {
+      "frame": {
+        "x": 615,
+        "y": 0,
+        "w": 20,
+        "h": 80
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 4,
+        "w": 20,
+        "h": 80
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 84
+      }
+    },
+    "decor-rock": {
+      "frame": {
+        "x": 1568,
+        "y": 599,
+        "w": 18,
+        "h": 15
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 6,
+        "w": 18,
+        "h": 15
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "decor-tree": {
+      "frame": {
+        "x": 709,
+        "y": 0,
+        "w": 54,
+        "h": 78
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 2,
+        "w": 54,
+        "h": 78
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 84
+      }
+    },
+    "decor-winchester": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 109,
+        "h": 99
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 1,
+        "w": 109,
+        "h": 99
+      },
+      "sourceSize": {
+        "w": 112,
+        "h": 100
+      }
+    },
+    "fx-aura": {
+      "frame": {
+        "x": 1866,
+        "y": 515,
+        "w": 38,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 38,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 40,
+        "h": 40
+      }
+    },
+    "fx-flag": {
+      "frame": {
+        "x": 1075,
+        "y": 599,
+        "w": 11,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 0,
+        "w": 11,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 14,
+        "h": 20
+      }
+    },
+    "ground": {
+      "frame": {
+        "x": 800,
+        "y": 559,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "ground-cobble": {
+      "frame": {
+        "x": 1119,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-dirt": {
+      "frame": {
+        "x": 1185,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-grass": {
+      "frame": {
+        "x": 1251,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-grass-1": {
+      "frame": {
+        "x": 1317,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-grass-2": {
+      "frame": {
+        "x": 1383,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-grass-3": {
+      "frame": {
+        "x": 1449,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-leaves": {
+      "frame": {
+        "x": 1515,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-leaves-1": {
+      "frame": {
+        "x": 1581,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-leaves-2": {
+      "frame": {
+        "x": 1647,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-leaves-3": {
+      "frame": {
+        "x": 1713,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-moss": {
+      "frame": {
+        "x": 1779,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "ground-stone": {
+      "frame": {
+        "x": 1845,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "icon-gift-heal": {
+      "frame": {
+        "x": 1170,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-gift-hp": {
+      "frame": {
+        "x": 1202,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-gift-loot": {
+      "frame": {
+        "x": 1234,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-gift-reanimation": {
+      "frame": {
+        "x": 1266,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-gift-soulLink": {
+      "frame": {
+        "x": 1298,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-gift-speed": {
+      "frame": {
+        "x": 1330,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-gift-vision": {
+      "frame": {
+        "x": 1362,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-spell-nova": {
+      "frame": {
+        "x": 1394,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-spell-raise": {
+      "frame": {
+        "x": 1426,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-spell-rally": {
+      "frame": {
+        "x": 1458,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-spell-wall": {
+      "frame": {
+        "x": 1490,
+        "y": 559,
+        "w": 30,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 30,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "item-bone-collar": {
+      "frame": {
+        "x": 1728,
+        "y": 599,
+        "w": 10,
+        "h": 6
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 10,
+        "h": 6
+      },
+      "sourceSize": {
+        "w": 10,
+        "h": 6
+      }
+    },
+    "item-cerberus-chain": {
+      "frame": {
+        "x": 1740,
+        "y": 599,
+        "w": 10,
+        "h": 6
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 10,
+        "h": 6
+      },
+      "sourceSize": {
+        "w": 10,
+        "h": 6
+      }
+    },
+    "item-chainsaw": {
+      "frame": {
+        "x": 1631,
+        "y": 599,
+        "w": 18,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 18,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 20,
+        "h": 14
+      }
+    },
+    "item-cricket-bat": {
+      "frame": {
+        "x": 1588,
+        "y": 599,
+        "w": 15,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 15,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      }
+    },
+    "item-cursed-helm": {
+      "frame": {
+        "x": 1665,
+        "y": 599,
+        "w": 12,
+        "h": 9
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 9
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 9
+      }
+    },
+    "item-iron-helmet": {
+      "frame": {
+        "x": 1679,
+        "y": 599,
+        "w": 12,
+        "h": 9
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 9
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 9
+      }
+    },
+    "item-leather-helmet": {
+      "frame": {
+        "x": 1693,
+        "y": 599,
+        "w": 12,
+        "h": 9
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 9
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 9
+      }
+    },
+    "item-shovel": {
+      "frame": {
+        "x": 1605,
+        "y": 599,
+        "w": 14,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 1,
+        "w": 14,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      }
+    },
+    "item-spiked-collar": {
+      "frame": {
+        "x": 1752,
+        "y": 599,
+        "w": 10,
+        "h": 6
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 10,
+        "h": 6
+      },
+      "sourceSize": {
+        "w": 10,
+        "h": 6
+      }
+    },
+    "mage-grimoire": {
+      "frame": {
+        "x": 1651,
+        "y": 599,
+        "w": 12,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 12,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      }
+    },
+    "mage-lich-attack-0": {
+      "frame": {
+        "x": 474,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-lich-attack-1": {
+      "frame": {
+        "x": 1586,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-lich-walk-0": {
+      "frame": {
+        "x": 1632,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-lich-walk-1": {
+      "frame": {
+        "x": 1678,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-lich-walk-2": {
+      "frame": {
+        "x": 1724,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-lich-walk-3": {
+      "frame": {
+        "x": 1770,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-necromancer-attack-0": {
+      "frame": {
+        "x": 520,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-necromancer-attack-1": {
+      "frame": {
+        "x": 1816,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-necromancer-walk-0": {
+      "frame": {
+        "x": 1862,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-necromancer-walk-1": {
+      "frame": {
+        "x": 1908,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-necromancer-walk-2": {
+      "frame": {
+        "x": 1954,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-necromancer-walk-3": {
+      "frame": {
+        "x": 2000,
+        "y": 101,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-plague-doctor-attack-0": {
+      "frame": {
+        "x": 0,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-plague-doctor-attack-1": {
+      "frame": {
+        "x": 48,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-plague-doctor-walk-0": {
+      "frame": {
+        "x": 96,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-plague-doctor-walk-1": {
+      "frame": {
+        "x": 144,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-plague-doctor-walk-2": {
+      "frame": {
+        "x": 192,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-plague-doctor-walk-3": {
+      "frame": {
+        "x": 240,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-witch-attack-0": {
+      "frame": {
+        "x": 566,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-witch-attack-1": {
+      "frame": {
+        "x": 612,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-witch-walk-0": {
+      "frame": {
+        "x": 658,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-witch-walk-1": {
+      "frame": {
+        "x": 704,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-witch-walk-2": {
+      "frame": {
+        "x": 750,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "mage-witch-walk-3": {
+      "frame": {
+        "x": 796,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-bat-attack-0": {
+      "frame": {
+        "x": 379,
+        "y": 599,
+        "w": 48,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 48,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-bat-attack-1": {
+      "frame": {
+        "x": 429,
+        "y": 599,
+        "w": 44,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 44,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-bat-walk-0": {
+      "frame": {
+        "x": 1906,
+        "y": 515,
+        "w": 40,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 2,
+        "w": 40,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-bat-walk-1": {
+      "frame": {
+        "x": 475,
+        "y": 599,
+        "w": 44,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 44,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-bat-walk-2": {
+      "frame": {
+        "x": 1566,
+        "y": 559,
+        "w": 38,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 18,
+        "w": 38,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-bat-walk-3": {
+      "frame": {
+        "x": 521,
+        "y": 599,
+        "w": 44,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 44,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-civilian-attack-0": {
+      "frame": {
+        "x": 820,
+        "y": 351,
+        "w": 36,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 36,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-civilian-attack-1": {
+      "frame": {
+        "x": 858,
+        "y": 351,
+        "w": 36,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 14,
+        "w": 36,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-civilian-walk-0": {
+      "frame": {
+        "x": 896,
+        "y": 351,
+        "w": 36,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 36,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-civilian-walk-1": {
+      "frame": {
+        "x": 934,
+        "y": 351,
+        "w": 36,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 14,
+        "w": 36,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-civilian-walk-2": {
+      "frame": {
+        "x": 972,
+        "y": 351,
+        "w": 36,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 36,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-civilian-walk-3": {
+      "frame": {
+        "x": 1010,
+        "y": 351,
+        "w": 36,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 14,
+        "w": 36,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-crow-attack-0": {
+      "frame": {
+        "x": 1088,
+        "y": 599,
+        "w": 52,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 20,
+        "w": 52,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-crow-attack-1": {
+      "frame": {
+        "x": 1142,
+        "y": 599,
+        "w": 48,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 20,
+        "w": 48,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-crow-walk-0": {
+      "frame": {
+        "x": 1948,
+        "y": 515,
+        "w": 44,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 2,
+        "w": 44,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-crow-walk-1": {
+      "frame": {
+        "x": 1192,
+        "y": 599,
+        "w": 48,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 20,
+        "w": 48,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-crow-walk-2": {
+      "frame": {
+        "x": 1983,
+        "y": 559,
+        "w": 42,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 20,
+        "w": 42,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-crow-walk-3": {
+      "frame": {
+        "x": 1242,
+        "y": 599,
+        "w": 48,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 20,
+        "w": 48,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "npc-evil-pumpkin-attack-0": {
+      "frame": {
+        "x": 470,
+        "y": 0,
+        "w": 89,
+        "h": 89
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 6,
+        "w": 89,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      }
+    },
+    "npc-evil-pumpkin-attack-1": {
+      "frame": {
+        "x": 209,
+        "y": 0,
+        "w": 85,
+        "h": 91
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 4,
+        "w": 85,
+        "h": 91
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      }
+    },
+    "npc-evil-pumpkin-walk-0": {
+      "frame": {
+        "x": 296,
+        "y": 0,
+        "w": 85,
+        "h": 91
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 4,
+        "w": 85,
+        "h": 91
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      }
+    },
+    "npc-evil-pumpkin-walk-1": {
+      "frame": {
+        "x": 383,
+        "y": 0,
+        "w": 85,
+        "h": 91
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 4,
+        "w": 85,
+        "h": 91
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 96
+      }
+    },
+    "npc-guard-dog-attack-0": {
+      "frame": {
+        "x": 924,
+        "y": 465,
+        "w": 68,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 68,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-guard-dog-attack-1": {
+      "frame": {
+        "x": 994,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-guard-dog-walk-0": {
+      "frame": {
+        "x": 1060,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-guard-dog-walk-1": {
+      "frame": {
+        "x": 500,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-guard-dog-walk-2": {
+      "frame": {
+        "x": 1126,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-guard-dog-walk-3": {
+      "frame": {
+        "x": 566,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-hunter-attack-0": {
+      "frame": {
+        "x": 288,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 6,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-hunter-attack-1": {
+      "frame": {
+        "x": 336,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-hunter-walk-0": {
+      "frame": {
+        "x": 384,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 6,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-hunter-walk-1": {
+      "frame": {
+        "x": 432,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-hunter-walk-2": {
+      "frame": {
+        "x": 480,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 6,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-hunter-walk-3": {
+      "frame": {
+        "x": 528,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-jack-o-lantern-attack-0": {
+      "frame": {
+        "x": 1292,
+        "y": 599,
+        "w": 21,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 4,
+        "w": 21,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "npc-jack-o-lantern-attack-1": {
+      "frame": {
+        "x": 567,
+        "y": 599,
+        "w": 21,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 21,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "npc-jack-o-lantern-walk-0": {
+      "frame": {
+        "x": 1052,
+        "y": 599,
+        "w": 21,
+        "h": 21
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 21,
+        "h": 21
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "npc-jack-o-lantern-walk-1": {
+      "frame": {
+        "x": 590,
+        "y": 599,
+        "w": 21,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 21,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "npc-jack-o-lantern-walk-2": {
+      "frame": {
+        "x": 330,
+        "y": 599,
+        "w": 21,
+        "h": 23
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 1,
+        "w": 21,
+        "h": 23
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "npc-jack-o-lantern-walk-3": {
+      "frame": {
+        "x": 613,
+        "y": 599,
+        "w": 21,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 21,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 24
+      }
+    },
+    "npc-looter-attack-0": {
+      "frame": {
+        "x": 576,
+        "y": 167,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-looter-attack-1": {
+      "frame": {
+        "x": 618,
+        "y": 167,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-looter-walk-0": {
+      "frame": {
+        "x": 660,
+        "y": 167,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-looter-walk-1": {
+      "frame": {
+        "x": 702,
+        "y": 167,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-looter-walk-2": {
+      "frame": {
+        "x": 744,
+        "y": 167,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-looter-walk-3": {
+      "frame": {
+        "x": 786,
+        "y": 167,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-machine-gun-attack-0": {
+      "frame": {
+        "x": 834,
+        "y": 559,
+        "w": 54,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 20,
+        "w": 54,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-machine-gun-attack-1": {
+      "frame": {
+        "x": 890,
+        "y": 559,
+        "w": 54,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 20,
+        "w": 54,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-machine-gun-walk-0": {
+      "frame": {
+        "x": 946,
+        "y": 559,
+        "w": 54,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 20,
+        "w": 54,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-machine-gun-walk-1": {
+      "frame": {
+        "x": 1002,
+        "y": 559,
+        "w": 54,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 20,
+        "w": 54,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-machine-gun-walk-2": {
+      "frame": {
+        "x": 1058,
+        "y": 559,
+        "w": 54,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 20,
+        "w": 54,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-machine-gun-walk-3": {
+      "frame": {
+        "x": 1114,
+        "y": 559,
+        "w": 54,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 20,
+        "w": 54,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-monk-attack-0": {
+      "frame": {
+        "x": 828,
+        "y": 167,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-monk-attack-1": {
+      "frame": {
+        "x": 874,
+        "y": 167,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-monk-walk-0": {
+      "frame": {
+        "x": 920,
+        "y": 167,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-monk-walk-1": {
+      "frame": {
+        "x": 966,
+        "y": 167,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-monk-walk-2": {
+      "frame": {
+        "x": 1012,
+        "y": 167,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-monk-walk-3": {
+      "frame": {
+        "x": 1058,
+        "y": 167,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-mortar-attack-0": {
+      "frame": {
+        "x": 0,
+        "y": 559,
+        "w": 54,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 14,
+        "w": 54,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-mortar-attack-1": {
+      "frame": {
+        "x": 56,
+        "y": 559,
+        "w": 54,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 14,
+        "w": 54,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-mortar-walk-0": {
+      "frame": {
+        "x": 112,
+        "y": 559,
+        "w": 54,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 14,
+        "w": 54,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-mortar-walk-1": {
+      "frame": {
+        "x": 168,
+        "y": 559,
+        "w": 54,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 14,
+        "w": 54,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-mortar-walk-2": {
+      "frame": {
+        "x": 224,
+        "y": 559,
+        "w": 54,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 14,
+        "w": 54,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-mortar-walk-3": {
+      "frame": {
+        "x": 280,
+        "y": 559,
+        "w": 54,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 14,
+        "w": 54,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-patient-attack-0": {
+      "frame": {
+        "x": 260,
+        "y": 291,
+        "w": 36,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 10,
+        "w": 36,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-patient-attack-1": {
+      "frame": {
+        "x": 298,
+        "y": 291,
+        "w": 36,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 36,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-patient-walk-0": {
+      "frame": {
+        "x": 336,
+        "y": 291,
+        "w": 36,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 10,
+        "w": 36,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-patient-walk-1": {
+      "frame": {
+        "x": 374,
+        "y": 291,
+        "w": 36,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 36,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-patient-walk-2": {
+      "frame": {
+        "x": 412,
+        "y": 291,
+        "w": 36,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 10,
+        "w": 36,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-patient-walk-3": {
+      "frame": {
+        "x": 450,
+        "y": 291,
+        "w": 36,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 36,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-soldier-attack-0": {
+      "frame": {
+        "x": 488,
+        "y": 291,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 10,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-soldier-attack-1": {
+      "frame": {
+        "x": 534,
+        "y": 291,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-soldier-walk-0": {
+      "frame": {
+        "x": 580,
+        "y": 291,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 10,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-soldier-walk-1": {
+      "frame": {
+        "x": 626,
+        "y": 291,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-soldier-walk-2": {
+      "frame": {
+        "x": 672,
+        "y": 291,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 10,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-soldier-walk-3": {
+      "frame": {
+        "x": 718,
+        "y": 291,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-stray-dog-attack-0": {
+      "frame": {
+        "x": 1192,
+        "y": 465,
+        "w": 68,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 68,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-stray-dog-attack-1": {
+      "frame": {
+        "x": 1262,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-stray-dog-walk-0": {
+      "frame": {
+        "x": 1328,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-stray-dog-walk-1": {
+      "frame": {
+        "x": 632,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-stray-dog-walk-2": {
+      "frame": {
+        "x": 1394,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-stray-dog-walk-3": {
+      "frame": {
+        "x": 698,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-templar-attack-0": {
+      "frame": {
+        "x": 764,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-templar-attack-1": {
+      "frame": {
+        "x": 818,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-templar-walk-0": {
+      "frame": {
+        "x": 872,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-templar-walk-1": {
+      "frame": {
+        "x": 926,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-templar-walk-2": {
+      "frame": {
+        "x": 980,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-templar-walk-3": {
+      "frame": {
+        "x": 1034,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "npc-wolf-attack-0": {
+      "frame": {
+        "x": 1460,
+        "y": 465,
+        "w": 68,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 68,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-wolf-attack-1": {
+      "frame": {
+        "x": 1530,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-wolf-walk-0": {
+      "frame": {
+        "x": 1596,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-wolf-walk-1": {
+      "frame": {
+        "x": 764,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-wolf-walk-2": {
+      "frame": {
+        "x": 1662,
+        "y": 465,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "npc-wolf-walk-3": {
+      "frame": {
+        "x": 830,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "obstacle-fountain": {
+      "frame": {
+        "x": 905,
+        "y": 0,
+        "w": 92,
+        "h": 72
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 8,
+        "w": 92,
+        "h": 72
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 84
+      }
+    },
+    "obstacle-gate": {
+      "frame": {
+        "x": 999,
+        "y": 0,
+        "w": 84,
+        "h": 72
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 84,
+        "h": 72
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 72
+      }
+    },
+    "obstacle-pine": {
+      "frame": {
+        "x": 561,
+        "y": 0,
+        "w": 52,
+        "h": 84
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 4,
+        "w": 52,
+        "h": 84
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 92
+      }
+    },
+    "obstacle-rampart": {
+      "frame": {
+        "x": 1911,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "obstacle-roof": {
+      "frame": {
+        "x": 1977,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "obstacle-roof-red": {
+      "frame": {
+        "x": 0,
+        "y": 101,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "obstacle-stall": {
+      "frame": {
+        "x": 808,
+        "y": 229,
+        "w": 84,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 8,
+        "w": 84,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 68
+      }
+    },
+    "obstacle-stone": {
+      "frame": {
+        "x": 66,
+        "y": 101,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "obstacle-tower": {
+      "frame": {
+        "x": 111,
+        "y": 0,
+        "w": 96,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 96,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 100
+      }
+    },
+    "obstacle-tree": {
+      "frame": {
+        "x": 637,
+        "y": 0,
+        "w": 70,
+        "h": 80
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 16,
+        "w": 70,
+        "h": 80
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 100
+      }
+    },
+    "obstacle-wall": {
+      "frame": {
+        "x": 132,
+        "y": 101,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "poi-camp-chest": {
+      "frame": {
+        "x": 1543,
+        "y": 599,
+        "w": 23,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 3,
+        "w": 23,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 20
+      }
+    },
+    "poi-car": {
+      "frame": {
+        "x": 44,
+        "y": 599,
+        "w": 40,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 40,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 44,
+        "h": 28
+      }
+    },
+    "poi-chest": {
+      "frame": {
+        "x": 1519,
+        "y": 599,
+        "w": 22,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 22,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 26,
+        "h": 22
+      }
+    },
+    "poi-graveyard": {
+      "frame": {
+        "x": 1606,
+        "y": 559,
+        "w": 45,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 11,
+        "w": 45,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 40
+      }
+    },
+    "poi-mass-grave": {
+      "frame": {
+        "x": 1522,
+        "y": 559,
+        "w": 42,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 11,
+        "w": 42,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      }
+    },
+    "projectile-arrow": {
+      "frame": {
+        "x": 1788,
+        "y": 599,
+        "w": 14,
+        "h": 3
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 14,
+        "h": 3
+      },
+      "sourceSize": {
+        "w": 14,
+        "h": 3
+      }
+    },
+    "projectile-ballista-bolt": {
+      "frame": {
+        "x": 1764,
+        "y": 599,
+        "w": 22,
+        "h": 4
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 1,
+        "w": 22,
+        "h": 4
+      },
+      "sourceSize": {
+        "w": 22,
+        "h": 5
+      }
+    },
+    "projectile-bolt": {
+      "frame": {
+        "x": 1804,
+        "y": 599,
+        "w": 12,
+        "h": 3
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 1,
+        "w": 12,
+        "h": 3
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 4
+      }
+    },
+    "projectile-bullet": {
+      "frame": {
+        "x": 1818,
+        "y": 599,
+        "w": 7,
+        "h": 3
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 7,
+        "h": 3
+      },
+      "sourceSize": {
+        "w": 7,
+        "h": 3
+      }
+    },
+    "soul": {
+      "frame": {
+        "x": 1621,
+        "y": 599,
+        "w": 8,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 4,
+        "w": 8,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      }
+    },
+    "unit-abomination-attack-0": {
+      "frame": {
+        "x": 1048,
+        "y": 351,
+        "w": 64,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 64,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-abomination-attack-1": {
+      "frame": {
+        "x": 1114,
+        "y": 351,
+        "w": 64,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 64,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-abomination-walk-0": {
+      "frame": {
+        "x": 1180,
+        "y": 351,
+        "w": 64,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 64,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-abomination-walk-1": {
+      "frame": {
+        "x": 1246,
+        "y": 351,
+        "w": 64,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 64,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-abomination-walk-2": {
+      "frame": {
+        "x": 1312,
+        "y": 351,
+        "w": 64,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 64,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-abomination-walk-3": {
+      "frame": {
+        "x": 1378,
+        "y": 351,
+        "w": 64,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 64,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-ankou-attack-0": {
+      "frame": {
+        "x": 842,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ankou-attack-1": {
+      "frame": {
+        "x": 892,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ankou-walk-0": {
+      "frame": {
+        "x": 942,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ankou-walk-1": {
+      "frame": {
+        "x": 992,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ankou-walk-2": {
+      "frame": {
+        "x": 1042,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ankou-walk-3": {
+      "frame": {
+        "x": 1092,
+        "y": 101,
+        "w": 50,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 0,
+        "w": 50,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-banshee-attack-0": {
+      "frame": {
+        "x": 1444,
+        "y": 351,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-banshee-attack-1": {
+      "frame": {
+        "x": 1490,
+        "y": 351,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 6,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-banshee-walk-0": {
+      "frame": {
+        "x": 1536,
+        "y": 351,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-banshee-walk-1": {
+      "frame": {
+        "x": 1582,
+        "y": 351,
+        "w": 42,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 42,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-banshee-walk-2": {
+      "frame": {
+        "x": 1626,
+        "y": 351,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 6,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-banshee-walk-3": {
+      "frame": {
+        "x": 1672,
+        "y": 351,
+        "w": 46,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 46,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-bat-swarm-attack-0": {
+      "frame": {
+        "x": 636,
+        "y": 599,
+        "w": 48,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 48,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-bat-swarm-attack-1": {
+      "frame": {
+        "x": 686,
+        "y": 599,
+        "w": 44,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 44,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-bat-swarm-walk-0": {
+      "frame": {
+        "x": 336,
+        "y": 559,
+        "w": 40,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 2,
+        "w": 40,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-bat-swarm-walk-1": {
+      "frame": {
+        "x": 732,
+        "y": 599,
+        "w": 44,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 44,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-bat-swarm-walk-2": {
+      "frame": {
+        "x": 1653,
+        "y": 559,
+        "w": 38,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 18,
+        "w": 38,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-bat-swarm-walk-3": {
+      "frame": {
+        "x": 778,
+        "y": 599,
+        "w": 44,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 44,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-big-zombie-attack-0": {
+      "frame": {
+        "x": 1088,
+        "y": 291,
+        "w": 60,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 60,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-big-zombie-attack-1": {
+      "frame": {
+        "x": 1150,
+        "y": 291,
+        "w": 60,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 60,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-big-zombie-walk-0": {
+      "frame": {
+        "x": 1212,
+        "y": 291,
+        "w": 60,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 60,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-big-zombie-walk-1": {
+      "frame": {
+        "x": 1274,
+        "y": 291,
+        "w": 60,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 60,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-big-zombie-walk-2": {
+      "frame": {
+        "x": 1336,
+        "y": 291,
+        "w": 60,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 60,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-big-zombie-walk-3": {
+      "frame": {
+        "x": 1398,
+        "y": 291,
+        "w": 60,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 60,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-bone-ballista-attack-0": {
+      "frame": {
+        "x": 896,
+        "y": 515,
+        "w": 54,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 12,
+        "w": 54,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-bone-ballista-attack-1": {
+      "frame": {
+        "x": 952,
+        "y": 515,
+        "w": 56,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 12,
+        "w": 56,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-bone-ballista-walk-0": {
+      "frame": {
+        "x": 1010,
+        "y": 515,
+        "w": 56,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 12,
+        "w": 56,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-bone-ballista-walk-1": {
+      "frame": {
+        "x": 1068,
+        "y": 515,
+        "w": 56,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 12,
+        "w": 56,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-bone-ballista-walk-2": {
+      "frame": {
+        "x": 1126,
+        "y": 515,
+        "w": 56,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 12,
+        "w": 56,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-bone-ballista-walk-3": {
+      "frame": {
+        "x": 1184,
+        "y": 515,
+        "w": 56,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 12,
+        "w": 56,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-bone-catapult-attack-0": {
+      "frame": {
+        "x": 894,
+        "y": 229,
+        "w": 60,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 0,
+        "w": 60,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-bone-catapult-attack-1": {
+      "frame": {
+        "x": 1242,
+        "y": 515,
+        "w": 60,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 18,
+        "w": 60,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-bone-catapult-walk-0": {
+      "frame": {
+        "x": 1304,
+        "y": 515,
+        "w": 60,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 18,
+        "w": 60,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-bone-catapult-walk-1": {
+      "frame": {
+        "x": 1366,
+        "y": 515,
+        "w": 60,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 18,
+        "w": 60,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-bone-catapult-walk-2": {
+      "frame": {
+        "x": 1428,
+        "y": 515,
+        "w": 60,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 18,
+        "w": 60,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-bone-catapult-walk-3": {
+      "frame": {
+        "x": 1490,
+        "y": 515,
+        "w": 60,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 18,
+        "w": 60,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-bone-dragon-attack-0": {
+      "frame": {
+        "x": 454,
+        "y": 559,
+        "w": 74,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 18,
+        "w": 74,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 76
+      }
+    },
+    "unit-bone-dragon-attack-1": {
+      "frame": {
+        "x": 530,
+        "y": 559,
+        "w": 70,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 18,
+        "w": 70,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 76
+      }
+    },
+    "unit-bone-dragon-walk-0": {
+      "frame": {
+        "x": 1020,
+        "y": 409,
+        "w": 62,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 0,
+        "w": 62,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 76
+      }
+    },
+    "unit-bone-dragon-walk-1": {
+      "frame": {
+        "x": 602,
+        "y": 559,
+        "w": 70,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 18,
+        "w": 70,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 76
+      }
+    },
+    "unit-bone-dragon-walk-2": {
+      "frame": {
+        "x": 0,
+        "y": 465,
+        "w": 62,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 18,
+        "w": 62,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 76
+      }
+    },
+    "unit-bone-dragon-walk-3": {
+      "frame": {
+        "x": 674,
+        "y": 559,
+        "w": 70,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 18,
+        "w": 70,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 96,
+        "h": 76
+      }
+    },
+    "unit-bone-wyvern-attack-0": {
+      "frame": {
+        "x": 86,
+        "y": 599,
+        "w": 62,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 22,
+        "w": 62,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 68
+      }
+    },
+    "unit-bone-wyvern-attack-1": {
+      "frame": {
+        "x": 150,
+        "y": 599,
+        "w": 58,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 22,
+        "w": 58,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 68
+      }
+    },
+    "unit-bone-wyvern-walk-0": {
+      "frame": {
+        "x": 430,
+        "y": 465,
+        "w": 52,
+        "h": 46
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 0,
+        "w": 52,
+        "h": 46
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 68
+      }
+    },
+    "unit-bone-wyvern-walk-1": {
+      "frame": {
+        "x": 210,
+        "y": 599,
+        "w": 58,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 22,
+        "w": 58,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 68
+      }
+    },
+    "unit-bone-wyvern-walk-2": {
+      "frame": {
+        "x": 746,
+        "y": 559,
+        "w": 52,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 22,
+        "w": 52,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 68
+      }
+    },
+    "unit-bone-wyvern-walk-3": {
+      "frame": {
+        "x": 270,
+        "y": 599,
+        "w": 58,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 22,
+        "w": 58,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 68
+      }
+    },
+    "unit-carrion-flock-attack-0": {
+      "frame": {
+        "x": 1315,
+        "y": 599,
+        "w": 52,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 20,
+        "w": 52,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-carrion-flock-attack-1": {
+      "frame": {
+        "x": 1369,
+        "y": 599,
+        "w": 48,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 20,
+        "w": 48,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-carrion-flock-walk-0": {
+      "frame": {
+        "x": 378,
+        "y": 559,
+        "w": 44,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 2,
+        "w": 44,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-carrion-flock-walk-1": {
+      "frame": {
+        "x": 1419,
+        "y": 599,
+        "w": 48,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 20,
+        "w": 48,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-carrion-flock-walk-2": {
+      "frame": {
+        "x": 0,
+        "y": 599,
+        "w": 42,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 20,
+        "w": 42,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-carrion-flock-walk-3": {
+      "frame": {
+        "x": 1469,
+        "y": 599,
+        "w": 48,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 20,
+        "w": 48,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 60
+      }
+    },
+    "unit-cerberus-attack-0": {
+      "frame": {
+        "x": 1720,
+        "y": 351,
+        "w": 76,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 2,
+        "w": 76,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 60
+      }
+    },
+    "unit-cerberus-attack-1": {
+      "frame": {
+        "x": 1798,
+        "y": 351,
+        "w": 72,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 2,
+        "w": 72,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 60
+      }
+    },
+    "unit-cerberus-walk-0": {
+      "frame": {
+        "x": 1872,
+        "y": 351,
+        "w": 72,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 2,
+        "w": 72,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 60
+      }
+    },
+    "unit-cerberus-walk-1": {
+      "frame": {
+        "x": 1084,
+        "y": 409,
+        "w": 72,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 2,
+        "w": 72,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 60
+      }
+    },
+    "unit-cerberus-walk-2": {
+      "frame": {
+        "x": 1946,
+        "y": 351,
+        "w": 72,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 2,
+        "w": 72,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 60
+      }
+    },
+    "unit-cerberus-walk-3": {
+      "frame": {
+        "x": 1158,
+        "y": 409,
+        "w": 72,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 2,
+        "w": 72,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 60
+      }
+    },
+    "unit-executioner-attack-0": {
+      "frame": {
+        "x": 1104,
+        "y": 167,
+        "w": 56,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 56,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-executioner-attack-1": {
+      "frame": {
+        "x": 1162,
+        "y": 167,
+        "w": 56,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 56,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-executioner-walk-0": {
+      "frame": {
+        "x": 1220,
+        "y": 167,
+        "w": 56,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 56,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-executioner-walk-1": {
+      "frame": {
+        "x": 1278,
+        "y": 167,
+        "w": 56,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 56,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-executioner-walk-2": {
+      "frame": {
+        "x": 1336,
+        "y": 167,
+        "w": 56,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 56,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-executioner-walk-3": {
+      "frame": {
+        "x": 1394,
+        "y": 167,
+        "w": 56,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 56,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-fallen-bishop-attack-0": {
+      "frame": {
+        "x": 198,
+        "y": 101,
+        "w": 44,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 2,
+        "w": 44,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-fallen-bishop-attack-1": {
+      "frame": {
+        "x": 244,
+        "y": 101,
+        "w": 44,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-fallen-bishop-walk-0": {
+      "frame": {
+        "x": 290,
+        "y": 101,
+        "w": 44,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 2,
+        "w": 44,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-fallen-bishop-walk-1": {
+      "frame": {
+        "x": 336,
+        "y": 101,
+        "w": 44,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-fallen-bishop-walk-2": {
+      "frame": {
+        "x": 382,
+        "y": 101,
+        "w": 44,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 2,
+        "w": 44,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-fallen-bishop-walk-3": {
+      "frame": {
+        "x": 428,
+        "y": 101,
+        "w": 44,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-flesh-titan-attack-0": {
+      "frame": {
+        "x": 0,
+        "y": 409,
+        "w": 68,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 68,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 72
+      }
+    },
+    "unit-flesh-titan-attack-1": {
+      "frame": {
+        "x": 70,
+        "y": 409,
+        "w": 68,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 68,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 72
+      }
+    },
+    "unit-flesh-titan-walk-0": {
+      "frame": {
+        "x": 140,
+        "y": 409,
+        "w": 68,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 68,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 72
+      }
+    },
+    "unit-flesh-titan-walk-1": {
+      "frame": {
+        "x": 210,
+        "y": 409,
+        "w": 68,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 68,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 72
+      }
+    },
+    "unit-flesh-titan-walk-2": {
+      "frame": {
+        "x": 280,
+        "y": 409,
+        "w": 68,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 68,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 72
+      }
+    },
+    "unit-flesh-titan-walk-3": {
+      "frame": {
+        "x": 350,
+        "y": 409,
+        "w": 68,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 68,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 72
+      }
+    },
+    "unit-gargoyle-attack-0": {
+      "frame": {
+        "x": 1693,
+        "y": 559,
+        "w": 62,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 20,
+        "w": 62,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 72
+      }
+    },
+    "unit-gargoyle-attack-1": {
+      "frame": {
+        "x": 1757,
+        "y": 559,
+        "w": 58,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 20,
+        "w": 58,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 72
+      }
+    },
+    "unit-gargoyle-walk-0": {
+      "frame": {
+        "x": 64,
+        "y": 465,
+        "w": 48,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 0,
+        "w": 48,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 72
+      }
+    },
+    "unit-gargoyle-walk-1": {
+      "frame": {
+        "x": 1817,
+        "y": 559,
+        "w": 58,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 20,
+        "w": 58,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 72
+      }
+    },
+    "unit-gargoyle-walk-2": {
+      "frame": {
+        "x": 1552,
+        "y": 515,
+        "w": 48,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 20,
+        "w": 48,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 72
+      }
+    },
+    "unit-gargoyle-walk-3": {
+      "frame": {
+        "x": 1877,
+        "y": 559,
+        "w": 58,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 20,
+        "w": 58,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 72
+      }
+    },
+    "unit-ghoul-attack-0": {
+      "frame": {
+        "x": 956,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ghoul-attack-1": {
+      "frame": {
+        "x": 1460,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 16,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ghoul-walk-0": {
+      "frame": {
+        "x": 1010,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ghoul-walk-1": {
+      "frame": {
+        "x": 1514,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 16,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ghoul-walk-2": {
+      "frame": {
+        "x": 1064,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-ghoul-walk-3": {
+      "frame": {
+        "x": 1568,
+        "y": 291,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 16,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-grand-knight-attack-0": {
+      "frame": {
+        "x": 1452,
+        "y": 167,
+        "w": 60,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 60,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-grand-knight-attack-1": {
+      "frame": {
+        "x": 1514,
+        "y": 167,
+        "w": 60,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 60,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-grand-knight-walk-0": {
+      "frame": {
+        "x": 1576,
+        "y": 167,
+        "w": 60,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 60,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-grand-knight-walk-1": {
+      "frame": {
+        "x": 1638,
+        "y": 167,
+        "w": 60,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 60,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-grand-knight-walk-2": {
+      "frame": {
+        "x": 1700,
+        "y": 167,
+        "w": 60,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 60,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-grand-knight-walk-3": {
+      "frame": {
+        "x": 1762,
+        "y": 167,
+        "w": 60,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 60,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 72,
+        "h": 72
+      }
+    },
+    "unit-harpy-attack-0": {
+      "frame": {
+        "x": 824,
+        "y": 599,
+        "w": 58,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 20,
+        "w": 58,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 64
+      }
+    },
+    "unit-harpy-attack-1": {
+      "frame": {
+        "x": 884,
+        "y": 599,
+        "w": 54,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 20,
+        "w": 54,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 64
+      }
+    },
+    "unit-harpy-walk-0": {
+      "frame": {
+        "x": 1728,
+        "y": 465,
+        "w": 46,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 0,
+        "w": 46,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 64
+      }
+    },
+    "unit-harpy-walk-1": {
+      "frame": {
+        "x": 940,
+        "y": 599,
+        "w": 54,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 20,
+        "w": 54,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 64
+      }
+    },
+    "unit-harpy-walk-2": {
+      "frame": {
+        "x": 1937,
+        "y": 559,
+        "w": 44,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 22,
+        "w": 44,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 64
+      }
+    },
+    "unit-harpy-walk-3": {
+      "frame": {
+        "x": 996,
+        "y": 599,
+        "w": 54,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 20,
+        "w": 54,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 64
+      }
+    },
+    "unit-hellhound-attack-0": {
+      "frame": {
+        "x": 114,
+        "y": 465,
+        "w": 80,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 80,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-hellhound-attack-1": {
+      "frame": {
+        "x": 196,
+        "y": 465,
+        "w": 76,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 76,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-hellhound-walk-0": {
+      "frame": {
+        "x": 274,
+        "y": 465,
+        "w": 76,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 76,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-hellhound-walk-1": {
+      "frame": {
+        "x": 484,
+        "y": 465,
+        "w": 76,
+        "h": 46
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 76,
+        "h": 46
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-hellhound-walk-2": {
+      "frame": {
+        "x": 352,
+        "y": 465,
+        "w": 76,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 76,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-hellhound-walk-3": {
+      "frame": {
+        "x": 562,
+        "y": 465,
+        "w": 76,
+        "h": 46
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 76,
+        "h": 46
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 62
+      }
+    },
+    "unit-lament-queen-attack-0": {
+      "frame": {
+        "x": 1144,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lament-queen-attack-1": {
+      "frame": {
+        "x": 1194,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lament-queen-walk-0": {
+      "frame": {
+        "x": 1244,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lament-queen-walk-1": {
+      "frame": {
+        "x": 1294,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lament-queen-walk-2": {
+      "frame": {
+        "x": 1344,
+        "y": 101,
+        "w": 48,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 0,
+        "w": 48,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lament-queen-walk-3": {
+      "frame": {
+        "x": 1394,
+        "y": 101,
+        "w": 50,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 0,
+        "w": 50,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lich-attack-0": {
+      "frame": {
+        "x": 1446,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lich-attack-1": {
+      "frame": {
+        "x": 1824,
+        "y": 167,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lich-king-attack-0": {
+      "frame": {
+        "x": 1492,
+        "y": 101,
+        "w": 46,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 4,
+        "w": 46,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-lich-king-attack-1": {
+      "frame": {
+        "x": 1870,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-lich-king-walk-0": {
+      "frame": {
+        "x": 1918,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 6,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-lich-king-walk-1": {
+      "frame": {
+        "x": 1966,
+        "y": 167,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-lich-king-walk-2": {
+      "frame": {
+        "x": 0,
+        "y": 229,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 6,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-lich-king-walk-3": {
+      "frame": {
+        "x": 48,
+        "y": 229,
+        "w": 46,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 12,
+        "y": 8,
+        "w": 46,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-lich-walk-0": {
+      "frame": {
+        "x": 96,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lich-walk-1": {
+      "frame": {
+        "x": 142,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lich-walk-2": {
+      "frame": {
+        "x": 188,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-lich-walk-3": {
+      "frame": {
+        "x": 234,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-mastiff-attack-0": {
+      "frame": {
+        "x": 640,
+        "y": 465,
+        "w": 72,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 72,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 58
+      }
+    },
+    "unit-mastiff-attack-1": {
+      "frame": {
+        "x": 714,
+        "y": 465,
+        "w": 68,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 68,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 58
+      }
+    },
+    "unit-mastiff-walk-0": {
+      "frame": {
+        "x": 784,
+        "y": 465,
+        "w": 68,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 68,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 58
+      }
+    },
+    "unit-mastiff-walk-1": {
+      "frame": {
+        "x": 1776,
+        "y": 465,
+        "w": 68,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 68,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 58
+      }
+    },
+    "unit-mastiff-walk-2": {
+      "frame": {
+        "x": 854,
+        "y": 465,
+        "w": 68,
+        "h": 44
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 68,
+        "h": 44
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 58
+      }
+    },
+    "unit-mastiff-walk-3": {
+      "frame": {
+        "x": 1846,
+        "y": 465,
+        "w": 68,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 68,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 58
+      }
+    },
+    "unit-nosferatu-attack-0": {
+      "frame": {
+        "x": 1622,
+        "y": 291,
+        "w": 56,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 56,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-nosferatu-attack-1": {
+      "frame": {
+        "x": 1680,
+        "y": 291,
+        "w": 56,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 56,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-nosferatu-walk-0": {
+      "frame": {
+        "x": 1738,
+        "y": 291,
+        "w": 56,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 56,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-nosferatu-walk-1": {
+      "frame": {
+        "x": 1796,
+        "y": 291,
+        "w": 56,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 56,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-nosferatu-walk-2": {
+      "frame": {
+        "x": 1854,
+        "y": 291,
+        "w": 56,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 56,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-nosferatu-walk-3": {
+      "frame": {
+        "x": 1912,
+        "y": 291,
+        "w": 56,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 56,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-pyromancer-attack-0": {
+      "frame": {
+        "x": 1540,
+        "y": 101,
+        "w": 44,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-pyromancer-attack-1": {
+      "frame": {
+        "x": 280,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-pyromancer-walk-0": {
+      "frame": {
+        "x": 326,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-pyromancer-walk-1": {
+      "frame": {
+        "x": 372,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-pyromancer-walk-2": {
+      "frame": {
+        "x": 418,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-pyromancer-walk-3": {
+      "frame": {
+        "x": 464,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-reaper-attack-0": {
+      "frame": {
+        "x": 510,
+        "y": 229,
+        "w": 44,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 0,
+        "w": 44,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-reaper-attack-1": {
+      "frame": {
+        "x": 1970,
+        "y": 291,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 4,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-reaper-walk-0": {
+      "frame": {
+        "x": 0,
+        "y": 351,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-reaper-walk-1": {
+      "frame": {
+        "x": 46,
+        "y": 351,
+        "w": 42,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 4,
+        "w": 42,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-reaper-walk-2": {
+      "frame": {
+        "x": 90,
+        "y": 351,
+        "w": 44,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 4,
+        "w": 44,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-reaper-walk-3": {
+      "frame": {
+        "x": 136,
+        "y": 351,
+        "w": 46,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 4,
+        "w": 46,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 68
+      }
+    },
+    "unit-rotting-wolf-attack-0": {
+      "frame": {
+        "x": 1916,
+        "y": 465,
+        "w": 68,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 68,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-rotting-wolf-attack-1": {
+      "frame": {
+        "x": 0,
+        "y": 515,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-rotting-wolf-walk-0": {
+      "frame": {
+        "x": 66,
+        "y": 515,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-rotting-wolf-walk-1": {
+      "frame": {
+        "x": 1602,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-rotting-wolf-walk-2": {
+      "frame": {
+        "x": 132,
+        "y": 515,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-rotting-wolf-walk-3": {
+      "frame": {
+        "x": 1668,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-shade-attack-0": {
+      "frame": {
+        "x": 1502,
+        "y": 409,
+        "w": 42,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 42,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-shade-attack-1": {
+      "frame": {
+        "x": 1546,
+        "y": 409,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-shade-walk-0": {
+      "frame": {
+        "x": 1592,
+        "y": 409,
+        "w": 42,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 42,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-shade-walk-1": {
+      "frame": {
+        "x": 1636,
+        "y": 409,
+        "w": 42,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 8,
+        "w": 42,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-shade-walk-2": {
+      "frame": {
+        "x": 1680,
+        "y": 409,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-shade-walk-3": {
+      "frame": {
+        "x": 1726,
+        "y": 409,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-skeleton-archer-attack-0": {
+      "frame": {
+        "x": 420,
+        "y": 409,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-archer-attack-1": {
+      "frame": {
+        "x": 466,
+        "y": 409,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 14,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-archer-walk-0": {
+      "frame": {
+        "x": 512,
+        "y": 409,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-archer-walk-1": {
+      "frame": {
+        "x": 558,
+        "y": 409,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 14,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-archer-walk-2": {
+      "frame": {
+        "x": 604,
+        "y": 409,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 12,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-archer-walk-3": {
+      "frame": {
+        "x": 650,
+        "y": 409,
+        "w": 44,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 14,
+        "w": 44,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-crossbowman-attack-0": {
+      "frame": {
+        "x": 184,
+        "y": 351,
+        "w": 50,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 50,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-crossbowman-attack-1": {
+      "frame": {
+        "x": 236,
+        "y": 351,
+        "w": 50,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 50,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-crossbowman-walk-0": {
+      "frame": {
+        "x": 288,
+        "y": 351,
+        "w": 50,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 50,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-crossbowman-walk-1": {
+      "frame": {
+        "x": 340,
+        "y": 351,
+        "w": 50,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 50,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-crossbowman-walk-2": {
+      "frame": {
+        "x": 392,
+        "y": 351,
+        "w": 50,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 50,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-skeleton-crossbowman-walk-3": {
+      "frame": {
+        "x": 444,
+        "y": 351,
+        "w": 50,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 50,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-spectre-attack-0": {
+      "frame": {
+        "x": 1232,
+        "y": 409,
+        "w": 42,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 42,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-spectre-attack-1": {
+      "frame": {
+        "x": 1276,
+        "y": 409,
+        "w": 44,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 44,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-spectre-walk-0": {
+      "frame": {
+        "x": 1322,
+        "y": 409,
+        "w": 42,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 6,
+        "w": 42,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-spectre-walk-1": {
+      "frame": {
+        "x": 1366,
+        "y": 409,
+        "w": 42,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 6,
+        "w": 42,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-spectre-walk-2": {
+      "frame": {
+        "x": 1410,
+        "y": 409,
+        "w": 44,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 44,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-spectre-walk-3": {
+      "frame": {
+        "x": 1456,
+        "y": 409,
+        "w": 44,
+        "h": 52
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 44,
+        "h": 52
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-stalker-attack-0": {
+      "frame": {
+        "x": 1118,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-stalker-attack-1": {
+      "frame": {
+        "x": 1172,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-stalker-walk-0": {
+      "frame": {
+        "x": 1226,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-stalker-walk-1": {
+      "frame": {
+        "x": 1280,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-stalker-walk-2": {
+      "frame": {
+        "x": 1334,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-stalker-walk-3": {
+      "frame": {
+        "x": 1388,
+        "y": 229,
+        "w": 52,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-vampire-attack-0": {
+      "frame": {
+        "x": 696,
+        "y": 409,
+        "w": 52,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-vampire-attack-1": {
+      "frame": {
+        "x": 750,
+        "y": 409,
+        "w": 52,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-vampire-walk-0": {
+      "frame": {
+        "x": 804,
+        "y": 409,
+        "w": 52,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-vampire-walk-1": {
+      "frame": {
+        "x": 858,
+        "y": 409,
+        "w": 52,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-vampire-walk-2": {
+      "frame": {
+        "x": 912,
+        "y": 409,
+        "w": 52,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-vampire-walk-3": {
+      "frame": {
+        "x": 966,
+        "y": 409,
+        "w": 52,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 14,
+        "w": 52,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-wandering-soul-attack-0": {
+      "frame": {
+        "x": 1772,
+        "y": 409,
+        "w": 42,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 42,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-wandering-soul-attack-1": {
+      "frame": {
+        "x": 1816,
+        "y": 409,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-wandering-soul-walk-0": {
+      "frame": {
+        "x": 1862,
+        "y": 409,
+        "w": 42,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 8,
+        "w": 42,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-wandering-soul-walk-1": {
+      "frame": {
+        "x": 1906,
+        "y": 409,
+        "w": 42,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 8,
+        "y": 8,
+        "w": 42,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-wandering-soul-walk-2": {
+      "frame": {
+        "x": 1950,
+        "y": 409,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-wandering-soul-walk-3": {
+      "frame": {
+        "x": 1996,
+        "y": 409,
+        "w": 44,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 44,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 56,
+        "h": 64
+      }
+    },
+    "unit-wendigo-attack-0": {
+      "frame": {
+        "x": 556,
+        "y": 229,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-wendigo-attack-1": {
+      "frame": {
+        "x": 598,
+        "y": 229,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-wendigo-walk-0": {
+      "frame": {
+        "x": 640,
+        "y": 229,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-wendigo-walk-1": {
+      "frame": {
+        "x": 682,
+        "y": 229,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-wendigo-walk-2": {
+      "frame": {
+        "x": 724,
+        "y": 229,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 6,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-wendigo-walk-3": {
+      "frame": {
+        "x": 766,
+        "y": 229,
+        "w": 40,
+        "h": 60
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 14,
+        "y": 8,
+        "w": 40,
+        "h": 60
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-werelord-attack-0": {
+      "frame": {
+        "x": 1442,
+        "y": 229,
+        "w": 64,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 64,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-werelord-attack-1": {
+      "frame": {
+        "x": 1508,
+        "y": 229,
+        "w": 64,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 64,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-werelord-walk-0": {
+      "frame": {
+        "x": 1574,
+        "y": 229,
+        "w": 64,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 64,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-werelord-walk-1": {
+      "frame": {
+        "x": 1640,
+        "y": 229,
+        "w": 64,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 64,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-werelord-walk-2": {
+      "frame": {
+        "x": 1706,
+        "y": 229,
+        "w": 64,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 64,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-werelord-walk-3": {
+      "frame": {
+        "x": 1772,
+        "y": 229,
+        "w": 64,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 64,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 72
+      }
+    },
+    "unit-werewolf-attack-0": {
+      "frame": {
+        "x": 1838,
+        "y": 229,
+        "w": 56,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 56,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-werewolf-attack-1": {
+      "frame": {
+        "x": 1896,
+        "y": 229,
+        "w": 56,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 56,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-werewolf-walk-0": {
+      "frame": {
+        "x": 1954,
+        "y": 229,
+        "w": 56,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 56,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-werewolf-walk-1": {
+      "frame": {
+        "x": 0,
+        "y": 291,
+        "w": 56,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 56,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-werewolf-walk-2": {
+      "frame": {
+        "x": 58,
+        "y": 291,
+        "w": 56,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 8,
+        "w": 56,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-werewolf-walk-3": {
+      "frame": {
+        "x": 116,
+        "y": 291,
+        "w": 56,
+        "h": 58
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 56,
+        "h": 58
+      },
+      "sourceSize": {
+        "w": 68,
+        "h": 72
+      }
+    },
+    "unit-zombie-attack-0": {
+      "frame": {
+        "x": 496,
+        "y": 351,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-zombie-attack-1": {
+      "frame": {
+        "x": 550,
+        "y": 351,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-zombie-dog-attack-0": {
+      "frame": {
+        "x": 198,
+        "y": 515,
+        "w": 68,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 68,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-zombie-dog-attack-1": {
+      "frame": {
+        "x": 268,
+        "y": 515,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-zombie-dog-walk-0": {
+      "frame": {
+        "x": 334,
+        "y": 515,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-zombie-dog-walk-1": {
+      "frame": {
+        "x": 1734,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-zombie-dog-walk-2": {
+      "frame": {
+        "x": 400,
+        "y": 515,
+        "w": 64,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-zombie-dog-walk-3": {
+      "frame": {
+        "x": 1800,
+        "y": 515,
+        "w": 64,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 6,
+        "w": 64,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 56
+      }
+    },
+    "unit-zombie-walk-0": {
+      "frame": {
+        "x": 604,
+        "y": 351,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-zombie-walk-1": {
+      "frame": {
+        "x": 658,
+        "y": 351,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-zombie-walk-2": {
+      "frame": {
+        "x": 712,
+        "y": 351,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 10,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    },
+    "unit-zombie-walk-3": {
+      "frame": {
+        "x": 766,
+        "y": 351,
+        "w": 52,
+        "h": 56
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 6,
+        "y": 12,
+        "w": 52,
+        "h": 56
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 72
+      }
+    }
+  },
+  "meta": {
+    "image": "atlas-0.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 2048,
+      "h": 626
+    },
+    "scale": "1"
+  }
+}

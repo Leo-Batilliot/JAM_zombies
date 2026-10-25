@@ -1,14 +1,8 @@
 import { EntityKind } from "@horde/shared";
-import { mainBodies } from "../systems/battle.js";
+import { enclose, mainBodies } from "../systems/battle.js";
 import { distance } from "../systems/bodies.js";
 import { isReady } from "../systems/crosses.js";
-import { evolvableCounts } from "../systems/evolution.js";
-import {
-  orderAttack,
-  orderEvolve,
-  orderMove,
-  orderRetreat,
-} from "../systems/orders.js";
+import { orderAttack, orderCard, orderMove } from "../systems/orders.js";
 import { armyStrength, bodiesStrength } from "../systems/strength.js";
 import { orderFormation } from "../systems/tactics.js";
 import type {
@@ -19,6 +13,7 @@ import type {
   PointOfInterest,
   World,
 } from "../world/world.js";
+import { growthFactor, isCapped } from "./handicap.js";
 import { rankArmies } from "./leaderboard.js";
 
 type Mode = keyof World["config"]["lobby"]["bots"]["formations"];
@@ -66,25 +61,87 @@ const nearestCivilian = (
   return best;
 };
 
+const fleeTurns = [0, Math.PI / 3, -Math.PI / 3, (2 * Math.PI) / 3];
+
+const fleePoint = (
+  world: World,
+  army: Army,
+  away: number,
+  distance: number,
+): [number, number] => {
+  const { mage } = army;
+  const { clearance } = world.config.world.city;
+  let best: [number, number] = [mage.x, mage.y];
+  let bestReach = -1;
+  for (const turn of fleeTurns) {
+    const x = world.clampX(mage.x + Math.cos(away + turn) * distance);
+    const y = world.clampY(mage.y + Math.sin(away + turn) * distance);
+    const free = world.obstacles.resolve(x, y, clearance) ?? { x, y };
+    const reach = Math.hypot(free.x - mage.x, free.y - mage.y);
+    if (reach >= distance / 2) {
+      return [free.x, free.y];
+    }
+    if (reach > bestReach) {
+      best = [free.x, free.y];
+      bestReach = reach;
+    }
+  }
+  return best;
+};
+
 const engage = (world: World, army: Army, battle: Battle): void => {
-  const { fleeRatio, avoidSectorDeg, fleeDistance } = world.config.lobby.bots;
+  const { fleeRatio, fleeDistance } = world.config.lobby.bots;
   const own = bodiesStrength(world, mainBodies(army));
-  const foes = battle.foes.reduce(
-    (total, foe) => total + bodiesStrength(world, foe.bodies),
-    0,
-  );
-  const trapped =
-    battle.freeSector < (avoidSectorDeg * Math.PI) / 180 && foes >= own;
-  if (battle.encircled || (foes <= own * fleeRatio && !trapped)) {
+  const foeBodies = battle.foes.flatMap((foe) => foe.bodies);
+  const foes = bodiesStrength(world, foeBodies);
+  if (foes <= own * fleeRatio || foeBodies.length === 0) {
     setFormation(world, army, foes > own ? "defend" : "attack");
     return;
   }
-  orderRetreat(
-    world,
-    army,
-    army.mage.x + Math.cos(battle.escapeAngle) * fleeDistance,
-    army.mage.y + Math.sin(battle.escapeAngle) * fleeDistance,
+  const center = enclose(undefined, foeBodies);
+  const away = Math.atan2(army.mage.y - center.y, army.mage.x - center.x);
+  orderMove(world, army, ...fleePoint(world, army, away, fleeDistance));
+};
+
+const isIgnored = (world: World, army: Army, prey: Army): boolean =>
+  (army.bot?.ignored.get(prey) ?? -Infinity) > world.time;
+
+const giveUpDelay = (world: World, army: Army, prey: Army): number => {
+  const { giveUp, attackRatio } = world.config.lobby.bots;
+  const own = armyStrength(world, army) * attackRatio;
+  const ratio = own > 0 ? armyStrength(world, prey) / own : 1;
+  return Math.min(
+    giveUp.maxSec,
+    Math.max(giveUp.minSec, giveUp.maxSec * ratio),
   );
+};
+
+const pursue = (
+  world: World,
+  army: Army,
+  prey: Army | undefined,
+): Army | undefined => {
+  const { bot } = army;
+  for (const [ignored, until] of bot?.ignored ?? []) {
+    if (until <= world.time) {
+      bot?.ignored.delete(ignored);
+    }
+  }
+  if (bot === undefined || prey === undefined) {
+    if (bot !== undefined) {
+      bot.chase = undefined;
+    }
+    return prey;
+  }
+  if (bot.chase?.prey !== prey) {
+    bot.chase = { prey, since: world.time };
+  }
+  if (world.time - bot.chase.since < giveUpDelay(world, army, prey)) {
+    return prey;
+  }
+  bot.ignored.set(prey, world.time + world.config.lobby.bots.giveUp.ignoreSec);
+  bot.chase = undefined;
+  return undefined;
 };
 
 const weakerArmy = (world: World, army: Army): Army | undefined => {
@@ -93,7 +150,7 @@ const weakerArmy = (world: World, army: Army): Army | undefined => {
   let best: Army | undefined;
   let bestDistance = attackRange;
   for (const other of world.armies.values()) {
-    if (other === army || !other.alive) {
+    if (other === army || !other.alive || isIgnored(world, army, other)) {
       continue;
     }
     const otherDistance = distance(other.mage, army.mage);
@@ -118,6 +175,7 @@ const bountyTarget = (world: World, army: Army): Army | undefined => {
     target === undefined ||
     target === army ||
     !target.alive ||
+    isIgnored(world, army, target) ||
     leader.strength <= 0 ||
     leader.strength > armyStrength(world, army) * bountyRatio ||
     distance(target.mage, army.mage) > bountyRange
@@ -127,15 +185,22 @@ const bountyTarget = (world: World, army: Army): Army | undefined => {
   return target;
 };
 
+const guardsChampion = (world: World, camp: Camp): boolean =>
+  [...camp.defenders].some((npc) =>
+    Object.hasOwn(world.config.units.champions, npc.type),
+  );
+
 const campTarget = (world: World, army: Army): Camp | undefined => {
-  const { campRange, campRatio } = world.config.lobby.bots;
+  const { campRange, championRange, campRatio } = world.config.lobby.bots;
   const own = armyStrength(world, army);
   let best: Camp | undefined;
-  let bestDistance = campRange;
+  let bestDistance = Infinity;
   for (const camp of world.camps) {
     const campDistance = distance(camp, army.mage);
+    const range = guardsChampion(world, camp) ? championRange : campRange;
     if (
-      campDistance <= bestDistance &&
+      campDistance <= range &&
+      campDistance < bestDistance &&
       own >= bodiesStrength(world, camp.defenders) * campRatio
     ) {
       best = camp;
@@ -207,33 +272,108 @@ const moveTo = (world: World, army: Army, x: number, y: number): void => {
   orderMove(world, army, point.x, point.y);
 };
 
-const bestEvolution = (world: World, army: Army): string | undefined => {
-  let best: { into: string; cost: number } | undefined;
-  for (const [type, count] of evolvableCounts(world, army)) {
-    for (const evolution of world.registries.units.get(type).evolutions) {
-      if (evolution.cost <= count && evolution.cost > (best?.cost ?? 0)) {
-        best = evolution;
-      }
+export const lineageNeeds = (
+  world: World,
+  army: Army,
+): Map<string, { waiting: number; strength: number }> => {
+  const needs = new Map<string, { waiting: number; strength: number }>();
+  for (const unit of army.units) {
+    const node = world.registries.tree.get(unit.type);
+    if (node === undefined) {
+      continue;
     }
+    const need = needs.get(node.lineage) ?? { waiting: 0, strength: 0 };
+    if (node.tier >= (army.mutations.get(node.lineage)?.tier ?? 0)) {
+      need.waiting++;
+    }
+    need.strength += world.registries.units.get(unit.type).strength;
+    needs.set(node.lineage, need);
   }
-  return best?.into;
+  return needs;
+};
+
+const pickCard = (world: World, army: Army): void => {
+  if (army.cards.length === 0) {
+    return;
+  }
+  const needs = lineageNeeds(world, army);
+  const score = (unit: string): [number, number] => {
+    const lineage = world.registries.tree.get(unit)?.lineage ?? "";
+    const need = needs.get(lineage);
+    return [need?.waiting ?? 0, need?.strength ?? 0];
+  };
+  let mutation = -1;
+  army.cards.forEach((card, index) => {
+    const best = army.cards[mutation];
+    if (card.kind !== "mutation" || score(card.unit)[0] === 0) {
+      return;
+    }
+    if (best?.kind !== "mutation") {
+      mutation = index;
+      return;
+    }
+    const [waiting, strength] = score(card.unit);
+    const [bestWaiting, bestStrength] = score(best.unit);
+    if (
+      waiting > bestWaiting ||
+      (waiting === bestWaiting && strength > bestStrength)
+    ) {
+      mutation = index;
+    }
+  });
+  const gift = army.cards.findIndex((card) => card.kind === "gift");
+  orderCard(world, army, mutation >= 0 ? mutation : Math.max(gift, 0));
+};
+
+const unstuck = (world: World, army: Army): boolean => {
+  const { bot, mage } = army;
+  if (bot === undefined) {
+    return false;
+  }
+  const { distance: minimum, detour } = world.config.lobby.bots.stuck;
+  const moved = Math.hypot(mage.x - bot.lastX, mage.y - bot.lastY);
+  bot.lastX = mage.x;
+  bot.lastY = mage.y;
+  const dx = mage.targetX - mage.x;
+  const dy = mage.targetY - mage.y;
+  const remaining = Math.hypot(dx, dy);
+  if (!(moved < minimum) || remaining <= 2 * minimum) {
+    return false;
+  }
+  const side = world.random() < 0.5 ? -1 : 1;
+  orderMove(
+    world,
+    army,
+    mage.x + ((dx / remaining) * detour) / 2 - (dy / remaining) * detour * side,
+    mage.y + ((dy / remaining) * detour) / 2 + (dx / remaining) * detour * side,
+  );
+  return true;
 };
 
 const think = (world: World, army: Army): void => {
   const { wanderDistance, huntRange, lootRange } = world.config.lobby.bots;
   const { mage } = army;
-  if (army.retreat !== undefined) {
+  if (army.battle === undefined && unstuck(world, army)) {
     return;
   }
   if (army.battle !== undefined) {
     engage(world, army, army.battle);
     return;
   }
-  const evolution = bestEvolution(world, army);
-  if (evolution !== undefined) {
-    orderEvolve(world, army, evolution);
+  pickCard(world, army);
+  if (isCapped(army)) {
+    setFormation(world, army, "explore");
+    if (mage.x === mage.targetX && mage.y === mage.targetY) {
+      const { x, y } = world.randomNear(mage.x, mage.y, wanderDistance);
+      moveTo(world, army, x, y);
+    }
+    return;
   }
-  const prey = bountyTarget(world, army) ?? weakerArmy(world, army);
+  const prey = pursue(
+    world,
+    army,
+    bountyTarget(world, army) ?? weakerArmy(world, army),
+  );
   const target = prey?.mage ?? campTarget(world, army);
   if (target !== undefined) {
     setFormation(world, army, "attack");
@@ -259,7 +399,7 @@ const think = (world: World, army: Army): void => {
 };
 
 export const runBots = (world: World): void => {
-  const { thinkIntervalSec } = world.config.lobby.bots;
+  const { thinkIntervalSec, handicap } = world.config.lobby.bots;
   for (const army of world.armies.values()) {
     if (
       army.bot === undefined ||
@@ -268,7 +408,10 @@ export const runBots = (world: World): void => {
     ) {
       continue;
     }
-    army.bot.thinkAt = world.time + thinkIntervalSec * (0.5 + world.random());
+    const slowdown =
+      1 + (handicap.thinkSlowdown - 1) * (1 - growthFactor(army));
+    army.bot.thinkAt =
+      world.time + thinkIntervalSec * slowdown * (0.5 + world.random());
     think(world, army);
   }
 };

@@ -3,7 +3,7 @@ import { JoinRejection } from "@horde/shared";
 import { spawnArmy } from "../systems/army.js";
 import { createMassGrave } from "../systems/points.js";
 import { armyStrength } from "../systems/strength.js";
-import type { Army, World } from "../world/world.js";
+import type { Army, Bot, World } from "../world/world.js";
 
 const tokenBytes = 16;
 
@@ -22,7 +22,14 @@ const isReplaceable = (world: World, army: Army): boolean => {
   return true;
 };
 
-const newBot = (world: World) => ({ thinkAt: world.time });
+const newBot = (world: World): Bot => ({
+  thinkAt: world.time,
+  handicap: 1,
+  lastX: Number.NaN,
+  lastY: Number.NaN,
+  chase: undefined,
+  ignored: new Map(),
+});
 
 const botName = (world: World): string => {
   const { names } = world.config.lobby.bots;

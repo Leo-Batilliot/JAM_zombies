@@ -9,6 +9,7 @@ const mage = (id: number, x: number) => ({
   type: 0,
   army: 1,
   flags: 0,
+  hp: 255,
   x,
   y: 0,
 });

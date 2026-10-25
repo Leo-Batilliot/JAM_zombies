@@ -2,7 +2,8 @@
 
 ## Graphismes
 
-- `client/public/atlas/` : formes colorées provisoires, Citrouille maléfique, citrouilles-lanternes, pub *Winchester*, bêtes, colliers et apparences du mage, faits par l'équipe.
+- `client/public/atlas/` : formes colorées provisoires, Citrouille maléfique, citrouilles-lanternes, pub *Winchester*, colliers, objets et icônes, faits par l'équipe.
+- `tools/assets/` : unités, PNJ, champions, mages, sols, bâtiments et décor de la ville générés par script, faits par l'équipe.
 
 ## Sons et musique
 

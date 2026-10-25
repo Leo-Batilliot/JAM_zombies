@@ -32,12 +32,36 @@
       "boss": "audio/music-boss.mp3"
     },
     "effects": {
-      "hit": { "url": "audio/hit.mp3", "volume": 0.4, "gapMs": 250 },
-      "death": { "url": "audio/death.mp3", "volume": 0.6, "gapMs": 200 },
-      "rise": { "url": "audio/rise.mp3", "volume": 0.5, "gapMs": 300 },
-      "scream": { "url": "audio/scream.mp3", "volume": 1, "gapMs": 0 },
-      "boss": { "url": "audio/boss.mp3", "volume": 0.8, "gapMs": 0 },
-      "blast": { "url": "audio/blast.mp3", "volume": 0.8, "gapMs": 300 }
+      "hit": {
+        "url": "audio/hit.mp3",
+        "volume": 0.4,
+        "gapMs": 250
+      },
+      "death": {
+        "url": "audio/death.mp3",
+        "volume": 0.6,
+        "gapMs": 200
+      },
+      "rise": {
+        "url": "audio/rise.mp3",
+        "volume": 0.5,
+        "gapMs": 300
+      },
+      "scream": {
+        "url": "audio/scream.mp3",
+        "volume": 1,
+        "gapMs": 0
+      },
+      "boss": {
+        "url": "audio/boss.mp3",
+        "volume": 0.8,
+        "gapMs": 0
+      },
+      "blast": {
+        "url": "audio/blast.mp3",
+        "volume": 0.8,
+        "gapMs": 300
+      }
     }
   },
   "screamer": {
@@ -52,21 +76,540 @@
     "boss": "p",
     "units": "u"
   },
-  "retreatKey": "r",
   "sizeScaleStep": 0.25,
-  "aggroPulseMs": 900,
   "lootMs": 2500,
-  "minimapSize": 110,
+  "minimapSize": 180,
   "gearOffsets": {
-    "melee": { "x": 7, "y": 2 },
-    "helmet": { "x": 0, "y": -12 },
-    "collar": { "x": 5, "y": -6 }
+    "melee": {
+      "x": 7,
+      "y": 2
+    },
+    "helmet": {
+      "x": 0,
+      "y": -12
+    },
+    "collar": {
+      "x": 5,
+      "y": -6
+    },
+    "talons": {
+      "x": 4,
+      "y": 4
+    },
+    "relic": {
+      "x": 5,
+      "y": 0
+    }
   },
   "mistColors": {
     "purifying": "#cfe8ff",
-    "necrotic": "#5fd45a"
+    "necrotic": "#5fd45a",
+    "gas": "#9fae4a"
   },
-  "bombingColors": { "mark": "#e0605a", "blast": "#ff9a1f" },
+  "bombingColors": {
+    "mark": "#e0605a",
+    "blast": "#ff9a1f"
+  },
   "formationKeys": ["1", "2", "3", "4"],
-  "evolutionCollapseMs": 6000
+  "hpBar": {
+    "width": 22,
+    "height": 3,
+    "offsetY": 3,
+    "growth": 0.35,
+    "mageScale": 1.6,
+    "background": "#1a1418",
+    "ally": "#5fd35f",
+    "enemy": "#e0605a"
+  },
+  "outline": {
+    "ally": "#5fd35f",
+    "enemy": "#e0605a",
+    "useful": "#f6d660",
+    "alpha": 0.9
+  },
+  "plates": {
+    "offsetY": -40,
+    "fontSize": 12
+  },
+  "camera": {
+    "baseZoom": 0.77,
+    "minZoom": 0.6,
+    "strengthScale": 100,
+    "factor": 0.25,
+    "smoothing": 0.05,
+    "resendRatio": 0.05,
+    "smallScreen": 600,
+    "smallScreenZoom": 0.5,
+    "smallScreenPixelRatio": 1
+  },
+  "spellKey": " ",
+  "spriteAliases": {
+    "unit-zombie": {
+      "sprite": "unit-zombie",
+      "scale": 0.8
+    },
+    "unit-big-zombie": {
+      "sprite": "unit-big-zombie",
+      "scale": 0.92
+    },
+    "unit-abomination": {
+      "sprite": "unit-abomination",
+      "scale": 1.08
+    },
+    "unit-flesh-titan": {
+      "sprite": "unit-flesh-titan",
+      "scale": 1.28
+    },
+    "unit-ghoul": {
+      "sprite": "unit-ghoul",
+      "scale": 0.92
+    },
+    "unit-stalker": {
+      "sprite": "unit-stalker",
+      "scale": 1.08
+    },
+    "unit-wendigo": {
+      "sprite": "unit-wendigo",
+      "scale": 1.28
+    },
+    "unit-skeleton-archer": {
+      "sprite": "unit-skeleton-archer",
+      "scale": 0.8
+    },
+    "unit-skeleton-crossbowman": {
+      "sprite": "unit-skeleton-crossbowman",
+      "scale": 0.92
+    },
+    "unit-bone-ballista": {
+      "sprite": "unit-bone-ballista",
+      "scale": 1.08
+    },
+    "unit-bone-catapult": {
+      "sprite": "unit-bone-catapult",
+      "scale": 1.28
+    },
+    "unit-pyromancer": {
+      "sprite": "unit-pyromancer",
+      "scale": 0.92
+    },
+    "unit-lich": {
+      "sprite": "unit-lich",
+      "scale": 1.08
+    },
+    "unit-lich-king": {
+      "sprite": "unit-lich-king",
+      "scale": 1.28
+    },
+    "unit-zombie-dog": {
+      "sprite": "unit-zombie-dog",
+      "scale": 0.8
+    },
+    "unit-mastiff": {
+      "sprite": "unit-mastiff",
+      "scale": 0.92
+    },
+    "unit-cerberus": {
+      "sprite": "unit-cerberus",
+      "scale": 1.08
+    },
+    "unit-hellhound": {
+      "sprite": "unit-hellhound",
+      "scale": 1.28
+    },
+    "unit-rotting-wolf": {
+      "sprite": "unit-rotting-wolf",
+      "scale": 0.92
+    },
+    "unit-werewolf": {
+      "sprite": "unit-werewolf",
+      "scale": 1.08
+    },
+    "unit-werelord": {
+      "sprite": "unit-werelord",
+      "scale": 1.28
+    },
+    "unit-carrion-flock": {
+      "sprite": "unit-carrion-flock",
+      "scale": 0.8
+    },
+    "unit-bat-swarm": {
+      "sprite": "unit-bat-swarm",
+      "scale": 0.92
+    },
+    "unit-vampire": {
+      "sprite": "unit-vampire",
+      "scale": 1.08
+    },
+    "unit-nosferatu": {
+      "sprite": "unit-nosferatu",
+      "scale": 1.28
+    },
+    "unit-harpy": {
+      "sprite": "unit-harpy",
+      "scale": 0.92
+    },
+    "unit-bone-wyvern": {
+      "sprite": "unit-bone-wyvern",
+      "scale": 1.08
+    },
+    "unit-bone-dragon": {
+      "sprite": "unit-bone-dragon",
+      "scale": 1.28
+    },
+    "unit-wandering-soul": {
+      "sprite": "unit-wandering-soul",
+      "scale": 0.8
+    },
+    "unit-spectre": {
+      "sprite": "unit-spectre",
+      "scale": 0.92
+    },
+    "unit-banshee": {
+      "sprite": "unit-banshee",
+      "scale": 1.08
+    },
+    "unit-lament-queen": {
+      "sprite": "unit-lament-queen",
+      "scale": 1.28
+    },
+    "unit-shade": {
+      "sprite": "unit-shade",
+      "scale": 0.92
+    },
+    "unit-reaper": {
+      "sprite": "unit-reaper",
+      "scale": 1.08
+    },
+    "unit-ankou": {
+      "sprite": "unit-ankou",
+      "scale": 1.28
+    },
+    "unit-grand-knight": {
+      "sprite": "unit-grand-knight",
+      "scale": 1.2
+    },
+    "unit-gargoyle": {
+      "sprite": "unit-gargoyle",
+      "scale": 1.2
+    },
+    "unit-executioner": {
+      "sprite": "unit-executioner",
+      "scale": 1.2
+    },
+    "unit-fallen-bishop": {
+      "sprite": "unit-fallen-bishop",
+      "scale": 1.2
+    },
+    "npc-grand-knight": {
+      "sprite": "unit-grand-knight",
+      "scale": 1.28
+    },
+    "npc-gargoyle": {
+      "sprite": "unit-gargoyle",
+      "scale": 1.28
+    },
+    "npc-executioner": {
+      "sprite": "unit-executioner",
+      "scale": 1.28
+    },
+    "npc-fallen-bishop": {
+      "sprite": "unit-fallen-bishop",
+      "scale": 1.28
+    },
+    "npc-bone-wall": {
+      "sprite": "decor-rock",
+      "scale": 1
+    },
+    "projectile-fire": {
+      "sprite": "projectile-bolt",
+      "scale": 1
+    },
+    "place-cathedral": {
+      "sprite": "cross",
+      "scale": 1
+    },
+    "place-barracks": {
+      "sprite": "camp",
+      "scale": 1
+    },
+    "place-hospital": {
+      "sprite": "cross",
+      "scale": 0.8
+    },
+    "place-cabin": {
+      "sprite": "camp",
+      "scale": 1
+    },
+    "poi-cathedral-chest": {
+      "sprite": "poi-chest",
+      "scale": 1
+    },
+    "poi-barracks-chest": {
+      "sprite": "poi-camp-chest",
+      "scale": 1
+    },
+    "poi-hospital-chest": {
+      "sprite": "poi-chest",
+      "scale": 1
+    },
+    "poi-cabin-chest": {
+      "sprite": "poi-chest",
+      "scale": 1
+    },
+    "place-museum": {
+      "sprite": "poi-chest",
+      "scale": 1
+    },
+    "place-scaffold": {
+      "sprite": "camp",
+      "scale": 1
+    },
+    "place-crypt": {
+      "sprite": "cross",
+      "scale": 1
+    },
+    "place-gargoyle-tower": {
+      "sprite": "obstacle-tower",
+      "scale": 1
+    },
+    "item-iron-talons": {
+      "sprite": "item-spiked-collar",
+      "scale": 1
+    },
+    "item-bone-talons": {
+      "sprite": "item-bone-collar",
+      "scale": 1
+    },
+    "item-dragon-claws": {
+      "sprite": "item-cerberus-chain",
+      "scale": 1
+    },
+    "item-rusty-chains": {
+      "sprite": "item-cerberus-chain",
+      "scale": 1
+    },
+    "item-spectral-lantern": {
+      "sprite": "item-cursed-helm",
+      "scale": 1
+    },
+    "item-ankou-scythe": {
+      "sprite": "item-shovel",
+      "scale": 1
+    },
+    "poi-champion-chest": {
+      "sprite": "poi-chest",
+      "scale": 1
+    },
+    "npc-civilian": {
+      "sprite": "npc-civilian",
+      "scale": 0.8
+    },
+    "npc-jack-o-lantern": {
+      "sprite": "npc-jack-o-lantern",
+      "scale": 0.8
+    },
+    "npc-hunter": {
+      "sprite": "npc-hunter",
+      "scale": 0.8
+    },
+    "npc-soldier": {
+      "sprite": "npc-soldier",
+      "scale": 0.8
+    },
+    "npc-guard-dog": {
+      "sprite": "npc-guard-dog",
+      "scale": 0.8
+    },
+    "npc-stray-dog": {
+      "sprite": "npc-stray-dog",
+      "scale": 0.8
+    },
+    "npc-looter": {
+      "sprite": "npc-looter",
+      "scale": 0.8
+    },
+    "npc-wolf": {
+      "sprite": "npc-wolf",
+      "scale": 0.8
+    },
+    "npc-crow": {
+      "sprite": "npc-crow",
+      "scale": 0.8
+    },
+    "npc-bat": {
+      "sprite": "npc-bat",
+      "scale": 0.8
+    },
+    "npc-monk": {
+      "sprite": "npc-monk",
+      "scale": 0.8
+    },
+    "npc-templar": {
+      "sprite": "npc-templar",
+      "scale": 0.8
+    },
+    "npc-patient": {
+      "sprite": "npc-patient",
+      "scale": 0.8
+    },
+    "npc-machine-gun": {
+      "sprite": "npc-machine-gun",
+      "scale": 0.8
+    },
+    "npc-mortar": {
+      "sprite": "npc-mortar",
+      "scale": 0.8
+    },
+    "poi-car": {
+      "sprite": "decor-car",
+      "scale": 1
+    },
+    "projectile-magic": {
+      "sprite": "projectile-bolt",
+      "scale": 1
+    }
+  },
+  "cardArtScale": 2,
+  "cardLockMs": 800,
+  "city": {
+    "tilePixels": 64,
+    "edge": "#141017",
+    "grounds": {
+      "cobble": {
+        "tile": "ground-cobble",
+        "variants": [],
+        "variantRate": 0,
+        "minimap": "#4e5666"
+      },
+      "stone": {
+        "tile": "ground-stone",
+        "variants": [],
+        "variantRate": 0,
+        "minimap": "#3a4150"
+      },
+      "dirt": {
+        "tile": "ground-dirt",
+        "variants": [],
+        "variantRate": 0,
+        "minimap": "#5e452b"
+      },
+      "grass": {
+        "tile": "ground-grass",
+        "variants": ["ground-grass-1", "ground-grass-2", "ground-grass-3"],
+        "variantRate": 0.25,
+        "minimap": "#3e4a2a"
+      },
+      "leaves": {
+        "tile": "ground-leaves",
+        "variants": ["ground-leaves-1", "ground-leaves-2", "ground-leaves-3"],
+        "variantRate": 0.25,
+        "minimap": "#7c3a1a"
+      },
+      "moss": {
+        "tile": "ground-moss",
+        "variants": [],
+        "variantRate": 0,
+        "minimap": "#2c3320"
+      }
+    },
+    "obstacles": {
+      "rampart": {
+        "roof": "obstacle-stone",
+        "wall": "obstacle-rampart",
+        "wallMeters": 2
+      },
+      "building": {
+        "roof": "obstacle-roof",
+        "wall": "obstacle-wall",
+        "wallMeters": 1.5
+      },
+      "cathedral": {
+        "roof": "obstacle-stone",
+        "wall": "obstacle-rampart",
+        "wallMeters": 2.5
+      },
+      "keep": {
+        "roof": "obstacle-stone",
+        "wall": "obstacle-rampart",
+        "wallMeters": 2.5
+      },
+      "hospital": {
+        "roof": "obstacle-roof-red",
+        "wall": "obstacle-wall",
+        "wallMeters": 1.5
+      },
+      "wall": {
+        "roof": "obstacle-stone",
+        "wall": "obstacle-rampart",
+        "wallMeters": 0.5
+      },
+      "stall": {
+        "sprite": "obstacle-stall",
+        "scale": 1,
+        "anchorY": 0.5
+      },
+      "tree": {
+        "sprite": "obstacle-tree",
+        "scale": 1.6,
+        "anchorY": 0.8
+      },
+      "tower": {
+        "sprite": "obstacle-tower",
+        "scale": 1.1,
+        "anchorY": 0.5
+      },
+      "fountain": {
+        "sprite": "obstacle-fountain",
+        "scale": 1.1,
+        "anchorY": 0.6
+      }
+    },
+    "minimapGround": "#232a1c",
+    "ramparts": {
+      "tower": "obstacle-tower",
+      "towerSpacing": 50,
+      "gate": "obstacle-gate"
+    },
+    "outside": {
+      "depth": 15,
+      "ground": "ground-grass",
+      "trees": ["obstacle-pine", "obstacle-tree"],
+      "treeSpacing": 5,
+      "shade": "#0a080c",
+      "shadeAlpha": 0.55
+    }
+  },
+  "night": {
+    "color": "#0a0814",
+    "alpha": 0.55,
+    "resolution": 0.5,
+    "lights": {
+      "Mage": 9,
+      "Camp": 8,
+      "PointOfInterest": 4,
+      "Cross": 5,
+      "Bombing": 6
+    },
+    "minFps": 28,
+    "slowSec": 6
+  },
+  "effects": {
+    "fusion": {
+      "color": "#5fd45a",
+      "radius": 2.5,
+      "width": 0.25,
+      "durationMs": 700
+    },
+    "levelUp": {
+      "color": "#9b59d0",
+      "radius": 7,
+      "width": 0.4,
+      "durationMs": 1100
+    }
+  },
+  "layerLook": {
+    "airLift": 14,
+    "shadowAlpha": 0.35,
+    "etherealAlpha": 0.55
+  }
 }

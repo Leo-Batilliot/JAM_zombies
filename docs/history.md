@@ -4,6 +4,146 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Minimap épurée | 14.07 | L.BA
+
+- `client/src/minimap.ts`, `client/src/game/game.ts` : fond uni sans lettres des lieux, petits points pour les autres, gros point pour le joueur.
+- `shared/src/config/schema.ts`, `shared/config/client.json` : repères des lieux retirés.
+
+### Vue plus large et rendu allégé sur téléphone | 14.06 | L.BA
+
+- `client/src/game/camera.ts`, `game.ts` : sur petit écran, caméra 2 fois plus loin et rendu à 1 pixel physique par pixel.
+- `shared/src/config/schema.ts`, `shared/config/client.json` : seuil de petit écran, zoom et résolution associés.
+
+### Cartes de level up verrouillées un instant | 14.05 | L.BA
+
+- `client/src/cards.ts`, `client/src/style.css` : nouvelles cartes visibles mais grisées et non cliquables pendant le délai.
+- `client/src/game/game.ts`, `shared/src/config/schema.ts`, `shared/config/client.json` : délai `cardLockMs` (800 ms).
+
+### Retours de jeu sur les Lots 3 et 4 | 14.01-14.04 | L.BA
+
+- `shared/config/world.json` : carte en forêt sans bâtiments ni remparts, 130 civils, apparitions espacées, pub *Winchester* dans la clairière.
+- `shared/config/client.json` : sol d'herbe, minimap unie, caméra 30 % plus loin, créatures 20 % plus petites, voiture des points d'intérêt agrandie.
+- `shared/config/gameplay.json`, `units.json` : civils près du mage à l'apparition, attaque magique du mage et son projectile.
+- `shared/src/config/schema.ts` : zoom de base, fond de minimap, civils de départ, espacement des apparitions, attaque du mage.
+- `server/src/systems/magic.ts`, `server/src/world/loop.ts` : tir de base du mage.
+- `server/src/systems/army.ts`, `mage.ts`, `server/src/world/spawn.ts`, `world.ts` : apparition loin des ennemis, civils de départ, points aléatoires espacés.
+- `client/src/game/camera.ts`, `decor.ts`, `client/src/minimap.ts` : zoom de base, décor hors des arbres, minimap unie et gros points.
+- `tools/assets/creatures.json`, `city.json`, `client/public/atlas/` : goule en zombie accroupi, voiture agrandie.
+- `server/tests/`, `client/tests/`, `shared/tests/` : magie du mage, réglages de caméra et de minimap.
+
+### Concept V2, Lot 4 : nouveau contenu et sprites générés | 13.01-13.19 | L.BA
+
+- `shared/src/config/schema.ts`, `shared/src/registry.ts` : couche des corps, comportement de raid, quartiers et trajets des populations, lieux, champions et capacités, couche et apparence envoyées au client, vérification des lieux et des champions.
+- `shared/src/protocol/messages.ts` : position des champions dans le statut.
+- `shared/config/units.json` : lignées Volants et Spectres, triangle étendu, chiens errants, pillards, loups, corbeaux, chauves-souris, moines, templiers, patients, mitrailleuse, mortier, 4 champions.
+- `shared/config/world.json` : populations du Lot 4 (150 PNJ errants au total), lieux en garnison, repaires, gaz, coffres et butin par lieu, caserne, place et forêt dans chaque ville.
+- `shared/config/equipment.json` : serres et reliques des nouvelles lignées.
+- `shared/config/client.json`, `lobby.json` : ombre et transparence, échelles des sprites, couleur du gaz, portée de chasse aux champions.
+- `server/src/systems/bodies.ts`, `separation.ts`, `walls.ts`, `mists.ts` : volants au-dessus des murs, spectres à travers les rangs, gaz pour les corps au sol.
+- `server/src/systems/civilians.ts`, `hostiles.ts` : bandes qui attaquent les petites armées et fuient les grosses, encerclement, processions.
+- `server/src/systems/places.ts` : garnisons, coffres, réapparition, repaires de champions, mortier, gaz.
+- `server/src/systems/abilities.ts`, `combat.ts` : charge, piqué, exécution, frappe en arc, soins.
+- `server/src/systems/mage.ts`, `points.ts`, `transfer.ts`, `server/src/lobby/handicap.ts` : champions transmis entiers ou renvoyés au repaire, hors fosse commune, transferts limités sous le plafond des bots.
+- `server/src/systems/detection.ts`, `server/src/net/sockets.ts`, `interest.ts` : positions des champions, marqueur des lieux.
+- `server/src/lobby/bots.ts` : chasse aux repaires de champions.
+- `client/src/game/entities.ts`, `sprites.ts`, `client/src/minimap.ts`, `game.ts` : ombre des volants, transparence des spectres, sprites des lieux, champions sur la minimap.
+- `tools/assets/draw/`, `creatures.json`, `city.json`, `build.py`, `recipes.json` : sprites générés pour les unités, PNJ, champions, mages, sols, bâtiments et décor, chaîne LPC retirée.
+- `assets/` : packs LPC supprimés, ancien atlas gardé.
+- `client/public/atlas/` : atlas régénéré.
+- `server/tests/`, `shared/tests/`, `client/tests/` : couches, raids, lieux, champions, capacités, transferts, chasse des bots, sprites du contenu.
+- `docs/assets.md`, `docs/credits.md`, `docs/load-test.md`, `docs/conceptV2.md`, `docs/plan.md` : génération des sprites, crédits, mesures du Lot 4, numéros d'étape, phase 13.
+
+### Ville dessinée, nuit, effets et interface du Lot 3 | 12.01, 12.07-12.17 | L.BA
+
+- `tools/assets/recipes.json` : sols, toits, murs, remparts, tours, porte, arbres, fontaine, étals, tombes, lampadaires, tonneaux, voiture, calvaire et palissade tirés des packs LPC.
+- `client/public/atlas/` : atlas régénéré.
+- `client/src/game/decor.ts` : plan de la ville reconstruit depuis la graine envoyée, sols, variantes de tuiles, compositions de décor, lumières, tours et portes des remparts, forêt au-delà.
+- `client/src/game/map.ts` : sols en tuiles par quartier, bâtiments en toit et façade, obstacles ronds en sprites, remparts, forêt assombrie hors de la carte.
+- `client/src/game/night.ts` : voile de nuit percé de halos (lampadaires, mages, camps, points d'intérêt, croix, bombardements), coupé si les fps restent bas.
+- `client/src/game/effects.ts` : anneaux de fusion et de level up.
+- `client/src/minimap.ts` : plan de la ville, obstacles et repères des quartiers.
+- `client/src/style.css` : interface en cuir et parchemin à la place du violet.
+- `client/src/game/game.ts` : nuit, effets et plan de la minimap branchés.
+- `server/src/world/world.ts`, `server/src/systems/walls.ts`, `server/src/systems/movement.ts` : point libre toujours à l'intérieur des remparts, pour les corps repoussés et pour les cibles de déplacement.
+- `server/src/lobby/bots.ts` : fuite qui contourne les remparts et les murets.
+- `server/src/systems/events.ts` : quartiers d'apparition des événements.
+- `shared/src/config/schema.ts`, `shared/src/registry.ts` : apparence de la ville, nuit, effets, quartiers des événements vérifiés.
+- `shared/config/client.json`, `world.json`, `events.json` : apparence de la ville, nuit, effets, rues en dalles, champ de citrouilles au parc, Citrouille au parc ou en forêt.
+- `.prettierignore` : atlas généré et assets bruts ignorés.
+- `client/tests/`, `server/tests/`, `shared/tests/` : plan identique côté serveur et client, sprites présents dans l'atlas, nuit, effets, point libre, bords de carte.
+- `docs/assets.md`, `docs/credits.md`, `docs/load-test.md`, `docs/conceptV2.md` : sources des assets, crédits LPC, mesures du Lot 3, numéros d'étape.
+
+### Chaîne d'assets LPC, sprites en 4 directions et ville côté serveur | 12.02-12.07, 12.12-12.13 | A.PI
+
+- `assets/` : PNG LPC bruts avec leurs licences, ancien atlas dans `assets/legacy`, sources dans `sources.json`.
+- `tools/assets/build.py`, `recipes.json`, `palette.json` : découpe des planches, superposition des calques, recoloration, palette, contour, paquetage en plusieurs atlas.
+- `client/public/atlas/` : atlas généré et manifeste.
+- `client/src/game/assets.ts` : chargement de plusieurs atlas.
+- `client/src/game/sprites.ts`, `entities.ts` : animations en 4 directions, mort et relève animées, repli sur les sprites de profil.
+- `client/src/game/outlines.ts` : contours précalculés sur plusieurs pages.
+- `shared/src/city.ts` : plan de la ville en gabarits de quartiers, remparts, obstacles en rectangles et cercles.
+- `server/src/world/obstacles.ts`, `server/src/systems/walls.ts` : grille des obstacles, corps repoussés le long des murs.
+- `server/src/world/world.ts`, `spawn.ts`, `server/src/systems/points.ts`, `camps.ts` : ville générée au démarrage, apparitions hors des obstacles et dans les quartiers qui leur vont.
+- `server/src/lobby/bots.ts` : bots qui se débloquent par un détour.
+- `server/src/net/sockets.ts` : graine de la ville envoyée au client.
+- `shared/config/world.json`, `client.json`, `lobby.json` : gabarits de quartiers et compositions, sprites des 21 unités, déblocage des bots.
+
+### Retours de jeu sur les Lots 1 et 2 | 11.01-11.05 | A.PI
+
+- `server/src/lobby/handicap.ts` : plafond des bots selon le meilleur joueur humain, handicap calculé sur la force potentielle (vivants et cadavres).
+- `server/src/lobby/bots.ts`, `lobby.ts` : réflexion ralentie avec le handicap, errance seule au plafond, choix de la mutation de la lignée qui a le plus d'unités en attente de fusion.
+- `server/src/systems/souls.ts` : âmes des bots multipliées par leur handicap.
+- `server/src/systems/transfer.ts`, `death.ts`, `points.ts` : un bot au plafond ne reçoit plus de troupes ni de cadavres, ne gagne rien sur les PNJ et ne fouille plus.
+- `server/src/systems/targeting.ts` : pas de ciblage automatique d'un ennemi nettement plus fort que l'armée, sauf au contact ou s'il attaque, civils ignorés par un bot au plafond.
+- `server/src/world/world.ts`, `loop.ts` : handicap des bots, mis à jour à chaque tick.
+- `shared/src/config/schema.ts` : réglages du handicap et de l'attraction, taille des images de carte, stats des unités, branches des lignées et effets des dons et des sorts envoyés au client.
+- `shared/config/gameplay.json`, `lobby.json`, `client.json` : croissance des niveaux à x1,2, attraction (rapport 1,5, contact à 3 m), handicap (marge 40, ratio 1,2), images de carte x2.
+- `client/src/cards.ts` : cartes illustrées avec type, lignée, branche et palier, stats et description, dépliées à chaque niveau.
+- `client/src/game/game.ts`, `assets.ts`, `style.css` : image des cartes tirée de l'atlas, cartes en haut au centre sous le HUD.
+- `client/public/atlas/` : icônes des dons et des sorts, une par effet.
+- `docs/conceptV2.md`, `docs/plan.md` : retours de jeu (MOV-07, FIGHT-05, EVO-01, EVO-19), phase 11.
+- `docs/load-test.md` : mesures et simulation de la phase 11.
+- `server/tests/`, `shared/tests/`, `client/tests/` : plafond et handicap, croissance bloquée, attraction, choix des cartes, cartes illustrées.
+
+### Concept V2, Lot 2 : évolution permanente | 10.01-10.14 | T.BE
+
+- `shared/config/units.json` : lignées à deux branches de trois paliers, 21 unités, ratio de fusion, PNJ obstacle du mur d'os.
+- `shared/config/gameplay.json` : cartes de level up, fusion, dons et sorts.
+- `shared/config/client.json` : touche du sort, sprites empruntés.
+- `shared/src/config/schema.ts` : schémas des lignées, dons et sorts, contenu client des lignées, dons, sorts et obstacles.
+- `shared/src/registry.ts` : arbre des lignées vérifié (famille, force, appartenance), registres des dons et sorts.
+- `shared/src/protocol/messages.ts` : messages `Choose`, `Cast` et `Respawn`, cartes, sort, vision et statistiques de la vie.
+- `server/src/systems/evolution.ts` : tirage des cartes, mutations exclusives, fusion automatique, découpage en unités de base.
+- `server/src/systems/gifts.ts` : effets des dons, soin des troupes.
+- `server/src/systems/spells.ts` : nova, cri de ralliement, mur d'os, relève immédiate, recharge.
+- `server/src/systems/enlist.ts`, `mage.ts` : unités reçues ou relevées recalculées selon les mutations, remise à zéro et statistiques à la mort, réapparition sur demande.
+- `server/src/systems/` : effets des dons dans la réanimation, le Lien d'âme, la marche, la détection et le butin.
+- `server/src/lobby/bots.ts` : choix des cartes par lignée majoritaire.
+- `server/src/net/sockets.ts` : cartes, sort et statistiques envoyés, suppression de l'ancienne évolution.
+- `client/src/cards.ts`, `spell.ts`, `death.ts` : cartes de level up, bouton de sort, écran de fin de run.
+- `client/src/game/entities.ts` : sprites empruntés, obstacles sans barre ni contour.
+- `server/tests/systems/evolution.test.ts`, `client/tests/levelup.test.ts` : tests des cartes, fusions, transferts, dons, sorts et de l'écran de fin.
+
+### Concept V2, Lot 1 : sensations et lisibilité | 9.01-9.19 | T.BE
+
+- `shared/config/` : ralentissement selon la force, fuite, recharge et rotation des formations, fatigue des civils, mage plus fragile, détection, abandon des proies, réglages des barres, contours, plaques et caméra.
+- `shared/src/protocol/messages.ts` : PV dans les snapshots, barres des boss, puissance si tout revit, expérience, lenteur, mages détectés. Suppression de la Retraite et des cercles d'aggro.
+- `server/src/systems/pace.ts` : vitesse de marche commune et ralentissement logarithmique.
+- `server/src/systems/movement.ts`, `formation.ts` : formation en bloc à places fixes, rotation progressive, retour rapide après la victoire.
+- `server/src/systems/flee.ts` : fuite libre par éloignement, remplace `retreat.ts`.
+- `server/src/systems/battle.ts`, `targeting.ts`, `tactics.ts` : bataille sans cercle ni encerclement, cible gardée au contact, formations instantanées avec recharge.
+- `server/src/systems/civilians.ts`, `separation.ts`, `combat.ts` : fatigue des civils, unités qui traversent leur mage, tolérance de portée.
+- `server/src/systems/detection.ts`, `strength.ts` : mages détectés selon la puissance, puissance si tout revit.
+- `server/src/lobby/` : bots qui fuient en marchant et lâchent les proies faibles, classement complet.
+- `server/src/net/` : PV et données du HUD envoyés.
+- `client/src/game/outlines.ts`, `entities.ts` : contours calculés depuis l'atlas, barres de PV.
+- `client/src/game/plates.ts`, `camera.ts` : plaques des mages ennemis, dézoom selon la puissance.
+- `client/src/hud.ts`, `bossbar.ts`, `minimap.ts`, `formations.ts` : HUD en haut au centre, barre des boss, mages détectés, recharge des formations. Suppression de la Retraite et du cercle d'aggro.
+- `server/tests/`, `shared/tests/`, `client/tests/` : tests de la marche, de la fuite, des formations, du protocole et du HUD.
+- `docs/load-test.md` : mesures du Lot 1.
+- `docs/plan.md`, `docs/conceptV2.md` : phases 9 et 10, numéros reportés à côté des cases.
+- `README.md`, `docs/demo.md` : contrôles sans Retraite, cartes et sort.
+
 ### Concept V2 du revamp | L.BA
 
 - `docs/conceptV2.md` : revamp du gameplay et du visuel en cases à cocher, par thème et par lot.

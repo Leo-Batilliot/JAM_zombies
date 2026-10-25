@@ -1,8 +1,10 @@
 import type { Config } from "@horde/shared";
+import { isCapped } from "../lobby/handicap.js";
 import type { Army, PointOfInterest, Remains, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 import { enlistNearMage } from "./enlist.js";
 import { drawLoot, grantItem } from "./equipment.js";
+import { giftValue } from "./gifts.js";
 
 type PointType = Config["world"]["pointsOfInterest"][string];
 
@@ -29,11 +31,14 @@ export const createMassGrave = (
   y: number,
   corpses: Remains[],
 ): PointOfInterest | undefined => {
-  if (corpses.length === 0) {
+  const remains = corpses.filter(
+    (corpse) => !Object.hasOwn(world.config.units.champions, corpse.type),
+  );
+  if (remains.length === 0) {
     return undefined;
   }
   const point = spawnPoint(world, world.config.world.massGrave, x, y);
-  point.corpses = corpses;
+  point.corpses = remains;
   return point;
 };
 
@@ -60,9 +65,16 @@ const rewards: Record<
   },
   items: (world, point, army) => {
     const { loot } = world.registries.pointsOfInterest.get(point.type);
-    const item = loot === undefined ? undefined : drawLoot(world, loot);
-    if (item !== undefined) {
-      grantItem(world, army, item);
+    if (loot === undefined) {
+      return;
+    }
+    const bonus = giftValue(world, army, "loot");
+    const rolls = 1 + Math.floor(bonus) + (world.random() < bonus % 1 ? 1 : 0);
+    for (let roll = 0; roll < rolls; roll++) {
+      const item = drawLoot(world, loot);
+      if (item !== undefined) {
+        grantItem(world, army, item);
+      }
     }
   },
 };
@@ -90,7 +102,10 @@ const nearestUnsearched = (
 
 export const searchPoints = (world: World, dt: number): void => {
   for (const army of world.armies.values()) {
-    const point = army.alive ? nearestUnsearched(world, army) : undefined;
+    const point =
+      army.alive && !isCapped(army)
+        ? nearestUnsearched(world, army)
+        : undefined;
     if (point === undefined || army.mage.hitAt >= world.time - dt) {
       army.search = undefined;
       continue;
@@ -119,7 +134,7 @@ export const maintainPoints = (world: World): void => {
   }
   for (const [typeId, type] of world.registries.pointsOfInterest.entries()) {
     for (let count = counts.get(typeId) ?? 0; count < type.count; count++) {
-      const { x, y } = world.randomPoint();
+      const { x, y } = world.randomPoint(type.districts);
       spawnPoint(world, typeId, x, y);
     }
   }

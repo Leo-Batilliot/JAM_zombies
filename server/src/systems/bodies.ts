@@ -1,4 +1,4 @@
-import { EntityKind } from "@horde/shared";
+import { EntityKind, type Layer } from "@horde/shared";
 import type { Body, Entity, World } from "../world/world.js";
 
 export const bodyRadius = (world: World, body: Body): number => {
@@ -9,6 +9,17 @@ export const bodyRadius = (world: World, body: Body): number => {
       return world.registries.units.get(body.type).radius;
     case EntityKind.Npc:
       return world.registries.npcs.get(body.type).radius;
+  }
+};
+
+export const bodyLayer = (world: World, body: Body): Layer => {
+  switch (body.kind) {
+    case EntityKind.Mage:
+      return "ground";
+    case EntityKind.Unit:
+      return world.registries.units.get(body.type).layer ?? "ground";
+    case EntityKind.Npc:
+      return world.registries.npcs.get(body.type).layer ?? "ground";
   }
 };
 

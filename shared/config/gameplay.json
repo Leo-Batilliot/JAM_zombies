@@ -2,10 +2,16 @@
   "mage": {
     "speed": 6,
     "radius": 0.6,
-    "baseHp": 100,
-    "hpPerLevel": 20,
+    "baseHp": 60,
+    "hpPerLevel": 10,
     "regenDelaySec": 5,
     "regenPerSec": 4,
+    "attack": {
+      "damage": 6,
+      "intervalSec": 1.2,
+      "range": 7,
+      "projectile": "magic"
+    },
     "skins": {
       "necromancer": {
         "name": "Necromancer"
@@ -34,11 +40,16 @@
       }
     ],
     "spawnRadius": 2,
+    "starterCivilians": {
+      "npc": "civilian",
+      "count": 5,
+      "distance": 14
+    },
     "cap": 150,
     "slowdown": {
-      "from": 60,
-      "to": 150,
-      "penalty": 0.35
+      "scale": 70,
+      "factor": 0.185,
+      "max": 0.6
     }
   },
   "movement": {
@@ -47,7 +58,9 @@
   "combat": {
     "retargetIntervalSec": 0.5,
     "leashDistance": 18,
-    "orderRange": 30
+    "orderRange": 30,
+    "avoidRatio": 1.5,
+    "contactRange": 3
   },
   "reanimation": {
     "delaySec": 30,
@@ -57,9 +70,8 @@
   },
   "battle": {
     "engageRadius": 8,
-    "circleMargin": 8,
     "endDelaySec": 1,
-    "freeSectorDeg": 60
+    "fleeDistance": 10
   },
   "soulLink": {
     "guardRadius": 6,
@@ -69,27 +81,19 @@
   "transfer": {
     "share": 0.7
   },
-  "retreat": {
-    "minTunnelUnits": 6,
-    "corridorWidth": 2.4,
-    "spacing": 1.2,
-    "baseOffset": 1,
-    "wingRows": 2,
-    "wingFlare": 1.2,
-    "wingReach": 4,
-    "foldMargin": 1,
-    "escortRadius": 1.5,
-    "arriveDistance": 1
-  },
   "regroup": {
-    "distance": 8,
     "arriveDistance": 1.5,
     "speedMultiplier": 2.5
+  },
+  "detection": {
+    "base": 60,
+    "perStrength": 0.2,
+    "max": 200
   },
   "souls": {
     "perStrength": 1,
     "levelBase": 10,
-    "levelGrowth": 1.5
+    "levelGrowth": 1.2
   },
   "demo": {
     "killerName": "the Evil Pumpkin",
@@ -97,5 +101,92 @@
     "eventDistance": 14,
     "unit": "zombie",
     "unitCount": 10
+  },
+  "levelUp": {
+    "choices": 3,
+    "mutationWeight": 1,
+    "presentWeight": 3,
+    "giftWeight": 1,
+    "spellWeight": 0.6
+  },
+  "fusion": {
+    "intervalSec": 0.5
+  },
+  "gifts": {
+    "necrotic-aura": {
+      "name": "Necrotic aura",
+      "effect": "heal",
+      "value": 2,
+      "radius": 6,
+      "maxStacks": 3
+    },
+    "swift-raising": {
+      "name": "Swift raising",
+      "effect": "reanimation",
+      "value": 0.15,
+      "maxStacks": 3
+    },
+    "soul-bond": {
+      "name": "Soul bond",
+      "effect": "soulLink",
+      "value": 0.05,
+      "maxStacks": 3
+    },
+    "haste": {
+      "name": "Haste",
+      "effect": "speed",
+      "value": 0.08,
+      "maxStacks": 3
+    },
+    "far-sight": {
+      "name": "Far sight",
+      "effect": "vision",
+      "value": 0.2,
+      "maxStacks": 3
+    },
+    "scavenger": {
+      "name": "Scavenger",
+      "effect": "loot",
+      "value": 0.25,
+      "maxStacks": 3
+    },
+    "vigor": {
+      "name": "Vigor",
+      "effect": "hp",
+      "value": 10,
+      "maxStacks": 10
+    }
+  },
+  "spells": {
+    "necrotic-nova": {
+      "name": "Necrotic nova",
+      "effect": "nova",
+      "cooldownSec": 20,
+      "radius": 6,
+      "damage": 40
+    },
+    "rallying-cry": {
+      "name": "Rallying cry",
+      "effect": "rally",
+      "cooldownSec": 30,
+      "durationSec": 6,
+      "multiplier": 1.3
+    },
+    "bone-wall": {
+      "name": "Bone wall",
+      "effect": "wall",
+      "cooldownSec": 25,
+      "durationSec": 8,
+      "length": 10,
+      "spacing": 1.2,
+      "offset": 4,
+      "npc": "bone-wall"
+    },
+    "raise-dead": {
+      "name": "Raise dead",
+      "effect": "raise",
+      "cooldownSec": 30,
+      "radius": 10
+    }
   }
 }

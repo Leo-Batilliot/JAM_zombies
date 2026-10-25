@@ -2,6 +2,7 @@ import type { Server } from "node:http";
 import { WebSocket, WebSocketServer, type RawData } from "ws";
 import {
   BattleFlag,
+  CardKind,
   ClientMessageType,
   EntityKind,
   JoinRejection,
@@ -13,8 +14,10 @@ import {
   socketPath,
   spectatorMageId,
   toClientConfig,
+  type Card,
   type ClientMessage,
   type LeaderboardEntry,
+  type RunStats,
   type ServerMessage,
 } from "@horde/shared";
 import { validatePlayerName } from "../lobby/name.js";
@@ -22,23 +25,29 @@ import { rankArmies } from "../lobby/leaderboard.js";
 import type { Lobbies } from "../lobby/lobbies.js";
 import { joinLobby, leaveLobby, skinId } from "../lobby/lobby.js";
 import { runDemo } from "../systems/demo.js";
-import { aggroCircles } from "../systems/battle.js";
-import { evolvableCounts } from "../systems/evolution.js";
 import {
   orderAttack,
-  orderEvolve,
+  orderCard,
+  orderCast,
   orderMove,
-  orderRetreat,
+  orderRespawn,
 } from "../systems/orders.js";
-import { maxHp } from "../systems/souls.js";
+import { spellCooldown } from "../systems/spells.js";
 import {
-  changeProgress,
+  championSightings,
+  sightedMages,
+  visionBonus,
+} from "../systems/detection.js";
+import { powerPace } from "../systems/pace.js";
+import { maxHp, soulsToReach } from "../systems/souls.js";
+import {
+  formationCooldown,
   formationIds,
   formationIndex,
   orderFormation,
 } from "../systems/tactics.js";
-import { armyStrength } from "../systems/strength.js";
-import type { Army, World } from "../world/world.js";
+import { armyPotential, armyStrength } from "../systems/strength.js";
+import type { Army, Card as ArmyCard, World } from "../world/world.js";
 import { SnapshotDelta } from "./delta.js";
 import { visibleEntities, type View } from "./interest.js";
 import { updateFocus, type Focus } from "./spectate.js";
@@ -63,10 +72,38 @@ const toBytes = (data: RawData): Uint8Array =>
       ? new Uint8Array(data)
       : data;
 
+const emptyRun: RunStats = {
+  maxPower: 0,
+  survivalSec: 0,
+  infected: 0,
+  kills: 0,
+  mageKills: 0,
+  level: 1,
+  mutations: [],
+};
+
+const cardOf = (world: World, card: ArmyCard): Card => {
+  switch (card.kind) {
+    case "mutation":
+      return {
+        kind: CardKind.Mutation,
+        index: world.registries.units.index(card.unit),
+      };
+    case "gift":
+      return {
+        kind: CardKind.Gift,
+        index: world.registries.gifts.index(card.gift),
+      };
+    case "spell":
+      return {
+        kind: CardKind.Spell,
+        index: world.registries.spells.index(card.spell),
+      };
+  }
+};
+
 const battleFlags = (army: Army): number =>
-  (army.battle === undefined ? 0 : BattleFlag.InBattle) |
-  (army.battle?.encircled === true ? BattleFlag.Encircled : 0) |
-  (army.retreat === undefined ? 0 : BattleFlag.Retreating);
+  army.battle === undefined ? 0 : BattleFlag.InBattle;
 
 export interface SocketOptions {
   demo: boolean;
@@ -116,6 +153,7 @@ export const attachSockets = (
       reject(session, result.rejection);
       return;
     }
+    const previous = session.world;
     session.world = world;
     session.army = result.army;
     session.deaths = result.army.deaths;
@@ -124,6 +162,12 @@ export const attachSockets = (
       mageId: result.army.mage.id,
       token: result.token,
     });
+    if (world !== previous) {
+      send(session, {
+        type: ServerMessageType.Config,
+        config: toClientConfig(config, world.citySeed),
+      });
+    }
   };
 
   const spectate = (session: Session): void => {
@@ -163,6 +207,19 @@ export const attachSockets = (
       const strength = cross.strengths.get(army) ?? 0;
       return strength > 0 ? [{ id: cross.id, strength }] : [];
     });
+
+  const bossHealth = (world: World) =>
+    [...world.events].flatMap(([type, state]) =>
+      state.boss === undefined || !world.registries.events.has(type)
+        ? []
+        : [
+            {
+              event: world.registries.events.index(type),
+              hp: state.boss.hp,
+              maxHp: world.registries.npcs.get(state.boss.type).hp,
+            },
+          ],
+    );
 
   const bounty = (world: World, leader: LeaderboardEntry | undefined) => {
     const army =
@@ -252,9 +309,6 @@ export const attachSockets = (
       case ClientMessageType.Target:
         orderAttack(world, session.army, message.entityId);
         break;
-      case ClientMessageType.Retreat:
-        orderRetreat(world, session.army, message.x, message.y);
-        break;
       case ClientMessageType.Formation:
         orderFormation(
           world,
@@ -262,8 +316,14 @@ export const attachSockets = (
           formationIds(world)[message.formation],
         );
         break;
-      case ClientMessageType.Evolve:
-        orderEvolve(world, session.army, message.evolution);
+      case ClientMessageType.Choose:
+        orderCard(world, session.army, message.card);
+        break;
+      case ClientMessageType.Cast:
+        orderCast(world, session.army);
+        break;
+      case ClientMessageType.Respawn:
+        orderRespawn(session.army);
         break;
       case ClientMessageType.Demo:
         if (options.demo) {
@@ -287,7 +347,7 @@ export const attachSockets = (
     sessions.add(session);
     send(session, {
       type: ServerMessageType.Config,
-      config: toClientConfig(config),
+      config: toClientConfig(config, session.world.citySeed),
     });
     socket.on("message", (data, isBinary) => {
       try {
@@ -339,7 +399,7 @@ export const attachSockets = (
       for (const session of sessions) {
         send(session, {
           type: ServerMessageType.Config,
-          config: toClientConfig(config),
+          config: toClientConfig(config, session.world.citySeed),
         });
       }
     },
@@ -368,6 +428,7 @@ export const attachSockets = (
           send(session, {
             type: ServerMessageType.Died,
             killer: army.killerName,
+            stats: army.lastRun ?? emptyRun,
           });
         }
         sendEvents(session, army);
@@ -386,19 +447,27 @@ export const attachSockets = (
           maxHp: maxHp(world, army),
           level: army.level,
           souls: army.souls,
+          levelSouls: soulsToReach(army.level, config.gameplay.souls),
+          nextSouls: soulsToReach(army.level + 1, config.gameplay.souls),
           units: army.units.size,
           strength: armyStrength(world, army),
+          potential: armyPotential(world, army),
+          pace: powerPace(world, army),
           battle: battleFlags(army),
           search: searchProgress(world, army),
           formation: formationIndex(world, army.formation),
-          nextFormation: formationIndex(world, army.formationChange?.to),
-          formationProgress: changeProgress(world, army),
-          circles: aggroCircles(world, army),
-          counts: [...evolvableCounts(world, army)].map(([type, count]) => ({
-            type: world.registries.units.index(type),
-            count,
-          })),
+          formationCooldown: formationCooldown(world, army),
+          cards: army.cards.map((card) => cardOf(world, card)),
+          spell:
+            army.spell === undefined
+              ? 0
+              : world.registries.spells.index(army.spell) + 1,
+          spellCooldown: spellCooldown(world, army),
+          vision: visionBonus(world, army),
           crosses: crossStrengths(world, army),
+          bosses: bossHealth(world),
+          mages: sightedMages(world, army),
+          champions: championSightings(world),
         });
         send(session, {
           type: ServerMessageType.Snapshot,

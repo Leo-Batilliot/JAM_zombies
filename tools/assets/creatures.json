@@ -1,0 +1,1047 @@
+[
+  {
+    "kind": "generated",
+    "name": "unit-zombie",
+    "model": "humanoid",
+    "params": {
+      "skin": "#7fa35a",
+      "shirt": "#4a6a8a",
+      "legs": "#5e452b",
+      "eyes": "#e0605a",
+      "mouth": "#3a1a1a",
+      "reach": true,
+      "hunch": 1,
+      "headgear": "hair",
+      "headgear_color": "#3e2a1a",
+      "wounds": [
+        [9, 17],
+        [14, 19],
+        [7, 10]
+      ]
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-big-zombie",
+    "model": "humanoid",
+    "params": {
+      "skin": "#6b8f4a",
+      "shirt": "#7a5a38",
+      "legs": "#45321f",
+      "eyes": "#e0605a",
+      "mouth": "#2a1010",
+      "reach": true,
+      "width": 2,
+      "hunch": 1,
+      "wounds": [
+        [8, 18],
+        [15, 16],
+        [12, 20]
+      ]
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-abomination",
+    "model": "humanoid",
+    "params": {
+      "skin": "#c99a8a",
+      "shirt": "#b77d5f",
+      "legs": "#8a5a44",
+      "eyes": "#f3c46d",
+      "mouth": "#3a1a1a",
+      "width": 3,
+      "stitches": "#3a1a1a",
+      "reach": true
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-flesh-titan",
+    "model": "humanoid",
+    "params": {
+      "skin": "#b07a6a",
+      "shirt": "#9a6050",
+      "legs": "#6a3a2a",
+      "eyes": "#ff9a1f",
+      "mouth": "#2a1010",
+      "width": 4,
+      "stitches": "#2a1010",
+      "reach": true,
+      "wounds": [
+        [6, 16],
+        [17, 18],
+        [10, 21]
+      ]
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-ghoul",
+    "model": "humanoid",
+    "params": {
+      "skin": "#a8b898",
+      "shirt": "#8a9a7a",
+      "legs": "#4a4a3a",
+      "sleeve": "#a8b898",
+      "eyes": "#e0605a",
+      "mouth": "#3a1a1a",
+      "crouch": 3,
+      "hunch": 2,
+      "reach": true,
+      "wounds": [
+        [8, 17],
+        [15, 19]
+      ]
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-stalker",
+    "model": "humanoid",
+    "params": {
+      "skin": "#9ab88a",
+      "shirt": "#3a4150",
+      "legs": "#2b2430",
+      "eyes": "#e0605a",
+      "mouth": "#141017",
+      "crouch": 2,
+      "hunch": 2,
+      "reach": true
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-wendigo",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d8d0c0",
+      "shirt": "#c8c0b0",
+      "legs": "#a8a090",
+      "bones": true,
+      "eyes": "#cfe8ff",
+      "headgear": "antlers",
+      "headgear_color": "#7a5a38",
+      "width": 1
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-skeleton-archer",
+    "model": "humanoid",
+    "params": {
+      "skin": "#e8e0cc",
+      "shirt": "#d8cfb8",
+      "legs": "#d8cfb8",
+      "bones": true,
+      "eyes": "#5fd45a",
+      "weapon": "bow"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-skeleton-crossbowman",
+    "model": "humanoid",
+    "params": {
+      "skin": "#e8e0cc",
+      "shirt": "#d8cfb8",
+      "legs": "#d8cfb8",
+      "bones": true,
+      "eyes": "#5fd45a",
+      "weapon": "crossbow",
+      "shield": "#5e452b",
+      "headgear": "helmet",
+      "headgear_color": "#66707f"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-bone-ballista",
+    "model": "engine",
+    "params": {
+      "wood": "#5e452b",
+      "kind": "ballista",
+      "skulls": true
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-bone-catapult",
+    "model": "engine",
+    "params": {
+      "wood": "#45321f",
+      "kind": "catapult",
+      "skulls": true,
+      "size": 3
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-pyromancer",
+    "model": "humanoid",
+    "params": {
+      "skin": "#e8e0cc",
+      "robe": "#7c3a1a",
+      "bones": true,
+      "eyes": "#ff9a1f",
+      "weapon": "staff",
+      "orb": "#ff9a1f",
+      "headgear": "hood",
+      "headgear_color": "#5a2a16"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-lich",
+    "model": "humanoid",
+    "params": {
+      "skin": "#e8e0cc",
+      "robe": "#4a2a5a",
+      "trim": "#e8a64a",
+      "bones": true,
+      "eyes": "#5fd45a",
+      "headgear": "crown",
+      "headgear_color": "#e8a64a",
+      "weapon": "staff",
+      "orb": "#5fd45a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-lich-king",
+    "model": "humanoid",
+    "params": {
+      "skin": "#e8e0cc",
+      "robe": "#2e1a3a",
+      "trim": "#e8a64a",
+      "bones": true,
+      "eyes": "#5fd45a",
+      "headgear": "crown",
+      "headgear_color": "#f3c46d",
+      "weapon": "staff",
+      "orb": "#5fd45a",
+      "cape": "#5a1a2a",
+      "width": 1
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-zombie-dog",
+    "model": "quadruped",
+    "params": {
+      "body": "#6f7d56",
+      "ribs": true,
+      "eyes": "#e0605a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-mastiff",
+    "model": "quadruped",
+    "params": {
+      "body": "#5e452b",
+      "size": 1,
+      "eyes": "#e0605a",
+      "ribs": true
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-cerberus",
+    "model": "quadruped",
+    "params": {
+      "body": "#4a2a2a",
+      "size": 2,
+      "heads": 3,
+      "eyes": "#ff9a1f"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-hellhound",
+    "model": "quadruped",
+    "params": {
+      "body": "#2b1a1a",
+      "size": 3,
+      "flames": "#ff9a1f",
+      "eyes": "#fbe3a2"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-rotting-wolf",
+    "model": "quadruped",
+    "params": {
+      "body": "#6a6e78",
+      "eyes": "#f3c46d",
+      "ribs": true
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-werewolf",
+    "model": "humanoid",
+    "params": {
+      "skin": "#6a5a4a",
+      "shirt": "#6a5a4a",
+      "legs": "#5a4a3a",
+      "snout": "#8a7a6a",
+      "eyes": "#f3c46d",
+      "width": 1,
+      "reach": true
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-werelord",
+    "model": "humanoid",
+    "params": {
+      "skin": "#3a3030",
+      "shirt": "#3a3030",
+      "legs": "#2a2020",
+      "snout": "#5a4a4a",
+      "eyes": "#e0605a",
+      "width": 3,
+      "reach": true,
+      "wounds": [
+        [8, 17],
+        [15, 19]
+      ]
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-carrion-flock",
+    "model": "flyer",
+    "params": {
+      "body": "#1f1a22",
+      "beak": "#e8a64a",
+      "eyes": "#e0605a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-bat-swarm",
+    "model": "flyer",
+    "params": {
+      "body": "#3a2a4a",
+      "wing": "#5a3a6a",
+      "ears": true,
+      "eyes": "#e0605a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-vampire",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d8d8e0",
+      "shirt": "#2b2430",
+      "legs": "#1f1a22",
+      "eyes": "#e0605a",
+      "mouth": "#7a1f1f",
+      "headgear": "hair",
+      "headgear_color": "#141017",
+      "wings": "#5a1a2a",
+      "cape": "#3a0a1a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-nosferatu",
+    "model": "humanoid",
+    "params": {
+      "skin": "#b8c0b0",
+      "shirt": "#1f1a22",
+      "legs": "#141017",
+      "eyes": "#e0605a",
+      "mouth": "#141017",
+      "wings": "#2b2430",
+      "width": 1,
+      "reach": true,
+      "hunch": 1
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-harpy",
+    "model": "flyer",
+    "params": {
+      "body": "#7a5a38",
+      "wing": "#5e452b",
+      "beak": "#e8a64a",
+      "size": 1,
+      "eyes": "#e0605a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-bone-wyvern",
+    "model": "flyer",
+    "params": {
+      "body": "#e8e0cc",
+      "wing": "#c7bfa8",
+      "size": 2,
+      "neck": 3,
+      "tail": 6,
+      "ribs": true,
+      "eyes": "#5fd45a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-bone-dragon",
+    "model": "flyer",
+    "params": {
+      "body": "#e8e0cc",
+      "wing": "#c7bfa8",
+      "size": 4,
+      "neck": 5,
+      "tail": 9,
+      "ribs": true,
+      "eyes": "#5fd45a",
+      "horns": "#a6adb6"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-wandering-soul",
+    "model": "ghost",
+    "params": {
+      "body": "#bcd4e8",
+      "eyes": "#5fd45a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-spectre",
+    "model": "ghost",
+    "params": {
+      "body": "#9fbcd8",
+      "eyes": "#5fd45a",
+      "hood": "#7a98b8"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-banshee",
+    "model": "ghost",
+    "params": {
+      "body": "#cfe8ff",
+      "hair": "#e8e0f0",
+      "mouth": true,
+      "size": 1
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-lament-queen",
+    "model": "ghost",
+    "params": {
+      "body": "#d8e8ff",
+      "hair": "#f0f0ff",
+      "crown": "#e8a64a",
+      "mouth": true,
+      "eyes": "#cfe8ff",
+      "size": 2
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-shade",
+    "model": "ghost",
+    "params": {
+      "body": "#3a3a4a",
+      "eyes": "#e0605a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-reaper",
+    "model": "ghost",
+    "params": {
+      "body": "#2b2430",
+      "hood": "#1f1a22",
+      "eyes": "#e0605a",
+      "weapon": "scythe",
+      "size": 1
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-ankou",
+    "model": "ghost",
+    "params": {
+      "body": "#1f1a22",
+      "hood": "#141017",
+      "eyes": "#cfe8ff",
+      "weapon": "scythe",
+      "crown": "#45321f",
+      "size": 2
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-grand-knight",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d9a07e",
+      "shirt": "#a6adb6",
+      "legs": "#858e9b",
+      "headgear": "helmet",
+      "headgear_color": "#c7ccd1",
+      "plume": "#a03030",
+      "weapon": "sword",
+      "shield": "#4a5068",
+      "width": 2
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-gargoyle",
+    "model": "flyer",
+    "params": {
+      "body": "#6a7080",
+      "wing": "#4e5666",
+      "size": 3,
+      "horns": "#3a4150",
+      "eyes": "#ff9a1f"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-executioner",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d9a07e",
+      "shirt": "#b77d5f",
+      "legs": "#2b2430",
+      "headgear": "hood",
+      "headgear_color": "#1f1a22",
+      "eyes": "#e0605a",
+      "weapon": "axe",
+      "width": 2
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "unit-fallen-bishop",
+    "model": "humanoid",
+    "params": {
+      "skin": "#c8d0b0",
+      "robe": "#e8e0cc",
+      "trim": "#e8a64a",
+      "eyes": "#5fd45a",
+      "headgear": "mitre",
+      "headgear_color": "#e8e0cc",
+      "weapon": "staff",
+      "orb": "#5fd45a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-civilian",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d9a07e",
+      "shirt": "#4a7ab8",
+      "legs": "#3a4150",
+      "headgear": "hair",
+      "headgear_color": "#5e452b"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-hunter",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d9a07e",
+      "shirt": "#556337",
+      "legs": "#45321f",
+      "headgear": "hat",
+      "headgear_color": "#5e452b",
+      "weapon": "gun",
+      "belt": "#2e2219"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-soldier",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d9a07e",
+      "shirt": "#556337",
+      "legs": "#3e4a2a",
+      "headgear": "helmet",
+      "headgear_color": "#556337",
+      "weapon": "gun",
+      "belt": "#2b2430"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-guard-dog",
+    "model": "quadruped",
+    "params": {
+      "body": "#7a5a38",
+      "eyes": "#141017"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-stray-dog",
+    "model": "quadruped",
+    "params": {
+      "body": "#98744b",
+      "eyes": "#141017"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-looter",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d9a07e",
+      "shirt": "#7a3a2a",
+      "legs": "#3a3030",
+      "headgear": "hood",
+      "headgear_color": "#45321f",
+      "weapon": "torch"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-wolf",
+    "model": "quadruped",
+    "params": {
+      "body": "#6a6e78",
+      "eyes": "#f3c46d"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-crow",
+    "model": "flyer",
+    "params": {
+      "body": "#1f1a22",
+      "beak": "#e8a64a",
+      "eyes": "#141017"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-bat",
+    "model": "flyer",
+    "params": {
+      "body": "#3a2a4a",
+      "wing": "#5a3a6a",
+      "ears": true,
+      "eyes": "#e0605a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-monk",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d9a07e",
+      "robe": "#5e452b",
+      "headgear": "hood",
+      "headgear_color": "#5e452b",
+      "belt": "#d4b48c"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-templar",
+    "model": "humanoid",
+    "params": {
+      "skin": "#d9a07e",
+      "shirt": "#e8e0cc",
+      "legs": "#858e9b",
+      "cross": "#a03030",
+      "headgear": "helmet",
+      "headgear_color": "#a6adb6",
+      "weapon": "sword",
+      "shield": "#e8e0cc"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-patient",
+    "model": "humanoid",
+    "params": {
+      "skin": "#c8d0a8",
+      "shirt": "#a8c0a8",
+      "legs": "#a8c0a8",
+      "eyes": "#141017",
+      "mouth": "#3a1a1a",
+      "hunch": 1
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-machine-gun",
+    "model": "engine",
+    "params": {
+      "wood": "#556337",
+      "kind": "gun"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "npc-mortar",
+    "model": "engine",
+    "params": {
+      "wood": "#556337",
+      "kind": "mortar"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "mage-necromancer",
+    "model": "humanoid",
+    "params": {
+      "skin": "#8fb36a",
+      "robe": "#5a3a7a",
+      "trim": "#e8a64a",
+      "eyes": "#e0605a",
+      "mouth": "#3a1a1a",
+      "headgear": "hood",
+      "headgear_color": "#4a2a5a",
+      "weapon": "staff",
+      "orb": "#5fd45a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "mage-lich",
+    "model": "humanoid",
+    "params": {
+      "skin": "#a8c090",
+      "robe": "#2e3a5a",
+      "trim": "#c7ccd1",
+      "eyes": "#cfe8ff",
+      "headgear": "crown",
+      "headgear_color": "#e8a64a",
+      "weapon": "staff",
+      "orb": "#9b59d0"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "mage-witch",
+    "model": "humanoid",
+    "params": {
+      "skin": "#8fb36a",
+      "robe": "#1f1a22",
+      "trim": "#5fd45a",
+      "eyes": "#f3c46d",
+      "mouth": "#3a1a1a",
+      "headgear": "pointed_hat",
+      "headgear_color": "#2b2430",
+      "weapon": "staff",
+      "orb": "#5fd45a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "mage-plague-doctor",
+    "model": "humanoid",
+    "params": {
+      "skin": "#8fb36a",
+      "robe": "#2b2430",
+      "trim": "#45321f",
+      "eyes": "#e0605a",
+      "headgear": "hat",
+      "headgear_color": "#141017",
+      "beak": "#d4c8b0",
+      "weapon": "lantern"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  }
+]

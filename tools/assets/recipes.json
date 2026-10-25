@@ -1,0 +1,30 @@
+{
+  "maxSize": 2048,
+  "padding": 2,
+  "generatedScale": 2,
+  "includes": [
+    "city.json",
+    "creatures.json"
+  ],
+  "recipes": [
+    {
+      "kind": "legacy",
+      "file": "legacy/atlas.json",
+      "drop": [
+        "unit-",
+        "npc-civilian-",
+        "npc-hunter-",
+        "npc-soldier-",
+        "npc-guard-dog-",
+        "mage-necromancer-",
+        "mage-lich-",
+        "mage-witch-",
+        "mage-plague-doctor-",
+        "decor-tree",
+        "decor-grave",
+        "cross",
+        "camp"
+      ]
+    }
+  ]
+}

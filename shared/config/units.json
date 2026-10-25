@@ -13,17 +13,7 @@
       "damage": 5,
       "attackIntervalSec": 1,
       "attackRange": 0.3,
-      "aggroRange": 8,
-      "evolutions": [
-        {
-          "into": "big-zombie",
-          "cost": 5
-        },
-        {
-          "into": "flesh-golem",
-          "cost": 10
-        }
-      ]
+      "aggroRange": 8
     },
     "big-zombie": {
       "name": "Big zombie",
@@ -32,34 +22,100 @@
         "beast": 1.5
       },
       "equipment": "melee",
-      "strength": 5,
+      "strength": 2,
       "rank": "front",
       "speed": 6.5,
-      "radius": 0.7,
-      "hp": 180,
-      "damage": 20,
-      "attackIntervalSec": 1.2,
-      "attackRange": 0.4,
-      "aggroRange": 8,
-      "evolutions": []
+      "radius": 0.65,
+      "hp": 79,
+      "damage": 9.9,
+      "attackIntervalSec": 1,
+      "attackRange": 0.3,
+      "aggroRange": 8
     },
-    "flesh-golem": {
-      "name": "Flesh golem",
+    "abomination": {
+      "name": "Abomination",
+      "family": "zombie",
+      "bonus": {
+        "beast": 1.6
+      },
+      "equipment": "melee",
+      "strength": 4,
+      "rank": "front",
+      "speed": 6,
+      "radius": 0.85,
+      "hp": 182,
+      "damage": 21.8,
+      "attackIntervalSec": 1,
+      "attackRange": 0.3,
+      "aggroRange": 8
+    },
+    "flesh-titan": {
+      "name": "Flesh titan",
       "family": "zombie",
       "bonus": {
         "beast": 1.75
       },
       "equipment": "melee",
-      "strength": 10,
+      "strength": 8,
       "rank": "front",
       "speed": 5.5,
-      "radius": 0.95,
-      "hp": 420,
-      "damage": 38,
-      "attackIntervalSec": 1.4,
-      "attackRange": 0.5,
-      "aggroRange": 8,
-      "evolutions": []
+      "radius": 1.1,
+      "hp": 415,
+      "damage": 47.9,
+      "attackIntervalSec": 1,
+      "attackRange": 0.3,
+      "aggroRange": 8
+    },
+    "ghoul": {
+      "name": "Ghoul",
+      "family": "zombie",
+      "bonus": {
+        "skeleton": 1.3
+      },
+      "equipment": "melee",
+      "strength": 2,
+      "rank": "front",
+      "speed": 8.5,
+      "radius": 0.5,
+      "hp": 56,
+      "damage": 12.6,
+      "attackIntervalSec": 1,
+      "attackRange": 0.3,
+      "aggroRange": 8
+    },
+    "stalker": {
+      "name": "Stalker",
+      "family": "zombie",
+      "bonus": {
+        "skeleton": 1.4
+      },
+      "equipment": "melee",
+      "strength": 4,
+      "rank": "front",
+      "speed": 9.5,
+      "radius": 0.6,
+      "hp": 123,
+      "damage": 27.8,
+      "attackIntervalSec": 1,
+      "attackRange": 0.3,
+      "aggroRange": 8
+    },
+    "wendigo": {
+      "name": "Wendigo",
+      "family": "zombie",
+      "bonus": {
+        "skeleton": 1.5
+      },
+      "equipment": "melee",
+      "strength": 8,
+      "rank": "front",
+      "speed": 10,
+      "radius": 0.75,
+      "hp": 272,
+      "damage": 63.9,
+      "attackIntervalSec": 1,
+      "attackRange": 0.3,
+      "aggroRange": 8
     },
     "skeleton-archer": {
       "name": "Skeleton archer",
@@ -77,61 +133,125 @@
       "damage": 4,
       "attackIntervalSec": 1.5,
       "attackRange": 7,
-      "aggroRange": 9,
-      "evolutions": [
-        {
-          "into": "skeleton-crossbowman",
-          "cost": 5
-        },
-        {
-          "into": "bone-ballista",
-          "cost": 10
-        }
-      ]
+      "aggroRange": 9
     },
     "skeleton-crossbowman": {
-      "name": "Skeleton crossbowman",
+      "name": "Pavise crossbowman",
       "family": "skeleton",
       "bonus": {
         "zombie": 1.5
       },
       "projectile": "bolt",
       "equipment": "helmet",
-      "strength": 5,
+      "strength": 2,
       "rank": "back",
       "speed": 6.5,
       "radius": 0.5,
-      "hp": 90,
-      "damage": 16,
+      "hp": 58,
+      "damage": 8.8,
       "attackIntervalSec": 1.8,
       "attackRange": 8,
-      "aggroRange": 10,
-      "evolutions": []
+      "aggroRange": 10
     },
     "bone-ballista": {
       "name": "Bone ballista",
+      "family": "skeleton",
+      "bonus": {
+        "zombie": 1.6
+      },
+      "projectile": "ballista-bolt",
+      "equipment": "helmet",
+      "strength": 4,
+      "rank": "back",
+      "speed": 5,
+      "radius": 0.8,
+      "hp": 128,
+      "damage": 19.4,
+      "attackIntervalSec": 2.4,
+      "attackRange": 10,
+      "aggroRange": 12
+    },
+    "bone-catapult": {
+      "name": "Bone catapult",
       "family": "skeleton",
       "bonus": {
         "zombie": 1.75
       },
       "projectile": "ballista-bolt",
       "equipment": "helmet",
-      "strength": 10,
+      "strength": 8,
       "rank": "back",
-      "speed": 4.5,
-      "radius": 0.9,
-      "hp": 200,
-      "damage": 42,
-      "attackIntervalSec": 2.8,
-      "attackRange": 10,
-      "aggroRange": 12,
-      "evolutions": []
+      "speed": 4,
+      "radius": 1.05,
+      "hp": 281,
+      "damage": 42.6,
+      "attackIntervalSec": 3,
+      "attackRange": 12,
+      "aggroRange": 14
+    },
+    "pyromancer": {
+      "name": "Pyromancer",
+      "family": "skeleton",
+      "bonus": {
+        "zombie": 1.4,
+        "spectre": 1.4
+      },
+      "projectile": "fire",
+      "equipment": "helmet",
+      "strength": 2,
+      "rank": "back",
+      "speed": 7,
+      "radius": 0.45,
+      "hp": 44,
+      "damage": 10.1,
+      "attackIntervalSec": 1.5,
+      "attackRange": 7,
+      "aggroRange": 9
+    },
+    "lich": {
+      "name": "Lich",
+      "family": "skeleton",
+      "bonus": {
+        "zombie": 1.5,
+        "spectre": 1.5
+      },
+      "projectile": "fire",
+      "equipment": "helmet",
+      "strength": 4,
+      "rank": "back",
+      "speed": 7,
+      "radius": 0.55,
+      "hp": 96,
+      "damage": 22.3,
+      "attackIntervalSec": 1.5,
+      "attackRange": 8,
+      "aggroRange": 10
+    },
+    "lich-king": {
+      "name": "Lich king",
+      "family": "skeleton",
+      "bonus": {
+        "zombie": 1.6,
+        "spectre": 1.6
+      },
+      "projectile": "fire",
+      "equipment": "helmet",
+      "strength": 8,
+      "rank": "back",
+      "speed": 6.5,
+      "radius": 0.75,
+      "hp": 223,
+      "damage": 51.1,
+      "attackIntervalSec": 1.5,
+      "attackRange": 9,
+      "aggroRange": 11
     },
     "zombie-dog": {
       "name": "Zombie dog",
       "family": "beast",
       "bonus": {
-        "skeleton": 1.5
+        "skeleton": 1.5,
+        "flyer": 1.5
       },
       "equipment": "collar",
       "strength": 1,
@@ -142,53 +262,461 @@
       "damage": 4,
       "attackIntervalSec": 0.7,
       "attackRange": 0.3,
-      "aggroRange": 9,
-      "evolutions": [
-        {
-          "into": "mastiff",
-          "cost": 5
-        },
-        {
-          "into": "cerberus",
-          "cost": 10
-        }
-      ]
+      "aggroRange": 9
     },
     "mastiff": {
       "name": "Mastiff",
       "family": "beast",
       "bonus": {
-        "skeleton": 1.5
+        "skeleton": 1.5,
+        "flyer": 1.5
       },
       "equipment": "collar",
-      "strength": 5,
+      "strength": 2,
       "rank": "front",
       "speed": 8.5,
-      "radius": 0.6,
-      "hp": 140,
-      "damage": 15,
-      "attackIntervalSec": 0.8,
-      "attackRange": 0.35,
-      "aggroRange": 9,
-      "evolutions": []
+      "radius": 0.55,
+      "hp": 56,
+      "damage": 8.8,
+      "attackIntervalSec": 0.7,
+      "attackRange": 0.3,
+      "aggroRange": 9
     },
     "cerberus": {
       "name": "Cerberus",
       "family": "beast",
       "bonus": {
-        "skeleton": 1.75
+        "skeleton": 1.6,
+        "flyer": 1.6
       },
       "equipment": "collar",
-      "strength": 10,
+      "strength": 4,
       "rank": "front",
       "speed": 8,
+      "radius": 0.75,
+      "hp": 128,
+      "damage": 19.4,
+      "attackIntervalSec": 0.7,
+      "attackRange": 0.3,
+      "aggroRange": 9
+    },
+    "hellhound": {
+      "name": "Hellhound",
+      "family": "beast",
+      "bonus": {
+        "skeleton": 1.75,
+        "flyer": 1.75
+      },
+      "equipment": "collar",
+      "strength": 8,
+      "rank": "front",
+      "speed": 8,
+      "radius": 0.95,
+      "hp": 293,
+      "damage": 42.6,
+      "attackIntervalSec": 0.7,
+      "attackRange": 0.3,
+      "aggroRange": 9
+    },
+    "rotting-wolf": {
+      "name": "Rotting wolf",
+      "family": "beast",
+      "bonus": {
+        "skeleton": 1.4,
+        "flyer": 1.4
+      },
+      "equipment": "collar",
+      "strength": 2,
+      "rank": "front",
+      "speed": 10,
+      "radius": 0.5,
+      "hp": 46,
+      "damage": 9.7,
+      "attackIntervalSec": 0.7,
+      "attackRange": 0.3,
+      "aggroRange": 9
+    },
+    "werewolf": {
+      "name": "Werewolf",
+      "family": "beast",
+      "bonus": {
+        "skeleton": 1.5,
+        "flyer": 1.5
+      },
+      "equipment": "collar",
+      "strength": 4,
+      "rank": "front",
+      "speed": 10,
+      "radius": 0.65,
+      "hp": 106,
+      "damage": 22.3,
+      "attackIntervalSec": 0.7,
+      "attackRange": 0.3,
+      "aggroRange": 9
+    },
+    "werelord": {
+      "name": "Werelord",
+      "family": "beast",
+      "bonus": {
+        "skeleton": 1.6,
+        "flyer": 1.6
+      },
+      "equipment": "collar",
+      "strength": 8,
+      "rank": "front",
+      "speed": 9.5,
+      "radius": 0.9,
+      "hp": 258,
+      "damage": 51.1,
+      "attackIntervalSec": 0.7,
+      "attackRange": 0.3,
+      "aggroRange": 9
+    },
+    "carrion-flock": {
+      "name": "Carrion flock",
+      "family": "flyer",
+      "bonus": {
+        "skeleton": 1.5
+      },
+      "equipment": "talons",
+      "strength": 1,
+      "rank": "front",
+      "layer": "air",
+      "speed": 10,
+      "radius": 0.45,
+      "hp": 16,
+      "damage": 4,
+      "attackIntervalSec": 0.8,
+      "attackRange": 1.2,
+      "aggroRange": 10
+    },
+    "bat-swarm": {
+      "name": "Bat swarm",
+      "family": "flyer",
+      "bonus": {
+        "skeleton": 1.5
+      },
+      "equipment": "talons",
+      "strength": 2,
+      "rank": "front",
+      "layer": "air",
+      "speed": 11,
+      "radius": 0.55,
+      "hp": 38,
+      "damage": 9.5,
+      "attackIntervalSec": 0.8,
+      "attackRange": 1.2,
+      "aggroRange": 10
+    },
+    "vampire": {
+      "name": "Vampire",
+      "family": "flyer",
+      "bonus": {
+        "skeleton": 1.6
+      },
+      "equipment": "talons",
+      "strength": 4,
+      "rank": "front",
+      "layer": "air",
+      "speed": 10.5,
+      "radius": 0.65,
+      "hp": 90,
+      "damage": 21.5,
+      "attackIntervalSec": 0.8,
+      "attackRange": 1.2,
+      "aggroRange": 11
+    },
+    "nosferatu": {
+      "name": "Nosferatu",
+      "family": "flyer",
+      "bonus": {
+        "skeleton": 1.75
+      },
+      "equipment": "talons",
+      "strength": 8,
+      "rank": "front",
+      "layer": "air",
+      "speed": 10,
       "radius": 0.85,
-      "hp": 330,
+      "hp": 210,
+      "damage": 49,
+      "attackIntervalSec": 0.8,
+      "attackRange": 1.2,
+      "aggroRange": 11
+    },
+    "harpy": {
+      "name": "Harpy",
+      "family": "flyer",
+      "bonus": {
+        "skeleton": 1.4
+      },
+      "equipment": "talons",
+      "strength": 2,
+      "rank": "front",
+      "layer": "air",
+      "speed": 9.5,
+      "radius": 0.55,
+      "hp": 46,
+      "damage": 8.5,
+      "attackIntervalSec": 1,
+      "attackRange": 1.5,
+      "aggroRange": 10
+    },
+    "bone-wyvern": {
+      "name": "Bone wyvern",
+      "family": "flyer",
+      "bonus": {
+        "skeleton": 1.5
+      },
+      "equipment": "talons",
+      "strength": 4,
+      "rank": "front",
+      "layer": "air",
+      "speed": 9,
+      "radius": 0.8,
+      "hp": 108,
+      "damage": 19.5,
+      "attackIntervalSec": 1,
+      "attackRange": 1.8,
+      "aggroRange": 11
+    },
+    "bone-dragon": {
+      "name": "Bone dragon",
+      "family": "flyer",
+      "bonus": {
+        "skeleton": 1.6
+      },
+      "projectile": "fire",
+      "equipment": "talons",
+      "strength": 8,
+      "rank": "back",
+      "layer": "air",
+      "speed": 8.5,
+      "radius": 1.1,
+      "hp": 255,
+      "damage": 44,
+      "attackIntervalSec": 1.4,
+      "attackRange": 6,
+      "aggroRange": 12
+    },
+    "wandering-soul": {
+      "name": "Wandering soul",
+      "family": "spectre",
+      "bonus": {
+        "zombie": 1.5
+      },
+      "equipment": "relic",
+      "strength": 1,
+      "rank": "front",
+      "layer": "ethereal",
+      "speed": 7.5,
+      "radius": 0.4,
+      "hp": 20,
+      "damage": 5,
+      "attackIntervalSec": 1,
+      "attackRange": 0.4,
+      "aggroRange": 9
+    },
+    "spectre": {
+      "name": "Spectre",
+      "family": "spectre",
+      "bonus": {
+        "zombie": 1.5
+      },
+      "equipment": "relic",
+      "strength": 2,
+      "rank": "front",
+      "layer": "ethereal",
+      "speed": 7.5,
+      "radius": 0.5,
+      "hp": 50,
+      "damage": 11,
+      "attackIntervalSec": 1,
+      "attackRange": 0.4,
+      "aggroRange": 9
+    },
+    "banshee": {
+      "name": "Banshee",
+      "family": "spectre",
+      "bonus": {
+        "zombie": 1.6
+      },
+      "equipment": "relic",
+      "strength": 4,
+      "rank": "front",
+      "layer": "ethereal",
+      "speed": 7.5,
+      "radius": 0.6,
+      "hp": 115,
+      "damage": 25,
+      "attackIntervalSec": 1,
+      "attackRange": 0.4,
+      "aggroRange": 10
+    },
+    "lament-queen": {
+      "name": "Queen of lamentations",
+      "family": "spectre",
+      "bonus": {
+        "zombie": 1.75
+      },
+      "equipment": "relic",
+      "strength": 8,
+      "rank": "front",
+      "layer": "ethereal",
+      "speed": 7,
+      "radius": 0.8,
+      "hp": 270,
+      "damage": 57,
+      "attackIntervalSec": 1,
+      "attackRange": 0.4,
+      "aggroRange": 10
+    },
+    "shade": {
+      "name": "Shade",
+      "family": "spectre",
+      "bonus": {
+        "zombie": 1.4
+      },
+      "equipment": "relic",
+      "strength": 2,
+      "rank": "front",
+      "layer": "ethereal",
+      "speed": 8.5,
+      "radius": 0.5,
+      "hp": 46,
+      "damage": 12.5,
+      "attackIntervalSec": 1,
+      "attackRange": 0.4,
+      "aggroRange": 9
+    },
+    "reaper": {
+      "name": "Reaper",
+      "family": "spectre",
+      "bonus": {
+        "zombie": 1.5
+      },
+      "equipment": "relic",
+      "strength": 4,
+      "rank": "front",
+      "layer": "ethereal",
+      "speed": 8.5,
+      "radius": 0.6,
+      "hp": 105,
+      "damage": 28,
+      "attackIntervalSec": 1,
+      "attackRange": 0.4,
+      "aggroRange": 10
+    },
+    "ankou": {
+      "name": "Ankou",
+      "family": "spectre",
+      "bonus": {
+        "zombie": 1.6
+      },
+      "equipment": "relic",
+      "strength": 8,
+      "rank": "front",
+      "layer": "ethereal",
+      "speed": 8,
+      "radius": 0.8,
+      "hp": 245,
+      "damage": 64,
+      "attackIntervalSec": 1,
+      "attackRange": 0.4,
+      "aggroRange": 10
+    },
+    "grand-knight": {
+      "name": "Grand knight",
+      "family": "champion",
+      "bonus": {},
+      "strength": 8,
+      "rank": "front",
+      "speed": 6,
+      "radius": 1,
+      "hp": 600,
+      "damage": 45,
+      "attackIntervalSec": 1.2,
+      "attackRange": 0.4,
+      "aggroRange": 10
+    },
+    "gargoyle": {
+      "name": "Gargoyle",
+      "family": "champion",
+      "bonus": {},
+      "strength": 8,
+      "rank": "front",
+      "layer": "air",
+      "speed": 9,
+      "radius": 0.9,
+      "hp": 380,
+      "damage": 40,
+      "attackIntervalSec": 1,
+      "attackRange": 0.6,
+      "aggroRange": 14
+    },
+    "executioner": {
+      "name": "Executioner",
+      "family": "champion",
+      "bonus": {},
+      "strength": 8,
+      "rank": "front",
+      "speed": 6,
+      "radius": 1,
+      "hp": 520,
+      "damage": 55,
+      "attackIntervalSec": 1.6,
+      "attackRange": 0.6,
+      "aggroRange": 10
+    },
+    "fallen-bishop": {
+      "name": "Fallen bishop",
+      "family": "champion",
+      "bonus": {},
+      "projectile": "fire",
+      "strength": 8,
+      "rank": "back",
+      "speed": 6.5,
+      "radius": 0.8,
+      "hp": 360,
       "damage": 30,
-      "attackIntervalSec": 0.9,
-      "attackRange": 0.45,
-      "aggroRange": 10,
-      "evolutions": []
+      "attackIntervalSec": 1.5,
+      "attackRange": 9,
+      "aggroRange": 11
+    }
+  },
+  "champions": {
+    "grand-knight": {
+      "abilities": {
+        "charge": {
+          "intervalSec": 6,
+          "radius": 3,
+          "damage": 25,
+          "knockback": 3,
+          "maxStrength": 1
+        }
+      }
+    },
+    "gargoyle": {
+      "abilities": {
+        "prefersBack": true
+      }
+    },
+    "executioner": {
+      "abilities": {
+        "execute": 0.2,
+        "cleave": {
+          "radius": 2,
+          "ratio": 0.6
+        }
+      }
+    },
+    "fallen-bishop": {
+      "abilities": {
+        "heal": {
+          "radius": 7,
+          "perSec": 6
+        }
+      }
     }
   },
   "npcs": {
@@ -200,7 +728,12 @@
       "hp": 10,
       "radius": 0.4,
       "speed": 1.5,
-      "fleeSpeed": 4.5
+      "fleeSpeed": 3,
+      "fatigue": {
+        "afterSec": 3,
+        "factor": 0.6
+      },
+      "obstacle": false
     },
     "evil-pumpkin": {
       "name": "the Evil Pumpkin",
@@ -215,7 +748,8 @@
         "attackRange": 1.2,
         "aggroRange": 6,
         "leashDistance": 8
-      }
+      },
+      "obstacle": false
     },
     "jack-o-lantern": {
       "name": "a Jack-o'-lantern",
@@ -230,7 +764,8 @@
         "attackRange": 0.3,
         "aggroRange": 10,
         "leashDistance": 25
-      }
+      },
+      "obstacle": false
     },
     "hunter": {
       "name": "a Hunter",
@@ -247,7 +782,8 @@
         "aggroRange": 11,
         "leashDistance": 14,
         "projectile": "bullet"
-      }
+      },
+      "obstacle": false
     },
     "soldier": {
       "name": "a Soldier",
@@ -263,7 +799,8 @@
         "attackRange": 0.4,
         "aggroRange": 10,
         "leashDistance": 12
-      }
+      },
+      "obstacle": false
     },
     "guard-dog": {
       "name": "a Guard dog",
@@ -279,7 +816,248 @@
         "attackRange": 0.3,
         "aggroRange": 12,
         "leashDistance": 16
-      }
+      },
+      "obstacle": false
+    },
+    "bone-wall": {
+      "name": "Bone wall",
+      "infects": false,
+      "strength": 1,
+      "hp": 100000,
+      "radius": 0.6,
+      "speed": 0,
+      "obstacle": true
+    },
+    "stray-dog": {
+      "name": "a Stray dog",
+      "corpse": "zombie-dog",
+      "infects": false,
+      "strength": 1,
+      "hp": 24,
+      "radius": 0.4,
+      "speed": 7,
+      "fleeSpeed": 8,
+      "attack": {
+        "damage": 4.5,
+        "attackIntervalSec": 0.8,
+        "attackRange": 0.3,
+        "aggroRange": 9,
+        "leashDistance": 14
+      },
+      "obstacle": false
+    },
+    "looter": {
+      "name": "a Looter",
+      "corpse": "skeleton-archer",
+      "infects": false,
+      "strength": 2,
+      "hp": 45,
+      "radius": 0.45,
+      "speed": 4.5,
+      "fleeSpeed": 5.5,
+      "attack": {
+        "damage": 7,
+        "attackIntervalSec": 1.4,
+        "attackRange": 6,
+        "aggroRange": 10,
+        "leashDistance": 14,
+        "projectile": "bullet"
+      },
+      "obstacle": false
+    },
+    "wolf": {
+      "name": "a Wolf",
+      "corpse": "zombie-dog",
+      "infects": false,
+      "strength": 2,
+      "hp": 40,
+      "radius": 0.45,
+      "speed": 7.5,
+      "fleeSpeed": 9,
+      "attack": {
+        "damage": 7,
+        "attackIntervalSec": 0.8,
+        "attackRange": 0.3,
+        "aggroRange": 10,
+        "leashDistance": 18
+      },
+      "obstacle": false
+    },
+    "crow": {
+      "name": "a Crow",
+      "corpse": "carrion-flock",
+      "infects": false,
+      "strength": 1,
+      "hp": 10,
+      "radius": 0.35,
+      "layer": "air",
+      "speed": 8,
+      "fleeSpeed": 11,
+      "attack": {
+        "damage": 2.5,
+        "attackIntervalSec": 0.7,
+        "attackRange": 0.4,
+        "aggroRange": 9,
+        "leashDistance": 12
+      },
+      "obstacle": false
+    },
+    "bat": {
+      "name": "a Bat",
+      "corpse": "carrion-flock",
+      "infects": false,
+      "strength": 1,
+      "hp": 12,
+      "radius": 0.35,
+      "layer": "air",
+      "speed": 8.5,
+      "fleeSpeed": 11,
+      "attack": {
+        "damage": 3,
+        "attackIntervalSec": 0.7,
+        "attackRange": 0.4,
+        "aggroRange": 9,
+        "leashDistance": 12
+      },
+      "obstacle": false
+    },
+    "monk": {
+      "name": "a Monk",
+      "corpse": "wandering-soul",
+      "infects": true,
+      "strength": 1,
+      "hp": 12,
+      "radius": 0.4,
+      "speed": 1.4,
+      "fleeSpeed": 2.8,
+      "fatigue": {
+        "afterSec": 3,
+        "factor": 0.6
+      },
+      "obstacle": false
+    },
+    "templar": {
+      "name": "a Templar",
+      "corpse": "wandering-soul",
+      "infects": false,
+      "strength": 3,
+      "hp": 85,
+      "radius": 0.5,
+      "speed": 4.5,
+      "attack": {
+        "damage": 10,
+        "attackIntervalSec": 1.2,
+        "attackRange": 0.4,
+        "aggroRange": 10,
+        "leashDistance": 12
+      },
+      "obstacle": false
+    },
+    "patient": {
+      "name": "a Patient",
+      "corpse": "zombie",
+      "infects": true,
+      "strength": 1,
+      "hp": 8,
+      "radius": 0.4,
+      "speed": 0.6,
+      "obstacle": false
+    },
+    "machine-gun": {
+      "name": "a Machine gun",
+      "infects": false,
+      "strength": 4,
+      "hp": 140,
+      "radius": 0.7,
+      "speed": 0,
+      "attack": {
+        "damage": 5,
+        "attackIntervalSec": 0.25,
+        "attackRange": 12,
+        "aggroRange": 13,
+        "leashDistance": 14,
+        "projectile": "bullet"
+      },
+      "obstacle": false
+    },
+    "mortar": {
+      "name": "a Mortar",
+      "infects": false,
+      "strength": 3,
+      "hp": 110,
+      "radius": 0.7,
+      "speed": 0,
+      "obstacle": false
+    },
+    "grand-knight": {
+      "name": "the Grand knight",
+      "corpse": "grand-knight",
+      "infects": false,
+      "strength": 12,
+      "hp": 900,
+      "radius": 1,
+      "speed": 6,
+      "attack": {
+        "damage": 50,
+        "attackIntervalSec": 1.2,
+        "attackRange": 0.4,
+        "aggroRange": 10,
+        "leashDistance": 14
+      },
+      "obstacle": false
+    },
+    "gargoyle": {
+      "name": "the Gargoyle",
+      "corpse": "gargoyle",
+      "infects": false,
+      "strength": 12,
+      "hp": 560,
+      "radius": 0.9,
+      "layer": "air",
+      "speed": 9,
+      "attack": {
+        "damage": 45,
+        "attackIntervalSec": 1,
+        "attackRange": 0.6,
+        "aggroRange": 16,
+        "leashDistance": 22
+      },
+      "obstacle": false
+    },
+    "executioner": {
+      "name": "the Executioner",
+      "corpse": "executioner",
+      "infects": false,
+      "strength": 12,
+      "hp": 780,
+      "radius": 1,
+      "speed": 6,
+      "attack": {
+        "damage": 60,
+        "attackIntervalSec": 1.6,
+        "attackRange": 0.6,
+        "aggroRange": 10,
+        "leashDistance": 14
+      },
+      "obstacle": false
+    },
+    "fallen-bishop": {
+      "name": "the Fallen bishop",
+      "corpse": "fallen-bishop",
+      "infects": false,
+      "strength": 12,
+      "hp": 540,
+      "radius": 0.8,
+      "speed": 6.5,
+      "attack": {
+        "damage": 34,
+        "attackIntervalSec": 1.5,
+        "attackRange": 9,
+        "aggroRange": 12,
+        "leashDistance": 14,
+        "projectile": "fire"
+      },
+      "obstacle": false
     }
   },
   "projectiles": {
@@ -294,6 +1072,85 @@
     },
     "bullet": {
       "speed": 28
+    },
+    "fire": {
+      "speed": 16
+    },
+    "magic": {
+      "speed": 18
+    }
+  },
+  "fusionRatio": 2,
+  "lineages": {
+    "zombie": {
+      "name": "Zombies",
+      "base": "zombie",
+      "branches": {
+        "mass": {
+          "name": "Mass",
+          "tiers": ["big-zombie", "abomination", "flesh-titan"]
+        },
+        "speed": {
+          "name": "Speed",
+          "tiers": ["ghoul", "stalker", "wendigo"]
+        }
+      }
+    },
+    "skeleton": {
+      "name": "Skeletons",
+      "base": "skeleton-archer",
+      "branches": {
+        "siege": {
+          "name": "Siege",
+          "tiers": ["skeleton-crossbowman", "bone-ballista", "bone-catapult"]
+        },
+        "sorcery": {
+          "name": "Sorcery",
+          "tiers": ["pyromancer", "lich", "lich-king"]
+        }
+      }
+    },
+    "beast": {
+      "name": "Beasts",
+      "base": "zombie-dog",
+      "branches": {
+        "pack": {
+          "name": "Pack",
+          "tiers": ["mastiff", "cerberus", "hellhound"]
+        },
+        "blood": {
+          "name": "Blood",
+          "tiers": ["rotting-wolf", "werewolf", "werelord"]
+        }
+      }
+    },
+    "flyer": {
+      "name": "Flyers",
+      "base": "carrion-flock",
+      "branches": {
+        "swarm": {
+          "name": "Swarm",
+          "tiers": ["bat-swarm", "vampire", "nosferatu"]
+        },
+        "carrion": {
+          "name": "Carrion",
+          "tiers": ["harpy", "bone-wyvern", "bone-dragon"]
+        }
+      }
+    },
+    "spectre": {
+      "name": "Spectres",
+      "base": "wandering-soul",
+      "branches": {
+        "haunting": {
+          "name": "Haunting",
+          "tiers": ["spectre", "banshee", "lament-queen"]
+        },
+        "shadow": {
+          "name": "Shadow",
+          "tiers": ["shade", "reaper", "ankou"]
+        }
+      }
     }
   }
 }

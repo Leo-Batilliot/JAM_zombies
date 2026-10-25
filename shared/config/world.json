@@ -4,10 +4,11 @@
   "gridCellSize": 4,
   "spawnMargin": 20,
   "spawnAttempts": 12,
+  "spawnSpacing": 8,
   "populations": [
     {
       "npc": "civilian",
-      "count": 150,
+      "count": 130,
       "groupSize": {
         "min": 3,
         "max": 6
@@ -18,36 +19,122 @@
       "fleeRadius": 10,
       "respawnIntervalSec": 2,
       "safeDistance": 30
+    },
+    {
+      "npc": "stray-dog",
+      "count": 15,
+      "groupSize": {
+        "min": 3,
+        "max": 5
+      },
+      "groupSpread": 3,
+      "wanderDistance": 30,
+      "wanderIntervalSec": 8,
+      "fleeRadius": 12,
+      "respawnIntervalSec": 6,
+      "safeDistance": 30,
+      "raid": {
+        "attackRatio": 1.2,
+        "fleeHpRatio": 0.4,
+        "encircle": 0
+      }
+    },
+    {
+      "npc": "looter",
+      "count": 12,
+      "groupSize": {
+        "min": 3,
+        "max": 4
+      },
+      "groupSpread": 3,
+      "wanderDistance": 25,
+      "wanderIntervalSec": 10,
+      "fleeRadius": 14,
+      "respawnIntervalSec": 8,
+      "safeDistance": 30,
+      "raid": {
+        "attackRatio": 1.0,
+        "fleeHpRatio": 0.5,
+        "encircle": 0
+      }
+    },
+    {
+      "npc": "wolf",
+      "count": 10,
+      "groupSize": {
+        "min": 4,
+        "max": 5
+      },
+      "groupSpread": 4,
+      "wanderDistance": 30,
+      "wanderIntervalSec": 8,
+      "fleeRadius": 14,
+      "respawnIntervalSec": 10,
+      "safeDistance": 30,
+      "districts": ["park", "forest"],
+      "raid": {
+        "attackRatio": 1.4,
+        "fleeHpRatio": 0.35,
+        "encircle": 3
+      }
+    },
+    {
+      "npc": "crow",
+      "count": 10,
+      "groupSize": {
+        "min": 4,
+        "max": 6
+      },
+      "groupSpread": 2.5,
+      "wanderDistance": 35,
+      "wanderIntervalSec": 6,
+      "fleeRadius": 12,
+      "respawnIntervalSec": 8,
+      "safeDistance": 30,
+      "raid": {
+        "attackRatio": 0.8,
+        "fleeHpRatio": 0.6,
+        "encircle": 0
+      }
+    },
+    {
+      "npc": "bat",
+      "count": 5,
+      "groupSize": {
+        "min": 4,
+        "max": 5
+      },
+      "groupSpread": 2.5,
+      "wanderDistance": 35,
+      "wanderIntervalSec": 6,
+      "fleeRadius": 12,
+      "respawnIntervalSec": 10,
+      "safeDistance": 30,
+      "districts": ["graveyard", "cathedral"],
+      "raid": {
+        "attackRatio": 0.8,
+        "fleeHpRatio": 0.6,
+        "encircle": 0
+      }
+    },
+    {
+      "npc": "monk",
+      "count": 8,
+      "groupSize": {
+        "min": 4,
+        "max": 4
+      },
+      "groupSpread": 0,
+      "wanderDistance": 90,
+      "wanderIntervalSec": 20,
+      "fleeRadius": 10,
+      "respawnIntervalSec": 12,
+      "safeDistance": 30,
+      "districts": ["cathedral"],
+      "route": ["cathedral", "street", "plaza"],
+      "lineSpacing": 1.2
     }
   ],
-  "decor": {
-    "seed": 1031,
-    "scattered": [
-      {
-        "sprite": "decor-tree",
-        "count": 260
-      },
-      {
-        "sprite": "decor-bush",
-        "count": 220
-      },
-      {
-        "sprite": "decor-rock",
-        "count": 140
-      },
-      {
-        "sprite": "decor-grave",
-        "count": 90
-      }
-    ],
-    "fixed": [
-      {
-        "sprite": "decor-winchester",
-        "x": 228,
-        "y": 176
-      }
-    ]
-  },
   "pointsOfInterest": {
     "mass-grave": {
       "count": 0,
@@ -121,7 +208,8 @@
           "item": "cerberus-chain",
           "weight": 4
         }
-      ]
+      ],
+      "districts": ["houses", "castle", "hospital"]
     },
     "graveyard": {
       "count": 4,
@@ -136,7 +224,8 @@
         "unit": "skeleton-archer",
         "min": 3,
         "max": 6
-      }
+      },
+      "districts": ["graveyard"]
     },
     "camp-chest": {
       "count": 0,
@@ -179,6 +268,174 @@
         {
           "item": "cerberus-chain",
           "weight": 3
+        },
+        {
+          "item": "iron-talons",
+          "weight": 12
+        },
+        {
+          "item": "rusty-chains",
+          "weight": 12
+        }
+      ]
+    },
+    "cathedral-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "rusty-chains",
+          "weight": 30
+        },
+        {
+          "item": "spectral-lantern",
+          "weight": 25
+        },
+        {
+          "item": "iron-helmet",
+          "weight": 20
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 10
+        },
+        {
+          "item": "ankou-scythe",
+          "weight": 8
+        },
+        {
+          "item": "bone-talons",
+          "weight": 7
+        }
+      ]
+    },
+    "barracks-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "iron-helmet",
+          "weight": 35
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 25
+        },
+        {
+          "item": "chainsaw",
+          "weight": 15
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 10
+        },
+        {
+          "item": "spiked-collar",
+          "weight": 15
+        }
+      ]
+    },
+    "hospital-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "leather-helmet",
+          "weight": 35
+        },
+        {
+          "item": "shovel",
+          "weight": 30
+        },
+        {
+          "item": "rusty-chains",
+          "weight": 20
+        },
+        {
+          "item": "iron-helmet",
+          "weight": 15
+        }
+      ]
+    },
+    "cabin-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "spiked-collar",
+          "weight": 30
+        },
+        {
+          "item": "iron-talons",
+          "weight": 30
+        },
+        {
+          "item": "bone-collar",
+          "weight": 20
+        },
+        {
+          "item": "bone-talons",
+          "weight": 15
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 5
+        }
+      ]
+    },
+    "champion-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "chainsaw",
+          "weight": 20
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 20
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 20
+        },
+        {
+          "item": "dragon-claws",
+          "weight": 20
+        },
+        {
+          "item": "ankou-scythe",
+          "weight": 20
         }
       ]
     }
@@ -220,6 +477,19 @@
       },
       "damagePerSec": 0,
       "reanimationDelaySec": 10
+    },
+    "gas": {
+      "name": "the quarantine gas",
+      "count": 0,
+      "radius": 5,
+      "speed": 0,
+      "turnIntervalSec": 60,
+      "lifetimeSec": {
+        "min": 60,
+        "max": 60
+      },
+      "damagePerSec": 4,
+      "groundOnly": true
     }
   },
   "camps": {
@@ -244,7 +514,161 @@
         "count": 3
       }
     ],
-    "chest": "camp-chest"
+    "chest": "camp-chest",
+    "districts": ["barracks", "park", "forest", "plaza"]
+  },
+  "places": {
+    "cathedral": {
+      "district": "cathedral",
+      "at": [0.5, 0.72],
+      "spread": 6,
+      "safeDistance": 25,
+      "respawnSec": 240,
+      "defenders": [
+        {
+          "npc": "templar",
+          "count": 5
+        },
+        {
+          "npc": "monk",
+          "count": 4
+        }
+      ],
+      "chest": "cathedral-chest"
+    },
+    "barracks": {
+      "district": "barracks",
+      "at": [0.5, 0.55],
+      "spread": 7,
+      "safeDistance": 25,
+      "respawnSec": 240,
+      "defenders": [
+        {
+          "npc": "soldier",
+          "count": 5
+        },
+        {
+          "npc": "machine-gun",
+          "count": 1
+        },
+        {
+          "npc": "mortar",
+          "count": 1
+        }
+      ],
+      "chest": "barracks-chest",
+      "mortar": {
+        "npc": "mortar",
+        "range": 45,
+        "intervalSec": 20
+      }
+    },
+    "hospital": {
+      "district": "hospital",
+      "at": [0.5, 0.6],
+      "spread": 6,
+      "safeDistance": 25,
+      "respawnSec": 180,
+      "defenders": [
+        {
+          "npc": "patient",
+          "count": 14
+        }
+      ],
+      "chest": "hospital-chest",
+      "gas": {
+        "mist": "gas",
+        "count": 2,
+        "spread": 14
+      }
+    },
+    "cabin": {
+      "district": "forest",
+      "at": [0.5, 0.3],
+      "spread": 5,
+      "safeDistance": 25,
+      "respawnSec": 240,
+      "defenders": [
+        {
+          "npc": "hunter",
+          "count": 3
+        },
+        {
+          "npc": "guard-dog",
+          "count": 3
+        }
+      ],
+      "chest": "cabin-chest"
+    },
+    "museum": {
+      "district": "castle",
+      "at": [0.5, 0.5],
+      "spread": 4,
+      "safeDistance": 30,
+      "respawnSec": 300,
+      "defenders": [
+        {
+          "npc": "grand-knight",
+          "count": 1
+        },
+        {
+          "npc": "soldier",
+          "count": 2
+        }
+      ],
+      "chest": "champion-chest",
+      "champion": "grand-knight"
+    },
+    "scaffold": {
+      "district": "plaza",
+      "at": [0.5, 0.7],
+      "spread": 4,
+      "safeDistance": 30,
+      "respawnSec": 300,
+      "defenders": [
+        {
+          "npc": "executioner",
+          "count": 1
+        }
+      ],
+      "chest": "champion-chest",
+      "champion": "executioner"
+    },
+    "crypt": {
+      "district": "cathedral",
+      "at": [0.5, 0.35],
+      "spread": 4,
+      "safeDistance": 30,
+      "respawnSec": 300,
+      "defenders": [
+        {
+          "npc": "fallen-bishop",
+          "count": 1
+        },
+        {
+          "npc": "templar",
+          "count": 2
+        }
+      ],
+      "chest": "champion-chest",
+      "champion": "fallen-bishop"
+    },
+    "gargoyle-tower": {
+      "district": "barracks",
+      "at": [0.5, 0.5],
+      "spread": 4,
+      "safeDistance": 30,
+      "respawnSec": 300,
+      "defenders": [
+        {
+          "npc": "gargoyle",
+          "count": 1
+        }
+      ],
+      "chest": "champion-chest",
+      "champion": "gargoyle",
+      "rampart": true
+    }
   },
   "bombings": {
     "name": "the bombing",
@@ -261,5 +685,575 @@
     "damage": 20,
     "crowding": 0.03,
     "maxMultiplier": 3
+  },
+  "city": {
+    "border": 0,
+    "clearance": 1.5,
+    "cellSize": 8,
+    "columns": 4,
+    "rows": 4,
+    "street": 0,
+    "streetGround": "grass",
+    "templates": {
+      "houses": {
+        "name": "Woods",
+        "weight": 5,
+        "min": 0,
+        "max": 8,
+        "ground": "grass",
+        "tags": ["houses", "car", "chest", "cross"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.35, 0.21, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.63, 0.14, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.53, 0.39, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.13, 0.51, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.14, 0.16, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.44, 0.77, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.61, 0.88, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.56, 0.42]
+          },
+          {
+            "composition": "grove",
+            "at": [0.88, 0.14]
+          },
+          {
+            "composition": "grove",
+            "at": [0.79, 0.33]
+          },
+          {
+            "composition": "grove",
+            "at": [0.22, 0.19]
+          },
+          {
+            "composition": "car-wreck",
+            "at": [0.5, 0.5]
+          }
+        ]
+      },
+      "plaza": {
+        "name": "Clearing",
+        "weight": 2,
+        "min": 1,
+        "max": 3,
+        "ground": "grass",
+        "tags": ["plaza", "car", "cross", "camp"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.54, 0.13, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.13, 0.25, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.52, 0.82, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.9, 0.18, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.43, 0.71]
+          },
+          {
+            "composition": "grove",
+            "at": [0.22, 0.49]
+          },
+          {
+            "composition": "barrels",
+            "at": [0.3, 0.3]
+          },
+          {
+            "composition": "pub",
+            "at": [0.5, 0.25]
+          }
+        ]
+      },
+      "cathedral": {
+        "name": "Ruined chapel",
+        "weight": 0,
+        "min": 1,
+        "max": 1,
+        "ground": "grass",
+        "tags": ["cathedral", "cross"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.11, 0.64, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.82, 0.34, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.79, 0.87, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.62, 0.91, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.76, 0.33]
+          },
+          {
+            "composition": "grove",
+            "at": [0.41, 0.63]
+          },
+          {
+            "composition": "tomb-row",
+            "at": [0.5, 0.86]
+          },
+          {
+            "composition": "lamp",
+            "at": [0.5, 0.55]
+          }
+        ]
+      },
+      "castle": {
+        "name": "Old keep",
+        "weight": 0,
+        "min": 1,
+        "max": 1,
+        "ground": "grass",
+        "tags": ["castle", "chest"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.1, 0.47, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.22, 0.18, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.13, 0.73, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.41, 0.81, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.16, 0.46]
+          },
+          {
+            "composition": "grove",
+            "at": [0.54, 0.81]
+          },
+          {
+            "composition": "grove",
+            "at": [0.76, 0.79]
+          }
+        ]
+      },
+      "hospital": {
+        "name": "Quarantine camp",
+        "weight": 0,
+        "min": 1,
+        "max": 1,
+        "ground": "grass",
+        "tags": ["hospital", "chest"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.38, 0.82, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.88, 0.21, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.08, 0.43, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.88, 0.66, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.51, 0.59]
+          },
+          {
+            "composition": "grove",
+            "at": [0.64, 0.14]
+          },
+          {
+            "composition": "barrels",
+            "at": [0.5, 0.4]
+          },
+          {
+            "composition": "car-wreck",
+            "at": [0.25, 0.5]
+          }
+        ]
+      },
+      "barracks": {
+        "name": "Military camp",
+        "weight": 1,
+        "min": 1,
+        "max": 1,
+        "ground": "grass",
+        "tags": ["barracks", "camp"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.84, 0.74, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.17, 0.61, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.13, 0.14, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.37, 0.12, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.1, 0.22]
+          },
+          {
+            "composition": "grove",
+            "at": [0.18, 0.39]
+          },
+          {
+            "composition": "barrels",
+            "at": [0.5, 0.3]
+          },
+          {
+            "composition": "car-wreck",
+            "at": [0.3, 0.85]
+          }
+        ]
+      },
+      "park": {
+        "name": "Pumpkin field",
+        "weight": 2,
+        "min": 0,
+        "max": 3,
+        "ground": "grass",
+        "tags": ["park", "camp"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.1, 0.81, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.6, 0.2, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.39, 0.18, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.79, 0.91, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.15, 0.17, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.37, 0.31]
+          },
+          {
+            "composition": "grove",
+            "at": [0.76, 0.23]
+          },
+          {
+            "composition": "grove",
+            "at": [0.12, 0.86]
+          },
+          {
+            "composition": "pumpkin-patch",
+            "at": [0.5, 0.55]
+          }
+        ]
+      },
+      "forest": {
+        "name": "Deep forest",
+        "weight": 1.5,
+        "min": 1,
+        "max": 2,
+        "ground": "grass",
+        "tags": ["forest", "camp"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.52, 0.2, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.52, 0.9, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.81, 0.66, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.3, 0.39, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.22, 0.73, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.53, 0.73, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.36, 0.27, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.76, 0.91, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.27, 0.51, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.38, 0.1, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.12, 0.32]
+          },
+          {
+            "composition": "grove",
+            "at": [0.31, 0.65]
+          },
+          {
+            "composition": "grove",
+            "at": [0.87, 0.46]
+          },
+          {
+            "composition": "grove",
+            "at": [0.85, 0.89]
+          },
+          {
+            "composition": "grove",
+            "at": [0.86, 0.39]
+          },
+          {
+            "composition": "grove",
+            "at": [0.28, 0.28]
+          }
+        ]
+      },
+      "graveyard": {
+        "name": "Graveyard",
+        "weight": 1,
+        "min": 1,
+        "max": 2,
+        "ground": "grass",
+        "tags": ["graveyard"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.6, 0.84, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.15, 0.63, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.84, 0.74, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.9, 0.41, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "tomb-row",
+            "at": [0.35, 0.4]
+          },
+          {
+            "composition": "tomb-row",
+            "at": [0.65, 0.4]
+          },
+          {
+            "composition": "tomb-row",
+            "at": [0.35, 0.6]
+          },
+          {
+            "composition": "tomb-row",
+            "at": [0.65, 0.6]
+          },
+          {
+            "composition": "lamp",
+            "at": [0.5, 0.5]
+          }
+        ]
+      }
+    },
+    "compositions": {
+      "lamp": {
+        "items": [
+          {
+            "sprite": "decor-lamp",
+            "x": 0,
+            "y": 0,
+            "light": 7
+          }
+        ]
+      },
+      "grove": {
+        "items": [
+          {
+            "sprite": "decor-tree",
+            "x": 0,
+            "y": 0
+          }
+        ],
+        "scatter": {
+          "sprites": ["decor-bush", "decor-rock"],
+          "count": 3,
+          "radius": 3
+        }
+      },
+      "tomb-row": {
+        "items": [
+          {
+            "sprite": "decor-grave",
+            "x": -6,
+            "y": 0
+          },
+          {
+            "sprite": "decor-grave",
+            "x": -3,
+            "y": 0
+          },
+          {
+            "sprite": "decor-grave",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "sprite": "decor-grave",
+            "x": 3,
+            "y": 0
+          },
+          {
+            "sprite": "decor-grave",
+            "x": 6,
+            "y": 0
+          }
+        ]
+      },
+      "car-wreck": {
+        "items": [
+          {
+            "sprite": "decor-car",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "sprite": "decor-rock",
+            "x": 2.5,
+            "y": 1
+          },
+          {
+            "sprite": "decor-rock",
+            "x": -2,
+            "y": -1
+          }
+        ]
+      },
+      "barrels": {
+        "items": [
+          {
+            "sprite": "decor-barrel",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "sprite": "decor-barrel",
+            "x": 0.9,
+            "y": 0.2
+          },
+          {
+            "sprite": "decor-barrel",
+            "x": 0.4,
+            "y": 0.8
+          }
+        ]
+      },
+      "pumpkin-patch": {
+        "items": [],
+        "scatter": {
+          "sprites": ["npc-jack-o-lantern-walk-0"],
+          "count": 9,
+          "radius": 6
+        }
+      },
+      "pub": {
+        "items": [
+          {
+            "sprite": "decor-winchester",
+            "x": 0,
+            "y": 0,
+            "light": 5
+          }
+        ]
+      }
+    }
   }
 }

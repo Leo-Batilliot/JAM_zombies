@@ -9,8 +9,7 @@ import {
 import { familyBonus } from "../../src/systems/combat.js";
 import { kill } from "../../src/systems/death.js";
 import { damageBonus, equipInventory } from "../../src/systems/equipment.js";
-import { evolve } from "../../src/systems/evolution.js";
-import { followMages } from "../../src/systems/formation.js";
+import { unitSpeed } from "../../src/systems/pace.js";
 import { createBench } from "../support/bench.js";
 
 describe("beast lineage", () => {
@@ -51,19 +50,6 @@ describe("beast lineage", () => {
     expect(familyBonus(world, "zombie-dog", zombie)).toBe(1);
     expect(familyBonus(world, "skeleton-archer", dog)).toBe(1);
   });
-
-  test.each([
-    ["mastiff", 5],
-    ["cerberus", 10],
-  ])("zombie dogs evolve into a %s", (into, cost) => {
-    const { world, addArmy } = createBench();
-    const army = addArmy(100, 100);
-    for (let index = 0; index < cost; index++) {
-      world.addUnit(army, "zombie-dog", 101, 100);
-    }
-    expect(evolve(world, army, into)).toBe(true);
-    expect([...army.units].map((unit) => unit.type)).toEqual([into]);
-  });
 });
 
 describe("collars", () => {
@@ -92,16 +78,9 @@ describe("collars", () => {
     const chain = config.equipment.items["cerberus-chain"];
     expect(damageBonus(world, chained)).toBe(chain?.damage);
     expect(damageBonus(world, plain)).toBe(1);
-    const start = (unit: typeof plain) => ({ x: unit.x, y: unit.y });
-    const from = [start(plain), start(chained)];
-    followMages(world, 1 / config.network.tickRate);
-    const moved = [plain, chained].map((unit, index) =>
-      Math.hypot(
-        unit.x - (from[index]?.x ?? 0),
-        unit.y - (from[index]?.y ?? 0),
-      ),
+    expect(unitSpeed(world, chained) / unitSpeed(world, plain)).toBeCloseTo(
+      chain?.speed ?? 1,
     );
-    expect((moved[1] ?? 0) / (moved[0] ?? 1)).toBeCloseTo(chain?.speed ?? 1);
   });
 });
 
@@ -150,11 +129,11 @@ describe("bombings", () => {
     const { world, config, addArmy } = createBench();
     const lone = addArmy(50, 50, "Lone");
     const horde = addArmy(150, 120, "Horde");
-    const single = world.addUnit(lone, "flesh-golem", 60, 50);
+    const single = world.addUnit(lone, "abomination", 60, 50);
     const packed = Array.from({ length: 40 }, (_, index) =>
       world.addUnit(
         horde,
-        "flesh-golem",
+        "abomination",
         150 + (index % 8),
         152 + Math.floor(index / 8),
       ),

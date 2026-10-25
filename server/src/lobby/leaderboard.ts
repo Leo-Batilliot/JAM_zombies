@@ -1,5 +1,5 @@
 import type { LeaderboardEntry } from "@horde/shared";
-import { armyStrength } from "../systems/strength.js";
+import { armyPotential, armyStrength } from "../systems/strength.js";
 import type { Army, World } from "../world/world.js";
 
 export interface Ranking {
@@ -13,13 +13,12 @@ export const rankArmies = (world: World): Ranking => {
     .map((army) => ({ army, strength: armyStrength(world, army) }))
     .sort((a, b) => b.strength - a.strength || a.army.slot - b.army.slot);
   return {
-    entries: ranked
-      .slice(0, world.config.lobby.leaderboard.size)
-      .map(({ army, strength }) => ({
-        army: army.slot,
-        name: army.name,
-        strength,
-      })),
+    entries: ranked.map(({ army, strength }) => ({
+      army: army.slot,
+      name: army.name,
+      strength,
+      potential: armyPotential(world, army),
+    })),
     ranks: new Map(ranked.map(({ army }, index) => [army, index + 1])),
     total: ranked.length,
   };

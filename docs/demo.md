@@ -22,7 +22,7 @@ Déroulé proposé pour l'étape 8.04, à répéter au moins une fois en entier.
 
 1. Pitch (30 s) : un mage zombifié commande une armée de morts qui se relèvent 30 s après leur mort. Inspiré d'agar.io, avec des combats d'usure et des formations.
 2. Le jury rejoint la partie (1 min) : QR code sur le projecteur, chacun choisit un pseudo. Montrer la citation de *La Nuit des morts-vivants* sur l'écran d'accueil. Pendant ce temps, le projecteur passe sur le jeu en cliquant sur « Watch the game » : la caméra suit les combats.
-3. La boucle de jeu (1 min 30) : tuer des civils qui se relèvent en zombies, piller une voiture ou un coffre, changer de formation, montrer le cercle d'aggro et la Retraite. Si l'armée est trop petite, `U` pour des renforts.
+3. La boucle de jeu (1 min 30) : tuer des civils qui se relèvent en zombies, piller une voiture ou un coffre, changer de formation, choisir une carte de level up, fuir une bataille en s'éloignant. Si l'armée est trop petite, `U` pour des renforts.
 4. Musique spooky (pendant la boucle) : faire remarquer le passage de la musique d'exploration à celle du combat quand l'armée se bat.
 5. Citrouille maléfique (1 min) : `P`. Le boss apparaît près du mage avec son thème au piano inspiré d'*Halloween*. Tous les joueurs peuvent l'attaquer, les récompenses vont au prorata de la contribution.
 6. Références aux films (30 s) : grimoire du mage (*Evil Dead*), tronçonneuse et batte de cricket, pub *Winchester* (*Shaun of the Dead*), bombardements (*28 semaines plus tard*), noms des bots.

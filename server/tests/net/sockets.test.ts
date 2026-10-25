@@ -3,6 +3,7 @@ import type { AddressInfo } from "node:net";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { WebSocket } from "ws";
 import {
+  CardKind,
   ClientMessageType,
   DemoCommand,
   JoinRejection,
@@ -156,9 +157,9 @@ describe("playing", () => {
     const client = await joined();
     client.send({ type: ClientMessageType.View, width: 80, height: 45 });
     const army = [...bench.world.armies.values()][0];
-    client.send({ type: ClientMessageType.Move, x: 0, y: 0 });
+    client.send({ type: ClientMessageType.Move, x: 20, y: 30 });
     await vi.waitFor(() => {
-      expect(army?.mage.targetX).toBe(0);
+      expect(army?.mage.targetX).toBeCloseTo(20, 1);
     });
     bench.step();
     sockets.sendSnapshots();
@@ -171,20 +172,35 @@ describe("playing", () => {
     client.socket.close();
   });
 
-  test("the player evolves its zombies", async () => {
+  test("the player chooses a card and casts its spell", async () => {
     const client = await joined();
     const army = [...bench.world.armies.values()][0];
     if (army === undefined) {
       throw new Error("Expected an army");
     }
-    client.send({ type: ClientMessageType.Evolve, evolution: "big-zombie" });
+    army.pendingLevels = 1;
+    army.cards = [{ kind: "spell", spell: "rallying-cry" }];
+    sockets.sendSnapshots();
     await vi.waitFor(() => {
-      expect([...army.units].map((unit) => unit.type)).toEqual(["big-zombie"]);
+      expect(client.of(ServerMessageType.Status).at(-1)?.cards).toEqual([
+        {
+          kind: CardKind.Spell,
+          index: bench.world.registries.spells.index("rallying-cry"),
+        },
+      ]);
+    });
+    client.send({ type: ClientMessageType.Choose, card: 0 });
+    await vi.waitFor(() => {
+      expect(army.spell).toBe("rallying-cry");
+    });
+    client.send({ type: ClientMessageType.Cast });
+    await vi.waitFor(() => {
+      expect(army.rally.until).toBeGreaterThan(bench.world.time);
     });
     client.socket.close();
   });
 
-  test("the player is told what it found and can evolve", async () => {
+  test("the player is told what it found", async () => {
     const client = await joined();
     const army = [...bench.world.armies.values()][0];
     if (army === undefined) {
@@ -198,10 +214,6 @@ describe("playing", () => {
           type: ServerMessageType.Loot,
           item: bench.world.registries.items.index("chainsaw"),
         },
-      ]);
-      const [status] = client.of(ServerMessageType.Status);
-      expect(status?.counts).toEqual([
-        { type: bench.world.registries.units.index("zombie"), count: 5 },
       ]);
     });
     client.socket.close();
@@ -237,9 +249,17 @@ describe("playing", () => {
     killMage(bench.world, army, killer);
     sockets.sendSnapshots();
     await vi.waitFor(() => {
-      expect(client.of(ServerMessageType.Died)).toEqual([
-        { type: ServerMessageType.Died, killer: "Evil Ash" },
+      expect(client.of(ServerMessageType.Died)).toMatchObject([
+        {
+          type: ServerMessageType.Died,
+          killer: "Evil Ash",
+          stats: { level: 1, mageKills: 0 },
+        },
       ]);
+    });
+    client.send({ type: ClientMessageType.Respawn });
+    await vi.waitFor(() => {
+      expect(army.respawnRequested).toBe(true);
     });
     client.socket.close();
   });
@@ -352,15 +372,15 @@ describe("formations and bounty", () => {
     }
     client.send({ type: ClientMessageType.Formation, formation: 1 });
     await vi.waitFor(() => {
-      expect(army.formationChange?.to).toBe(
+      expect(army.formation).toBe(
         Object.keys(bench.config.formations.selectable)[1],
       );
     });
     sockets.sendSnapshots();
     await vi.waitFor(() => {
       const status = client.of(ServerMessageType.Status).at(-1);
-      expect(status?.formation).toBe(0);
-      expect(status?.nextFormation).toBe(2);
+      expect(status?.formation).toBe(2);
+      expect(status?.formationCooldown).toBeCloseTo(1, 1);
     });
     client.socket.close();
   });

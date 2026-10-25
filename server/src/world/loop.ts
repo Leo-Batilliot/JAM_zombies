@@ -1,7 +1,9 @@
 import { runBots } from "../lobby/bots.js";
+import { updateHandicaps } from "../lobby/handicap.js";
 import { updateLobby } from "../lobby/lobby.js";
 import { maintainPopulations, moveCivilians } from "../systems/civilians.js";
 import { updateBattles } from "../systems/battle.js";
+import { fleeBattles } from "../systems/flee.js";
 import { runBombings } from "../systems/bombings.js";
 import { fight } from "../systems/combat.js";
 import { maintainCamps } from "../systems/camps.js";
@@ -9,7 +11,10 @@ import { maintainCrosses, updateCrosses } from "../systems/crosses.js";
 import { clearFound, equipArmies } from "../systems/equipment.js";
 import { runEvents } from "../systems/events.js";
 import { updateHostiles } from "../systems/hostiles.js";
-import { regenerateMages, respawnMages } from "../systems/mage.js";
+import { fuseArmies } from "../systems/evolution.js";
+import { healTroops } from "../systems/gifts.js";
+import { regenerateMages, respawnMages, trackRuns } from "../systems/mage.js";
+import { expireWalls } from "../systems/spells.js";
 import { maintainMists, updateMists } from "../systems/mists.js";
 import { maintainPoints, searchPoints } from "../systems/points.js";
 import { moveProjectiles } from "../systems/projectiles.js";
@@ -17,7 +22,10 @@ import { followMages } from "../systems/formation.js";
 import { moveMages } from "../systems/movement.js";
 import { reanimate } from "../systems/reanimation.js";
 import { separateBodies } from "../systems/separation.js";
-import { updateFormations } from "../systems/tactics.js";
+import { maintainPlaces } from "../systems/places.js";
+import { runAbilities } from "../systems/abilities.js";
+import { castMagic } from "../systems/magic.js";
+import { blockBodies } from "../systems/walls.js";
 import { updateTargets } from "../systems/targeting.js";
 import type { World } from "./world.js";
 
@@ -26,31 +34,40 @@ export type System = (world: World, dt: number) => void;
 export const systems: System[] = [
   clearFound,
   updateLobby,
+  updateHandicaps,
   runBots,
   maintainPopulations,
   runEvents,
   moveCivilians,
-  updateFormations,
   moveMages,
   updateTargets,
   followMages,
   updateHostiles,
   separateBodies,
+  blockBodies,
   fight,
+  runAbilities,
+  castMagic,
   moveProjectiles,
   updateMists,
   runBombings,
   updateCrosses,
   updateBattles,
+  fleeBattles,
   reanimate,
   regenerateMages,
+  healTroops,
+  fuseArmies,
   searchPoints,
   equipArmies,
   maintainPoints,
   maintainCrosses,
   maintainMists,
   maintainCamps,
+  maintainPlaces,
+  expireWalls,
   respawnMages,
+  trackRuns,
 ];
 
 export const runTick = (world: World, dt: number): void => {

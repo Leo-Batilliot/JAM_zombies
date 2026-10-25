@@ -4,15 +4,16 @@ export const farPoint = (
   world: World,
   distanceFromDanger: (x: number, y: number) => number,
   wanted: number,
+  tags?: string[],
 ): { x: number; y: number } => {
-  let best = world.randomPoint();
+  let best = world.randomPoint(tags);
   let bestDistance = distanceFromDanger(best.x, best.y);
   for (
     let attempt = 1;
     attempt < world.config.world.spawnAttempts && bestDistance < wanted;
     attempt++
   ) {
-    const point = world.randomPoint();
+    const point = world.randomPoint(tags);
     const distance = distanceFromDanger(point.x, point.y);
     if (distance > bestDistance) {
       best = point;
@@ -28,6 +29,18 @@ export const distanceToMages = (world: World, x: number, y: number): number => {
     if (alive) {
       nearest = Math.min(nearest, Math.hypot(mage.x - x, mage.y - y));
     }
+  }
+  return nearest;
+};
+
+export const distanceToHostiles = (
+  world: World,
+  x: number,
+  y: number,
+): number => {
+  let nearest = Infinity;
+  for (const npc of world.hostiles) {
+    nearest = Math.min(nearest, Math.hypot(npc.x - x, npc.y - y));
   }
   return nearest;
 };

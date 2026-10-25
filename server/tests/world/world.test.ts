@@ -1,7 +1,28 @@
 import { describe, expect, test } from "vitest";
-import { createBench } from "../support/bench.js";
+import { buildRegistries, generateCity, toClientConfig } from "@horde/shared";
+import { loadConfig } from "../../src/config/load.js";
+import { World } from "../../src/world/world.js";
+import {
+  createBench,
+  seededRandom,
+  sharedConfigDir,
+} from "../support/bench.js";
 
 describe("World", () => {
+  test("builds the same city as the one the client draws from its seed", () => {
+    const config = loadConfig(sharedConfigDir);
+    const world = new World(config, buildRegistries(config), seededRandom(5));
+    const sent = toClientConfig(config, world.citySeed);
+    expect(
+      generateCity(
+        sent.world.city,
+        sent.world.width,
+        sent.world.height,
+        sent.citySeed,
+      ),
+    ).toEqual(world.city);
+  });
+
   test("picks random points inside the map, away from the edges", () => {
     const { world, config } = createBench();
     const { width, height, spawnMargin } = config.world;
@@ -11,6 +32,20 @@ describe("World", () => {
       expect(x).toBeLessThanOrEqual(width - spawnMargin);
       expect(y).toBeGreaterThanOrEqual(spawnMargin);
       expect(y).toBeLessThanOrEqual(height - spawnMargin);
+    }
+  });
+
+  test("keeps free points inside the ramparts and out of buildings", () => {
+    const config = loadConfig(sharedConfigDir);
+    const world = new World(config, buildRegistries(config), seededRandom(5));
+    const { border } = config.world.city;
+    const edge = world.freePoint(1, config.world.height / 2, 1);
+    expect(edge.x).toBeGreaterThanOrEqual(border + 1);
+    for (const obstacle of world.city.obstacles) {
+      const x = obstacle.x + obstacle.width / 2;
+      const y = obstacle.y + obstacle.height / 2;
+      const free = world.freePoint(x, y, 1);
+      expect(world.obstacles.isFree(free.x, free.y, 0.99)).toBe(true);
     }
   });
 

@@ -1,5 +1,14 @@
-import { EntityKind, type Config, type Registries } from "@horde/shared";
+import {
+  EntityKind,
+  generateCity,
+  streetTag,
+  type City,
+  type Config,
+  type Registries,
+  type RunStats,
+} from "@horde/shared";
 import { SpatialGrid } from "./grid.js";
+import { ObstacleGrid } from "./obstacles.js";
 
 export interface Army {
   slot: number;
@@ -19,16 +28,64 @@ export interface Army {
   bot: Bot | undefined;
   groups: Set<AbandonedGroup>;
   battle: Battle | undefined;
-  retreat: Retreat | undefined;
   inventory: string[];
   found: string[];
   formation: string | undefined;
-  formationChange: FormationChange | undefined;
+  formationReadyAt: number;
+  heading: Direction;
+  headingTarget: Direction;
+  slots: Map<Unit, SlotOffset>;
+  slotLayout: string | undefined;
+  pendingLevels: number;
+  cards: Card[];
+  mutations: Map<string, Mutation>;
+  gifts: Map<string, number>;
+  spell: string | undefined;
+  spellReadyAt: number;
+  rally: Rally;
+  fusionAt: number;
+  run: Run;
+  lastRun: RunStats | undefined;
+  respawnRequested: boolean;
 }
 
-export interface FormationChange {
-  to: string;
-  at: number;
+export type Card =
+  | { kind: "mutation"; unit: string }
+  | { kind: "gift"; gift: string }
+  | { kind: "spell"; spell: string };
+
+export interface Rally {
+  until: number;
+  multiplier: number;
+}
+
+export interface Mutation {
+  branch: string;
+  tier: number;
+}
+
+export interface Run {
+  startedAt: number;
+  maxPower: number;
+  infected: number;
+  kills: number;
+  mageKills: number;
+  mutations: string[];
+}
+
+export interface Wall {
+  npcs: Npc[];
+  expiresAt: number;
+}
+
+export interface Direction {
+  x: number;
+  y: number;
+}
+
+export interface SlotOffset {
+  forward: number;
+  right: number;
 }
 
 export interface Remains {
@@ -56,26 +113,21 @@ export interface Force {
 export interface Battle {
   engagedAt: number;
   foes: Force[];
-  encircled: boolean;
-  freeSector: number;
-  escapeAngle: number;
+  closest: number;
 }
 
-export interface Retreat {
-  exitX: number;
-  exitY: number;
-  originX: number;
-  originY: number;
-  dirX: number;
-  dirY: number;
-  left: Unit[];
-  right: Unit[];
-  escort: Unit[] | undefined;
-  released: number;
+export interface Chase {
+  prey: Army;
+  since: number;
 }
 
 export interface Bot {
   thinkAt: number;
+  handicap: number;
+  lastX: number;
+  lastY: number;
+  chase: Chase | undefined;
+  ignored: Map<Army, number>;
 }
 
 export interface Reconnect {
@@ -96,8 +148,6 @@ export interface Mage {
   y: number;
   targetX: number;
   targetY: number;
-  facingX: number;
-  facingY: number;
   hp: number;
   hitAt: number;
   lossBudget: number;
@@ -129,6 +179,7 @@ export interface NpcGroup {
   targetX: number;
   targetY: number;
   wanderAt: number;
+  fleeingSince: number | undefined;
   members: Set<Npc>;
 }
 
@@ -236,6 +287,14 @@ export interface Camp {
   y: number;
   expiresAt: number;
   defenders: Set<Npc>;
+  marker: number;
+}
+
+export interface PlaceState {
+  camp: Camp | undefined;
+  respawnAt: number;
+  mortarAt: number;
+  gas: Set<Mist>;
 }
 
 export interface Bombing {
@@ -261,6 +320,7 @@ export type Entity =
 export type Body = Mage | Unit | Npc;
 
 const maxArmySlot = 0xff;
+const maxSeed = 0x7fffffff;
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
@@ -281,12 +341,18 @@ export class World {
   readonly projectiles = new Set<Projectile>();
   readonly mists = new Set<Mist>();
   readonly camps = new Set<Camp>();
+  readonly places = new Map<string, PlaceState>();
+  readonly abilityAt = new Map<number, number>();
   readonly bombings = new Set<Bombing>();
+  readonly walls = new Set<Wall>();
   readonly populationSpawnAt = new Map<number, number>();
   readonly hostiles = new Set<Npc>();
   readonly events = new Map<string, BossEvent>();
   readonly reconnects = new Map<string, Reconnect>();
   readonly grid: SpatialGrid;
+  readonly citySeed: number;
+  readonly city: City;
+  readonly obstacles: ObstacleGrid;
   bombingAt: number;
   #nextId = 1;
 
@@ -297,6 +363,17 @@ export class World {
   ) {
     this.grid = new SpatialGrid(config.world.gridCellSize);
     this.bombingAt = config.world.bombings.firstDelaySec;
+    this.citySeed = Math.floor(random() * maxSeed);
+    this.city = generateCity(
+      config.world.city,
+      config.world.width,
+      config.world.height,
+      this.citySeed,
+    );
+    this.obstacles = new ObstacleGrid(
+      this.city.obstacles,
+      config.world.city.cellSize,
+    );
   }
 
   clampX(x: number): number {
@@ -312,11 +389,73 @@ export class World {
     return margin + this.random() * (size - 2 * margin);
   }
 
-  randomPoint(): { x: number; y: number } {
-    return {
-      x: this.#randomCoordinate(this.config.world.width),
-      y: this.#randomCoordinate(this.config.world.height),
+  #candidate(tags: string[] | undefined): { x: number; y: number } {
+    const { street, border, templates } = this.config.world.city;
+    const districts = this.city.districts.filter((district) =>
+      templates[district.template]?.tags.some((tag) => tags?.includes(tag)),
+    );
+    const streets = tags?.includes(streetTag) === true && street > 0;
+    const choices = districts.length + (streets ? 1 : 0);
+    if (tags === undefined || choices === 0) {
+      return {
+        x: this.#randomCoordinate(this.config.world.width),
+        y: this.#randomCoordinate(this.config.world.height),
+      };
+    }
+    const district = districts[Math.floor(this.random() * choices)];
+    if (district !== undefined) {
+      return {
+        x: district.x + this.random() * district.size,
+        y: district.y + this.random() * district.size,
+      };
+    }
+    const lines = this.city.districts
+      .filter((entry) => entry.column > 0)
+      .map((entry) => entry.x - street / 2);
+    const line = lines[Math.floor(this.random() * lines.length)] ?? border;
+    const along =
+      border + this.random() * (this.config.world.height - 2 * border);
+    return this.random() < 0.5 ? { x: line, y: along } : { x: along, y: line };
+  }
+
+  freePoint(x: number, y: number, radius: number): { x: number; y: number } {
+    const { width, height, city } = this.config.world;
+    const margin = Math.min(city.border + radius, width / 2, height / 2);
+    const inside = {
+      x: clamp(x, margin, width - margin),
+      y: clamp(y, margin, height - margin),
     };
+    const free = this.obstacles.resolve(inside.x, inside.y, radius) ?? inside;
+    return {
+      x: clamp(free.x, margin, width - margin),
+      y: clamp(free.y, margin, height - margin),
+    };
+  }
+
+  #isSpaced(x: number, y: number): boolean {
+    const { spawnSpacing } = this.config.world;
+    for (const fixed of [...this.points, ...this.camps, ...this.crosses]) {
+      if (Math.hypot(fixed.x - x, fixed.y - y) < spawnSpacing) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  randomPoint(tags?: string[]): { x: number; y: number } {
+    const { spawnAttempts } = this.config.world;
+    const { clearance } = this.config.world.city;
+    let point = this.#candidate(tags);
+    for (let attempt = 1; attempt < spawnAttempts; attempt++) {
+      if (
+        this.obstacles.isFree(point.x, point.y, clearance) &&
+        this.#isSpaced(point.x, point.y)
+      ) {
+        return point;
+      }
+      point = this.#candidate(tags);
+    }
+    return this.freePoint(point.x, point.y, clearance);
   }
 
   randomNear(x: number, y: number, radius: number): { x: number; y: number } {
@@ -365,11 +504,25 @@ export class World {
       bot: undefined,
       groups: new Set(),
       battle: undefined,
-      retreat: undefined,
       inventory: [],
       found: [],
       formation: undefined,
-      formationChange: undefined,
+      formationReadyAt: 0,
+      heading: { x: 0, y: 1 },
+      headingTarget: { x: 0, y: 1 },
+      slots: new Map(),
+      slotLayout: undefined,
+      pendingLevels: 0,
+      cards: [],
+      mutations: new Map(),
+      gifts: new Map(),
+      spell: undefined,
+      spellReadyAt: 0,
+      rally: { until: 0, multiplier: 1 },
+      fusionAt: 0,
+      run: this.newRun(),
+      lastRun: undefined,
+      respawnRequested: false,
     } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
@@ -379,8 +532,6 @@ export class World {
       y: this.clampY(y),
       targetX: this.clampX(x),
       targetY: this.clampY(y),
-      facingX: 0,
-      facingY: 1,
       hp: this.config.gameplay.mage.baseHp,
       hitAt: -Infinity,
       lossBudget:
@@ -390,6 +541,17 @@ export class World {
     this.armies.set(army.slot, army);
     this.#add(army.mage);
     return army;
+  }
+
+  newRun(): Run {
+    return {
+      startedAt: this.time,
+      maxPower: 0,
+      infected: 0,
+      kills: 0,
+      mageKills: 0,
+      mutations: [],
+    };
   }
 
   unitMaxHp(type: string, item: string | undefined): number {
@@ -432,6 +594,7 @@ export class World {
       targetX: x,
       targetY: y,
       wanderAt: this.time,
+      fleeingSince: undefined,
       members: new Set(),
     };
     this.npcGroups.add(group);
@@ -491,7 +654,11 @@ export class World {
     return this.#addNpc(type, x, y, undefined, event);
   }
 
-  addCamp(x: number, y: number, lifetimeSec: number): Camp {
+  addObstacle(type: string, x: number, y: number): Npc {
+    return this.#addNpc(type, x, y, undefined, undefined);
+  }
+
+  addCamp(x: number, y: number, lifetimeSec: number, marker = 0): Camp {
     const camp: Camp = {
       id: this.#nextId++,
       kind: EntityKind.Camp,
@@ -499,6 +666,7 @@ export class World {
       y: this.clampY(y),
       expiresAt: this.time + lifetimeSec,
       defenders: new Set(),
+      marker,
     };
     this.camps.add(camp);
     this.#add(camp);
@@ -642,7 +810,8 @@ export class World {
     army.corpses.clear();
     army.groups.clear();
     army.battle = undefined;
-    army.retreat = undefined;
+    army.slots.clear();
+    army.slotLayout = undefined;
     this.remove(army.mage.id);
   }
 
@@ -659,6 +828,7 @@ export class World {
     switch (entity.kind) {
       case EntityKind.Unit:
         entity.army.units.delete(entity);
+        entity.army.slots.delete(entity);
         entity.group?.units.delete(entity);
         break;
       case EntityKind.Npc:

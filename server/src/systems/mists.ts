@@ -1,5 +1,6 @@
 import { EntityKind } from "@horde/shared";
 import type { Mist, World } from "../world/world.js";
+import { bodyLayer } from "./bodies.js";
 import { damage } from "./death.js";
 
 const lifetime = (world: World, type: string): number => {
@@ -47,13 +48,18 @@ const drift = (world: World, mist: Mist, dt: number): void => {
 };
 
 const harm = (world: World, mist: Mist, dt: number): void => {
-  const { radius, damagePerSec, name } = world.registries.mists.get(mist.type);
+  const { radius, damagePerSec, name, groundOnly } = world.registries.mists.get(
+    mist.type,
+  );
   if (damagePerSec <= 0) {
     return;
   }
   for (const id of world.grid.queryRadius(mist.x, mist.y, radius)) {
     const body = world.entities.get(id);
-    if (body?.kind === EntityKind.Unit || body?.kind === EntityKind.Mage) {
+    if (
+      (body?.kind === EntityKind.Unit || body?.kind === EntityKind.Mage) &&
+      (groundOnly !== true || bodyLayer(world, body) === "ground")
+    ) {
       damage(world, body, damagePerSec * dt, undefined, name);
     }
   }

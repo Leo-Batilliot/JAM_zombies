@@ -6,27 +6,20 @@ export type Formation = Config["formations"]["neutral"];
 export const formationIds = (world: World): string[] =>
   Object.keys(world.config.formations.selectable);
 
-const formationById = (world: World, id: string | undefined): Formation =>
-  (id === undefined ? undefined : world.config.formations.selectable[id]) ??
-  world.config.formations.neutral;
-
-export const layoutOf = (world: World, army: Army): Formation =>
-  formationById(world, army.formation);
-
 export const effectsOf = (world: World, army: Army): Formation =>
-  army.formationChange === undefined
-    ? layoutOf(world, army)
-    : world.config.formations.neutral;
+  (army.formation === undefined
+    ? undefined
+    : world.config.formations.selectable[army.formation]) ??
+  world.config.formations.neutral;
 
 export const formationIndex = (world: World, id: string | undefined): number =>
   id === undefined ? 0 : formationIds(world).indexOf(id) + 1;
 
-export const changeProgress = (world: World, army: Army): number => {
-  const { changeSec } = world.config.formations;
-  if (army.formationChange === undefined || changeSec <= 0) {
-    return 0;
-  }
-  return 1 - (army.formationChange.at - world.time) / changeSec;
+export const formationCooldown = (world: World, army: Army): number => {
+  const { cooldownSec } = world.config.formations;
+  return cooldownSec <= 0
+    ? 0
+    : Math.max(0, army.formationReadyAt - world.time) / cooldownSec;
 };
 
 export const orderFormation = (
@@ -38,23 +31,12 @@ export const orderFormation = (
     !army.alive ||
     id === undefined ||
     !Object.hasOwn(world.config.formations.selectable, id) ||
-    (army.formationChange ?? { to: army.formation }).to === id
+    army.formation === id ||
+    world.time < army.formationReadyAt
   ) {
     return false;
   }
-  army.formationChange = {
-    to: id,
-    at: world.time + world.config.formations.changeSec,
-  };
+  army.formation = id;
+  army.formationReadyAt = world.time + world.config.formations.cooldownSec;
   return true;
-};
-
-export const updateFormations = (world: World): void => {
-  for (const army of world.armies.values()) {
-    const change = army.formationChange;
-    if (change !== undefined && world.time >= change.at) {
-      army.formation = change.to;
-      army.formationChange = undefined;
-    }
-  }
 };

@@ -1,16 +1,9 @@
-import type { Army, Unit, World } from "../world/world.js";
+import type { Army, SlotOffset, Unit, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 import { reachDistance } from "./combat.js";
-import { armyPace } from "./enlist.js";
-import { speedBonus } from "./equipment.js";
-import { interceptPoint, tunnelSlots } from "./retreat.js";
-import { layoutOf, type Formation } from "./tactics.js";
+import { marchSpeed, powerPace, rallyBonus, unitSpeed } from "./pace.js";
+import { effectsOf, type Formation } from "./tactics.js";
 import { currentTarget, type Target } from "./targeting.js";
-
-export interface SlotOffset {
-  forward: number;
-  right: number;
-}
 
 const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
@@ -132,27 +125,77 @@ export const slotOffsets = (
   }
 };
 
-export const formationSlots = (
-  world: World,
+const slotPosition = (
   army: Army,
-  units: Iterable<Unit> = army.units,
-): Map<Unit, { x: number; y: number }> => {
+  offset: SlotOffset,
+): { x: number; y: number } => {
+  const { mage, heading } = army;
+  return {
+    x: mage.x + heading.x * offset.forward - heading.y * offset.right,
+    y: mage.y + heading.y * offset.forward + heading.x * offset.right,
+  };
+};
+
+const formationUnits = (army: Army): Unit[] =>
+  [...army.units].filter((unit) => unit.group === undefined);
+
+const isAssigned = (army: Army, units: Unit[]): boolean =>
+  army.slotLayout === (army.formation ?? "") &&
+  army.slots.size === units.length &&
+  units.every((unit) => army.slots.has(unit));
+
+const assign = (army: Army, units: Unit[], offsets: SlotOffset[]): void => {
+  const free = new Set(units);
+  for (const offset of offsets) {
+    const position = slotPosition(army, offset);
+    let best: Unit | undefined;
+    let bestDistance = Infinity;
+    for (const unit of free) {
+      const gap = Math.hypot(unit.x - position.x, unit.y - position.y);
+      if (gap < bestDistance) {
+        best = unit;
+        bestDistance = gap;
+      }
+    }
+    if (best === undefined) {
+      return;
+    }
+    free.delete(best);
+    army.slots.set(best, offset);
+  }
+};
+
+export const assignSlots = (world: World, army: Army): void => {
+  const units = formationUnits(army);
+  if (isAssigned(army, units)) {
+    return;
+  }
   const front: Unit[] = [];
   const back: Unit[] = [];
   for (const unit of units) {
     const { rank } = world.registries.units.get(unit.type);
     (rank === "front" ? front : back).push(unit);
   }
-  const offsets = slotOffsets(front.length, back.length, layoutOf(world, army));
-  const { x, y, facingX, facingY } = army.mage;
+  const offsets = slotOffsets(
+    front.length,
+    back.length,
+    effectsOf(world, army),
+  );
+  army.slots.clear();
+  assign(army, front, offsets.slice(0, front.length));
+  assign(army, back, offsets.slice(front.length));
+  army.slotLayout = army.formation ?? "";
+};
+
+export const formationSlots = (
+  world: World,
+  army: Army,
+): Map<Unit, { x: number; y: number }> => {
+  assignSlots(world, army);
   const slots = new Map<Unit, { x: number; y: number }>();
-  [...front, ...back].forEach((unit, index) => {
-    const offset = offsets[index] as SlotOffset;
-    slots.set(unit, {
-      x: x + facingX * offset.forward - facingY * offset.right,
-      y: y + facingY * offset.forward + facingX * offset.right,
-    });
-  });
+  for (const [unit, offset] of army.slots) {
+    slots.set(unit, slotPosition(army, offset));
+  }
   return slots;
 };
 
@@ -162,19 +205,20 @@ const moveToward = (
   x: number,
   y: number,
   step: number,
-): void => {
+): number => {
   const dx = x - unit.x;
   const dy = y - unit.y;
-  const distance = Math.hypot(dx, dy);
-  if (distance <= step) {
+  const gap = Math.hypot(dx, dy);
+  if (gap <= step) {
     world.setPosition(unit, x, y);
-  } else {
-    world.setPosition(
-      unit,
-      unit.x + (dx / distance) * step,
-      unit.y + (dy / distance) * step,
-    );
+    return 0;
   }
+  world.setPosition(
+    unit,
+    unit.x + (dx / gap) * step,
+    unit.y + (dy / gap) * step,
+  );
+  return gap - step;
 };
 
 const chase = (world: World, unit: Unit, target: Target, step: number) => {
@@ -184,65 +228,25 @@ const chase = (world: World, unit: Unit, target: Target, step: number) => {
   }
 };
 
-const regroupStep = (
-  world: World,
-  unit: Unit,
-  slot: { x: number; y: number },
-  step: number,
-): number => {
-  const {
-    distance: far,
-    arriveDistance,
-    speedMultiplier,
-  } = world.config.gameplay.regroup;
-  const gap = Math.hypot(slot.x - unit.x, slot.y - unit.y);
-  if (gap > far) {
-    unit.returning = true;
-  } else if (gap <= arriveDistance) {
-    unit.returning = false;
-  }
-  return unit.returning ? step * speedMultiplier : step;
-};
-
 export const followMages = (world: World, dt: number): void => {
+  const { arriveDistance, speedMultiplier } = world.config.gameplay.regroup;
   for (const army of world.armies.values()) {
-    const tunnel = tunnelSlots(world, army);
-    const formation = formationSlots(
-      world,
-      army,
-      [...army.units].filter(
-        (unit) => unit.group === undefined && !tunnel.has(unit),
-      ),
-    );
-    const pace = armyPace(world, army) * dt;
+    const slots = formationSlots(world, army);
+    const march = marchSpeed(world, army) * dt;
+    const pace = powerPace(world, army) * rallyBonus(world, army) * dt;
     for (const unit of army.units) {
-      const step =
-        world.registries.units.get(unit.type).speed *
-        speedBonus(world, unit) *
-        pace;
       const target = currentTarget(world, unit);
-      const wall = tunnel.get(unit);
-      const slot = formation.get(unit);
-      if (wall !== undefined) {
-        const goal = interceptPoint(world, unit, wall);
-        moveToward(
-          world,
-          unit,
-          goal.x,
-          goal.y,
-          regroupStep(world, unit, goal, step),
-        );
-      } else if (target !== undefined) {
+      const slot = slots.get(unit);
+      if (target !== undefined) {
         unit.returning = false;
-        chase(world, unit, target, step);
+        chase(world, unit, target, unitSpeed(world, unit) * pace);
       } else if (slot !== undefined) {
-        moveToward(
-          world,
-          unit,
-          slot.x,
-          slot.y,
-          regroupStep(world, unit, slot, step),
-        );
+        const step = unit.returning
+          ? unitSpeed(world, unit) * speedMultiplier * pace
+          : march;
+        if (moveToward(world, unit, slot.x, slot.y, step) <= arriveDistance) {
+          unit.returning = false;
+        }
       }
     }
   }
