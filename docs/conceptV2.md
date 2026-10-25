@@ -149,7 +149,7 @@ Chaque lignée : une unité de base, 2 branches exclusives de 3 paliers. Soit 7 
   Au-dessus du mage ennemi : son nom (dans sa couleur d'armée), sa puissance actuelle / sa puissance si toutes ses troupes revivent, et en dessous sa barre de PV, plus grande que celle des troupes.
 - [ ] **UI-05 HUD en haut au centre** | Lot 1 | remplace le HUD de 2.17 | 9.16
   En haut au centre, toujours visible : niveau, barre d'expérience, PV du mage, puissance actuelle / puissance si tout revit, indicateur de lenteur (MOV-03). Le classement reste en haut à droite. Les cartes de level up et le sort actif ne recouvrent pas ce bloc.
-- [ ] **UI-06 Minimap agrandie et détaillée** | Lot 1 pour la taille, Lot 3 pour le détail | remplace 5.11 | 9.17
+- [ ] **UI-06 Minimap agrandie et détaillée** | Lot 1 pour la taille, Lot 3 pour le détail | remplace 5.11 | 9.17, 12.16
   Nettement plus grande (taille dans `client.json`, adaptée au téléphone), avec le plan de la ville (quartiers, remparts, forêt) et des icônes : lieux, points d'intérêt, ressources, événements, boss, champions, prime. Les mages ennemis n'apparaissent que dans un rayon de détection autour du joueur, qui grandit avec sa puissance. Le premier du classement reste visible partout (prime, §7.6).
 - [ ] **UI-07 Caméra qui dézoome avec la puissance** | Lot 1 | 9.18
   Plus l'armée est forte, plus la caméra dézoome, de façon continue et douce, entre un minimum et un maximum de config. La gestion d'intérêt (§9.2) s'élargit avec la vue : débit à mesurer (**À vérifier**).
@@ -174,30 +174,30 @@ Une vieille ville médiévale d'Europe, comme Carcassonne, de nos jours, envahie
 
 ### Tâches
 
-- [ ] **ART-01 Plan de la ville** | Lot 3
+- [ ] **ART-01 Plan de la ville** | Lot 3 | 12.06
   Carte découpée en quartiers fixes ou tirés au hasard parmi des gabarits (centre pavé, quartier de la cathédrale, château, hôpital, caserne près des portes, parc et forêt). Rues et places assez larges pour les formations. Les points d'intérêt temporaires (§7.1) apparaissent dans les quartiers qui leur vont (les voitures dans les rues, les tombeaux au cimetière).
-- [ ] **ART-02 Bâtiments et murets bloquants** | Lot 3
+- [ ] **ART-02 Bâtiments et murets bloquants** | Lot 3 | 12.07
   Les bâtiments et les murets sont des obstacles simples (cercles et rectangles). Les unités, le mage et les bots les évitent par un évitement local, sans vrai pathfinding. Les ruelles deviennent tactiques (embuscades, goulets).
-- [ ] **ART-03 Palette** | Lot 3
+- [ ] **ART-03 Palette** | Lot 3 | 12.03
   Nuit d'automne : pierre gris-bleu, terre brune, mousse olive, feuilles rousses, lueurs orangées des lanternes et des feux. Le vert nécrotique et le violet sont réservés à la magie des mages. Fini le violet, le néon et le vert partout. La palette est fixée dans un fichier de référence et appliquée à tous les assets (ART-07).
-- [ ] **ART-04 Interface dans le même style** | Lot 3
+- [ ] **ART-04 Interface dans le même style** | Lot 3 | 12.15
   L'interface (`client/src/style.css`, aujourd'hui violette) reprend la palette : cuir, parchemin et métal vieilli, dans l'esprit du grimoire du mage (proposition **À vérifier**).
-- [ ] **ART-05 Sol en tuiles** | Lot 3
+- [ ] **ART-05 Sol en tuiles** | Lot 3 | 12.08
   Le sol n'est plus une texture répétée : tuiles de pavés, terre, herbe, mousse, feuilles, avec des transitions entre zones et des variantes pour casser la répétition.
-- [ ] **ART-06 Lisibilité des silhouettes** | Lot 3
+- [ ] **ART-06 Lisibilité des silhouettes** | Lot 3 | 12.05, 12.12
   Règles communes à toutes les unités :
   - sprites d'environ 48 px pour une unité de base, contour sombre d'1 px, palette limitée ;
   - chaque palier est nettement plus grand que le précédent (environ x1,3, **À vérifier**) ;
   - chaque branche a sa forme propre (massive, à quatre pattes, avec engin, avec robe...) ;
   - chaque lignée a sa signature : zombie voûté, squelette fin et blanc, bête à quatre pattes, volant avec ombre au sol, spectre semi-transparent ;
   - l'arme ou l'engin d'une unité à distance est dessiné en gros.
-- [ ] **ART-07 Production des assets** | Lot 3
+- [ ] **ART-07 Production des assets** | Lot 3 | 12.02, 12.04
   Personne ne dessine dans l'équipe. On mélange trois sources, unifiées par la palette et le contour communs :
   - l'écosystème **LPC** (Liberated Pixel Cup) comme base : personnages d'environ 48 px avec marche, attaque et mort, tuiles de 32 px avec remparts et pavés, générateur de personnages pour le chevalier, les pillards, les civils et les soldats. Licence CC-BY-SA 3.0 / GPL 3.0 : crédits obligatoires, les sprites modifiés restent sous la même licence ;
   - des **packs itch.io** pour combler les manques (usage commercial autorisé, redistribution interdite, à vérifier pack par pack) ;
   - le **script de génération** pour les effets (halos, sorts, contours, barres, icônes de minimap), les variantes de palier et les monstres introuvables (assemblage, recoloration, agrandissement).
   Un script de normalisation ramène chaque sprite importé à la palette et au contour communs. Chaque asset et sa licence sont notés dans `docs/credits.md`. L'atlas actuel (512 x 512) ne suffira pas : prévoir plusieurs atlas ou un atlas plus grand.
-- [ ] **ART-08 Recherche des assets** | Lot 3
+- [ ] **ART-08 Recherche des assets** | Lot 3 | 12.01
   Avant d'importer : une liste par besoin (unité, tuile, décor, effet) avec la source retenue, sa licence et ce qui reste à générer. Premières pistes trouvées, licences à relire avant usage :
   - liste des assets du guide de style LPC : https://lpc.opengameart.org/static/LPC-Style-Guide/build/assets.html
   - LPC Skeleton : https://opengameart.org/content/lpc-skeleton
@@ -206,17 +206,17 @@ Une vieille ville médiévale d'Europe, comme Carcassonne, de nos jours, envahie
   - tuiles de remparts Castle Wall de Xanderwood : https://xanderwood.itch.io/castle-wall-tileset
   - squelettes top-down de Rogarca (usage commercial, pas de redistribution) : https://rogarca.itch.io/room-g16-skeleton
   - Little Lich pack (zombie, squelette, liche, tuiles) : https://insomniousnightgamekeeper.itch.io/little-lich-asset-pack
-- [ ] **ART-09 Le mage est clairement un zombie** | Lot 3
+- [ ] **ART-09 Le mage est clairement un zombie** | Lot 3 | 12.12
   Le mage et ses apparences (nécromancien, liche, sorcière, médecin de peste) sont zombifiés : peau verdâtre, chairs abîmées, grimoire lumineux. On doit voir au premier coup d'oeil un mage zombie.
-- [ ] **ART-10 Mur d'enceinte** | Lot 3
+- [ ] **ART-10 Mur d'enceinte** | Lot 3 | 12.09
   Un haut mur de pierre entoure la carte, avec des tours, des créneaux et des portes fermées, au lieu du vide noir. Au-delà, des toits et une forêt sombre suggèrent le reste du monde. La Gargouille est perchée sur une tour.
-- [ ] **ART-11 Décor composé** | Lot 3
+- [ ] **ART-11 Décor composé** | Lot 3 | 12.10
   Le décor n'est plus éparpillé au hasard : il est placé par compositions qui ont un sens (tombes alignées dans un cimetière clos, buissons le long des murs, arbres en bosquets, lampadaires le long des rues, débris autour d'une voiture accidentée, bougies et fleurs autour d'un tombeau). Les compositions sont décrites dans la config.
-- [ ] **ART-12 Nuit éclairée** | Lot 3
+- [ ] **ART-12 Nuit éclairée** | Lot 3 | 12.11
   Un voile sombre recouvre la carte, percé par des halos : lanternes, feux de camp, aura du mage, sorts, lieux importants. Les lieux intéressants attirent l'oeil par leur lumière. Un mode dégradé (moins de halos, sans voile) pour les téléphones faibles (**À vérifier**).
-- [ ] **ART-13 Mécaniques existantes dans la nouvelle DA** | Lot 3
+- [ ] **ART-13 Mécaniques existantes dans la nouvelle DA** | Lot 3 | 12.14
   Croix sacrées en calvaires de pierre ou parvis bénis, brumes, explosions des bombardements tirées par les mortiers de la caserne, camps armés en barricades de survivants, Citrouille dans un champ de citrouilles hors du centre (propositions **À vérifier**).
-- [ ] **ART-14 Animations** | Lot 3
+- [ ] **ART-14 Animations** | Lot 3 | 12.13
   Marche, attaque, mort et relève pour chaque unité, plus l'animation de fusion (EVO-04) et de level up.
 
 ## 6. Nouveau contenu (CONT)
@@ -285,7 +285,7 @@ Ce qui disparaît : cercle d'aggro, bouton Retraite, tunnel de retraite, encercl
   L'octet de PV par entité (UI-01) et la vue élargie par le dézoom (UI-07) augmentent le débit. Nouvelle mesure avec le script de test de charge, résultats dans `docs/load-test.md`.
 - [ ] **TECH-02 Performance du rendu** | Lot 1 et Lot 3 | 9.19
   Contours (UI-02), barres de PV permanentes, voile de nuit et halos (ART-12) : mesure des fps sur un vrai téléphone avant de valider chaque technique.
-- [ ] **TECH-03 Obstacles côté serveur** | Lot 3
+- [ ] **TECH-03 Obstacles côté serveur** | Lot 3 | 12.07, 12.17
   Collisions des bâtiments (ART-02) dans la grille spatiale, et coût de l'évitement avec 40 participants (temps de tick).
 - [ ] **TECH-04 Config et registres** | Lot 2 | 10.01
   Nouveaux schémas zod : arbres à branches et ratios de fusion, cartes et dons, courbe de ralentissement, champions, compositions de décor. Tests unitaires pour la fusion, le transfert recalculé et les branches exclusives.

@@ -4,6 +4,55 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Cibles et corps toujours à l'intérieur des remparts | L.BA
+
+- **Quoi** : un point libre est ramené à l'intérieur des remparts (bordure plus le rayon du corps), puis sorti des obstacles. Il sert aux corps repoussés par les murs, aux cibles de déplacement des joueurs et des bots, et aux apparitions. Un bot qui fuit essaie plusieurs directions pour ne pas se coincer contre un mur.
+- **Pourquoi** : la sortie la plus courte d'un rempart est vers l'extérieur. En simulation, des civils sortaient de la carte et des bots restaient collés aux remparts ou visaient un point dans un muret.
+- **Impact** : un clic sur un bâtiment amène le mage à son bord. Les mages s'arrêtent à 1,5 m du bord de la carte.
+- **Avis** : Validée. Moins de bots immobiles en simulation.
+
+### Animations de fusion et de level up en anneaux | L.BA
+
+- **Quoi** : un anneau vert nécrotique au moment où une unité évoluée se relève (fusion ou relève au même palier), un anneau violet autour du mage à chaque niveau. Couleurs, rayons et durées dans `client.effects`.
+- **Pourquoi** : ART-14 sans nouveau message réseau : le client voit déjà le drapeau de relève et le niveau.
+- **Impact** : une relève d'unité évoluée hors fusion montre aussi l'anneau.
+- **Avis** : Provisoire. À remplacer par de vraies animations si un asset convient.
+
+### Nuit en voile percé de halos, coupée si le jeu rame | L.BA
+
+- **Quoi** : un voile sombre est rendu à demi-résolution dans une texture, puis les halos l'effacent : lampadaires des compositions, mages, camps, points d'intérêt, croix, bombardements (rayons par type d'entité dans `client.night`). Le voile se coupe pour le reste de la partie si les fps restent sous 28 pendant 6 s.
+- **Pourquoi** : ART-12 avec un mode dégradé sans détection de modèle de téléphone.
+- **Impact** : un rendu de plus par image, à demi-résolution.
+- **Avis** : À vérifier. Fps et lisibilité à mesurer sur un vrai téléphone.
+
+### Ville dessinée depuis la graine du serveur | L.BA
+
+- **Quoi** : le client reconstruit la ville avec la même fonction que le serveur (`generateCity`) à partir de la graine reçue. Les bâtiments rectangulaires sont un toit en tuiles avec une façade en bas, les obstacles ronds (arbres, tours, fontaines) un sprite à leur taille. L'apparence de chaque sol et de chaque obstacle est dans `client.city`. Les rues passent en dalles pour se distinguer des quartiers pavés.
+- **Pourquoi** : les bâtiments bloquaient côté serveur mais étaient invisibles. Un test vérifie que le plan du client est celui du serveur et que chaque sprite existe dans l'atlas.
+- **Impact** : le décor reste sous les unités, même les grands arbres.
+- **Avis** : Provisoire. Les unités passent devant les arbres et les tours, à revoir si c'est gênant.
+
+### Interface en cuir et parchemin | L.BA
+
+- **Quoi** : fonds en cuir sombre, texte parchemin, accents laiton à la place du violet (`client/src/style.css`).
+- **Pourquoi** : ART-04, le violet est réservé à la magie des mages.
+- **Impact** : aucun changement de mise en page.
+- **Avis** : À vérifier. Proposition du concept, à valider en jeu.
+
+### Citrouille au parc ou en forêt | L.BA
+
+- **Quoi** : les événements peuvent cibler des quartiers (`districts`, comme les camps). La Citrouille apparaît au parc ou en forêt, où un champ de citrouilles est dessiné. Les croix deviennent des calvaires de pierre, les camps des palissades.
+- **Pourquoi** : ART-13, chaque élément a une raison d'être là.
+- **Impact** : la Citrouille n'apparaît plus au centre pavé.
+- **Avis** : À vérifier. Propositions du concept.
+
+### Chaîne d'assets LPC et ville en quartiers | A.PI
+
+- **Quoi** : les sprites viennent des packs LPC, découpés, recolorés et ramenés à une palette de nuit d'automne par `tools/assets/build.py`, puis paquetés en plusieurs atlas. La carte est une grille de 4 x 4 quartiers tirés parmi des gabarits de `world.json`, séparés par des rues, entourés de remparts. Les obstacles sont des rectangles et des cercles : les corps qui y entrent sont repoussés, sans pathfinding. Un bot qui n'avance plus fait un détour.
+- **Pourquoi** : ART-01, ART-02, ART-03 et ART-07 sans dessinateur dans l'équipe, avec un coût serveur faible.
+- **Impact** : nouvel outil Python (Pillow) pour régénérer l'atlas. Les assets LPC imposent les crédits et la licence CC-BY-SA.
+- **Avis** : Validée. Les obstacles coûtent environ 2,5 % du tick.
+
 ### Bots qui mutent la lignée en attente de fusion | A.PI
 
 - **Quoi** : un bot prend la carte de mutation de la lignée qui a le plus d'unités au palier le plus haut qu'elle a débloqué (toutes ses unités si elle n'a pas de mutation), à force égale celle qui pèse le plus. Si aucune mutation n'aide son armée, il prend un don.

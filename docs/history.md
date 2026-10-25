@@ -4,6 +4,41 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Ville dessinée, nuit, effets et interface du Lot 3 | 12.01, 12.07-12.17 | L.BA
+
+- `tools/assets/recipes.json` : sols, toits, murs, remparts, tours, porte, arbres, fontaine, étals, tombes, lampadaires, tonneaux, voiture, calvaire et palissade tirés des packs LPC.
+- `client/public/atlas/` : atlas régénéré.
+- `client/src/game/decor.ts` : plan de la ville reconstruit depuis la graine envoyée, sols, variantes de tuiles, compositions de décor, lumières, tours et portes des remparts, forêt au-delà.
+- `client/src/game/map.ts` : sols en tuiles par quartier, bâtiments en toit et façade, obstacles ronds en sprites, remparts, forêt assombrie hors de la carte.
+- `client/src/game/night.ts` : voile de nuit percé de halos (lampadaires, mages, camps, points d'intérêt, croix, bombardements), coupé si les fps restent bas.
+- `client/src/game/effects.ts` : anneaux de fusion et de level up.
+- `client/src/minimap.ts` : plan de la ville, obstacles et repères des quartiers.
+- `client/src/style.css` : interface en cuir et parchemin à la place du violet.
+- `client/src/game/game.ts` : nuit, effets et plan de la minimap branchés.
+- `server/src/world/world.ts`, `server/src/systems/walls.ts`, `server/src/systems/movement.ts` : point libre toujours à l'intérieur des remparts, pour les corps repoussés et pour les cibles de déplacement.
+- `server/src/lobby/bots.ts` : fuite qui contourne les remparts et les murets.
+- `server/src/systems/events.ts` : quartiers d'apparition des événements.
+- `shared/src/config/schema.ts`, `shared/src/registry.ts` : apparence de la ville, nuit, effets, quartiers des événements vérifiés.
+- `shared/config/client.json`, `world.json`, `events.json` : apparence de la ville, nuit, effets, rues en dalles, champ de citrouilles au parc, Citrouille au parc ou en forêt.
+- `.prettierignore` : atlas généré et assets bruts ignorés.
+- `client/tests/`, `server/tests/`, `shared/tests/` : plan identique côté serveur et client, sprites présents dans l'atlas, nuit, effets, point libre, bords de carte.
+- `docs/assets.md`, `docs/credits.md`, `docs/load-test.md`, `docs/conceptV2.md` : sources des assets, crédits LPC, mesures du Lot 3, numéros d'étape.
+
+### Chaîne d'assets LPC, sprites en 4 directions et ville côté serveur | 12.02-12.07, 12.12-12.13 | A.PI
+
+- `assets/` : PNG LPC bruts avec leurs licences, ancien atlas dans `assets/legacy`, sources dans `sources.json`.
+- `tools/assets/build.py`, `recipes.json`, `palette.json` : découpe des planches, superposition des calques, recoloration, palette, contour, paquetage en plusieurs atlas.
+- `client/public/atlas/` : atlas généré et manifeste.
+- `client/src/game/assets.ts` : chargement de plusieurs atlas.
+- `client/src/game/sprites.ts`, `entities.ts` : animations en 4 directions, mort et relève animées, repli sur les sprites de profil.
+- `client/src/game/outlines.ts` : contours précalculés sur plusieurs pages.
+- `shared/src/city.ts` : plan de la ville en gabarits de quartiers, remparts, obstacles en rectangles et cercles.
+- `server/src/world/obstacles.ts`, `server/src/systems/walls.ts` : grille des obstacles, corps repoussés le long des murs.
+- `server/src/world/world.ts`, `spawn.ts`, `server/src/systems/points.ts`, `camps.ts` : ville générée au démarrage, apparitions hors des obstacles et dans les quartiers qui leur vont.
+- `server/src/lobby/bots.ts` : bots qui se débloquent par un détour.
+- `server/src/net/sockets.ts` : graine de la ville envoyée au client.
+- `shared/config/world.json`, `client.json`, `lobby.json` : gabarits de quartiers et compositions, sprites des 21 unités, déblocage des bots.
+
 ### Retours de jeu sur les Lots 1 et 2 | 11.01-11.05 | A.PI
 
 - `server/src/lobby/handicap.ts` : plafond des bots selon le meilleur joueur humain, handicap calculé sur la force potentielle (vivants et cadavres).

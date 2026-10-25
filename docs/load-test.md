@@ -137,3 +137,18 @@ Simulation hors réseau d'un lobby de 12 bots (script jetable, 16 min de jeu) :
 - avant : le meilleur bot atteint 631 de force et le plafond de 150 unités, dont 110 squelettes archers jamais fusionnés chez un autre bot, niveau 11 après 16 min ;
 - après, sans joueur : le meilleur bot plafonne entre 50 et 63 de force pour une marge de 40 (léger dépassement quand un gain d'un seul coup arrive juste avant le plafond) ;
 - après, avec un joueur immobile de force 5 : tous les bots s'arrêtent à 46 (5 x 1,2 + 40) et n'en bougent plus.
+
+## Concept V2, Lot 3 (ville et obstacles)
+
+Machine : Intel Core i5-12450H, Node 24.21. 40 participants, 150 zombies chacun, vue PC, 20 s après 3 s de chauffe. Deux passages avec la ville du Lot 3, deux passages avec la même config sans obstacles ni remparts, pour isoler leur coût.
+
+- Sans obstacles : tick de 47,2 à 48,0 ms en moyenne, 59 ms au 95e centile, 67 à 121 ms au pire. Débit de 23 à 24 Ko/s en moyenne.
+- Avec la ville : tick de 48,7 à 53,6 ms en moyenne, 63 à 70 ms au 95e centile, 75 à 111 ms au pire. Débit de 27 à 34 Ko/s en moyenne.
+
+Au profil CPU, les obstacles (`walls.ts`, `obstacles.ts`, `city.ts`) pèsent environ 2,5 % du temps du serveur. Le reste est inchangé : la grille spatiale (22 %) et la séparation des corps (15 %) dominent comme avant. Cette machine est environ 2,4 fois plus lente que celle de la phase 11 (20 ms sans la ville) : le budget de 50 ms y est déjà atteint sans obstacles.
+
+Simulation hors réseau d'un lobby de 12 bots sans joueur (script jetable, 10 à 16 min de jeu) :
+- le plafond de la phase 11 tient avec la ville : le meilleur bot reste entre 40 et 58 de force ;
+- avant la correction des cibles, 2 à 6 bots sur 12 restaient sur place chaque minute, collés à un rempart ou visant un point dans un muret ; après, 1 à 3, pour la plupart en bataille. Un bot qui a perdu toutes ses unités reste à côté d'un civil qu'il ne peut pas infecter, comme avant la ville.
+
+Côté client, le voile de nuit se désactive seul si le jeu reste sous 28 fps pendant 6 s (`client.night`). Les fps sur un vrai téléphone restent à mesurer.
