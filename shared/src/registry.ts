@@ -246,6 +246,61 @@ const checkPowers = (registries: Registries): void => {
   }
 };
 
+export const streetTag = "street";
+
+const checkCity = (config: Config): void => {
+  const { city } = config.world;
+  const cells = city.columns * city.rows;
+  const templates = Object.entries(city.templates);
+  const minimum = templates.reduce(
+    (sum, [, template]) => sum + template.min,
+    0,
+  );
+  const maximum = templates.reduce(
+    (sum, [, template]) => sum + template.max,
+    0,
+  );
+  if (minimum > cells) {
+    throw new RegistryError(
+      `City templates need ${String(minimum)} districts, the grid has ${String(cells)}`,
+    );
+  }
+  if (maximum < cells) {
+    throw new RegistryError(
+      `City templates fill ${String(maximum)} districts, the grid has ${String(cells)}`,
+    );
+  }
+  const tags = new Set([streetTag]);
+  for (const [templateId, template] of templates) {
+    template.tags.forEach((tag) => tags.add(tag));
+    for (const { composition } of template.decor) {
+      if (!Object.hasOwn(city.compositions, composition)) {
+        throw new RegistryError(
+          `District "${templateId}" references unknown composition "${composition}"`,
+        );
+      }
+    }
+  }
+  const sources: [string, string[] | undefined][] = [
+    ...Object.entries(config.world.pointsOfInterest).map(
+      ([pointId, point]): [string, string[] | undefined] => [
+        `Point of interest "${pointId}"`,
+        point.districts,
+      ],
+    ),
+    ["Camps", config.world.camps.districts],
+  ];
+  for (const [source, districts] of sources) {
+    for (const tag of districts ?? []) {
+      if (!tags.has(tag)) {
+        throw new RegistryError(
+          `${source} references unknown district "${tag}"`,
+        );
+      }
+    }
+  }
+};
+
 export const buildRegistries = (config: Config): Registries => {
   const registries: Registries = {
     units: new Registry("unit", config.units.units),
@@ -290,6 +345,7 @@ export const buildRegistries = (config: Config): Registries => {
   );
   checkItems(registries);
   checkCombat(config, registries);
+  checkCity(config);
   for (const { unit } of config.gameplay.army.startingUnits) {
     checkReference(registries.units, unit, "Starting army");
   }

@@ -131,7 +131,7 @@ export const maintainPoints = (world: World): void => {
   }
   for (const [typeId, type] of world.registries.pointsOfInterest.entries()) {
     for (let count = counts.get(typeId) ?? 0; count < type.count; count++) {
-      const { x, y } = world.randomPoint();
+      const { x, y } = world.randomPoint(type.districts);
       spawnPoint(world, typeId, x, y);
     }
   }

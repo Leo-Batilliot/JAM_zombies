@@ -106,6 +106,7 @@ describe("reanimation in battle", () => {
     expect(army.battle).toBeDefined();
     expect(army.corpses.has(corpse)).toBe(true);
     world.removeEntity(foe);
+    world.setPosition(enemy.mage, 300, 300);
     step(config.network.tickRate);
     expect(army.battle).toBeUndefined();
     expect(army.corpses.size).toBe(0);

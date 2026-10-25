@@ -292,6 +292,7 @@ const pointOfInterestSchema = z.strictObject({
       message: "min must not exceed max",
     }),
   reward: z.enum(rewards),
+  districts: z.array(id).optional(),
   loot: lootSchema.optional(),
   units: z
     .strictObject({
@@ -325,6 +326,7 @@ const campsSchema = z.strictObject({
     .array(z.strictObject({ npc: id, count: z.int().positive() }))
     .min(1),
   chest: id,
+  districts: z.array(id).optional(),
 });
 
 const bombingsSchema = z.strictObject({
@@ -339,6 +341,66 @@ const bombingsSchema = z.strictObject({
   damage: z.number().nonnegative(),
   crowding: z.number().nonnegative(),
   maxMultiplier: z.number().min(1),
+});
+
+const fraction = z.number().min(0).max(1);
+
+const cityShapeSchema = z.union([
+  z.strictObject({
+    kind: id,
+    rect: z.tuple([fraction, fraction, fraction, fraction]),
+  }),
+  z.strictObject({ kind: id, circle: z.tuple([fraction, fraction, fraction]) }),
+]);
+
+const compositionSchema = z.strictObject({
+  items: z.array(
+    z.strictObject({
+      sprite: id,
+      x: z.number(),
+      y: z.number(),
+      light: z.number().positive().optional(),
+    }),
+  ),
+  scatter: z
+    .strictObject({
+      sprites: z.array(id).min(1),
+      count: z.int().nonnegative(),
+      radius: z.number().positive(),
+    })
+    .optional(),
+});
+
+const districtTemplateSchema = z
+  .strictObject({
+    name: z.string().min(1),
+    weight: z.number().nonnegative(),
+    min: z.int().nonnegative(),
+    max: z.int().positive(),
+    ground: id,
+    tags: z.array(id),
+    obstacles: z.array(cityShapeSchema),
+    decor: z.array(
+      z.strictObject({
+        composition: id,
+        at: z.tuple([fraction, fraction]),
+      }),
+    ),
+  })
+  .refine((template) => template.min <= template.max, {
+    message: "min must not exceed max",
+  });
+
+export const citySchema = z.strictObject({
+  border: z.number().nonnegative(),
+  clearance: z.number().nonnegative(),
+  cellSize: z.number().positive(),
+  columns: z.int().positive(),
+  rows: z.int().positive(),
+  street: z.number().nonnegative(),
+  streetGround: id,
+  templates: z.record(id, districtTemplateSchema),
+  compositions: z.record(id, compositionSchema),
 });
 
 const worldSchema = z.strictObject({
@@ -364,22 +426,7 @@ const worldSchema = z.strictObject({
       safeDistance: z.number().nonnegative(),
     }),
   ),
-  decor: z.strictObject({
-    seed: z.int().nonnegative(),
-    scattered: z.array(
-      z.strictObject({
-        sprite: id,
-        count: z.int().nonnegative(),
-      }),
-    ),
-    fixed: z.array(
-      z.strictObject({
-        sprite: id,
-        x: z.number(),
-        y: z.number(),
-      }),
-    ),
-  }),
+  city: structural(citySchema),
   pointsOfInterest: z.record(id, pointOfInterestSchema),
   massGrave: id,
   crosses: z.strictObject({
@@ -460,6 +507,10 @@ const lobbySchema = z
         explore: id,
         attack: id,
         defend: id,
+      }),
+      stuck: z.strictObject({
+        distance: z.number().nonnegative(),
+        detour: z.number().positive(),
       }),
       handicap: z.strictObject({
         margin: z.number().nonnegative(),
@@ -612,10 +663,11 @@ export type ConfigFile = keyof Config;
 
 export const clientConfigSchema = z.strictObject({
   client: clientSettingsSchema,
+  citySeed: z.int().nonnegative(),
   world: worldSchema.pick({
     width: true,
     height: true,
-    decor: true,
+    city: true,
     crosses: true,
     bombings: true,
   }),
@@ -665,12 +717,16 @@ const withIds = <T extends object>(
     id: entryId,
   }));
 
-export const toClientConfig = (config: Config): ClientConfig => ({
+export const toClientConfig = (
+  config: Config,
+  citySeed: number,
+): ClientConfig => ({
   client: config.client,
+  citySeed,
   world: {
     width: config.world.width,
     height: config.world.height,
-    decor: config.world.decor,
+    city: config.world.city,
     crosses: config.world.crosses,
     bombings: config.world.bombings,
   },

@@ -6,7 +6,14 @@ import { createBench } from "../support/bench.js";
 
 const botArmy = (bench: ReturnType<typeof createBench>, x = 100, y = 100) => {
   const army = bench.addArmy(x, y, "Bot");
-  army.bot = { thinkAt: 0, handicap: 1, chase: undefined, ignored: new Map() };
+  army.bot = {
+    thinkAt: 0,
+    handicap: 1,
+    lastX: Number.NaN,
+    lastY: Number.NaN,
+    chase: undefined,
+    ignored: new Map(),
+  };
   return army;
 };
 

@@ -1,9 +1,4 @@
-import {
-  Application,
-  Container,
-  type FederatedPointerEvent,
-  type Spritesheet,
-} from "pixi.js";
+import { Application, Container, type FederatedPointerEvent } from "pixi.js";
 import {
   ClientMessageType,
   neutralArmy,
@@ -30,7 +25,7 @@ import { SpellButton } from "../spell.js";
 import { BombingLayer } from "./bombings.js";
 import { easeZoom, zoomFor } from "./camera.js";
 import { CrossLayer } from "./crosses.js";
-import { atlasImage } from "./assets.js";
+import { atlasFrame, type Atlas } from "./assets.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
 import { MapLayer } from "./map.js";
@@ -43,25 +38,16 @@ import { PlateLayer } from "./plates.js";
 import { SearchBar } from "./search.js";
 
 const cardArt = (
-  atlas: Spritesheet,
+  atlas: Atlas,
   aliases: Record<string, { sprite: string }>,
   sprite: string,
 ): CardArt | undefined => {
   const name = aliases[sprite]?.sprite ?? sprite;
-  const frame = (atlas.data.frames[`${name}-walk-0`] ?? atlas.data.frames[name])
-    ?.frame;
-  const size = atlas.data.meta.size;
-  return frame === undefined || size === undefined
-    ? undefined
-    : {
-        url: atlasImage(atlas),
-        x: frame.x,
-        y: frame.y,
-        width: frame.w,
-        height: frame.h,
-        sheetWidth: size.w,
-        sheetHeight: size.h,
-      };
+  return (
+    atlasFrame(atlas, `${name}-walk-s-0`) ??
+    atlasFrame(atlas, `${name}-walk-0`) ??
+    atlasFrame(atlas, name)
+  );
 };
 
 const leftButton = 0;
@@ -70,7 +56,7 @@ export const startGame = async (
   root: HTMLElement,
   ui: HTMLElement,
   connection: Connection,
-  atlas: Spritesheet,
+  atlas: Atlas,
   audio: AudioEngine,
 ): Promise<void> => {
   const config = () => connection.config;

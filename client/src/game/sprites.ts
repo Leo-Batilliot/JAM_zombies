@@ -5,24 +5,70 @@ import {
   type SnapshotEntity,
 } from "@horde/shared";
 
+export type Direction = "n" | "s" | "e" | "w";
+
+const sequence = <T>(
+  textures: Partial<Record<string, T>>,
+  prefix: string,
+): T[] => {
+  const frames: T[] = [];
+  for (let index = 0; ; index++) {
+    const texture = textures[`${prefix}${String(index)}`];
+    if (texture === undefined) {
+      return frames;
+    }
+    frames.push(texture);
+  }
+};
+
+export const directionalFrames = <T>(
+  textures: Partial<Record<string, T>>,
+  name: string,
+  animation: string,
+  direction: Direction,
+): T[] => {
+  const exact = sequence(textures, `${name}-${animation}-${direction}-`);
+  return exact.length > 0
+    ? exact
+    : sequence(textures, `${name}-${animation}-s-`);
+};
+
 export const animationFrames = <T>(
   textures: Partial<Record<string, T>>,
   name: string,
   animation: string,
+  direction: Direction = "s",
 ): T[] => {
-  const frames: T[] = [];
-  for (let index = 0; ; index++) {
-    const texture = textures[`${name}-${animation}-${String(index)}`];
-    if (texture === undefined) {
-      break;
-    }
-    frames.push(texture);
+  const directional = directionalFrames(textures, name, animation, direction);
+  if (directional.length > 0) {
+    return directional;
   }
+  const frames = sequence(textures, `${name}-${animation}-`);
   const still = textures[name];
   if (frames.length === 0 && still !== undefined) {
     frames.push(still);
   }
   return frames;
+};
+
+export const hasDirections = (
+  textures: Partial<Record<string, unknown>>,
+  name: string,
+): boolean => textures[`${name}-walk-s-0`] !== undefined;
+
+export const directionOf = (
+  dx: number,
+  dy: number,
+  current: Direction,
+  epsilon: number,
+): Direction => {
+  if (Math.abs(dx) <= epsilon && Math.abs(dy) <= epsilon) {
+    return current;
+  }
+  if (Math.abs(dx) > Math.abs(dy)) {
+    return dx > 0 ? "e" : "w";
+  }
+  return dy > 0 ? "s" : "n";
 };
 
 export const frameAt = <T>(

@@ -3,12 +3,13 @@ import type { Camp, World } from "../world/world.js";
 import { spawnPoint } from "./points.js";
 
 const spawnCamp = (world: World): Camp => {
-  const { safeDistance, lifetimeSec, spread, defenders } =
+  const { safeDistance, lifetimeSec, spread, defenders, districts } =
     world.config.world.camps;
   const { x, y } = farPoint(
     world,
     (px, py) => distanceToMages(world, px, py),
     safeDistance,
+    districts,
   );
   const camp = world.addCamp(
     x,

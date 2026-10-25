@@ -16,7 +16,14 @@ type Bench = ReturnType<typeof createBench>;
 
 const botArmy = (bench: Bench, x = 100, y = 100, name = "Bot") => {
   const army = bench.addArmy(x, y, name);
-  army.bot = { thinkAt: 0, handicap: 1, chase: undefined, ignored: new Map() };
+  army.bot = {
+    thinkAt: 0,
+    handicap: 1,
+    lastX: Number.NaN,
+    lastY: Number.NaN,
+    chase: undefined,
+    ignored: new Map(),
+  };
   return army;
 };
 

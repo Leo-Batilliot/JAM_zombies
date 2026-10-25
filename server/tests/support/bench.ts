@@ -30,6 +30,26 @@ export const createBench = (
   }
   config.world.crosses.count = 0;
   config.world.camps.count = 0;
+  config.world.city = {
+    ...config.world.city,
+    border: 0,
+    templates: {
+      open: {
+        name: "Open",
+        weight: 1,
+        min: 0,
+        max: config.world.city.columns * config.world.city.rows,
+        ground: config.world.city.streetGround,
+        tags: [],
+        obstacles: [],
+        decor: [],
+      },
+    },
+  };
+  for (const point of Object.values(config.world.pointsOfInterest)) {
+    delete point.districts;
+  }
+  delete config.world.camps.districts;
   for (const mist of Object.values(config.world.mists)) {
     mist.count = 0;
   }

@@ -12,10 +12,13 @@ import type { Outline } from "./outlines.js";
 import {
   animationFrames,
   armyColor,
+  directionOf,
+  hasDirections,
   parseHex,
   frameAt,
   gearName,
   spriteName,
+  type Direction,
 } from "./sprites.js";
 
 export interface Rect {
@@ -34,6 +37,7 @@ const noOffset = { x: 0, y: 0 };
 const rechargingAlpha = 0.45;
 const soulOffset = -16;
 const bobHeight = 3;
+const deathReach = 0.6;
 const groundKinds = new Set([
   EntityKind.Corpse,
   EntityKind.PointOfInterest,
@@ -42,6 +46,7 @@ const groundKinds = new Set([
 ]);
 
 const bodyAnchor = { x: 0.5, y: 0.6 };
+const footAnchor = { x: 0.5, y: 0.8 };
 const fullHp = 0xff;
 const healthKinds = new Set([EntityKind.Mage, EntityKind.Unit, EntityKind.Npc]);
 
@@ -61,7 +66,9 @@ class EntityView {
   x = Number.NaN;
   y = 0;
   facing = 1;
+  direction: Direction = "s";
   size = 1;
+  sprite = "";
   movedAt = -Infinity;
   risingSince: number | undefined;
   diedAt: number | undefined;
@@ -87,7 +94,9 @@ class EntityView {
   reset(): void {
     this.x = Number.NaN;
     this.facing = 1;
+    this.direction = "s";
     this.size = 1;
+    this.sprite = "";
     this.movedAt = -Infinity;
     this.risingSince = undefined;
     this.diedAt = undefined;
@@ -95,6 +104,7 @@ class EntityView {
     this.body.alpha = 1;
     this.body.scale.set(1);
     this.body.rotation = 0;
+    this.body.anchor.set(bodyAnchor.x, bodyAnchor.y);
     this.gear.visible = false;
     this.outline.visible = false;
     this.hpBack.visible = false;
@@ -103,8 +113,10 @@ class EntityView {
 
   track(x: number, y: number, now: number, holdMs: number): boolean {
     const dx = x - this.x;
-    if (Math.abs(dx) > movingEpsilon || Math.abs(y - this.y) > movingEpsilon) {
+    const dy = y - this.y;
+    if (Math.abs(dx) > movingEpsilon || Math.abs(dy) > movingEpsilon) {
       this.movedAt = now;
+      this.direction = directionOf(dx, dy, this.direction, movingEpsilon);
       if (Math.abs(dx) > movingEpsilon) {
         this.facing = Math.sign(dx);
       }
@@ -136,11 +148,15 @@ export class EntityLayer {
     this.container.addChild(this.#ground, this.#bodies);
   }
 
-  #animation(name: string, animation: string): Texture[] {
-    const key = `${name}:${animation}`;
+  #animation(
+    name: string,
+    animation: string,
+    direction: Direction = "s",
+  ): Texture[] {
+    const key = `${name}:${animation}:${direction}`;
     let frames = this.#frames.get(key);
     if (frames === undefined) {
-      frames = animationFrames(this.textures, name, animation);
+      frames = animationFrames(this.textures, name, animation, direction);
       if (frames.length === 0) {
         frames = [Texture.WHITE];
       }
@@ -183,10 +199,15 @@ export class EntityLayer {
       spriteName(entity, content),
     );
     view.size = size;
+    view.sprite = name;
+    const anchor = hasDirections(this.textures, name) ? footAnchor : bodyAnchor;
+    view.body.anchor.set(anchor.x, anchor.y);
     const moving = view.track(entity.x, entity.y, now, client.walkFrameMs);
     const fighting = (entity.flags & EntityFlag.Fighting) !== 0;
-    const walk = this.#animation(name, "walk");
-    const frames = fighting ? this.#animation(name, "attack") : walk;
+    const walk = this.#animation(name, "walk", view.direction);
+    const frames = fighting
+      ? this.#animation(name, "attack", view.direction)
+      : walk;
     view.body.texture =
       (moving || fighting
         ? frameAt(
@@ -195,15 +216,16 @@ export class EntityLayer {
             fighting ? client.attackFrameMs : client.walkFrameMs,
           )
         : walk[0]) ?? Texture.WHITE;
-    view.body.scale.x = view.facing * view.size;
+    view.body.scale.x = this.#flip(view) * view.size;
 
     view.aura.visible = entity.army !== neutralArmy;
     if (view.aura.visible) {
       view.aura.texture = this.#texture("fx-aura");
       view.aura.tint = armyColor(client.armyColors, entity.army);
-      view.aura.width = view.body.texture.width * 1.2;
-      view.aura.height = view.body.texture.height * 0.6;
-      view.aura.y = view.body.texture.height * 0.3;
+      const footprint = this.#footprint(view);
+      view.aura.width = footprint * 1.2;
+      view.aura.height = footprint * 0.6;
+      view.aura.y = view.body.texture.height * (1 - view.body.anchor.y) * 0.5;
     }
 
     const gear = gearName(entity, content);
@@ -283,7 +305,8 @@ export class EntityLayer {
       (entity.kind === EntityKind.Mage ? hpBar.mageScale : 1);
     const height =
       hpBar.height * (entity.kind === EntityKind.Mage ? hpBar.mageScale : 1);
-    const top = view.body.texture.height * (1 - bodyAnchor.y) + hpBar.offsetY;
+    const top =
+      view.body.texture.height * (1 - view.body.anchor.y) + hpBar.offsetY;
     const ally = entity.army !== neutralArmy && entity.army === this.#ownArmy;
     view.hpBack.visible = true;
     view.hpBack.tint = parseHex(hpBar.background);
@@ -297,6 +320,21 @@ export class EntityLayer {
     view.hpFill.position.set(-width / 2, top);
   }
 
+  #footprint(view: EntityView): number {
+    const [still] = this.#animation(view.sprite, "walk", "s");
+    return still?.frame.width ?? view.body.texture.width;
+  }
+
+  #flip(view: EntityView): number {
+    return hasDirections(this.textures, view.sprite) ? 1 : view.facing;
+  }
+
+  #deathFrames(view: EntityView): Texture[] | undefined {
+    return hasDirections(this.textures, view.sprite)
+      ? this.#animation(view.sprite, "death", view.direction)
+      : undefined;
+  }
+
   #drawRise(view: EntityView, entity: SnapshotEntity, now: number): void {
     if ((entity.flags & EntityFlag.Rising) === 0) {
       view.risingSince = undefined;
@@ -307,8 +345,19 @@ export class EntityLayer {
     view.risingSince ??= now;
     const riseMs = this.connection.config.gameplay.riseSec * 1000;
     const progress = Math.min((now - view.risingSince) / riseMs, 1);
-    view.container.alpha = progress;
-    view.body.scale.y = progress * view.size;
+    const death = this.#deathFrames(view);
+    if (death === undefined) {
+      view.container.alpha = progress;
+      view.body.scale.y = progress * view.size;
+      return;
+    }
+    const index = Math.min(
+      death.length - 1,
+      Math.floor((1 - progress) * death.length),
+    );
+    view.body.texture = death[index] ?? view.body.texture;
+    view.container.alpha = Math.min(1, progress * 3);
+    view.body.scale.y = view.size;
   }
 
   #drawProjectile(view: EntityView, entity: SnapshotEntity): void {
@@ -365,9 +414,23 @@ export class EntityLayer {
         this.#release(view);
         continue;
       }
-      view.container.alpha = 1 - progress;
-      view.body.scale.set(view.facing * (1 - progress / 2), 1 - progress / 2);
+      const death = this.#deathFrames(view);
+      if (death === undefined) {
+        view.container.alpha = 1 - progress;
+        view.body.scale.set(view.facing * (1 - progress / 2), 1 - progress / 2);
+      } else {
+        view.body.texture =
+          death[
+            Math.min(
+              death.length - 1,
+              Math.floor(progress * death.length * 1.5),
+            )
+          ] ?? view.body.texture;
+        view.container.alpha = Math.min(1, 3 * (1 - progress));
+      }
       view.outline.visible = false;
+      view.gear.visible = false;
+      view.extra.visible = false;
       view.hpBack.visible = false;
       view.hpFill.visible = false;
     }
@@ -382,6 +445,7 @@ export class EntityLayer {
     this.#ownArmy = ownArmy;
     const scale = 1 / this.connection.config.client.pixelsPerMeter;
     this.#seen.clear();
+    const corpses: SnapshotEntity[] = [];
     for (const entity of entities) {
       if (
         entity.kind === EntityKind.Mist ||
@@ -394,6 +458,9 @@ export class EntityLayer {
       if (entityView === undefined) {
         entityView = this.#acquire(entity.kind);
         this.#active.set(entity.id, entityView);
+        if (entity.kind === EntityKind.Corpse) {
+          corpses.push(entity);
+        }
       }
       if (entity.kind === EntityKind.Projectile) {
         this.#drawProjectile(entityView, entity);
@@ -419,7 +486,16 @@ export class EntityLayer {
         continue;
       }
       this.#active.delete(id);
-      if (entityView.kind === EntityKind.Mage && entityView.container.visible) {
+      const fell = corpses.some(
+        (corpse) =>
+          Math.hypot(corpse.x - entityView.x, corpse.y - entityView.y) <=
+          deathReach,
+      );
+      if (
+        entityView.container.visible &&
+        (entityView.kind === EntityKind.Mage ||
+          (fell && this.#deathFrames(entityView) !== undefined))
+      ) {
         entityView.diedAt = now;
         this.#dying.add(entityView);
       } else {

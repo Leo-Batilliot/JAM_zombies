@@ -131,6 +131,7 @@ const serverMessages: ServerMessage[] = [
   {
     type: ServerMessageType.Config,
     config: {
+      citySeed: 1234,
       client: {
         maxPixelRatio: 2,
         pixelsPerMeter: 24,
@@ -206,10 +207,29 @@ const serverMessages: ServerMessage[] = [
       world: {
         width: 400,
         height: 300,
-        decor: {
-          seed: 1,
-          scattered: [{ sprite: "decor-tree", count: 3 }],
-          fixed: [{ sprite: "decor-winchester", x: 10, y: 20 }],
+        city: {
+          border: 8,
+          clearance: 1.5,
+          cellSize: 8,
+          columns: 2,
+          rows: 2,
+          street: 12,
+          streetGround: "cobble",
+          templates: {
+            houses: {
+              name: "Houses",
+              weight: 1,
+              min: 0,
+              max: 4,
+              ground: "cobble",
+              tags: ["car"],
+              obstacles: [{ kind: "building", rect: [0.1, 0.1, 0.3, 0.3] }],
+              decor: [{ composition: "lamp", at: [0.5, 0.5] }],
+            },
+          },
+          compositions: {
+            lamp: { items: [{ sprite: "decor-lamp", x: 0, y: 0, light: 6 }] },
+          },
         },
         crosses: {
           count: 2,

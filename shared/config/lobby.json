@@ -59,6 +59,10 @@
       "ratio": 1.2,
       "slowFrom": 0.6,
       "thinkSlowdown": 3
+    },
+    "stuck": {
+      "distance": 1,
+      "detour": 12
     }
   },
   "leaderboard": {

@@ -297,9 +297,37 @@ const pickCard = (world: World, army: Army): void => {
   orderCard(world, army, mutation >= 0 ? mutation : Math.max(gift, 0));
 };
 
+const unstuck = (world: World, army: Army): boolean => {
+  const { bot, mage } = army;
+  if (bot === undefined) {
+    return false;
+  }
+  const { distance: minimum, detour } = world.config.lobby.bots.stuck;
+  const moved = Math.hypot(mage.x - bot.lastX, mage.y - bot.lastY);
+  bot.lastX = mage.x;
+  bot.lastY = mage.y;
+  const dx = mage.targetX - mage.x;
+  const dy = mage.targetY - mage.y;
+  const remaining = Math.hypot(dx, dy);
+  if (!(moved < minimum) || remaining <= 2 * minimum) {
+    return false;
+  }
+  const side = world.random() < 0.5 ? -1 : 1;
+  orderMove(
+    world,
+    army,
+    mage.x + ((dx / remaining) * detour) / 2 - (dy / remaining) * detour * side,
+    mage.y + ((dy / remaining) * detour) / 2 + (dx / remaining) * detour * side,
+  );
+  return true;
+};
+
 const think = (world: World, army: Army): void => {
   const { wanderDistance, huntRange, lootRange } = world.config.lobby.bots;
   const { mage } = army;
+  if (army.battle === undefined && unstuck(world, army)) {
+    return;
+  }
   if (army.battle !== undefined) {
     engage(world, army, army.battle);
     return;

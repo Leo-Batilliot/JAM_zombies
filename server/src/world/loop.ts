@@ -22,6 +22,7 @@ import { followMages } from "../systems/formation.js";
 import { moveMages } from "../systems/movement.js";
 import { reanimate } from "../systems/reanimation.js";
 import { separateBodies } from "../systems/separation.js";
+import { blockBodies } from "../systems/walls.js";
 import { updateTargets } from "../systems/targeting.js";
 import type { World } from "./world.js";
 
@@ -40,6 +41,7 @@ export const systems: System[] = [
   followMages,
   updateHostiles,
   separateBodies,
+  blockBodies,
   fight,
   moveProjectiles,
   updateMists,

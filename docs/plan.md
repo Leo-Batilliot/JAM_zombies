@@ -606,3 +606,75 @@ Niveaux moins chers, bots qui mutent la lignée qui a le plus d'unités en atten
 
 Tests, simulation d'un lobby de bots avant et après, test de charge, documentation.
 
+## Phase 12 : Concept V2, Lot 3 (direction artistique)
+
+Objectif : les cases du Lot 3 de `docs/conceptV2.md`. Assets LPC téléchargés, licences relues et créditées, le reste généré par script. Les identifiants entre parenthèses renvoient à ce document.
+
+### 12.01 Recherche des assets | A.PI
+
+Liste par besoin (unité, tuile, décor, effet) avec la source retenue, sa licence et ce qui reste à générer, dans `docs/assets.md` (ART-08).
+
+### 12.02 Chaîne d'assets dans le dépôt | A.PI
+
+PNG LPC bruts et licences dans `assets/`, script de génération dans `tools/assets/` (Python et Pillow) : découpe des planches, recoloration, contour, palette, paquetage en plusieurs atlas. L'atlas actuel devient une source parmi d'autres (ART-07).
+
+### 12.03 Palette de référence | A.PI
+
+Palette de nuit d'automne dans `tools/assets/palette.json`, appliquée par la chaîne à tous les assets (ART-03).
+
+### 12.04 Atlas multiples côté client | A.PI
+
+Le client charge la liste d'atlas produite par la chaîne et réunit leurs textures (ART-07).
+
+### 12.05 Rendu en 4 directions | A.PI
+
+Animations nommées par direction (haut, bas, gauche, droite), choisies selon le déplacement, avec repli sur les sprites de profil existants (ART-06, ART-14).
+
+### 12.06 Plan de ville en gabarits de quartiers | A.PI
+
+Grille de quartiers tirés au hasard parmi des gabarits de `world.json` au démarrage du serveur, rues entre les quartiers, plan envoyé au client. Points d'intérêt placés dans les quartiers qui leur vont (ART-01).
+
+### 12.07 Bâtiments et murets bloquants | A.PI
+
+Obstacles en rectangles et cercles dans une grille dédiée. Les corps qui y entrent en sont repoussés et glissent le long. Apparitions hors des obstacles, bots qui se débloquent. Mesure du temps de tick (ART-02, TECH-03).
+
+### 12.08 Sol en tuiles | A.PI
+
+Pavés, terre, herbe, mousse et feuilles par quartier, transitions et variantes (ART-05).
+
+### 12.09 Mur d'enceinte | A.PI
+
+Remparts, tours et portes fermées autour de la carte, toits et forêt sombre au-delà (ART-10).
+
+### 12.10 Décor composé | A.PI
+
+Compositions décrites en config (tombes alignées, buissons le long des murs, bosquets, lampadaires, débris autour d'une voiture), placées par les gabarits (ART-11).
+
+### 12.11 Nuit éclairée | A.PI
+
+Voile sombre percé de halos (lanternes, feux, aura du mage, lieux importants), mode dégradé pour les téléphones faibles (ART-12).
+
+### 12.12 Sprites des unités, des PNJ et des mages | A.PI
+
+Les 21 unités, les PNJ et les apparences du mage à partir des personnages LPC, avec une silhouette par branche et un mage clairement zombie (ART-06, ART-09).
+
+### 12.13 Animations | A.PI
+
+Marche, attaque, mort et relève pour chaque unité, animations de fusion et de level up (ART-14).
+
+### 12.14 Mécaniques existantes dans la nouvelle DA | A.PI
+
+Croix en calvaires, camps en barricades, champ de citrouilles, brumes et bombardements dans la palette (ART-13).
+
+### 12.15 Interface dans le même style | A.PI
+
+Cuir, parchemin et métal vieilli à la place du violet (ART-04).
+
+### 12.16 Minimap avec le plan de la ville | A.PI
+
+Quartiers, remparts et icônes des lieux sur la minimap (UI-06).
+
+### 12.17 Mesures et vérification | A.PI
+
+Temps de tick avec les obstacles, débit, captures en headless, documentation (TECH-02, TECH-03).
+

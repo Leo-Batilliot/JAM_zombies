@@ -131,57 +131,9 @@
   },
   "spellKey": " ",
   "spriteAliases": {
-    "unit-abomination": {
-      "sprite": "unit-flesh-golem",
-      "scale": 1
-    },
-    "unit-flesh-titan": {
-      "sprite": "unit-flesh-golem",
-      "scale": 1.3
-    },
-    "unit-ghoul": {
-      "sprite": "unit-zombie-dog",
-      "scale": 1.1
-    },
-    "unit-stalker": {
-      "sprite": "unit-zombie",
-      "scale": 1.2
-    },
-    "unit-wendigo": {
-      "sprite": "unit-big-zombie",
-      "scale": 1.15
-    },
     "unit-bone-catapult": {
       "sprite": "unit-bone-ballista",
       "scale": 1.3
-    },
-    "unit-pyromancer": {
-      "sprite": "unit-skeleton-archer",
-      "scale": 1.1
-    },
-    "unit-lich": {
-      "sprite": "unit-skeleton-crossbowman",
-      "scale": 1.2
-    },
-    "unit-lich-king": {
-      "sprite": "unit-skeleton-crossbowman",
-      "scale": 1.5
-    },
-    "unit-hellhound": {
-      "sprite": "unit-cerberus",
-      "scale": 1.3
-    },
-    "unit-rotting-wolf": {
-      "sprite": "unit-mastiff",
-      "scale": 1
-    },
-    "unit-werewolf": {
-      "sprite": "unit-mastiff",
-      "scale": 1.3
-    },
-    "unit-werelord": {
-      "sprite": "unit-cerberus",
-      "scale": 1.5
     },
     "npc-bone-wall": {
       "sprite": "decor-rock",
@@ -190,6 +142,78 @@
     "projectile-fire": {
       "sprite": "projectile-bolt",
       "scale": 1
+    },
+    "unit-big-zombie": {
+      "sprite": "unit-big-zombie",
+      "scale": 1.2
+    },
+    "unit-abomination": {
+      "sprite": "unit-abomination",
+      "scale": 1.45
+    },
+    "unit-flesh-titan": {
+      "sprite": "unit-flesh-titan",
+      "scale": 1.75
+    },
+    "unit-ghoul": {
+      "sprite": "unit-ghoul",
+      "scale": 0.85
+    },
+    "unit-stalker": {
+      "sprite": "unit-stalker",
+      "scale": 1.15
+    },
+    "unit-wendigo": {
+      "sprite": "unit-wendigo",
+      "scale": 1.4
+    },
+    "unit-skeleton-crossbowman": {
+      "sprite": "unit-skeleton-crossbowman",
+      "scale": 1.2
+    },
+    "unit-pyromancer": {
+      "sprite": "unit-pyromancer",
+      "scale": 1.15
+    },
+    "unit-lich": {
+      "sprite": "unit-lich",
+      "scale": 1.35
+    },
+    "unit-lich-king": {
+      "sprite": "unit-lich-king",
+      "scale": 1.6
+    },
+    "unit-zombie-dog": {
+      "sprite": "unit-zombie-dog",
+      "scale": 1.6
+    },
+    "unit-mastiff": {
+      "sprite": "unit-mastiff",
+      "scale": 0.85
+    },
+    "unit-cerberus": {
+      "sprite": "unit-cerberus",
+      "scale": 1.05
+    },
+    "unit-hellhound": {
+      "sprite": "unit-hellhound",
+      "scale": 1.3
+    },
+    "unit-rotting-wolf": {
+      "sprite": "unit-rotting-wolf",
+      "scale": 0.85
+    },
+    "unit-werewolf": {
+      "sprite": "unit-werewolf",
+      "scale": 1.2
+    },
+    "unit-werelord": {
+      "sprite": "unit-werelord",
+      "scale": 1.5
+    },
+    "npc-guard-dog": {
+      "sprite": "npc-guard-dog",
+      "scale": 1.5
     }
   },
   "cardArtScale": 2

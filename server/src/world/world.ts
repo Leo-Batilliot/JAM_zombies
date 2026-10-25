@@ -1,10 +1,14 @@
 import {
   EntityKind,
+  generateCity,
+  streetTag,
+  type City,
   type Config,
   type Registries,
   type RunStats,
 } from "@horde/shared";
 import { SpatialGrid } from "./grid.js";
+import { ObstacleGrid } from "./obstacles.js";
 
 export interface Army {
   slot: number;
@@ -120,6 +124,8 @@ export interface Chase {
 export interface Bot {
   thinkAt: number;
   handicap: number;
+  lastX: number;
+  lastY: number;
   chase: Chase | undefined;
   ignored: Map<Army, number>;
 }
@@ -306,6 +312,7 @@ export type Entity =
 export type Body = Mage | Unit | Npc;
 
 const maxArmySlot = 0xff;
+const maxSeed = 0x7fffffff;
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
@@ -333,6 +340,9 @@ export class World {
   readonly events = new Map<string, BossEvent>();
   readonly reconnects = new Map<string, Reconnect>();
   readonly grid: SpatialGrid;
+  readonly citySeed: number;
+  readonly city: City;
+  readonly obstacles: ObstacleGrid;
   bombingAt: number;
   #nextId = 1;
 
@@ -343,6 +353,17 @@ export class World {
   ) {
     this.grid = new SpatialGrid(config.world.gridCellSize);
     this.bombingAt = config.world.bombings.firstDelaySec;
+    this.citySeed = Math.floor(random() * maxSeed);
+    this.city = generateCity(
+      config.world.city,
+      config.world.width,
+      config.world.height,
+      this.citySeed,
+    );
+    this.obstacles = new ObstacleGrid(
+      this.city.obstacles,
+      config.world.city.cellSize,
+    );
   }
 
   clampX(x: number): number {
@@ -358,11 +379,47 @@ export class World {
     return margin + this.random() * (size - 2 * margin);
   }
 
-  randomPoint(): { x: number; y: number } {
-    return {
-      x: this.#randomCoordinate(this.config.world.width),
-      y: this.#randomCoordinate(this.config.world.height),
-    };
+  #candidate(tags: string[] | undefined): { x: number; y: number } {
+    const { street, border, templates } = this.config.world.city;
+    const districts = this.city.districts.filter((district) =>
+      templates[district.template]?.tags.some((tag) => tags?.includes(tag)),
+    );
+    const streets = tags?.includes(streetTag) === true && street > 0;
+    const choices = districts.length + (streets ? 1 : 0);
+    if (tags === undefined || choices === 0) {
+      return {
+        x: this.#randomCoordinate(this.config.world.width),
+        y: this.#randomCoordinate(this.config.world.height),
+      };
+    }
+    const district = districts[Math.floor(this.random() * choices)];
+    if (district !== undefined) {
+      return {
+        x: district.x + this.random() * district.size,
+        y: district.y + this.random() * district.size,
+      };
+    }
+    const lines = this.city.districts
+      .filter((entry) => entry.column > 0)
+      .map((entry) => entry.x - street / 2);
+    const line = lines[Math.floor(this.random() * lines.length)] ?? border;
+    const along =
+      border + this.random() * (this.config.world.height - 2 * border);
+    return this.random() < 0.5 ? { x: line, y: along } : { x: along, y: line };
+  }
+
+  randomPoint(tags?: string[]): { x: number; y: number } {
+    const { spawnAttempts } = this.config.world;
+    const { clearance } = this.config.world.city;
+    let point = this.#candidate(tags);
+    for (let attempt = 1; attempt < spawnAttempts; attempt++) {
+      if (this.obstacles.isFree(point.x, point.y, clearance)) {
+        return point;
+      }
+      point = this.#candidate(tags);
+    }
+    const free = this.obstacles.resolve(point.x, point.y, clearance) ?? point;
+    return { x: this.clampX(free.x), y: this.clampY(free.y) };
   }
 
   randomNear(x: number, y: number, radius: number): { x: number; y: number } {

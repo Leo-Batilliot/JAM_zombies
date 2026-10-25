@@ -149,6 +149,7 @@ export const attachSockets = (
       reject(session, result.rejection);
       return;
     }
+    const previous = session.world;
     session.world = world;
     session.army = result.army;
     session.deaths = result.army.deaths;
@@ -157,6 +158,12 @@ export const attachSockets = (
       mageId: result.army.mage.id,
       token: result.token,
     });
+    if (world !== previous) {
+      send(session, {
+        type: ServerMessageType.Config,
+        config: toClientConfig(config, world.citySeed),
+      });
+    }
   };
 
   const spectate = (session: Session): void => {
@@ -336,7 +343,7 @@ export const attachSockets = (
     sessions.add(session);
     send(session, {
       type: ServerMessageType.Config,
-      config: toClientConfig(config),
+      config: toClientConfig(config, session.world.citySeed),
     });
     socket.on("message", (data, isBinary) => {
       try {
@@ -388,7 +395,7 @@ export const attachSockets = (
       for (const session of sessions) {
         send(session, {
           type: ServerMessageType.Config,
-          config: toClientConfig(config),
+          config: toClientConfig(config, session.world.citySeed),
         });
       }
     },
