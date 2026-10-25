@@ -53,6 +53,7 @@ type PointOfInterestType = Config["world"]["pointsOfInterest"][string];
 type EventType = Config["events"]["events"][string];
 type ProjectileType = Config["units"]["projectiles"][string];
 type MistType = Config["world"]["mists"][string];
+type SkinType = Config["gameplay"]["mage"]["skins"][string];
 
 export interface Registries {
   units: Registry<UnitType>;
@@ -62,6 +63,7 @@ export interface Registries {
   events: Registry<EventType>;
   projectiles: Registry<ProjectileType>;
   mists: Registry<MistType>;
+  skins: Registry<SkinType>;
 }
 
 const checkReference = (
@@ -174,6 +176,7 @@ export const buildRegistries = (config: Config): Registries => {
     events: new Registry("event", config.events.events),
     projectiles: new Registry("projectile", config.units.projectiles),
     mists: new Registry("mist", config.world.mists),
+    skins: new Registry("skin", config.gameplay.mage.skins),
   };
 
   for (const [unitId, unit] of registries.units.entries()) {

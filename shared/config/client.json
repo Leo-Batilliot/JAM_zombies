@@ -36,7 +36,8 @@
       "death": { "url": "audio/death.mp3", "volume": 0.6, "gapMs": 200 },
       "rise": { "url": "audio/rise.mp3", "volume": 0.5, "gapMs": 300 },
       "scream": { "url": "audio/scream.mp3", "volume": 1, "gapMs": 0 },
-      "boss": { "url": "audio/boss.mp3", "volume": 0.8, "gapMs": 0 }
+      "boss": { "url": "audio/boss.mp3", "volume": 0.8, "gapMs": 0 },
+      "blast": { "url": "audio/blast.mp3", "volume": 0.8, "gapMs": 300 }
     }
   },
   "screamer": {
@@ -58,12 +59,14 @@
   "minimapSize": 110,
   "gearOffsets": {
     "melee": { "x": 7, "y": 2 },
-    "helmet": { "x": 0, "y": -12 }
+    "helmet": { "x": 0, "y": -12 },
+    "collar": { "x": 5, "y": -6 }
   },
   "mistColors": {
     "purifying": "#cfe8ff",
     "necrotic": "#5fd45a"
   },
+  "bombingColors": { "mark": "#e0605a", "blast": "#ff9a1f" },
   "formationKeys": ["1", "2", "3", "4"],
   "evolutionCollapseMs": 6000
 }

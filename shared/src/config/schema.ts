@@ -8,6 +8,8 @@ export const isStructural = (schema: z.ZodType): boolean =>
 
 const id = z.string().min(1);
 
+export const maxSkins = 0x100;
+
 const gameplaySchema = z.strictObject({
   mage: z.strictObject({
     speed: z.number().positive(),
@@ -16,6 +18,13 @@ const gameplaySchema = z.strictObject({
     hpPerLevel: z.number().nonnegative(),
     regenDelaySec: z.number().nonnegative(),
     regenPerSec: z.number().nonnegative(),
+    skins: z
+      .record(id, z.strictObject({ name: z.string().min(1) }))
+      .refine(
+        (list) =>
+          Object.keys(list).length > 0 && Object.keys(list).length <= maxSkins,
+        { message: `Between 1 and ${String(maxSkins)} skins` },
+      ),
   }),
   respawn: z.strictObject({
     delaySec: z.number().nonnegative(),
@@ -194,6 +203,7 @@ const equipmentSchema = z
         damage: z.number().positive().optional(),
         hp: z.number().positive().optional(),
         armor: z.number().min(0).lt(1).optional(),
+        speed: z.number().positive().optional(),
       }),
     ),
   })
@@ -262,6 +272,20 @@ const campsSchema = z.strictObject({
   chest: id,
 });
 
+const bombingsSchema = z.strictObject({
+  name: z.string().min(1),
+  firstDelaySec: z.number().nonnegative(),
+  intervalSec: lifetimeSchema,
+  zones: z.int().nonnegative(),
+  radius: z.number().positive(),
+  spread: z.number().nonnegative(),
+  delaySec: z.number().nonnegative(),
+  blastSec: z.number().positive(),
+  damage: z.number().nonnegative(),
+  crowding: z.number().nonnegative(),
+  maxMultiplier: z.number().min(1),
+});
+
 const worldSchema = z.strictObject({
   width: structural(z.int().positive()),
   height: structural(z.int().positive()),
@@ -317,6 +341,7 @@ const worldSchema = z.strictObject({
   }),
   mists: z.record(id, mistSchema),
   camps: campsSchema,
+  bombings: bombingsSchema,
 });
 
 const eventsSchema = z.strictObject({
@@ -349,7 +374,13 @@ const lobbySchema = z
   .strictObject({
     minParticipants: z.int().nonnegative(),
     maxParticipants: z.int().positive().max(maxParticipants),
+    maxLobbies: z.int().positive(),
     graceSec: z.number().nonnegative(),
+    spectators: z.strictObject({
+      max: z.int().nonnegative(),
+      holdSec: z.number().nonnegative(),
+      battleStrength: z.number().nonnegative(),
+    }),
     bots: z.strictObject({
       names: z.array(z.string().min(1)).min(1),
       thinkIntervalSec: z.number().positive(),
@@ -442,6 +473,7 @@ export const clientSettingsSchema = z.strictObject({
       rise: effectSchema,
       scream: effectSchema,
       boss: effectSchema,
+      blast: effectSchema,
     }),
   }),
   screamer: z.strictObject({
@@ -463,6 +495,7 @@ export const clientSettingsSchema = z.strictObject({
   minimapSize: z.int().positive(),
   gearOffsets: z.record(id, z.strictObject({ x: z.number(), y: z.number() })),
   mistColors: z.record(id, color),
+  bombingColors: z.strictObject({ mark: color, blast: color }),
   formationKeys: z.array(z.string().length(1)),
   evolutionCollapseMs: z.int().positive(),
 });
@@ -489,6 +522,7 @@ export const clientConfigSchema = z.strictObject({
     height: true,
     decor: true,
     crosses: true,
+    bombings: true,
   }),
   network: networkSchema.pick({ tickRate: true, interpolationDelayMs: true }),
   gameplay: z.strictObject({
@@ -512,6 +546,7 @@ export const clientConfigSchema = z.strictObject({
     projectiles: z.array(id),
     mists: z.array(z.strictObject({ id, radius: z.number().positive() })),
     formations: z.array(z.strictObject({ id, name: z.string().min(1) })),
+    skins: z.array(z.strictObject({ id, name: z.string().min(1) })),
   }),
 });
 
@@ -524,6 +559,7 @@ export const toClientConfig = (config: Config): ClientConfig => ({
     height: config.world.height,
     decor: config.world.decor,
     crosses: config.world.crosses,
+    bombings: config.world.bombings,
   },
   network: {
     tickRate: config.network.tickRate,
@@ -558,6 +594,10 @@ export const toClientConfig = (config: Config): ClientConfig => ({
     formations: Object.entries(config.formations.selectable).map(
       ([formationId, formation]) => ({ id: formationId, name: formation.name }),
     ),
+    skins: Object.entries(config.gameplay.mage.skins).map(([skinId, skin]) => ({
+      id: skinId,
+      name: skin.name,
+    })),
   },
 });
 

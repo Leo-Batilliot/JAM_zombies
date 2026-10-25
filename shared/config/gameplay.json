@@ -5,7 +5,21 @@
     "baseHp": 100,
     "hpPerLevel": 20,
     "regenDelaySec": 5,
-    "regenPerSec": 4
+    "regenPerSec": 4,
+    "skins": {
+      "necromancer": {
+        "name": "Necromancer"
+      },
+      "lich": {
+        "name": "Lich"
+      },
+      "witch": {
+        "name": "Witch"
+      },
+      "plague-doctor": {
+        "name": "Plague doctor"
+      }
+    }
   },
   "respawn": {
     "delaySec": 3,

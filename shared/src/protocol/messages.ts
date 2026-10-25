@@ -19,6 +19,7 @@ export enum ClientMessageType {
   Retreat,
   Evolve,
   Demo,
+  Spectate,
 }
 
 export enum ServerMessageType {
@@ -32,6 +33,7 @@ export enum ServerMessageType {
   EventStarted,
   EventEnded,
   Loot,
+  Focus,
 }
 
 export enum DemoCommand {
@@ -50,6 +52,7 @@ export enum EntityKind {
   Projectile,
   Mist,
   Camp,
+  Bombing,
 }
 
 export enum EntityFlag {
@@ -76,20 +79,23 @@ export enum BattleFlag {
 
 export const neutralArmy = 0;
 
+export const spectatorMageId = 0;
+
 export enum JoinRejection {
   InvalidName = 1,
   Full,
 }
 
 export type ClientMessage =
-  | { type: ClientMessageType.Join; name: string; token: string }
+  | { type: ClientMessageType.Join; name: string; token: string; skin: number }
   | { type: ClientMessageType.View; width: number; height: number }
   | { type: ClientMessageType.Move; x: number; y: number }
   | { type: ClientMessageType.Target; entityId: number }
   | { type: ClientMessageType.Formation; formation: number }
   | { type: ClientMessageType.Retreat; x: number; y: number }
   | { type: ClientMessageType.Evolve; evolution: string }
-  | { type: ClientMessageType.Demo; command: DemoCommand };
+  | { type: ClientMessageType.Demo; command: DemoCommand }
+  | { type: ClientMessageType.Spectate };
 
 export interface SnapshotEntity {
   id: number;
@@ -186,7 +192,13 @@ export type ServerMessage =
       defeated: boolean;
       souls: number;
     }
-  | { type: ServerMessageType.Loot; item: number };
+  | { type: ServerMessageType.Loot; item: number }
+  | {
+      type: ServerMessageType.Focus;
+      army: number;
+      mageId: number;
+      name: string;
+    };
 
 const snapshotEntityBytes = 12;
 const snapshotUpdateBytes = 9;
@@ -219,7 +231,10 @@ export const encodeClientMessage = (
   const writer = new ByteWriter(16).uint8(message.type);
   switch (message.type) {
     case ClientMessageType.Join:
-      writer.shortString(message.name).shortString(message.token);
+      writer
+        .shortString(message.name)
+        .shortString(message.token)
+        .uint8(message.skin);
       break;
     case ClientMessageType.View:
       writer.float32(message.width).float32(message.height);
@@ -242,6 +257,8 @@ export const encodeClientMessage = (
     case ClientMessageType.Demo:
       writer.uint8(message.command);
       break;
+    case ClientMessageType.Spectate:
+      break;
   }
   return writer.finish();
 };
@@ -259,6 +276,7 @@ export const decodeClientMessage = (
         type,
         name: reader.shortString(),
         token: reader.shortString(),
+        skin: reader.uint8(),
       };
       break;
     case ClientMessageType.View:
@@ -286,6 +304,9 @@ export const decodeClientMessage = (
         type,
         command: readEnum(reader.uint8(), DemoCommand, "demo command"),
       };
+      break;
+    case ClientMessageType.Spectate:
+      message = { type };
       break;
   }
   reader.end();
@@ -446,6 +467,13 @@ export const encodeServerMessage = (
         .finish();
     case ServerMessageType.Loot:
       return new ByteWriter(2).uint8(message.type).uint8(message.item).finish();
+    case ServerMessageType.Focus:
+      return new ByteWriter(24)
+        .uint8(message.type)
+        .uint8(message.army)
+        .uint32(message.mageId)
+        .shortString(message.name)
+        .finish();
   }
 };
 
@@ -599,6 +627,14 @@ export const decodeServerMessage = (
       break;
     case ServerMessageType.Loot:
       message = { type, item: reader.uint8() };
+      break;
+    case ServerMessageType.Focus:
+      message = {
+        type,
+        army: reader.uint8(),
+        mageId: reader.uint32(),
+        name: reader.shortString(),
+      };
       break;
   }
   reader.end();

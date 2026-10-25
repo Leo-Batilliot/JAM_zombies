@@ -126,6 +126,69 @@
       "attackRange": 10,
       "aggroRange": 12,
       "evolutions": []
+    },
+    "zombie-dog": {
+      "name": "Zombie dog",
+      "family": "beast",
+      "bonus": {
+        "skeleton": 1.5
+      },
+      "equipment": "collar",
+      "strength": 1,
+      "rank": "front",
+      "speed": 9,
+      "radius": 0.4,
+      "hp": 22,
+      "damage": 4,
+      "attackIntervalSec": 0.7,
+      "attackRange": 0.3,
+      "aggroRange": 9,
+      "evolutions": [
+        {
+          "into": "mastiff",
+          "cost": 5
+        },
+        {
+          "into": "cerberus",
+          "cost": 10
+        }
+      ]
+    },
+    "mastiff": {
+      "name": "Mastiff",
+      "family": "beast",
+      "bonus": {
+        "skeleton": 1.5
+      },
+      "equipment": "collar",
+      "strength": 5,
+      "rank": "front",
+      "speed": 8.5,
+      "radius": 0.6,
+      "hp": 140,
+      "damage": 15,
+      "attackIntervalSec": 0.8,
+      "attackRange": 0.35,
+      "aggroRange": 9,
+      "evolutions": []
+    },
+    "cerberus": {
+      "name": "Cerberus",
+      "family": "beast",
+      "bonus": {
+        "skeleton": 1.75
+      },
+      "equipment": "collar",
+      "strength": 10,
+      "rank": "front",
+      "speed": 8,
+      "radius": 0.85,
+      "hp": 330,
+      "damage": 30,
+      "attackIntervalSec": 0.9,
+      "attackRange": 0.45,
+      "aggroRange": 10,
+      "evolutions": []
     }
   },
   "npcs": {
@@ -200,6 +263,22 @@
         "attackRange": 0.4,
         "aggroRange": 10,
         "leashDistance": 12
+      }
+    },
+    "guard-dog": {
+      "name": "a Guard dog",
+      "corpse": "zombie-dog",
+      "infects": false,
+      "strength": 1,
+      "hp": 30,
+      "radius": 0.4,
+      "speed": 7.5,
+      "attack": {
+        "damage": 5,
+        "attackIntervalSec": 0.8,
+        "attackRange": 0.3,
+        "aggroRange": 12,
+        "leashDistance": 16
       }
     }
   },
