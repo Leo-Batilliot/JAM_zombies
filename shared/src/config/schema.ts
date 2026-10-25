@@ -573,6 +573,7 @@ const lobbySchema = z
       }),
       crossMargin: z.number().nonnegative(),
       campRange: z.number().positive(),
+      championRange: z.number().positive(),
       campRatio: z.number().positive(),
       bountyRange: z.number().positive(),
       bountyRatio: z.number().positive(),

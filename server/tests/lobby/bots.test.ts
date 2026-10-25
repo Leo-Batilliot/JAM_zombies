@@ -336,3 +336,26 @@ describe("bots choosing cards", () => {
     expect(army.mutations.size).toBe(0);
   });
 });
+
+describe("bots and champions", () => {
+  test("go after a far champion lair once strong enough", () => {
+    const bench = createBench();
+    const army = botArmy(bench, 100, 100);
+    for (let index = 0; index < 40; index++) {
+      bench.world.addUnit(army, "zombie", 101, 100);
+    }
+    const lair = bench.world.addCamp(200, 100, Infinity, 1);
+    bench.world.addCampNpc(lair, "executioner", 200, 100);
+    runBots(bench.world);
+    expect(army.mage.targetX).toBeGreaterThan(150);
+  });
+
+  test("leave a far champion lair alone while weak", () => {
+    const bench = createBench();
+    const army = botArmy(bench, 100, 100);
+    const lair = bench.world.addCamp(200, 100, Infinity, 1);
+    bench.world.addCampNpc(lair, "executioner", 200, 100);
+    runBots(bench.world);
+    expect(army.mage.targetX).toBeLessThan(150);
+  });
+});

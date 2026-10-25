@@ -46,6 +46,7 @@
     },
     "crossMargin": 3,
     "campRange": 60,
+    "championRange": 150,
     "campRatio": 1.5,
     "bountyRange": 120,
     "bountyRatio": 1,

@@ -185,15 +185,22 @@ const bountyTarget = (world: World, army: Army): Army | undefined => {
   return target;
 };
 
+const guardsChampion = (world: World, camp: Camp): boolean =>
+  [...camp.defenders].some((npc) =>
+    Object.hasOwn(world.config.units.champions, npc.type),
+  );
+
 const campTarget = (world: World, army: Army): Camp | undefined => {
-  const { campRange, campRatio } = world.config.lobby.bots;
+  const { campRange, championRange, campRatio } = world.config.lobby.bots;
   const own = armyStrength(world, army);
   let best: Camp | undefined;
-  let bestDistance = campRange;
+  let bestDistance = Infinity;
   for (const camp of world.camps) {
     const campDistance = distance(camp, army.mage);
+    const range = guardsChampion(world, camp) ? championRange : campRange;
     if (
-      campDistance <= bestDistance &&
+      campDistance <= range &&
+      campDistance < bestDistance &&
       own >= bodiesStrength(world, camp.defenders) * campRatio
     ) {
       best = camp;
