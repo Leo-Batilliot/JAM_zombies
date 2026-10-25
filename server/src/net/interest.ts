@@ -7,8 +7,16 @@ import {
   type Registries,
   type SnapshotEntity,
 } from "@horde/shared";
+import { bombingProgress } from "../systems/bombings.js";
 import { corpseDelay } from "../systems/reanimation.js";
-import type { Army, Cross, Entity, Unit, World } from "../world/world.js";
+import type {
+  Army,
+  Bombing,
+  Cross,
+  Entity,
+  Unit,
+  World,
+} from "../world/world.js";
 
 export interface View {
   width: number;
@@ -18,7 +26,9 @@ export interface View {
 const typeIndex = (world: World, entity: Entity): number => {
   switch (entity.kind) {
     case EntityKind.Mage:
-      return 0;
+      return world.registries.skins.has(entity.army.skin)
+        ? world.registries.skins.index(entity.army.skin)
+        : 0;
     case EntityKind.Unit:
     case EntityKind.Corpse:
       return world.registries.units.index(entity.type);
@@ -32,6 +42,7 @@ const typeIndex = (world: World, entity: Entity): number => {
       return world.registries.mists.index(entity.type);
     case EntityKind.Cross:
     case EntityKind.Camp:
+    case EntityKind.Bombing:
       return 0;
   }
 };
@@ -50,6 +61,7 @@ const armySlot = (entity: Entity): number => {
     case EntityKind.Cross:
     case EntityKind.Mist:
     case EntityKind.Camp:
+    case EntityKind.Bombing:
       return neutralArmy;
   }
 };
@@ -84,7 +96,19 @@ const crossCharge = (world: World, cross: Cross): number => {
     : Math.floor((1 - left / rechargeSec) * maxFlagLevel);
 };
 
-const flags = (world: World, entity: Entity, viewer: Army): number => {
+const bombingStage = (world: World, bombing: Bombing): number =>
+  bombing.struck
+    ? maxFlagLevel
+    : Math.min(
+        Math.floor(bombingProgress(world, bombing) * maxFlagLevel),
+        maxFlagLevel - 1,
+      );
+
+const flags = (
+  world: World,
+  entity: Entity,
+  viewer: Army | undefined,
+): number => {
   switch (entity.kind) {
     case EntityKind.Unit:
       return (
@@ -104,11 +128,14 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
       return entity.fighting ? EntityFlag.Fighting : 0;
     case EntityKind.PointOfInterest:
       return (
-        (entity.searchedBy.has(viewer) ? EntityFlag.Searched : 0) |
-        levelFlags(Math.log2(Math.max(1, entity.corpses.length)))
+        (viewer !== undefined && entity.searchedBy.has(viewer)
+          ? EntityFlag.Searched
+          : 0) | levelFlags(Math.log2(Math.max(1, entity.corpses.length)))
       );
     case EntityKind.Cross:
       return levelFlags(crossCharge(world, entity));
+    case EntityKind.Bombing:
+      return levelFlags(bombingStage(world, entity));
     default:
       return 0;
   }
@@ -117,7 +144,7 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
 const toSnapshot = (
   world: World,
   entity: Entity,
-  viewer: Army,
+  viewer: Army | undefined,
 ): SnapshotEntity => ({
   id: entity.id,
   kind: entity.kind,
@@ -130,10 +157,13 @@ const toSnapshot = (
 
 export const visibleEntities = (
   world: World,
-  viewer: Army,
+  viewer: Army | undefined,
   view: View,
 ): SnapshotEntity[] => {
-  const { x, y } = viewer.mage;
+  const { x, y } = viewer?.mage ?? {
+    x: world.config.world.width / 2,
+    y: world.config.world.height / 2,
+  };
   const { interestMargin, maxViewSize } = world.config.network;
   const halfWidth = Math.min(view.width, maxViewSize) / 2 + interestMargin;
   const halfHeight = Math.min(view.height, maxViewSize) / 2 + interestMargin;

@@ -49,6 +49,17 @@ const removeBot = (world: World, army: Army): void => {
   createMassGrave(world, x, y, corpses);
 };
 
+export const skinId = (world: World, index: number): string | undefined => {
+  const ids = world.registries.skins.ids();
+  return ids[index] ?? ids[0];
+};
+
+export const canJoin = (world: World): boolean =>
+  world.armies.size < world.config.lobby.maxParticipants ||
+  [...world.armies.values()].some((army) => isReplaceable(world, army));
+
+export const hasPlayers = (world: World): boolean => world.reconnects.size > 0;
+
 const replaceWeakestBot = (world: World): boolean => {
   let weakest: Army | undefined;
   let weakestStrength = Infinity;
@@ -76,13 +87,20 @@ const resume = (world: World, token: string): Army | undefined => {
   return reconnect.army;
 };
 
+export const canResume = (world: World, token: string): boolean =>
+  world.reconnects.get(token)?.army.bot !== undefined;
+
 export const joinLobby = (
   world: World,
   name: string,
   token: string,
+  skin?: string,
 ): JoinResult => {
   const resumed = resume(world, token);
   if (resumed !== undefined) {
+    if (skin !== undefined) {
+      resumed.skin = skin;
+    }
     return { army: resumed, token };
   }
   const { minParticipants, maxParticipants } = world.config.lobby;
@@ -92,7 +110,7 @@ export const joinLobby = (
   if (world.armies.size >= maxParticipants) {
     return { rejection: JoinRejection.Full };
   }
-  const army = spawnArmy(world, name);
+  const army = spawnArmy(world, name, skin);
   const newToken = randomBytes(tokenBytes).toString("hex");
   world.reconnects.set(newToken, { army, expiresAt: Infinity });
   return { army, token: newToken };

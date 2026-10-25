@@ -33,6 +33,7 @@ export const createBench = (
   for (const mist of Object.values(config.world.mists)) {
     mist.count = 0;
   }
+  config.world.bombings.zones = 0;
   config.lobby.minParticipants = 0;
   patch(config);
   const world = new World(config, buildRegistries(config), seededRandom(seed));

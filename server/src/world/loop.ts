@@ -2,6 +2,7 @@ import { runBots } from "../lobby/bots.js";
 import { updateLobby } from "../lobby/lobby.js";
 import { maintainPopulations, moveCivilians } from "../systems/civilians.js";
 import { updateBattles } from "../systems/battle.js";
+import { runBombings } from "../systems/bombings.js";
 import { fight } from "../systems/combat.js";
 import { maintainCamps } from "../systems/camps.js";
 import { maintainCrosses, updateCrosses } from "../systems/crosses.js";
@@ -38,6 +39,7 @@ export const systems: System[] = [
   fight,
   moveProjectiles,
   updateMists,
+  runBombings,
   updateCrosses,
   updateBattles,
   reanimate,
@@ -75,6 +77,7 @@ export const startLoop = (world: World, afterTick: () => void): Loop => {
   const stats: TickStats = { lastMs: 0, maxMs: 0, totalMs: 0, ticks: 0 };
   let next = performance.now();
   let timer: NodeJS.Timeout | undefined;
+  let stopped = false;
 
   const run = (): void => {
     const intervalMs = 1000 / world.config.network.tickRate;
@@ -91,13 +94,16 @@ export const startLoop = (world: World, afterTick: () => void): Loop => {
       );
     }
     next = Math.max(next + intervalMs, performance.now() - intervalMs);
-    timer = setTimeout(run, next - performance.now());
+    if (!stopped) {
+      timer = setTimeout(run, next - performance.now());
+    }
   };
 
   timer = setTimeout(run, 0);
   return {
     stats,
     stop: () => {
+      stopped = true;
       clearTimeout(timer);
     },
   };

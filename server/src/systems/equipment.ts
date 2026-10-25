@@ -41,6 +41,9 @@ export const damageBonus = (world: World, unit: Unit): number =>
 export const armorOf = (world: World, unit: Unit): number =>
   itemOf(world, unit)?.armor ?? 0;
 
+export const speedBonus = (world: World, unit: Unit): number =>
+  itemOf(world, unit)?.speed ?? 1;
+
 export const equip = (world: World, unit: Unit, item: string): void => {
   const before = world.unitMaxHp(unit.type, unit.item);
   unit.item = item;
