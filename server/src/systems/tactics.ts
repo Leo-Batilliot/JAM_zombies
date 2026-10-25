@@ -37,7 +37,7 @@ export const orderFormation = (
   if (
     !army.alive ||
     id === undefined ||
-    !(id in world.config.formations.selectable) ||
+    !Object.hasOwn(world.config.formations.selectable, id) ||
     (army.formationChange ?? { to: army.formation }).to === id
   ) {
     return false;

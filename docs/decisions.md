@@ -62,7 +62,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ### Projectiles à tête chercheuse | A.PI
 
-- **Quoi** : une unité ou un PNJ qui a un projectile tire au lieu de frapper. Le projectile (vitesse dans `units.json`) suit sa cible et lui inflige les dégâts calculés au tir, avec les règles habituelles à l'arrivée. Il disparaît si sa cible meurt avant. Il brûle en entrant dans une croix active s'il a été tiré de l'extérieur.
+- **Quoi** : une unité ou un PNJ qui a un projectile tire au lieu de frapper. Le projectile (vitesse dans `units.json`) suit sa cible et lui inflige les dégâts calculés au tir, avec les règles habituelles à l'arrivée. Il disparaît si sa cible meurt avant. S'il a été tiré de l'extérieur d'une croix active, il brûle en y entrant, ou en atteignant une cible qui s'y trouve.
 - **Pourquoi** : choix de l'équipe : simple, lisible, pas de collisions à calculer.
 - **Impact** : un projectile est un nouveau genre d'entité, envoyé dans les snapshots et orienté par le client selon son déplacement.
 - **Avis** : Validée.

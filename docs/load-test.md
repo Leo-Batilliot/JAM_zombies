@@ -67,8 +67,8 @@ Commande du jalon : `npx tsx --conditions=development --env-file-if-exists=../.e
 
 Machine : AMD Ryzen 5 7535HS, Node 22.23. Camps, brumes, cimetières et projectiles sont actifs avec la config par défaut. Les armées du test sont remplies de zombies : les projectiles viennent seulement des chasseurs des camps. La version de `HEAD` (phase 5) a été mesurée sur la même machine pour comparer.
 
-40 participants sans bot, vue PC, deux passages :
-- phase 6 : tick de 19,1 à 21,8 ms en moyenne, 21 à 35 ms au 95e centile, 26 à 43 ms au pire, débit de 19 à 22 Ko/s en moyenne et 45 à 58 Ko/s au pire ;
+40 participants sans bot, vue PC :
+- phase 6 (trois passages) : tick de 19,1 à 21,8 ms en moyenne, 21 à 35 ms au 95e centile, 26 à 43 ms au pire, débit de 18 à 22 Ko/s en moyenne et 45 à 66 Ko/s au pire ;
 - phase 5 : tick de 16,9 à 17,1 ms en moyenne, 20 ms au 95e centile, 22 à 25 ms au pire, débit de 17 à 20 Ko/s en moyenne et 46 à 70 Ko/s au pire.
 
 4 joueurs et 8 bots :
@@ -79,5 +79,5 @@ Machine : AMD Ryzen 5 7535HS, Node 22.23. Camps, brumes, cimetières et projecti
 ## Conclusions de la phase 6
 
 - Le tick reste sous le budget de 50 ms, y compris au pire à 40 participants. Les nouveaux systèmes coûtent 2 à 5 ms en moyenne.
-- Le débit dépend surtout de ce que le joueur croise : un camp en vue, avec ses tirs, fait monter le débit d'un joueur de quelques Ko/s. Il reste sous les ~64 Ko/s dans tous les passages de la phase 6.
+- Le débit dépend surtout de ce que le joueur croise : un camp en vue, avec ses tirs, fait monter le débit d'un joueur de quelques Ko/s. En moyenne, il reste très en dessous des ~64 Ko/s. Au pire, un passage à 40 participants atteint 66 Ko/s pour un joueur, comme la phase 5 (70 Ko/s) : ce pire cas dépasse légèrement la cible depuis la phase 5.
 - Les armées de squelettes (beaucoup de projectiles en vol) ne sont pas mesurées par ce test.

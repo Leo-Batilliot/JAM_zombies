@@ -78,6 +78,24 @@ describe("projectiles", () => {
     expect(crossShot(true, true).projectiles.size).toBe(1);
   });
 
+  test("a target inside an active cross cannot be hit from outside", () => {
+    const { world, step } = createBench();
+    world.addCross(110, 100, 600);
+    const boss = world.addEventNpc("evil-pumpkin", 104.5, 100, "test");
+    const hp = boss.hp;
+    world.addProjectile(
+      "arrow",
+      { x: 101, y: 100 },
+      boss.id,
+      5,
+      undefined,
+      "test",
+    );
+    step(3);
+    expect(world.projectiles.size).toBe(0);
+    expect(boss.hp).toBe(hp);
+  });
+
   test("hunters shoot at the units around them", () => {
     const { world, addArmy, step } = createBench();
     const army = addArmy(100, 100);

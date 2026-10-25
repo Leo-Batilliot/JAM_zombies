@@ -4,6 +4,13 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Correctifs de la phase 6 | 6.01-6.07 | A.PI
+
+- `server/src/systems/projectiles.ts` : un projectile tiré de l'extérieur d'une croix active brûle aussi s'il atteint une cible qui s'y trouve, au lieu de la toucher depuis le bord.
+- `server/src/systems/tactics.ts`, `shared/src/registry.ts` : une formation n'est reconnue que si elle est une clé propre de `formations.json` (une clé héritée comme `toString` est refusée).
+- `server/tests/`, `shared/tests/` : cible dans une croix active, formation de clé héritée.
+- `docs/load-test.md`, `docs/decisions.md` : nouveau passage du test de charge, règle du projectile précisée.
+
 ### Contenu V1 | 6.01-6.14 | A.PI
 
 - `shared/src/config/schema.ts` : lignée et bonus de lignée des unités, projectiles, casques (PV et armure), récompense en unités, brumes, camps, formations (placement, vitesse, défense, impact, garde), prime, réglages des bots V1, décalage d'objet par catégorie, couleurs des brumes, touches de formation, réduction de la popup d'évolution, contenu envoyé au client.

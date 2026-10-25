@@ -49,6 +49,7 @@ describe("formation changes", () => {
     const { world, addArmy } = createBench();
     const army = addArmy(100, 100);
     expect(orderFormation(world, army, "turtle")).toBe(false);
+    expect(orderFormation(world, army, "toString")).toBe(false);
     settle(world, army, "wedge");
     expect(orderFormation(world, army, "wedge")).toBe(false);
   });

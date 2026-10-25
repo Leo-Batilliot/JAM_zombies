@@ -272,4 +272,10 @@ describe("phase 6 references", () => {
     config.lobby.bots.formations.attack = "turtle";
     expect(() => buildRegistries(config)).toThrow(/turtle/);
   });
+
+  test("fails on bots using an inherited object key as formation", () => {
+    const config = loadSharedConfig();
+    config.lobby.bots.formations.defend = "toString";
+    expect(() => buildRegistries(config)).toThrow(/toString/);
+  });
 });

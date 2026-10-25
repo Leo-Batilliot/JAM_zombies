@@ -154,7 +154,7 @@ const checkCombat = (config: Config, registries: Registries): void => {
   }
   checkReference(registries.pointsOfInterest, camps.chest, "Camp chest");
   for (const formation of Object.values(config.lobby.bots.formations)) {
-    if (!(formation in config.formations.selectable)) {
+    if (!Object.hasOwn(config.formations.selectable, formation)) {
       throw new RegistryError(
         `Bots reference unknown formation "${formation}"`,
       );
