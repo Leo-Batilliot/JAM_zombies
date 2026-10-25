@@ -270,6 +270,182 @@
           "weight": 3
         }
       ]
+    },
+    "cathedral-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "leather-helmet",
+          "weight": 30
+        },
+        {
+          "item": "iron-helmet",
+          "weight": 20
+        },
+        {
+          "item": "spiked-collar",
+          "weight": 15
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 15
+        },
+        {
+          "item": "bone-collar",
+          "weight": 10
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 4
+        },
+        {
+          "item": "chainsaw",
+          "weight": 3
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 3
+        }
+      ]
+    },
+    "barracks-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "leather-helmet",
+          "weight": 30
+        },
+        {
+          "item": "iron-helmet",
+          "weight": 20
+        },
+        {
+          "item": "spiked-collar",
+          "weight": 15
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 15
+        },
+        {
+          "item": "bone-collar",
+          "weight": 10
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 4
+        },
+        {
+          "item": "chainsaw",
+          "weight": 3
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 3
+        }
+      ]
+    },
+    "hospital-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "leather-helmet",
+          "weight": 30
+        },
+        {
+          "item": "iron-helmet",
+          "weight": 20
+        },
+        {
+          "item": "spiked-collar",
+          "weight": 15
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 15
+        },
+        {
+          "item": "bone-collar",
+          "weight": 10
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 4
+        },
+        {
+          "item": "chainsaw",
+          "weight": 3
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 3
+        }
+      ]
+    },
+    "cabin-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "leather-helmet",
+          "weight": 30
+        },
+        {
+          "item": "iron-helmet",
+          "weight": 20
+        },
+        {
+          "item": "spiked-collar",
+          "weight": 15
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 15
+        },
+        {
+          "item": "bone-collar",
+          "weight": 10
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 4
+        },
+        {
+          "item": "chainsaw",
+          "weight": 3
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 3
+        }
+      ]
     }
   },
   "massGrave": "mass-grave",
@@ -309,6 +485,19 @@
       },
       "damagePerSec": 0,
       "reanimationDelaySec": 10
+    },
+    "gas": {
+      "name": "the quarantine gas",
+      "count": 0,
+      "radius": 5,
+      "speed": 0,
+      "turnIntervalSec": 60,
+      "lifetimeSec": {
+        "min": 60,
+        "max": 60
+      },
+      "damagePerSec": 4,
+      "groundOnly": true
     }
   },
   "camps": {
@@ -335,6 +524,90 @@
     ],
     "chest": "camp-chest",
     "districts": ["barracks", "park", "forest", "plaza"]
+  },
+  "places": {
+    "cathedral": {
+      "district": "cathedral",
+      "at": [0.5, 0.72],
+      "spread": 6,
+      "safeDistance": 25,
+      "respawnSec": 240,
+      "defenders": [
+        {
+          "npc": "templar",
+          "count": 5
+        },
+        {
+          "npc": "monk",
+          "count": 4
+        }
+      ],
+      "chest": "cathedral-chest"
+    },
+    "barracks": {
+      "district": "barracks",
+      "at": [0.5, 0.55],
+      "spread": 7,
+      "safeDistance": 25,
+      "respawnSec": 240,
+      "defenders": [
+        {
+          "npc": "soldier",
+          "count": 5
+        },
+        {
+          "npc": "machine-gun",
+          "count": 1
+        },
+        {
+          "npc": "mortar",
+          "count": 1
+        }
+      ],
+      "chest": "barracks-chest",
+      "mortar": {
+        "npc": "mortar",
+        "range": 45,
+        "intervalSec": 20
+      }
+    },
+    "hospital": {
+      "district": "hospital",
+      "at": [0.5, 0.6],
+      "spread": 6,
+      "safeDistance": 25,
+      "respawnSec": 180,
+      "defenders": [
+        {
+          "npc": "patient",
+          "count": 14
+        }
+      ],
+      "chest": "hospital-chest",
+      "gas": {
+        "mist": "gas",
+        "count": 2,
+        "spread": 14
+      }
+    },
+    "cabin": {
+      "district": "forest",
+      "at": [0.5, 0.3],
+      "spread": 5,
+      "safeDistance": 25,
+      "respawnSec": 240,
+      "defenders": [
+        {
+          "npc": "hunter",
+          "count": 3
+        },
+        {
+          "npc": "guard-dog",
+          "count": 3
+        }
+      ],
+      "chest": "cabin-chest"
+    }
   },
   "bombings": {
     "name": "the bombing",

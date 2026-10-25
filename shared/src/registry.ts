@@ -313,6 +313,37 @@ const checkCity = (config: Config): void => {
   }
 };
 
+const checkPlaces = (config: Config, registries: Registries): void => {
+  for (const [placeId, place] of Object.entries(config.world.places)) {
+    const source = `Place "${placeId}"`;
+    const template = config.world.city.templates[place.district];
+    if (template === undefined) {
+      throw new RegistryError(
+        `${source} references unknown district "${place.district}"`,
+      );
+    }
+    if (template.min < 1) {
+      throw new RegistryError(
+        `${source} needs district "${place.district}" in every city`,
+      );
+    }
+    for (const { npc } of place.defenders) {
+      checkReference(registries.npcs, npc, source);
+    }
+    checkReference(registries.pointsOfInterest, place.chest, source);
+    if (place.gas !== undefined) {
+      checkReference(registries.mists, place.gas.mist, source);
+    }
+    const mortar = place.mortar?.npc;
+    if (
+      mortar !== undefined &&
+      !place.defenders.some((defender) => defender.npc === mortar)
+    ) {
+      throw new RegistryError(`${source} mortar "${mortar}" is not a defender`);
+    }
+  }
+};
+
 export const buildRegistries = (config: Config): Registries => {
   const registries: Registries = {
     units: new Registry("unit", config.units.units),
@@ -379,6 +410,7 @@ export const buildRegistries = (config: Config): Registries => {
     }
   }
   checkPowers(registries);
+  checkPlaces(config, registries);
 
   return registries;
 };

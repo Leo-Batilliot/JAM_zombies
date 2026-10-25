@@ -95,7 +95,8 @@
   },
   "mistColors": {
     "purifying": "#cfe8ff",
-    "necrotic": "#5fd45a"
+    "necrotic": "#5fd45a",
+    "gas": "#9fae4a"
   },
   "bombingColors": {
     "mark": "#e0605a",
@@ -293,6 +294,54 @@
     },
     "npc-monk": {
       "sprite": "npc-civilian",
+      "scale": 1
+    },
+    "place-cathedral": {
+      "sprite": "cross",
+      "scale": 1
+    },
+    "place-barracks": {
+      "sprite": "camp",
+      "scale": 1
+    },
+    "place-hospital": {
+      "sprite": "poi-mass-grave",
+      "scale": 1
+    },
+    "place-cabin": {
+      "sprite": "camp",
+      "scale": 1
+    },
+    "npc-templar": {
+      "sprite": "npc-soldier",
+      "scale": 1
+    },
+    "npc-patient": {
+      "sprite": "npc-civilian",
+      "scale": 1
+    },
+    "npc-machine-gun": {
+      "sprite": "projectile-bullet",
+      "scale": 3
+    },
+    "npc-mortar": {
+      "sprite": "decor-barrel",
+      "scale": 1
+    },
+    "poi-cathedral-chest": {
+      "sprite": "poi-chest",
+      "scale": 1
+    },
+    "poi-barracks-chest": {
+      "sprite": "poi-camp-chest",
+      "scale": 1
+    },
+    "poi-hospital-chest": {
+      "sprite": "poi-chest",
+      "scale": 1
+    },
+    "poi-cabin-chest": {
+      "sprite": "poi-chest",
       "scale": 1
     }
   },

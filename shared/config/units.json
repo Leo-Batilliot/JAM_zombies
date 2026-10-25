@@ -828,6 +828,59 @@
         "factor": 0.6
       },
       "obstacle": false
+    },
+    "templar": {
+      "name": "a Templar",
+      "corpse": "wandering-soul",
+      "infects": false,
+      "strength": 3,
+      "hp": 85,
+      "radius": 0.5,
+      "speed": 4.5,
+      "attack": {
+        "damage": 10,
+        "attackIntervalSec": 1.2,
+        "attackRange": 0.4,
+        "aggroRange": 10,
+        "leashDistance": 12
+      },
+      "obstacle": false
+    },
+    "patient": {
+      "name": "a Patient",
+      "corpse": "zombie",
+      "infects": true,
+      "strength": 1,
+      "hp": 8,
+      "radius": 0.4,
+      "speed": 0.6,
+      "obstacle": false
+    },
+    "machine-gun": {
+      "name": "a Machine gun",
+      "infects": false,
+      "strength": 4,
+      "hp": 140,
+      "radius": 0.7,
+      "speed": 0,
+      "attack": {
+        "damage": 5,
+        "attackIntervalSec": 0.25,
+        "attackRange": 12,
+        "aggroRange": 13,
+        "leashDistance": 14,
+        "projectile": "bullet"
+      },
+      "obstacle": false
+    },
+    "mortar": {
+      "name": "a Mortar",
+      "infects": false,
+      "strength": 3,
+      "hp": 110,
+      "radius": 0.7,
+      "speed": 0,
+      "obstacle": false
     }
   },
   "projectiles": {

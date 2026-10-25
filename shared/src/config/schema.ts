@@ -320,6 +320,33 @@ const mistSchema = z.strictObject({
   lifetimeSec: lifetimeSchema,
   damagePerSec: z.number().nonnegative(),
   reanimationDelaySec: z.number().nonnegative().optional(),
+  groundOnly: z.boolean().optional(),
+});
+
+const placeSchema = z.strictObject({
+  district: id,
+  at: z.tuple([z.number().min(0).max(1), z.number().min(0).max(1)]),
+  spread: z.number().positive(),
+  safeDistance: z.number().nonnegative(),
+  respawnSec: z.number().positive(),
+  defenders: z
+    .array(z.strictObject({ npc: id, count: z.int().positive() }))
+    .min(1),
+  chest: id,
+  gas: z
+    .strictObject({
+      mist: id,
+      count: z.int().positive(),
+      spread: z.number().nonnegative(),
+    })
+    .optional(),
+  mortar: z
+    .strictObject({
+      npc: id,
+      range: z.number().positive(),
+      intervalSec: z.number().positive(),
+    })
+    .optional(),
 });
 
 const campsSchema = z.strictObject({
@@ -458,6 +485,7 @@ const worldSchema = z.strictObject({
   }),
   mists: z.record(id, mistSchema),
   camps: campsSchema,
+  places: z.record(id, placeSchema),
   bombings: bombingsSchema,
 });
 
@@ -790,6 +818,7 @@ export const clientConfigSchema = z.strictObject({
     skins: z.array(z.strictObject({ id, name: z.string().min(1) })),
     lineages: z.array(lineageSchema.extend({ id })),
     layers: z.record(id, z.enum(layers)),
+    places: z.array(id),
     gifts: z.array(giftSchema.extend({ id })),
     spells: z.array(spellSchema.extend({ id })),
   }),
@@ -875,6 +904,7 @@ export const toClientConfig = (
           : [[typeId, type.layer]],
       ),
     ),
+    places: Object.keys(config.world.places),
     gifts: withIds(config.gameplay.gifts),
     spells: withIds(config.gameplay.spells),
   },

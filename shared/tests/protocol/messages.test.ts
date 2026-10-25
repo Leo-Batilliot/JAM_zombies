@@ -344,6 +344,7 @@ const serverMessages: ServerMessage[] = [
           },
         ],
         layers: { crow: "air" },
+        places: ["cathedral"],
         gifts: [
           {
             id: "haste",

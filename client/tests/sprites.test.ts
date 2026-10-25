@@ -74,6 +74,7 @@ describe("spriteName", () => {
     formations: [],
     lineages: [],
     layers: {},
+    places: [],
     gifts: [],
     spells: [],
     skins: [
@@ -154,6 +155,7 @@ describe("gearName", () => {
     formations: [],
     lineages: [],
     layers: {},
+    places: [],
     gifts: [],
     spells: [],
     skins: [

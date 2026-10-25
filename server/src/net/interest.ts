@@ -42,8 +42,9 @@ const typeIndex = (world: World, entity: Entity): number => {
       return world.registries.projectiles.index(entity.type);
     case EntityKind.Mist:
       return world.registries.mists.index(entity.type);
-    case EntityKind.Cross:
     case EntityKind.Camp:
+      return entity.marker;
+    case EntityKind.Cross:
     case EntityKind.Bombing:
       return 0;
   }

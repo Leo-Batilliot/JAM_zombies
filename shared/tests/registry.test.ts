@@ -93,6 +93,7 @@ const withUnits = (
         ...config.world.camps,
         defenders: [{ npc: "jack-o-lantern", count: 1 }],
       },
+      places: {},
     },
   };
 };
@@ -350,5 +351,41 @@ describe("config schema of the bonus content", () => {
     const raw = loadSharedConfig();
     raw.world.bombings.intervalSec = { min: 10, max: 5 };
     expect(configSchema.safeParse(raw).success).toBe(false);
+  });
+});
+
+describe("places", () => {
+  const withPlace = (
+    edit: (config: Config) => void = () => undefined,
+  ): Config => {
+    const config = loadSharedConfig();
+    edit(config);
+    return config;
+  };
+
+  test("accept the shared config", () => {
+    expect(() => buildRegistries(withPlace())).not.toThrow();
+  });
+
+  test("need their district in every city", () => {
+    const config = withPlace((edited) => {
+      const houses = edited.world.city.templates["houses"];
+      const barracks = edited.world.places["barracks"];
+      if (houses !== undefined && barracks !== undefined) {
+        barracks.district = "houses";
+        houses.min = 0;
+      }
+    });
+    expect(() => buildRegistries(config)).toThrow(/in every city/);
+  });
+
+  test("fire their mortar from one of their defenders", () => {
+    const config = withPlace((edited) => {
+      const barracks = edited.world.places["barracks"];
+      if (barracks?.mortar !== undefined) {
+        barracks.mortar.npc = "soldier-missing";
+      }
+    });
+    expect(() => buildRegistries(config)).toThrow(/is not a defender/);
   });
 });

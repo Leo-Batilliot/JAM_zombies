@@ -287,6 +287,14 @@ export interface Camp {
   y: number;
   expiresAt: number;
   defenders: Set<Npc>;
+  marker: number;
+}
+
+export interface PlaceState {
+  camp: Camp | undefined;
+  respawnAt: number;
+  mortarAt: number;
+  gas: Set<Mist>;
 }
 
 export interface Bombing {
@@ -333,6 +341,7 @@ export class World {
   readonly projectiles = new Set<Projectile>();
   readonly mists = new Set<Mist>();
   readonly camps = new Set<Camp>();
+  readonly places = new Map<string, PlaceState>();
   readonly bombings = new Set<Bombing>();
   readonly walls = new Set<Wall>();
   readonly populationSpawnAt = new Map<number, number>();
@@ -635,7 +644,7 @@ export class World {
     return this.#addNpc(type, x, y, undefined, undefined);
   }
 
-  addCamp(x: number, y: number, lifetimeSec: number): Camp {
+  addCamp(x: number, y: number, lifetimeSec: number, marker = 0): Camp {
     const camp: Camp = {
       id: this.#nextId++,
       kind: EntityKind.Camp,
@@ -643,6 +652,7 @@ export class World {
       y: this.clampY(y),
       expiresAt: this.time + lifetimeSec,
       defenders: new Set(),
+      marker,
     };
     this.camps.add(camp);
     this.#add(camp);

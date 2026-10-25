@@ -50,6 +50,7 @@ export const createBench = (
     delete point.districts;
   }
   delete config.world.camps.districts;
+  config.world.places = {};
   for (const event of Object.values(config.events.events)) {
     delete event.districts;
   }

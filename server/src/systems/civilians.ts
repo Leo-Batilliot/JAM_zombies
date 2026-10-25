@@ -1,12 +1,6 @@
 import { EntityKind, type Config } from "@horde/shared";
 import { distanceToMages, farPoint } from "../world/spawn.js";
-import type {
-  Entity,
-  Mage,
-  NpcGroup,
-  Unit,
-  World,
-} from "../world/world.js";
+import type { Entity, Mage, NpcGroup, Unit, World } from "../world/world.js";
 import { armyStrength, bodiesStrength } from "./strength.js";
 
 type Population = Config["world"]["populations"][number];

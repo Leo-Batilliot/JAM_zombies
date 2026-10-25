@@ -120,7 +120,9 @@ export const spriteName = (
     case EntityKind.Mist:
       return `mist-${content.mists[entity.type]?.id ?? ""}`;
     case EntityKind.Camp:
-      return "camp";
+      return entity.type === 0
+        ? "camp"
+        : `place-${content.places[entity.type - 1] ?? ""}`;
     case EntityKind.Bombing:
       return "bombing";
   }
