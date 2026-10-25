@@ -1,25 +1,64 @@
-# Base de projet
+# Horde.io
 
-Structure de départ et règles de travail communes à mes projets.
+Jeu multijoueur en ligne (.io) sur le thème des zombies, jouable sur navigateur, PC et téléphone. Chaque joueur est un mage zombifié qui commande une armée de morts : les unités tuées se relèvent 30 s plus tard, et passent à l'ennemi si leur mage fuit ou meurt.
 
-## Contenu
+Le concept complet est dans `docs/concept.md`.
 
-- `AGENTS.md` : règles de travail (communication, organisation, code, documentation).
-- `docs/` : documentation du projet.
-  - `decisions.md` : décisions prises et leur statut.
-  - `plan.md` : étapes prévues, numérotées `X.YY`.
-  - `history.md` : historique des modifications du code.
-- `ressources/exemples/` : modèles de référence pour les fichiers de `docs/`.
-- `prompts/` : prompts pour chaque étape du cycle de travail.
-  - `01-init.md` : interview, puis rédaction du plan et des premières décisions.
-  - `02-implement.md` : réalisation d'une ou plusieurs étapes du plan.
-  - `03-review.md` : review du code dans un chat séparé, sans contexte, rapport seul.
-  - `04-phase-review.md` : bilan de fin de phase et ajustement du plan.
-  - `resume.md` : remise en contexte au début d'un nouveau chat.
+## Prérequis
 
-## Démarrer un projet
+- Node 24 (`nvm use` lit `.nvmrc`).
+- Pour la démo en ligne : `cloudflared` (voir `docs/deploy.md`).
 
-1. Copier ce dépôt comme base du nouveau projet.
-2. Lancer `prompts/01-init.md` pour construire `docs/plan.md` et `docs/decisions.md` par interview.
-3. Pour chaque étape : `prompts/02-implement.md`, puis `prompts/03-review.md` dans un chat séparé.
-4. À la fin de chaque phase : `prompts/04-phase-review.md`.
+## Installation
+
+```bash
+nvm use
+npm ci
+cp .env.example .env
+```
+
+Les variables de `.env` sont toutes obligatoires. Les chemins sont relatifs au dossier `server/`. Si le port de `PORT` est déjà pris, en choisir un autre.
+
+## Lancer
+
+- Développement : `npm run dev`. Lance le serveur (rechargé à chaque modification) et Vite. Le jeu est sur l'URL affichée par Vite.
+- Démo : `npm run demo`. Build complet, puis serveur sur `PORT`, qui sert aussi le jeu. Pour l'ouvrir aux téléphones, voir `docs/deploy.md`.
+- Page du QR code : `/share`.
+
+Les valeurs de jeu sont dans `shared/config/*.json`. Elles sont validées au démarrage et rechargées à chaud en pleine partie.
+
+## Contrôles
+
+PC :
+- clic gauche sur le sol : déplacer le mage et son armée ;
+- clic gauche sur un ennemi : l'attaquer ;
+- `1` à `4` : formations (Phalanx, Wedge, Circle, Swarm) ;
+- `R` puis clic : Retraite vers le point choisi ;
+- popup Evolutions : faire évoluer les troupes.
+
+Téléphone, en paysage : tap à la place du clic, et boutons à l'écran pour les formations, la Retraite et les évolutions.
+
+Mode démo (`DEMO_MODE=true` et `?demo=1` dans l'URL) : `K` screamer, `P` Citrouille maléfique, `U` renforts.
+
+## Vérifier
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
+
+Test de charge : `npm run load-test --workspace server` (résultats dans `docs/load-test.md`).
+
+## Structure
+
+- `client/` : rendu PixiJS, interface, sons.
+- `server/` : simulation, lobby, bots, réseau.
+- `shared/` : protocole binaire, schéma de config, registres de contenu.
+- `shared/config/` : toutes les valeurs ajustables.
+- `docs/` : concept, plan, décisions, historique, déploiement, démo, crédits.
+
+## Travailler sur le projet
+
+Règles de travail dans `AGENTS.md`. Les prompts du cycle de travail sont dans `ressources/prompts/`, les modèles des fichiers de `docs/` dans `ressources/exemples/`.

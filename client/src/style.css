@@ -410,10 +410,11 @@ body.share p {
 
 .demo {
   position: absolute;
-  bottom: max(0.6rem, env(safe-area-inset-bottom));
-  left: max(0.6rem, env(safe-area-inset-left));
+  top: max(0.6rem, env(safe-area-inset-top));
+  left: 50%;
   display: flex;
   gap: 0.4rem;
+  transform: translateX(-50%);
 }
 
 .demo button {

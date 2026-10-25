@@ -4,6 +4,13 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Préparation de la démo et documentation de lancement | 8.02-8.04 | T.BE
+
+- `client/src/style.css` : boutons du mode démo en haut au centre, ils passaient sous les boutons de formation sur téléphone.
+- `README.md` : présentation du jeu, installation, lancement, contrôles, vérifications et structure.
+- `docs/demo.md` : préparation, déroulé de la présentation et plan B.
+- `docs/load-test.md` : mesure indicative côté client sur écran de téléphone simulé.
+
 ### Contenu bonus | 7.01-7.06 | G.WI
 
 - `shared/src/config/schema.ts` : apparences du mage, vitesse des objets, bombardements, nombre de lobbys et spectateurs, son et couleurs des bombardements, apparences et bombardements envoyés au client.

@@ -99,3 +99,12 @@ Machine : Intel Xeon 2,8 GHz (2 cœurs virtuels), Node 22.23. Les bombardements 
 - Le contenu bonus ne change pas le temps de tick : l'écart avec la phase 6 reste dans le bruit d'un passage à l'autre. Cette machine est deux fois plus lente que celles des phases précédentes, d'où un pire cas au-dessus du budget à 40 participants, pour les deux versions.
 - Le jalon à 4 joueurs et 8 bots tient très largement dans le budget.
 - Deux lobbys pleins tournent dans le même processus : leurs temps de tick s'additionnent. Ce cas n'est pas mesuré par le script.
+
+## Mesure côté client de la phase 8
+
+Mesure indicative, en attendant le test sur un vrai téléphone (5.14 et 8.02). Chrome headless, écran de téléphone simulé (844 x 390, densité 3, plafonnée à 2 par `client.json`), partie avec les 11 bots du lobby et ~65 à 95 unités dans l'armée du joueur, mesure sur 10 s.
+
+- 23 fps sans ralentissement du CPU, 16 fps avec le CPU ralenti 4 fois.
+- Le profil CPU montre le thread principal inactif 93 % du temps : le code du jeu et PixiJS prennent moins de 5 %. La limite vient du rendu WebGL logiciel de Chrome headless (pas de GPU), pas du code.
+
+Conclusion : rien à optimiser côté JavaScript à ce stade. Les fps réels sont à mesurer sur téléphone, avec un GPU.
