@@ -3,7 +3,6 @@ import { distanceToMages, farPoint } from "../world/spawn.js";
 import type {
   Entity,
   Mage,
-  Npc,
   NpcGroup,
   Unit,
   World,
