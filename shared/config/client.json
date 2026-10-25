@@ -191,5 +191,6 @@
       "sprite": "projectile-bolt",
       "scale": 1
     }
-  }
+  },
+  "cardArtScale": 2
 }

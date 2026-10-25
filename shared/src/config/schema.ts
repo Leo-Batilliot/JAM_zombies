@@ -87,6 +87,8 @@ const gameplaySchema = z.strictObject({
     retargetIntervalSec: z.number().positive(),
     leashDistance: z.number().positive(),
     orderRange: z.number().positive(),
+    avoidRatio: z.number().positive(),
+    contactRange: z.number().nonnegative(),
   }),
   reanimation: z.strictObject({
     delaySec: z.number().nonnegative(),
@@ -459,6 +461,12 @@ const lobbySchema = z
         attack: id,
         defend: id,
       }),
+      handicap: z.strictObject({
+        margin: z.number().nonnegative(),
+        ratio: z.number().positive(),
+        slowFrom: z.number().min(0).lt(1),
+        thinkSlowdown: z.number().min(1),
+      }),
     }),
     leaderboard: z.strictObject({
       intervalSec: z.number().positive(),
@@ -584,6 +592,7 @@ export const clientSettingsSchema = z.strictObject({
     id,
     z.strictObject({ sprite: id, scale: z.number().positive() }),
   ),
+  cardArtScale: z.number().positive(),
 });
 
 export const configSchema = z.strictObject({
@@ -622,6 +631,11 @@ export const clientConfigSchema = z.strictObject({
         name: z.string().min(1),
         strength: z.int().positive(),
         equipment: id.optional(),
+        hp: z.number().positive(),
+        damage: z.number().nonnegative(),
+        attackIntervalSec: z.number().positive(),
+        speed: z.number().positive(),
+        attackRange: z.number().nonnegative(),
       }),
     ),
     items: z.array(
@@ -635,20 +649,20 @@ export const clientConfigSchema = z.strictObject({
     mists: z.array(z.strictObject({ id, radius: z.number().positive() })),
     formations: z.array(z.strictObject({ id, name: z.string().min(1) })),
     skins: z.array(z.strictObject({ id, name: z.string().min(1) })),
-    lineages: z.array(z.strictObject({ id, name: z.string().min(1) })),
-    gifts: z.array(z.strictObject({ id, name: z.string().min(1) })),
-    spells: z.array(z.strictObject({ id, name: z.string().min(1) })),
+    lineages: z.array(lineageSchema.extend({ id })),
+    gifts: z.array(giftSchema.extend({ id })),
+    spells: z.array(spellSchema.extend({ id })),
   }),
 });
 
 export type ClientConfig = z.infer<typeof clientConfigSchema>;
 
-const named = (
-  entries: Record<string, { name: string }>,
-): { id: string; name: string }[] =>
+const withIds = <T extends object>(
+  entries: Record<string, T>,
+): (T & { id: string })[] =>
   Object.entries(entries).map(([entryId, entry]) => ({
+    ...entry,
     id: entryId,
-    name: entry.name,
   }));
 
 export const toClientConfig = (config: Config): ClientConfig => ({
@@ -674,6 +688,11 @@ export const toClientConfig = (config: Config): ClientConfig => ({
       name: unit.name,
       strength: unit.strength,
       ...(unit.equipment === undefined ? {} : { equipment: unit.equipment }),
+      hp: unit.hp,
+      damage: unit.damage,
+      attackIntervalSec: unit.attackIntervalSec,
+      speed: unit.speed,
+      attackRange: unit.attackRange,
     })),
     items: Object.entries(config.equipment.items).map(([itemId, item]) => ({
       id: itemId,
@@ -701,9 +720,9 @@ export const toClientConfig = (config: Config): ClientConfig => ({
       id: skinId,
       name: skin.name,
     })),
-    lineages: named(config.units.lineages),
-    gifts: named(config.gameplay.gifts),
-    spells: named(config.gameplay.spells),
+    lineages: withIds(config.units.lineages),
+    gifts: withIds(config.gameplay.gifts),
+    spells: withIds(config.gameplay.spells),
   },
 });
 

@@ -53,6 +53,12 @@
       "explore": "swarm",
       "attack": "wedge",
       "defend": "phalanx"
+    },
+    "handicap": {
+      "margin": 40,
+      "ratio": 1.2,
+      "slowFrom": 0.6,
+      "thinkSlowdown": 3
     }
   },
   "leaderboard": {

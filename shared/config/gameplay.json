@@ -47,7 +47,9 @@
   "combat": {
     "retargetIntervalSec": 0.5,
     "leashDistance": 18,
-    "orderRange": 30
+    "orderRange": 30,
+    "avoidRatio": 1.5,
+    "contactRange": 3
   },
   "reanimation": {
     "delaySec": 30,
@@ -80,7 +82,7 @@
   "souls": {
     "perStrength": 1,
     "levelBase": 10,
-    "levelGrowth": 1.5
+    "levelGrowth": 1.2
   },
   "demo": {
     "killerName": "the Evil Pumpkin",
