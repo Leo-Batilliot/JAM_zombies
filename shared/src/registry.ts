@@ -54,6 +54,14 @@ type EventType = Config["events"]["events"][string];
 type ProjectileType = Config["units"]["projectiles"][string];
 type MistType = Config["world"]["mists"][string];
 type SkinType = Config["gameplay"]["mage"]["skins"][string];
+type GiftType = Config["gameplay"]["gifts"][string];
+type SpellType = Config["gameplay"]["spells"][string];
+
+export interface TreeNode {
+  lineage: string;
+  branch: string | undefined;
+  tier: number;
+}
 
 export interface Registries {
   units: Registry<UnitType>;
@@ -64,6 +72,9 @@ export interface Registries {
   projectiles: Registry<ProjectileType>;
   mists: Registry<MistType>;
   skins: Registry<SkinType>;
+  gifts: Registry<GiftType>;
+  spells: Registry<SpellType>;
+  tree: ReadonlyMap<string, TreeNode>;
 }
 
 const checkReference = (
@@ -164,6 +175,77 @@ const checkCombat = (config: Config, registries: Registries): void => {
   }
 };
 
+const buildTree = (config: Config): Map<string, TreeNode> => {
+  const tree = new Map<string, TreeNode>();
+  const place = (unitId: string, node: TreeNode): void => {
+    const unit = config.units.units[unitId];
+    if (unit === undefined) {
+      throw new RegistryError(
+        `Lineage "${node.lineage}" references unknown unit "${unitId}"`,
+      );
+    }
+    if (tree.has(unitId)) {
+      throw new RegistryError(`Unit "${unitId}" is in two lineages`);
+    }
+    if (unit.family !== node.lineage) {
+      throw new RegistryError(
+        `Unit "${unitId}" has family "${unit.family}" but is in lineage "${node.lineage}"`,
+      );
+    }
+    if (unit.strength !== config.units.fusionRatio ** node.tier) {
+      throw new RegistryError(
+        `Unit "${unitId}" must have a strength of ${String(config.units.fusionRatio ** node.tier)}`,
+      );
+    }
+    tree.set(unitId, node);
+  };
+  for (const [lineage, entry] of Object.entries(config.units.lineages)) {
+    place(entry.base, { lineage, branch: undefined, tier: 0 });
+    for (const [branch, { tiers }] of Object.entries(entry.branches)) {
+      tiers.forEach((unitId, index) => {
+        place(unitId, { lineage, branch, tier: index + 1 });
+      });
+    }
+  }
+  return tree;
+};
+
+const requireFields = (
+  source: string,
+  entry: Record<string, unknown>,
+  fields: string[],
+): void => {
+  for (const field of fields) {
+    if (entry[field] === undefined) {
+      throw new RegistryError(`${source} needs "${field}"`);
+    }
+  }
+};
+
+const spellFields: Record<SpellType["effect"], string[]> = {
+  nova: ["radius", "damage"],
+  rally: ["durationSec", "multiplier"],
+  wall: ["durationSec", "length", "spacing", "offset", "npc"],
+  raise: ["radius"],
+};
+
+const checkPowers = (registries: Registries): void => {
+  for (const [giftId, gift] of registries.gifts.entries()) {
+    if (gift.effect === "heal") {
+      requireFields(`Gift "${giftId}"`, gift, ["radius"]);
+    }
+  }
+  for (const [spellId, spell] of registries.spells.entries()) {
+    requireFields(`Spell "${spellId}"`, spell, spellFields[spell.effect]);
+    if (spell.npc !== undefined) {
+      checkReference(registries.npcs, spell.npc, `Spell "${spellId}"`);
+      if (!registries.npcs.get(spell.npc).obstacle) {
+        throw new RegistryError(`Wall npc "${spell.npc}" must be an obstacle`);
+      }
+    }
+  }
+};
+
 export const buildRegistries = (config: Config): Registries => {
   const registries: Registries = {
     units: new Registry("unit", config.units.units),
@@ -177,17 +259,11 @@ export const buildRegistries = (config: Config): Registries => {
     projectiles: new Registry("projectile", config.units.projectiles),
     mists: new Registry("mist", config.world.mists),
     skins: new Registry("skin", config.gameplay.mage.skins),
+    gifts: new Registry("gift", config.gameplay.gifts),
+    spells: new Registry("spell", config.gameplay.spells),
+    tree: buildTree(config),
   };
 
-  for (const [unitId, unit] of registries.units.entries()) {
-    for (const evolution of unit.evolutions) {
-      checkReference(
-        registries.units,
-        evolution.into,
-        `Evolution of unit "${unitId}"`,
-      );
-    }
-  }
   for (const [npcId, npc] of registries.npcs.entries()) {
     if (npc.corpse !== undefined) {
       checkReference(registries.units, npc.corpse, `Corpse of npc "${npcId}"`);
@@ -225,6 +301,13 @@ export const buildRegistries = (config: Config): Registries => {
   ) {
     throw new RegistryError("Respawn delay must exceed the screamer duration");
   }
+
+  for (const unitId of registries.units.ids()) {
+    if (!registries.tree.has(unitId)) {
+      throw new RegistryError(`Unit "${unitId}" is in no lineage`);
+    }
+  }
+  checkPowers(registries);
 
   return registries;
 };

@@ -12,7 +12,8 @@ import type {
 } from "../world/world.js";
 import { addStartingUnits } from "./army.js";
 import { distance } from "./bodies.js";
-import { absorb, isFull } from "./enlist.js";
+import { enlist, isFull } from "./enlist.js";
+import { isAllowed } from "./evolution.js";
 import { createMassGrave } from "./points.js";
 import { grantSouls, maxHp } from "./souls.js";
 import { armyStrength } from "./strength.js";
@@ -45,9 +46,12 @@ const handOver = (world: World, army: Army, killer: Army | undefined): void => {
     if (index >= kept || to === undefined) {
       grave.push({ type: remain.type, item: remain.item });
       world.removeEntity(remain);
-    } else if (remain.kind === EntityKind.Unit && isFull(world, to)) {
-      absorb(world, to, remain);
+    } else if (
+      remain.kind === EntityKind.Unit &&
+      (isFull(world, to) || !isAllowed(world, to, remain.type))
+    ) {
       world.removeEntity(remain);
+      enlist(world, to, remain, remain.x, remain.y);
     } else if (remain.kind === EntityKind.Unit) {
       transferUnit(remain, to);
     } else {
@@ -71,9 +75,23 @@ export const killMage = (
   killerName = killer?.name ?? "",
 ): void => {
   const hunter = receiver(world, killer, army);
-  if (hunter !== undefined && isBounty(world, army)) {
-    grantSouls(world, hunter, world.config.events.bounty.souls);
+  if (hunter !== undefined) {
+    hunter.run.mageKills++;
+    if (isBounty(world, army)) {
+      grantSouls(world, hunter, world.config.events.bounty.souls);
+    }
   }
+  army.lastRun = {
+    maxPower: army.run.maxPower,
+    survivalSec: world.time - army.run.startedAt,
+    infected: army.run.infected,
+    kills: army.run.kills,
+    mageKills: army.run.mageKills,
+    level: army.level,
+    mutations: army.run.mutations.map((type) =>
+      world.registries.units.index(type),
+    ),
+  };
   handOver(world, army, killer);
   world.clearArmy(army);
   army.alive = false;
@@ -86,7 +104,15 @@ export const killMage = (
   army.search = undefined;
   army.inventory = [];
   army.formation = undefined;
-  army.formationChange = undefined;
+  army.formationReadyAt = 0;
+  army.pendingLevels = 0;
+  army.cards = [];
+  army.mutations.clear();
+  army.gifts.clear();
+  army.spell = undefined;
+  army.spellReadyAt = 0;
+  army.rally = { until: 0, multiplier: 1 };
+  army.respawnRequested = false;
 };
 
 export const damageMage = (
@@ -163,13 +189,35 @@ export const respawnMage = (world: World, army: Army): void => {
   army.mage.hp = maxHp(world, army);
   army.mage.hitAt = -Infinity;
   army.mage.lossBudget = lossCap(world, army);
+  army.run = world.newRun();
   addStartingUnits(world, army);
 };
 
 export const respawnMages = (world: World): void => {
   for (const army of world.armies.values()) {
-    if (!army.alive && world.time >= army.respawnAt) {
+    if (
+      !army.alive &&
+      world.time >= army.respawnAt &&
+      (army.bot !== undefined || army.respawnRequested)
+    ) {
       respawnMage(world, army);
+    }
+  }
+};
+
+export const requestRespawn = (army: Army): void => {
+  if (!army.alive) {
+    army.respawnRequested = true;
+  }
+};
+
+export const trackRuns = (world: World): void => {
+  for (const army of world.armies.values()) {
+    if (army.alive) {
+      army.run.maxPower = Math.max(
+        army.run.maxPower,
+        armyStrength(world, army),
+      );
     }
   }
 };

@@ -42,12 +42,39 @@ describe("mage movement", () => {
   });
 });
 
-describe("mage facing", () => {
-  test("faces the direction of the last move order", () => {
+describe("march speed", () => {
+  test("the mage waits for its slowest unit", () => {
+    const { world, config, addArmy, step } = createBench((config) => {
+      config.gameplay.army.slowdown.factor = 0;
+    });
+    const army = addArmy(100, 100);
+    world.addUnit(army, "bone-ballista", 100, 98);
+    setMageTarget(world, army.mage, 200, 100);
+    step(config.network.tickRate);
+    expect(army.mage.x - 100).toBeCloseTo(
+      config.units.units["bone-ballista"]?.speed ?? 0,
+      1,
+    );
+  });
+});
+
+describe("formation heading", () => {
+  test("a short move does not turn the formation", () => {
     const { world, addArmy } = createBench();
-    const { mage } = addArmy(100, 100);
-    setMageTarget(world, mage, 100, 50);
-    expect(mage.facingX).toBeCloseTo(0);
-    expect(mage.facingY).toBeCloseTo(-1);
+    const army = addArmy(100, 100);
+    setMageTarget(world, army.mage, 103, 100);
+    expect(army.headingTarget).toEqual({ x: 0, y: 1 });
+  });
+
+  test("a long move in a new direction turns it progressively", () => {
+    const { world, config, addArmy, step } = createBench();
+    const army = addArmy(100, 100);
+    setMageTarget(world, army.mage, 200, 100);
+    expect(army.headingTarget.x).toBeCloseTo(1);
+    step();
+    expect(army.heading.x).toBeGreaterThan(0);
+    expect(army.heading.x).toBeLessThan(1);
+    step(config.network.tickRate * 2);
+    expect(army.heading.x).toBeCloseTo(1);
   });
 });

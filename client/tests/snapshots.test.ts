@@ -8,6 +8,7 @@ const unit = (id: number): SnapshotEntity => ({
   type: 0,
   army: 1,
   flags: 0,
+  hp: 255,
   x: 1,
   y: 2,
 });
@@ -20,10 +21,10 @@ describe("SnapshotState", () => {
     ).toHaveLength(2);
     const next = state.apply({
       entities: [],
-      updates: [{ id: 1, flags: 4, x: 5, y: 6 }],
+      updates: [{ id: 1, flags: 4, hp: 100, x: 5, y: 6 }],
       removed: [2],
     });
-    expect(next).toEqual([{ ...unit(1), flags: 4, x: 5, y: 6 }]);
+    expect(next).toEqual([{ ...unit(1), flags: 4, hp: 100, x: 5, y: 6 }]);
   });
 
   test("keeps entities that did not change", () => {

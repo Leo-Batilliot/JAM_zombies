@@ -10,6 +10,7 @@ const unit = (overrides: Partial<SnapshotEntity> = {}): SnapshotEntity => ({
   type: 0,
   army: 2,
   flags: 0,
+  hp: 255,
   x: 10,
   y: 20,
   ...overrides,
@@ -30,7 +31,7 @@ describe("SnapshotDelta", () => {
     const delta = new SnapshotDelta();
     delta.next([unit()], bounds);
     expect(delta.next([unit({ x: 11, flags: 1 })], bounds).updates).toEqual([
-      { id: 1, flags: 1, x: 11, y: 20 },
+      { id: 1, flags: 1, hp: 255, x: 11, y: 20 },
     ]);
   });
 
@@ -53,5 +54,13 @@ describe("SnapshotDelta", () => {
     delta.next([unit(), unit({ id: 2 })], bounds);
     expect(delta.next([unit({ id: 2 })], bounds).removed).toEqual([1]);
     expect(delta.next([unit({ id: 1 })], bounds).entities).toEqual([unit()]);
+  });
+
+  test("sends an update when the health changes", () => {
+    const delta = new SnapshotDelta();
+    delta.next([unit()], bounds);
+    expect(delta.next([unit({ hp: 128 })], bounds).updates).toEqual([
+      { id: 1, flags: 0, hp: 128, x: 10, y: 20 },
+    ]);
   });
 });

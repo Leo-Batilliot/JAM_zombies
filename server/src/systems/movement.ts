@@ -1,6 +1,25 @@
-import type { Army, Mage, World } from "../world/world.js";
-import { aggroCircles, clampToCircles } from "./battle.js";
-import { armyPace } from "./enlist.js";
+import type { Army, Direction, Mage, World } from "../world/world.js";
+import { marchSpeed } from "./pace.js";
+
+const degrees = Math.PI / 180;
+
+const angleOf = (direction: Direction): number =>
+  Math.atan2(direction.y, direction.x);
+
+const angleBetween = (from: number, to: number): number =>
+  Math.atan2(Math.sin(to - from), Math.cos(to - from));
+
+const aimFormation = (world: World, army: Army, dx: number, dy: number) => {
+  const { distance, angleDeg } = world.config.formations.turn;
+  const length = Math.hypot(dx, dy);
+  if (length === 0 || length < distance) {
+    return;
+  }
+  const turn = angleBetween(angleOf(army.heading), Math.atan2(dy, dx));
+  if (Math.abs(turn) >= angleDeg * degrees) {
+    army.headingTarget = { x: dx / length, y: dy / length };
+  }
+};
 
 export const setMageTarget = (
   world: World,
@@ -10,24 +29,18 @@ export const setMageTarget = (
 ): void => {
   mage.targetX = world.clampX(x);
   mage.targetY = world.clampY(y);
-  const dx = mage.targetX - mage.x;
-  const dy = mage.targetY - mage.y;
-  const distance = Math.hypot(dx, dy);
-  if (distance > 0) {
-    mage.facingX = dx / distance;
-    mage.facingY = dy / distance;
-  }
+  aimFormation(world, mage.army, mage.targetX - mage.x, mage.targetY - mage.y);
 };
 
-const endRetreat = (world: World, army: Army): void => {
-  const { retreat, mage } = army;
-  if (
-    retreat !== undefined &&
-    Math.hypot(retreat.exitX - mage.x, retreat.exitY - mage.y) <=
-      world.config.gameplay.retreat.arriveDistance
-  ) {
-    army.retreat = undefined;
+const turnFormation = (world: World, army: Army, dt: number): void => {
+  const current = angleOf(army.heading);
+  const turn = angleBetween(current, angleOf(army.headingTarget));
+  if (turn === 0) {
+    return;
   }
+  const step = world.config.formations.turn.degPerSec * degrees * dt;
+  const angle = current + Math.sign(turn) * Math.min(Math.abs(turn), step);
+  army.heading = { x: Math.cos(angle), y: Math.sin(angle) };
 };
 
 export const moveMages = (world: World, dt: number): void => {
@@ -36,25 +49,22 @@ export const moveMages = (world: World, dt: number): void => {
     if (!alive) {
       continue;
     }
-    const step = world.config.gameplay.mage.speed * dt * armyPace(world, army);
-    endRetreat(world, army);
+    turnFormation(world, army, dt);
+    const step = marchSpeed(world, army) * dt;
     const dx = mage.targetX - mage.x;
     const dy = mage.targetY - mage.y;
     const distance = Math.hypot(dx, dy);
     if (distance === 0) {
       continue;
     }
-    const next =
-      distance <= step
-        ? { x: mage.targetX, y: mage.targetY }
-        : {
-            x: mage.x + (dx / distance) * step,
-            y: mage.y + (dy / distance) * step,
-          };
-    const { x, y } =
-      army.battle !== undefined && army.retreat === undefined
-        ? clampToCircles(aggroCircles(world, army), mage, next)
-        : next;
-    world.setPosition(mage, x, y);
+    if (distance <= step) {
+      world.setPosition(mage, mage.targetX, mage.targetY);
+    } else {
+      world.setPosition(
+        mage,
+        mage.x + (dx / distance) * step,
+        mage.y + (dy / distance) * step,
+      );
+    }
   }
 };

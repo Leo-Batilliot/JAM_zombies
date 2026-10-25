@@ -12,6 +12,7 @@ interface Sent {
   type: number;
   army: number;
   flags: number;
+  hp: number;
   x: number;
   y: number;
 }
@@ -41,10 +42,16 @@ export class SnapshotDelta {
         sent.army !== entity.army
       ) {
         delta.entities.push(entity);
-      } else if (sent.flags !== entity.flags || sent.x !== x || sent.y !== y) {
+      } else if (
+        sent.flags !== entity.flags ||
+        sent.hp !== entity.hp ||
+        sent.x !== x ||
+        sent.y !== y
+      ) {
         delta.updates.push({
           id: entity.id,
           flags: entity.flags,
+          hp: entity.hp,
           x: entity.x,
           y: entity.y,
         });
@@ -56,6 +63,7 @@ export class SnapshotDelta {
         type: entity.type,
         army: entity.army,
         flags: entity.flags,
+        hp: entity.hp,
         x,
         y,
       });

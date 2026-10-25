@@ -10,6 +10,40 @@ const id = z.string().min(1);
 
 export const maxSkins = 0x100;
 
+export const giftEffects = [
+  "heal",
+  "reanimation",
+  "soulLink",
+  "speed",
+  "vision",
+  "loot",
+  "hp",
+] as const;
+
+export const spellEffects = ["nova", "rally", "wall", "raise"] as const;
+
+export const giftSchema = z.strictObject({
+  name: z.string().min(1),
+  effect: z.enum(giftEffects),
+  value: z.number().positive(),
+  radius: z.number().positive().optional(),
+  maxStacks: z.int().positive(),
+});
+
+export const spellSchema = z.strictObject({
+  name: z.string().min(1),
+  effect: z.enum(spellEffects),
+  cooldownSec: z.number().nonnegative(),
+  radius: z.number().positive().optional(),
+  damage: z.number().positive().optional(),
+  durationSec: z.number().positive().optional(),
+  multiplier: z.number().positive().optional(),
+  length: z.number().positive().optional(),
+  spacing: z.number().positive().optional(),
+  offset: z.number().nonnegative().optional(),
+  npc: id.optional(),
+});
+
 const gameplaySchema = z.strictObject({
   mage: z.strictObject({
     speed: z.number().positive(),
@@ -40,15 +74,11 @@ const gameplaySchema = z.strictObject({
     ),
     spawnRadius: z.number().positive(),
     cap: z.int().positive(),
-    slowdown: z
-      .strictObject({
-        from: z.int().nonnegative(),
-        to: z.int().positive(),
-        penalty: z.number().min(0).max(1),
-      })
-      .refine((slowdown) => slowdown.from < slowdown.to, {
-        message: "from must be below to",
-      }),
+    slowdown: z.strictObject({
+      scale: z.number().positive(),
+      factor: z.number().nonnegative(),
+      max: z.number().min(0).lt(1),
+    }),
   }),
   movement: z.strictObject({
     separation: z.number().positive().max(1),
@@ -66,9 +96,8 @@ const gameplaySchema = z.strictObject({
   }),
   battle: z.strictObject({
     engageRadius: z.number().positive(),
-    circleMargin: z.number().nonnegative(),
     endDelaySec: z.number().nonnegative(),
-    freeSectorDeg: z.number().positive().max(360),
+    fleeDistance: z.number().positive(),
   }),
   soulLink: z.strictObject({
     guardRadius: z.number().positive(),
@@ -78,28 +107,32 @@ const gameplaySchema = z.strictObject({
   transfer: z.strictObject({
     share: z.number().min(0).max(1),
   }),
-  retreat: z.strictObject({
-    minTunnelUnits: z.int().positive(),
-    corridorWidth: z.number().positive(),
-    spacing: z.number().positive(),
-    baseOffset: z.number().nonnegative(),
-    wingRows: z.int().nonnegative(),
-    wingFlare: z.number().nonnegative(),
-    wingReach: z.number().positive(),
-    foldMargin: z.number().nonnegative(),
-    escortRadius: z.number().positive(),
-    arriveDistance: z.number().positive(),
-  }),
   regroup: z.strictObject({
-    distance: z.number().positive(),
     arriveDistance: z.number().positive(),
     speedMultiplier: z.number().min(1),
+  }),
+  detection: z.strictObject({
+    base: z.number().nonnegative(),
+    perStrength: z.number().nonnegative(),
+    max: z.number().nonnegative(),
   }),
   souls: z.strictObject({
     perStrength: z.number().nonnegative(),
     levelBase: z.number().positive(),
     levelGrowth: z.number().min(1),
   }),
+  levelUp: z.strictObject({
+    choices: z.int().positive().max(0xff),
+    mutationWeight: z.number().nonnegative(),
+    presentWeight: z.number().min(1),
+    giftWeight: z.number().nonnegative(),
+    spellWeight: z.number().nonnegative(),
+  }),
+  fusion: z.strictObject({
+    intervalSec: z.number().positive(),
+  }),
+  gifts: z.record(id, giftSchema),
+  spells: z.record(id, spellSchema),
   demo: z.strictObject({
     killerName: z.string(),
     event: id,
@@ -130,7 +163,12 @@ const formationSchema = z.strictObject({
 });
 
 const formationsSchema = z.strictObject({
-  changeSec: z.number().nonnegative(),
+  cooldownSec: z.number().nonnegative(),
+  turn: z.strictObject({
+    distance: z.number().nonnegative(),
+    angleDeg: z.number().min(0).max(180),
+    degPerSec: z.number().positive(),
+  }),
   neutral: formationSchema,
   selectable: z
     .record(id, formationSchema)
@@ -156,10 +194,16 @@ const unitTypeSchema = z.strictObject({
   attackIntervalSec: z.number().positive(),
   attackRange: z.number().nonnegative(),
   aggroRange: z.number().positive(),
-  evolutions: z.array(
+});
+
+export const lineageSchema = z.strictObject({
+  name: z.string().min(1),
+  base: id,
+  branches: z.record(
+    id,
     z.strictObject({
-      into: id,
-      cost: z.int().positive(),
+      name: z.string().min(1),
+      tiers: z.array(id).min(1),
     }),
   ),
 });
@@ -173,6 +217,13 @@ const npcTypeSchema = z.strictObject({
   radius: z.number().positive(),
   speed: z.number().nonnegative(),
   fleeSpeed: z.number().positive().optional(),
+  obstacle: z.boolean(),
+  fatigue: z
+    .strictObject({
+      afterSec: z.number().nonnegative(),
+      factor: z.number().positive().max(1),
+    })
+    .optional(),
   attack: z
     .strictObject({
       damage: z.number().nonnegative(),
@@ -189,6 +240,8 @@ const unitsSchema = z.strictObject({
   units: z.record(id, unitTypeSchema),
   npcs: z.record(id, npcTypeSchema),
   projectiles: z.record(id, z.strictObject({ speed: z.number().positive() })),
+  fusionRatio: z.int().min(2),
+  lineages: z.record(id, lineageSchema),
 });
 
 const equipmentSchema = z
@@ -390,8 +443,12 @@ const lobbySchema = z
       attackRange: z.number().positive(),
       attackRatio: z.number().positive(),
       fleeRatio: z.number().positive(),
-      avoidSectorDeg: z.number().nonnegative().max(360),
       fleeDistance: z.number().positive(),
+      giveUp: z.strictObject({
+        maxSec: z.number().positive(),
+        minSec: z.number().nonnegative(),
+        ignoreSec: z.number().nonnegative(),
+      }),
       crossMargin: z.number().nonnegative(),
       campRange: z.number().positive(),
       campRatio: z.number().positive(),
@@ -488,16 +545,45 @@ export const clientSettingsSchema = z.strictObject({
     boss: z.string().length(1),
     units: z.string().length(1),
   }),
-  retreatKey: z.string().length(1),
   sizeScaleStep: z.number().nonnegative(),
-  aggroPulseMs: z.int().positive(),
+  hpBar: z.strictObject({
+    width: z.number().positive(),
+    height: z.number().positive(),
+    offsetY: z.number(),
+    growth: z.number().nonnegative(),
+    mageScale: z.number().positive(),
+    background: color,
+    ally: color,
+    enemy: color,
+  }),
+  outline: z.strictObject({
+    ally: color,
+    enemy: color,
+    useful: color,
+    alpha: z.number().min(0).max(1),
+  }),
+  plates: z.strictObject({
+    offsetY: z.number(),
+    fontSize: z.number().positive(),
+  }),
+  camera: z.strictObject({
+    minZoom: z.number().positive().max(1),
+    strengthScale: z.number().positive(),
+    factor: z.number().nonnegative(),
+    smoothing: z.number().positive().max(1),
+    resendRatio: z.number().nonnegative(),
+  }),
   lootMs: z.int().positive(),
   minimapSize: z.int().positive(),
   gearOffsets: z.record(id, z.strictObject({ x: z.number(), y: z.number() })),
   mistColors: z.record(id, color),
   bombingColors: z.strictObject({ mark: color, blast: color }),
   formationKeys: z.array(z.string().length(1)),
-  evolutionCollapseMs: z.int().positive(),
+  spellKey: z.string().length(1),
+  spriteAliases: z.record(
+    id,
+    z.strictObject({ sprite: id, scale: z.number().positive() }),
+  ),
 });
 
 export const configSchema = z.strictObject({
@@ -527,30 +613,43 @@ export const clientConfigSchema = z.strictObject({
   network: networkSchema.pick({ tickRate: true, interpolationDelayMs: true }),
   gameplay: z.strictObject({
     riseSec: z.number().positive(),
+    leaderboardSize: z.int().positive(),
   }),
   content: z.strictObject({
     units: z.array(
       z.strictObject({
         id,
         name: z.string().min(1),
+        strength: z.int().positive(),
         equipment: id.optional(),
-        evolutions: unitTypeSchema.shape.evolutions,
       }),
     ),
     items: z.array(
       z.strictObject({ id, name: z.string().min(1), category: id }),
     ),
     npcs: z.array(id),
+    obstacles: z.array(z.int().nonnegative()),
     pointsOfInterest: z.array(id),
     events: z.array(z.strictObject({ id, name: z.string().min(1) })),
     projectiles: z.array(id),
     mists: z.array(z.strictObject({ id, radius: z.number().positive() })),
     formations: z.array(z.strictObject({ id, name: z.string().min(1) })),
     skins: z.array(z.strictObject({ id, name: z.string().min(1) })),
+    lineages: z.array(z.strictObject({ id, name: z.string().min(1) })),
+    gifts: z.array(z.strictObject({ id, name: z.string().min(1) })),
+    spells: z.array(z.strictObject({ id, name: z.string().min(1) })),
   }),
 });
 
 export type ClientConfig = z.infer<typeof clientConfigSchema>;
+
+const named = (
+  entries: Record<string, { name: string }>,
+): { id: string; name: string }[] =>
+  Object.entries(entries).map(([entryId, entry]) => ({
+    id: entryId,
+    name: entry.name,
+  }));
 
 export const toClientConfig = (config: Config): ClientConfig => ({
   client: config.client,
@@ -567,13 +666,14 @@ export const toClientConfig = (config: Config): ClientConfig => ({
   },
   gameplay: {
     riseSec: config.gameplay.reanimation.riseSec,
+    leaderboardSize: config.lobby.leaderboard.size,
   },
   content: {
     units: Object.entries(config.units.units).map(([unitId, unit]) => ({
       id: unitId,
       name: unit.name,
+      strength: unit.strength,
       ...(unit.equipment === undefined ? {} : { equipment: unit.equipment }),
-      evolutions: unit.evolutions,
     })),
     items: Object.entries(config.equipment.items).map(([itemId, item]) => ({
       id: itemId,
@@ -581,6 +681,9 @@ export const toClientConfig = (config: Config): ClientConfig => ({
       category: item.category,
     })),
     npcs: Object.keys(config.units.npcs),
+    obstacles: Object.values(config.units.npcs).flatMap((npc, index) =>
+      npc.obstacle ? [index] : [],
+    ),
     pointsOfInterest: Object.keys(config.world.pointsOfInterest),
     events: Object.entries(config.events.events).map(([eventId, event]) => ({
       id: eventId,
@@ -598,6 +701,9 @@ export const toClientConfig = (config: Config): ClientConfig => ({
       id: skinId,
       name: skin.name,
     })),
+    lineages: named(config.units.lineages),
+    gifts: named(config.gameplay.gifts),
+    spells: named(config.gameplay.spells),
   },
 });
 

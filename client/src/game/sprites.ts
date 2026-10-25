@@ -79,8 +79,11 @@ export const gearName = (
   return item === undefined ? undefined : `item-${item.id}`;
 };
 
-const parseColor = (color: string): number =>
+export const parseHex = (color: string): number =>
   Number.parseInt(color.slice(1), 16);
 
+export const armyHex = (colors: string[], army: number): string =>
+  colors[(army - 1) % colors.length] ?? "#ffffff";
+
 export const armyColor = (colors: string[], army: number): number =>
-  parseColor(colors[(army - 1) % colors.length] ?? "#ffffff");
+  parseHex(armyHex(colors, army));

@@ -25,3 +25,11 @@ export const bodiesStrength = (
 
 export const armyStrength = (world: World, army: Army): number =>
   bodiesStrength(world, army.units);
+
+export const armyPotential = (world: World, army: Army): number => {
+  let strength = armyStrength(world, army);
+  for (const corpse of army.corpses) {
+    strength += world.registries.units.get(corpse.type).strength;
+  }
+  return strength;
+};

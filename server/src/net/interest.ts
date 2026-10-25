@@ -4,11 +4,13 @@ import {
   maxFlagLevel,
   neutralArmy,
   levelFlags,
+  quantizeHp,
   type Registries,
   type SnapshotEntity,
 } from "@horde/shared";
 import { bombingProgress } from "../systems/bombings.js";
 import { corpseDelay } from "../systems/reanimation.js";
+import { maxHp } from "../systems/souls.js";
 import type {
   Army,
   Bombing,
@@ -141,6 +143,19 @@ const flags = (
   }
 };
 
+const health = (world: World, entity: Entity): number => {
+  switch (entity.kind) {
+    case EntityKind.Mage:
+      return quantizeHp(entity.hp / maxHp(world, entity.army));
+    case EntityKind.Unit:
+      return quantizeHp(entity.hp / world.unitMaxHp(entity.type, entity.item));
+    case EntityKind.Npc:
+      return quantizeHp(entity.hp / world.registries.npcs.get(entity.type).hp);
+    default:
+      return 0;
+  }
+};
+
 const toSnapshot = (
   world: World,
   entity: Entity,
@@ -151,6 +166,7 @@ const toSnapshot = (
   type: typeIndex(world, entity),
   army: armySlot(entity),
   flags: flags(world, entity, viewer),
+  hp: health(world, entity),
   x: entity.x,
   y: entity.y,
 });

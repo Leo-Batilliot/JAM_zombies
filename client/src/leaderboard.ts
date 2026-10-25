@@ -12,15 +12,16 @@ export const leaderboardRows = (
   leaderboard: Leaderboard,
   ownArmy: number | undefined,
   ownStrength: number,
+  size: number,
 ): LeaderboardRow[] => {
-  const rows = leaderboard.entries.map(
-    (entry: LeaderboardEntry, index): LeaderboardRow => ({
+  const rows = leaderboard.entries
+    .slice(0, size)
+    .map((entry: LeaderboardEntry, index): LeaderboardRow => ({
       rank: index + 1,
       name: entry.name,
       strength: entry.strength,
       self: entry.army === ownArmy,
-    }),
-  );
+    }));
   if (!rows.some((row) => row.self) && leaderboard.rank > rows.length) {
     rows.push({
       rank: leaderboard.rank,

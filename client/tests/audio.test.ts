@@ -22,6 +22,7 @@ const entity = (
   type: 0,
   army: 1,
   flags: 0,
+  hp: 255,
   x: 10,
   y: 10,
   ...overrides,

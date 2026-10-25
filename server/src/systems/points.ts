@@ -3,6 +3,7 @@ import type { Army, PointOfInterest, Remains, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 import { enlistNearMage } from "./enlist.js";
 import { drawLoot, grantItem } from "./equipment.js";
+import { giftValue } from "./gifts.js";
 
 type PointType = Config["world"]["pointsOfInterest"][string];
 
@@ -60,9 +61,16 @@ const rewards: Record<
   },
   items: (world, point, army) => {
     const { loot } = world.registries.pointsOfInterest.get(point.type);
-    const item = loot === undefined ? undefined : drawLoot(world, loot);
-    if (item !== undefined) {
-      grantItem(world, army, item);
+    if (loot === undefined) {
+      return;
+    }
+    const bonus = giftValue(world, army, "loot");
+    const rolls = 1 + Math.floor(bonus) + (world.random() < bonus % 1 ? 1 : 0);
+    for (let roll = 0; roll < rolls; roll++) {
+      const item = drawLoot(world, loot);
+      if (item !== undefined) {
+        grantItem(world, army, item);
+      }
     }
   },
 };

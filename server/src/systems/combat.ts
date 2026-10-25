@@ -3,9 +3,12 @@ import type { World } from "../world/world.js";
 import { bodyRadius, distance } from "./bodies.js";
 import { damage } from "./death.js";
 import { damageBonus } from "./equipment.js";
+import { rallyBonus } from "./pace.js";
 import { effectsOf } from "./tactics.js";
 import { currentTarget, type Target } from "./targeting.js";
 import type { Unit } from "../world/world.js";
+
+const reachTolerance = 1e-6;
 
 export const reachDistance = (
   world: World,
@@ -43,7 +46,8 @@ export const fight = (world: World, dt: number): void => {
       const target = currentTarget(world, unit);
       const fighting =
         target !== undefined &&
-        distance(unit, target) <= reachDistance(world, unit, target);
+        distance(unit, target) <=
+          reachDistance(world, unit, target) + reachTolerance;
       if (fighting && !unit.fighting) {
         unit.contactAt = world.time;
       }
@@ -57,7 +61,8 @@ export const fight = (world: World, dt: number): void => {
         stats.damage *
         damageBonus(world, unit) *
         familyBonus(world, unit.type, target) *
-        impactBonus(world, unit);
+        impactBonus(world, unit) *
+        rallyBonus(world, army);
       if (stats.projectile === undefined) {
         damage(world, target, amount, army);
       } else {

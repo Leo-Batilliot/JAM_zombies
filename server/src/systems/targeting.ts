@@ -5,11 +5,12 @@ import { distance } from "./bodies.js";
 export type Target = Mage | Unit | Npc;
 
 const asEnemy = (
+  world: World,
   army: Army,
   entity: Entity | undefined,
 ): Target | undefined => {
   if (entity?.kind === EntityKind.Npc) {
-    return entity;
+    return world.registries.npcs.get(entity.type).obstacle ? undefined : entity;
   }
   if (
     (entity?.kind === EntityKind.Unit || entity?.kind === EntityKind.Mage) &&
@@ -21,7 +22,7 @@ const asEnemy = (
 };
 
 export const orderAttack = (world: World, army: Army, id: number): boolean => {
-  const target = asEnemy(army, world.entities.get(id));
+  const target = asEnemy(world, army, world.entities.get(id));
   if (
     target === undefined ||
     distance(target, army.mage) > world.config.gameplay.combat.orderRange
@@ -36,7 +37,7 @@ const focusTarget = (world: World, army: Army): Target | undefined => {
   if (army.focusId === undefined) {
     return undefined;
   }
-  const target = asEnemy(army, world.entities.get(army.focusId));
+  const target = asEnemy(world, army, world.entities.get(army.focusId));
   if (
     target === undefined ||
     distance(target, army.mage) > world.config.gameplay.combat.orderRange
@@ -95,7 +96,7 @@ const nearestEnemy = (
   near.length = 0;
   world.grid.queryRadius(unit.x, unit.y, range, near);
   return nearestPrey(unit, near, (id) => {
-    const enemy = asEnemy(unit.army, world.entities.get(id));
+    const enemy = asEnemy(world, unit.army, world.entities.get(id));
     return enemy !== undefined && fromLeash(unit, enemy) <= leashDistance
       ? enemy
       : undefined;
@@ -105,7 +106,7 @@ const nearestEnemy = (
 export const currentTarget = (world: World, unit: Unit): Target | undefined =>
   unit.targetId === undefined
     ? undefined
-    : asEnemy(unit.army, world.entities.get(unit.targetId));
+    : asEnemy(world, unit.army, world.entities.get(unit.targetId));
 
 export const updateTargets = (world: World): void => {
   const { retargetIntervalSec, leashDistance } = world.config.gameplay.combat;
@@ -121,7 +122,7 @@ export const updateTargets = (world: World): void => {
       const target = currentTarget(world, unit);
       if (
         target === undefined ||
-        fromLeash(unit, target) > leashDistance ||
+        (!unit.fighting && fromLeash(unit, target) > leashDistance) ||
         distance(target, unit) > aggroRange
       ) {
         unit.targetId = undefined;
@@ -129,7 +130,9 @@ export const updateTargets = (world: World): void => {
       if (world.time >= unit.retargetAt) {
         unit.retargetAt =
           world.time + retargetIntervalSec * (0.5 + world.random());
-        unit.targetId = nearestEnemy(world, unit, aggroRange, near)?.id;
+        unit.targetId =
+          nearestEnemy(world, unit, aggroRange, near)?.id ??
+          (unit.fighting ? unit.targetId : undefined);
       }
     }
   }

@@ -108,3 +108,18 @@ Mesure indicative, en attendant le test sur un vrai téléphone (5.14 et 8.02). 
 - Le profil CPU montre le thread principal inactif 93 % du temps : le code du jeu et PixiJS prennent moins de 5 %. La limite vient du rendu WebGL logiciel de Chrome headless (pas de GPU), pas du code.
 
 Conclusion : rien à optimiser côté JavaScript à ce stade. Les fps réels sont à mesurer sur téléphone, avec un GPU.
+
+## Résultats du concept V2, Lot 1
+
+Machine de T.BE (VM Linux), Node 24.22. 40 participants, 150 zombies chacun, mesure sur 20 s après 3 s de chauffe. Les snapshots portent maintenant un octet de PV par entité (UI-01).
+
+- Vue PC (80 x 45 m) : tick de 20,6 ms en moyenne, 26 ms au 95e centile, 32 ms au pire. Débit de 21 Ko/s en moyenne, 52 Ko/s au pire.
+- Vue téléphone (36 x 17 m) : tick de 17,4 ms en moyenne, 28 ms au pire. Débit de 13 Ko/s en moyenne, 41 Ko/s au pire.
+- Vue PC au dézoom maximal (133 x 75 m, UI-07) : tick de 30,3 ms en moyenne, 40 ms au 95e centile, 56 ms au pire. Débit de 41 Ko/s en moyenne, 78 Ko/s au pire.
+
+Côté client, en Chrome headless sur écran de téléphone simulé avec contours et barres de PV : 24 fps, comme avant le Lot 1. Le rendu reste limité par le WebGL logiciel de headless, la mesure sur vrai téléphone reste à faire.
+
+## Conclusions du Lot 1
+
+- L'octet de PV ajoute environ 6 Ko/s en moyenne en vue PC, sous la cible.
+- Le dézoom maximal dépasse le budget du tick et la cible de débit au pire. Ce cas suppose les 40 clients dézoomés au maximum avec des armées pleines. Si c'est gênant en jeu, remonter `camera.minZoom` (`client.json`) ou baisser `network.maxViewSize`.

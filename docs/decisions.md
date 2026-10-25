@@ -4,6 +4,76 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Réapparition sur demande du joueur | T.BE
+
+- **Quoi** : après sa mort, un joueur voit l'écran de fin de run et ne réapparaît qu'en cliquant sur Play again, une fois le délai écoulé. Les bots réapparaissent seuls, ainsi qu'un joueur déconnecté repris par un bot.
+- **Pourquoi** : l'écran de fin (UI-08) affiche les statistiques avant de rejouer, le mage ne doit pas réapparaître pendant que le joueur les lit.
+- **Impact** : nouveau message `Respawn`. Une armée de joueur morte et sans réponse reste morte.
+- **Avis** : Validée.
+
+### Mur d'os en PNJ obstacles | T.BE
+
+- **Quoi** : le mur d'os pose une rangée de PNJ fixes (`obstacle: true` dans `units.json`) derrière le mage, perpendiculaire à sa marche, pour la durée du sort. Personne ne les cible, la séparation des corps les rend infranchissables.
+- **Pourquoi** : réutilise les PNJ fixes et la séparation existants, sans système d'obstacles.
+- **Impact** : le client masque la barre de PV et le contour des obstacles (`content.obstacles`).
+- **Avis** : À vérifier. Longueur, durée et distance au mage à régler en jeu.
+
+### Capacités propres des paliers reportées | T.BE
+
+- **Quoi** : les 21 unités des trois lignées ont leurs statistiques, mais pas leurs capacités propres (dégâts de zone du pyromancien et de la catapulte, ralentissement de la liche, 3 cibles du Cerbère, bond du rôdeur, hurlement du seigneur-garou). Le don « fusion moins chère » n'est pas fait non plus : avec un ratio de 2, une fusion ne peut pas coûter moins.
+- **Pourquoi** : chaque capacité demande un mécanisme de combat nouveau, hors du périmètre du Lot 2.
+- **Impact** : les paliers se distinguent par leurs statistiques, leur vitesse et leur bonus du triangle de force.
+- **Avis** : Reportée. À reprendre avec le Lot 4 ou une étape dédiée.
+
+### Sprites empruntés pour les nouvelles unités | T.BE
+
+- **Quoi** : `client.json` contient `spriteAliases`, qui fait afficher un sprite existant (avec un facteur de taille) pour une unité, un PNJ ou un projectile sans sprite propre.
+- **Pourquoi** : choix de l'équipe en attendant les assets du Lot 3.
+- **Impact** : retirer l'alias suffit quand le vrai sprite arrive dans l'atlas.
+- **Avis** : Provisoire. À vider au Lot 3.
+
+### Arbres en force de puissance 2 | T.BE
+
+- **Quoi** : `units.json` décrit chaque lignée (`lineages`) : une base et deux branches de trois paliers. La force d'un palier vaut `fusionRatio` puissance palier (1, 2, 4, 8), vérifiée au chargement. Les PV et les dégâts suivent environ 2,2 puissance palier, soit un léger gain sur les unités remplacées. Le gros zombie et le golem de chair deviennent les paliers 1 et 2 de la branche Masse (le golem est renommé Abomination).
+- **Pourquoi** : EVO-04 et EVO-05 du concept V2.
+- **Impact** : les seuils du classement, des croix sacrées et des bots portent sur des forces plus basses qu'avant.
+- **Avis** : À vérifier. Statistiques et poids des cartes à équilibrer en jeu.
+
+### Classement complet envoyé aux clients | T.BE
+
+- **Quoi** : le message de classement contient toutes les armées avec leur puissance et leur puissance si tout revit. Le client n'en affiche que les `leaderboard.size` premières.
+- **Pourquoi** : les plaques des mages ennemis (UI-04) ont besoin du nom et de la puissance de toute armée visible.
+- **Impact** : environ 1 Ko par seconde et par client avec 40 armées.
+- **Avis** : Validée.
+
+### Contours calculés depuis l'atlas au chargement | T.BE
+
+- **Quoi** : au chargement, le client calcule pour chaque image de l'atlas un contour d'un pixel, rangé dans une seule texture. Chaque corps affiche son contour teinté (vert, rouge ou jaune) derrière lui.
+- **Pourquoi** : un filtre de contour sur des centaines de sprites coûterait cher sur téléphone (UI-02), un sprite de plus reste groupé au rendu.
+- **Impact** : aucun asset à produire, les contours suivent les futurs sprites.
+- **Avis** : À vérifier. Fps à mesurer sur un vrai téléphone (TECH-02).
+
+### Fuite libre déclenchée par l'éloignement | T.BE
+
+- **Quoi** : en bataille, le serveur retient la distance la plus courte entre le mage et un ennemi engagé. Quand le mage s'en éloigne de `battle.fleeDistance` (10 m), les unités de mêlée qui frappent restent sur place, abandonnées, et les cadavres tués par l'ennemi lui passent. Une unité qui se bat garde sa cible même au-delà de la laisse.
+- **Pourquoi** : un seuil absolu ferait fuir un mage resté derrière une grosse formation, et la laisse ferait décrocher les unités au contact avant la fuite.
+- **Impact** : plus de Retraite, de tunnel, d'encerclement ni de cercle d'aggro. Les bots fuient en marchant à l'opposé des ennemis.
+- **Avis** : À vérifier. Distance à régler en jeu.
+
+### Abandon des proies faibles par les bots seulement | T.BE
+
+- **Quoi** : un bot lâche une armée qu'il poursuit au bout d'un temps proportionnel au rapport de force (entre 4 et 20 s), puis l'ignore 30 s. Les PNJ hostiles gardent leur laisse autour de leur base.
+- **Pourquoi** : la laisse des PNJ les empêche déjà de poursuivre loin (MOV-06).
+- **Impact** : réglages dans `lobby.json` (`bots.giveUp`).
+- **Avis** : À vérifier. Durées à régler en jeu.
+
+### Marche commune et formation en bloc | T.BE
+
+- **Quoi** : hors combat, l'armée marche à la vitesse de son unité la plus lente (et du mage), multipliée par le ralentissement selon la force (courbe logarithmique, `army.slowdown`). Les places de formation sont attribuées une fois, au plus proche, et la formation ne pivote que pour un déplacement d'au moins 6 m à plus de 45°, à 120° par seconde. Une unité traverse son propre mage.
+- **Pourquoi** : MOV-01 à MOV-03 du concept V2. Sans passage à travers le mage, il bloquait ses propres unités au contact.
+- **Impact** : plus d'accélération de regroupement, sauf pour une unité abandonnée qui a gagné son combat (FIGHT-03).
+- **Avis** : À vérifier. Seuils de rotation et courbe de ralentissement à régler en jeu.
+
 ### Revamp du concept : V2 en différences, par lots | L.BA
 
 - **Quoi** : `docs/conceptV2.md` liste en cases à cocher tout ce qui change par rapport au concept V1, par thème et par lot de priorité. Choix principaux : vitesse constante et formation qui se déplace en bloc, ralentissement selon la force brute, fin du cercle d'aggro et de la Retraite au profit d'une fuite libre par distance, évolution permanente par level up à 3 cartes avec 5 lignées de 2 branches exclusives sur 3 paliers et fusion automatique des unités, tout perdu à la mort, contours vert, rouge et jaune, barres de PV permanentes, cité fortifiée maudite en pixel art d'environ 48 px sous une nuit éclairée, assets LPC, itch.io et générés, champions uniques au serveur.

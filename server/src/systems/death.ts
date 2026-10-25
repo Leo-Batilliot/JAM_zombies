@@ -2,6 +2,7 @@ import { EntityKind } from "@horde/shared";
 import type { Army, Mage, Npc, Unit, World } from "../world/world.js";
 import { eventNpcKilled, recordContribution } from "./events.js";
 import { enlist } from "./enlist.js";
+import { giftValue } from "./gifts.js";
 import { armorOf } from "./equipment.js";
 import { damageMage, nearestGuard } from "./mage.js";
 import { grantSouls } from "./souls.js";
@@ -33,6 +34,7 @@ export const kill = (
 ): void => {
   const { strength, owner, raisedAs, infects } = victimProfile(world, victim);
   if (killer !== undefined) {
+    killer.run.kills++;
     grantSouls(
       world,
       killer,
@@ -47,6 +49,7 @@ export const kill = (
     return;
   }
   if (infects && killer !== undefined) {
+    killer.run.infected++;
     enlist(
       world,
       killer,
@@ -84,8 +87,12 @@ export const damage = (
 ): void => {
   if (target.kind === EntityKind.Mage) {
     const guard = nearestGuard(world, target);
-    const shared =
-      guard === undefined ? 0 : amount * world.config.gameplay.soulLink.share;
+    const share = Math.min(
+      1,
+      world.config.gameplay.soulLink.share +
+        giftValue(world, target.army, "soulLink"),
+    );
+    const shared = guard === undefined ? 0 : amount * share;
     if (guard !== undefined) {
       damage(world, guard, shared, attacker, attackerName);
     }

@@ -1,5 +1,10 @@
 {
-  "changeSec": 1.5,
+  "cooldownSec": 3,
+  "turn": {
+    "distance": 6,
+    "angleDeg": 45,
+    "degPerSec": 120
+  },
   "neutral": {
     "name": "Neutral",
     "layout": "block",

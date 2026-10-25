@@ -1,4 +1,9 @@
-import { EntityKind, type Config, type Registries } from "@horde/shared";
+import {
+  EntityKind,
+  type Config,
+  type Registries,
+  type RunStats,
+} from "@horde/shared";
 import { SpatialGrid } from "./grid.js";
 
 export interface Army {
@@ -19,16 +24,64 @@ export interface Army {
   bot: Bot | undefined;
   groups: Set<AbandonedGroup>;
   battle: Battle | undefined;
-  retreat: Retreat | undefined;
   inventory: string[];
   found: string[];
   formation: string | undefined;
-  formationChange: FormationChange | undefined;
+  formationReadyAt: number;
+  heading: Direction;
+  headingTarget: Direction;
+  slots: Map<Unit, SlotOffset>;
+  slotLayout: string | undefined;
+  pendingLevels: number;
+  cards: Card[];
+  mutations: Map<string, Mutation>;
+  gifts: Map<string, number>;
+  spell: string | undefined;
+  spellReadyAt: number;
+  rally: Rally;
+  fusionAt: number;
+  run: Run;
+  lastRun: RunStats | undefined;
+  respawnRequested: boolean;
 }
 
-export interface FormationChange {
-  to: string;
-  at: number;
+export type Card =
+  | { kind: "mutation"; unit: string }
+  | { kind: "gift"; gift: string }
+  | { kind: "spell"; spell: string };
+
+export interface Rally {
+  until: number;
+  multiplier: number;
+}
+
+export interface Mutation {
+  branch: string;
+  tier: number;
+}
+
+export interface Run {
+  startedAt: number;
+  maxPower: number;
+  infected: number;
+  kills: number;
+  mageKills: number;
+  mutations: string[];
+}
+
+export interface Wall {
+  npcs: Npc[];
+  expiresAt: number;
+}
+
+export interface Direction {
+  x: number;
+  y: number;
+}
+
+export interface SlotOffset {
+  forward: number;
+  right: number;
 }
 
 export interface Remains {
@@ -56,26 +109,18 @@ export interface Force {
 export interface Battle {
   engagedAt: number;
   foes: Force[];
-  encircled: boolean;
-  freeSector: number;
-  escapeAngle: number;
+  closest: number;
 }
 
-export interface Retreat {
-  exitX: number;
-  exitY: number;
-  originX: number;
-  originY: number;
-  dirX: number;
-  dirY: number;
-  left: Unit[];
-  right: Unit[];
-  escort: Unit[] | undefined;
-  released: number;
+export interface Chase {
+  prey: Army;
+  since: number;
 }
 
 export interface Bot {
   thinkAt: number;
+  chase: Chase | undefined;
+  ignored: Map<Army, number>;
 }
 
 export interface Reconnect {
@@ -96,8 +141,6 @@ export interface Mage {
   y: number;
   targetX: number;
   targetY: number;
-  facingX: number;
-  facingY: number;
   hp: number;
   hitAt: number;
   lossBudget: number;
@@ -129,6 +172,7 @@ export interface NpcGroup {
   targetX: number;
   targetY: number;
   wanderAt: number;
+  fleeingSince: number | undefined;
   members: Set<Npc>;
 }
 
@@ -282,6 +326,7 @@ export class World {
   readonly mists = new Set<Mist>();
   readonly camps = new Set<Camp>();
   readonly bombings = new Set<Bombing>();
+  readonly walls = new Set<Wall>();
   readonly populationSpawnAt = new Map<number, number>();
   readonly hostiles = new Set<Npc>();
   readonly events = new Map<string, BossEvent>();
@@ -365,11 +410,25 @@ export class World {
       bot: undefined,
       groups: new Set(),
       battle: undefined,
-      retreat: undefined,
       inventory: [],
       found: [],
       formation: undefined,
-      formationChange: undefined,
+      formationReadyAt: 0,
+      heading: { x: 0, y: 1 },
+      headingTarget: { x: 0, y: 1 },
+      slots: new Map(),
+      slotLayout: undefined,
+      pendingLevels: 0,
+      cards: [],
+      mutations: new Map(),
+      gifts: new Map(),
+      spell: undefined,
+      spellReadyAt: 0,
+      rally: { until: 0, multiplier: 1 },
+      fusionAt: 0,
+      run: this.newRun(),
+      lastRun: undefined,
+      respawnRequested: false,
     } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
@@ -379,8 +438,6 @@ export class World {
       y: this.clampY(y),
       targetX: this.clampX(x),
       targetY: this.clampY(y),
-      facingX: 0,
-      facingY: 1,
       hp: this.config.gameplay.mage.baseHp,
       hitAt: -Infinity,
       lossBudget:
@@ -390,6 +447,17 @@ export class World {
     this.armies.set(army.slot, army);
     this.#add(army.mage);
     return army;
+  }
+
+  newRun(): Run {
+    return {
+      startedAt: this.time,
+      maxPower: 0,
+      infected: 0,
+      kills: 0,
+      mageKills: 0,
+      mutations: [],
+    };
   }
 
   unitMaxHp(type: string, item: string | undefined): number {
@@ -432,6 +500,7 @@ export class World {
       targetX: x,
       targetY: y,
       wanderAt: this.time,
+      fleeingSince: undefined,
       members: new Set(),
     };
     this.npcGroups.add(group);
@@ -489,6 +558,10 @@ export class World {
 
   addEventNpc(type: string, x: number, y: number, event: string): Npc {
     return this.#addNpc(type, x, y, undefined, event);
+  }
+
+  addObstacle(type: string, x: number, y: number): Npc {
+    return this.#addNpc(type, x, y, undefined, undefined);
   }
 
   addCamp(x: number, y: number, lifetimeSec: number): Camp {
@@ -642,7 +715,8 @@ export class World {
     army.corpses.clear();
     army.groups.clear();
     army.battle = undefined;
-    army.retreat = undefined;
+    army.slots.clear();
+    army.slotLayout = undefined;
     this.remove(army.mage.id);
   }
 
@@ -659,6 +733,7 @@ export class World {
     switch (entity.kind) {
       case EntityKind.Unit:
         entity.army.units.delete(entity);
+        entity.army.slots.delete(entity);
         entity.group?.units.delete(entity);
         break;
       case EntityKind.Npc:

@@ -3,6 +3,10 @@ export interface MinimapPoint {
   y: number;
 }
 
+export interface MinimapMage extends MinimapPoint {
+  color: string;
+}
+
 const selfColor = "#ece3f5";
 const bossColor = "#ff9a1f";
 const bountyColor = "#e0605a";
@@ -24,6 +28,7 @@ export class Minimap {
     self: MinimapPoint | undefined,
     bosses: MinimapPoint[],
     bounty: MinimapPoint | undefined,
+    mages: MinimapMage[],
   ): void {
     const context = this.#context;
     if (context === null) {
@@ -43,6 +48,9 @@ export class Minimap {
       context.arc(point.x * scale, point.y * scale, dotRadius, 0, 2 * Math.PI);
       context.fill();
     };
+    for (const mage of mages) {
+      dot(mage, mage.color);
+    }
     for (const boss of bosses) {
       dot(boss, bossColor);
     }

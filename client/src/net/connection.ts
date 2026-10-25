@@ -10,6 +10,7 @@ import {
   type Bounty,
   type ClientMessage,
   type LeaderboardEntry,
+  type RunStats,
   type SnapshotEntity,
   type Status,
 } from "@horde/shared";
@@ -73,7 +74,7 @@ export class JoinError extends Error {
 
 export class Connection {
   onSnapshot: (snapshot: Snapshot) => void = () => undefined;
-  onDied: (killer: string) => void = () => undefined;
+  onDied: (killer: string, stats: RunStats) => void = () => undefined;
   onClose: () => void = () => undefined;
 
   onConfig: (config: ClientConfig) => void = () => undefined;
@@ -197,7 +198,7 @@ export const connect = (): Promise<Gate> =>
           });
           break;
         case ServerMessageType.Died:
-          connection?.onDied(message.killer);
+          connection?.onDied(message.killer, message.stats);
           break;
         case ServerMessageType.Leaderboard:
           connection?.onLeaderboard(message);

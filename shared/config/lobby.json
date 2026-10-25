@@ -38,8 +38,12 @@
     "attackRange": 40,
     "attackRatio": 0.7,
     "fleeRatio": 1.3,
-    "avoidSectorDeg": 120,
     "fleeDistance": 30,
+    "giveUp": {
+      "maxSec": 20,
+      "minSec": 4,
+      "ignoreSec": 30
+    },
     "crossMargin": 3,
     "campRange": 60,
     "campRatio": 1.5,

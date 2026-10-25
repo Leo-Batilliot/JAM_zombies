@@ -19,7 +19,11 @@ const layout = {
 const withArcher = (config: Config): void => {
   const zombie = config.units.units["zombie"];
   if (zombie !== undefined) {
-    config.units.units["archer"] = { ...zombie, rank: "back" };
+    config.units.units["skeleton-archer"] = {
+      ...zombie,
+      family: "skeleton",
+      rank: "back",
+    };
   }
 };
 
@@ -38,15 +42,17 @@ describe("slotOffsets", () => {
 });
 
 describe("formationSlots", () => {
-  test("turns the formation with the mage", () => {
+  test("turns the formation after a long move", () => {
     const bench = createBench((config) => {
       config.formations.neutral = layout;
       withArcher(config);
     });
     const army = bench.addArmy(100, 100);
     const front = bench.world.addUnit(army, "zombie", 100, 100);
-    const back = bench.world.addUnit(army, "archer", 100, 100);
+    const back = bench.world.addUnit(army, "skeleton-archer", 100, 100);
     setMageTarget(bench.world, army.mage, 200, 100);
+    bench.step(bench.config.network.tickRate * 2);
+    bench.world.setPosition(army.mage, 100, 100);
     const slots = formationSlots(bench.world, army);
     expect(slots.get(front)).toEqual({ x: 102, y: 100 });
     expect(slots.get(back)).toEqual({ x: 97, y: 100 });

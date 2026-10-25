@@ -42,29 +42,29 @@ Cause réelle des problèmes actuels, vérifiée dans le code :
 - les places de formation sont recalculées à chaque tick à partir de l'orientation du mage (`server/src/systems/formation.ts`). Un clic à 10 px sur le côté fait tourner toute la formation, et chaque unité traverse l'armée pour rejoindre sa nouvelle place ;
 - dès qu'une unité est à plus de 8 m de sa place, le multiplicateur de regroupement x2,5 s'active (`gameplay.json`, `regroup`). La rotation de la formation le déclenche en continu, d'où les accélérations.
 
-- [ ] **MOV-01 Vitesse constante** | Lot 1
+- [ ] **MOV-01 Vitesse constante** | Lot 1 | 9.01
   Hors combat, toutes les unités d'une armée et le mage avancent à la même vitesse de marche : la plus petite entre celle du mage et celle du type d'unité le plus lent présent, multipliée par le ralentissement de MOV-03. Le mage attend donc ses unités lourdes, et une armée de lourds est lente. Aucune accélération : une unité ne sprinte plus pour rattraper sa place ou se positionner.
   Une unité qui a une cible (ennemi ou civil à infecter) utilise sa vitesse propre pour aller au contact : c'est là que les lignées rapides (Bêtes, Volants) font la différence. Le seul autre boost de vitesse est le retour après un combat gagné (FIGHT-03).
-- [ ] **MOV-02 Formation qui se déplace en bloc** | Lot 1
+- [ ] **MOV-02 Formation qui se déplace en bloc** | Lot 1 | 9.02
   Chaque unité reçoit une place fixe dans la formation, attribuée une seule fois et redistribuée seulement quand la composition change (arrivée, mort, fusion), en minimisant les déplacements. La formation ne pivote plus à chaque clic : un petit déplacement la translate telle quelle (10 px à droite = toutes les unités font 10 px à droite). Elle ne pivote que pour un déplacement long dans une nouvelle direction (seuils de distance et d'angle **À vérifier**), et la rotation est progressive. Dépend de MOV-01 : sans vitesse de marche commune, les unités lentes déformeraient le bloc.
-- [ ] **MOV-03 Ralentissement selon la puissance** | Lot 1 | remplace le ralentissement de 60 à 150 unités (§7.5)
+- [ ] **MOV-03 Ralentissement selon la puissance** | Lot 1 | remplace le ralentissement de 60 à 150 unités (§7.5) | 9.03
   Le malus de vitesse suit une courbe logarithmique de la force brute de l'armée, et s'applique au mage comme aux unités. Exemple de départ : force 50 : -10 %, force 200 : -25 %, force 600 : -40 % (**À vérifier**). L'écart doit être assez grand pour qu'un petit joueur distance facilement un gros. La courbe est à revoir quand les forces des paliers changent (EVO-05).
-- [ ] **MOV-04 Civils beaucoup plus lents** | Lot 1
+- [ ] **MOV-04 Civils beaucoup plus lents** | Lot 1 | 9.04
   On ne doit plus courir après un civil sur toute la carte. Vitesse de fuite nettement plus basse (aujourd'hui 4,5 m/s contre 7 m/s pour un zombie), et fatigue : après quelques secondes de fuite, le civil ralentit encore (valeurs **À vérifier**).
-- [ ] **MOV-05 Formation instantanée** | Lot 1 | remplace le délai de 1,5 s (§5)
+- [ ] **MOV-05 Formation instantanée** | Lot 1 | remplace le délai de 1,5 s (§5) | 9.05
   Le placement et les bonus de la nouvelle formation s'appliquent tout de suite. Une recharge de 3 s (**À vérifier**) empêche de changer en boucle, et s'affiche sur les boutons et les touches.
-- [ ] **MOV-06 Les ennemis lâchent vite une proie trop faible** | Lot 1
+- [ ] **MOV-06 Les ennemis lâchent vite une proie trop faible** | Lot 1 | 9.06
   Un bot ou un PNJ hostile qui poursuit une armée beaucoup plus faible que lui abandonne au bout d'un temps qui diminue avec l'écart de force (**À vérifier**). Il préfère une cible à sa taille. Avec MOV-03, c'est ce qui empêche un gros de chasser un petit pendant des minutes.
 
 ## 2. Combat et fuite (FIGHT)
 
-- [ ] **FIGHT-01 Fin du cercle d'aggro** | Lot 1 | remplace §4.4
+- [ ] **FIGHT-01 Fin du cercle d'aggro** | Lot 1 | remplace §4.4 | 9.07
   Le mage n'est plus enfermé dans un cercle pendant une bataille : il se déplace librement. L'état « en bataille » reste calculé de la même façon, parce qu'il bloque la réanimation (§4.2, règle 1) et pilote la musique.
-- [ ] **FIGHT-02 Fuite libre par distance** | Lot 1 | remplace la Retraite (§4.2 règle 4, §4.5), l'encerclement (§4.4)
+- [ ] **FIGHT-02 Fuite libre par distance** | Lot 1 | remplace la Retraite (§4.2 règle 4, §4.5), l'encerclement (§4.4) | 9.08
   Quand le mage s'éloigne de plus de X m (**À vérifier**) de tout ennemi engagé, seules les unités **actuellement au corps à corps en train de frapper une unité** restent sur place et deviennent abandonnées. Toutes les autres le suivent. Les règles des unités abandonnées (§4.2, règle 5) et le transfert des cadavres du camp au tueur restent valables. Le bouton Retraite, le tunnel, l'encerclement et leurs drapeaux réseau disparaissent, les bots (4.14) sont adaptés.
-- [ ] **FIGHT-03 Retour rapide après la victoire** | Lot 1 | modifie §4.2 règle 6
+- [ ] **FIGHT-03 Retour rapide après la victoire** | Lot 1 | modifie §4.2 règle 6 | 9.09
   Une unité abandonnée revient vers son mage à vitesse augmentée seulement quand la troupe en face d'elle est morte. C'est le seul boost de vitesse légitime des troupes.
-- [ ] **FIGHT-04 Mage plus fragile** | Lot 1
+- [ ] **FIGHT-04 Mage plus fragile** | Lot 1 | 9.10
   PV de base et PV par niveau du mage baissés (aujourd'hui 100 + 20 par niveau, cible **À vérifier**), pour que l'exposer soit un vrai risque. Le Lien d'âme (§4.3) est réglé en conséquence.
 
 ## 3. Évolution permanente (EVO)
@@ -73,45 +73,45 @@ Remplace le sacrifice de N unités et la popup d'évolution (§6.2), ainsi que l
 
 ### Règles
 
-- [ ] **EVO-01 Expérience et level up** | Lot 2
+- [ ] **EVO-01 Expérience et level up** | Lot 2 | 10.02, 10.12
   Les âmes deviennent l'expérience du joueur. À chaque niveau, le joueur choisit une carte parmi 3 tirées au hasard. Le choix ne met pas le jeu en pause et ne masque pas le centre de l'écran. La carte reste en attente dans un coin si le joueur est en plein combat.
-- [ ] **EVO-02 Contenu des cartes** | Lot 2
+- [ ] **EVO-02 Contenu des cartes** | Lot 2 | 10.02
   Les cartes mélangent les mutations de troupes (le prochain palier d'une branche encore ouverte) et les dons du mage (EVO-10). Toutes les lignées peuvent sortir, mais celles déjà présentes dans l'armée sortent plus souvent (pondération **À vérifier**). Une fois les arbres terminés, les dons assurent toujours 3 choix.
-- [ ] **EVO-03 Branches exclusives** | Lot 2
+- [ ] **EVO-03 Branches exclusives** | Lot 2 | 10.03
   Chaque lignée a 2 branches. Prendre le premier palier d'une branche ferme l'autre pour toute la vie du mage (choisir Gros zombie interdit la Goule et ses suites).
-- [ ] **EVO-04 Mutation de toute la lignée, par fusion** | Lot 2
+- [ ] **EVO-04 Mutation de toute la lignée, par fusion** | Lot 2 | 10.03-10.04
   Une mutation s'applique automatiquement à toutes les unités de la lignée, présentes et futures. Chaque palier vaut plusieurs unités du palier inférieur, et les unités fusionnent seules dès qu'il y en a assez : avec un ratio de 2, 3 zombies donnent 1 goule et 1 zombie, et le zombie suivant donne 2 goules. Ratio de départ : 2 par palier (**À vérifier**). La fusion réunit les unités les plus proches, avec une courte animation. L'unité obtenue garde le meilleur équipement, le reste retourne à l'inventaire (§6.3).
-- [ ] **EVO-05 Force = équivalent en unités de base** | Lot 2 | remplace « force = coût d'évolution » (§7.4)
+- [ ] **EVO-05 Force = équivalent en unités de base** | Lot 2 | remplace « force = coût d'évolution » (§7.4) | 10.05
   Une unité vaut le nombre d'unités de base qu'elle représente (1, 2, 4, 8 avec un ratio de 2). Cette force sert partout : classement, croix sacrées, remplacement des bots, MOV-03. Un palier est à peu près aussi fort que les unités qu'il remplace, avec un léger gain pour récompenser le choix (**À vérifier**).
-- [ ] **EVO-06 Transfert recalculé chez le receveur** | Lot 2
+- [ ] **EVO-06 Transfert recalculé chez le receveur** | Lot 2 | 10.06
   Une unité qui change de camp (mort du mage, fuite) compte pour son équivalent en unités de base, puis les mutations du receveur s'appliquent : un gros zombie reçu par un joueur qui a pris la Goule devient 2 zombies, qui fusionnent en 1 goule.
-- [ ] **EVO-07 Réanimation au même palier** | Lot 2
+- [ ] **EVO-07 Réanimation au même palier** | Lot 2 | 10.06
   Une unité mutée qui meurt se relève au même palier pour son camp (§4.2 règle 1 inchangée).
-- [ ] **EVO-08 Tout repart à zéro à la mort** | Lot 2 | confirme §4.2 règle 7
+- [ ] **EVO-08 Tout repart à zéro à la mort** | Lot 2 | confirme §4.2 règle 7 | 10.07
   Niveau, mutations et dons sont perdus à la mort du mage. Chaque vie est une nouvelle run avec des choix différents.
-- [ ] **EVO-09 Plafond d'armée conservé** | Lot 2
+- [ ] **EVO-09 Plafond d'armée conservé** | Lot 2 | 10.07
   Le plafond de 150 unités (§6.4) reste, compté après fusion. Grâce aux fusions, il ne doit presque jamais être atteint : c'est un garde-fou de performance, plus un élément de jeu. Le surplus continue de donner des âmes.
-- [ ] **EVO-10 Dons du mage** | Lot 2
+- [ ] **EVO-10 Dons du mage** | Lot 2 | 10.08-10.09
   Base de départ, à compléter :
   - passifs : aura de soin des troupes proches, réanimation plus rapide, Lien d'âme renforcé, vitesse du mage, portée de détection et de caméra, butin amélioré, PV du mage, fusion à moindre coût pour une lignée ;
   - sorts actifs, sur un seul emplacement (touche Espace sur PC, un bouton sur téléphone), un nouveau sort remplace l'ancien : nova nécrotique (dégâts autour du mage), cri de ralliement (vitesse et dégâts des troupes quelques secondes), mur d'os (obstacle temporaire qui coupe une poursuite), relève immédiate (cadavres proches debout tout de suite, hors bataille).
-- [ ] **EVO-11 Bots qui choisissent leurs cartes** | Lot 2
+- [ ] **EVO-11 Bots qui choisissent leurs cartes** | Lot 2 | 10.11
   Les bots tirent les mêmes cartes et choisissent selon leur armée (lignée majoritaire d'abord).
 
 ### Arbres des 5 lignées
 
 Chaque lignée : une unité de base, 2 branches exclusives de 3 paliers. Soit 7 unités par lignée et 35 en tout. Le rôle et la silhouette de chaque unité doivent se lire au premier coup d'oeil (ART-06). Le palier 3 est rare : il représente 8 unités de base.
 
-- [ ] **EVO-12 Zombies (mêlée)** | Lot 2 pour les règles, Lot 3 pour les sprites
+- [ ] **EVO-12 Zombies (mêlée)** | Lot 2 pour les règles, Lot 3 pour les sprites | 10.10
   Base : Zombie (voûté, bras tendus). Source : civils.
   - Masse : Gros zombie -> Abomination (colosse cousu) -> Titan de chair (géant, écrase les petites unités).
   - Vitesse : Goule (à quatre pattes) -> Rôdeur (bondit sur les unités à distance) -> Wendigo (grand, maigre, bois de cerf).
-- [ ] **EVO-13 Squelettes (distance)** | Lot 2 et Lot 3
+- [ ] **EVO-13 Squelettes (distance)** | Lot 2 et Lot 3 | 10.10
   Base : Squelette archer (fin, arc bien visible). Sources : soldats, chasseurs, pillards.
   - Siège : Arbalétrier à pavois (grand bouclier planté devant lui) -> Baliste d'os (squelette qui pousse une baliste) -> Catapulte d'os (engin de siège, tir en cloche de zone).
   - Sorcellerie : Pyromancien (feu follet dans la main, dégâts de zone) -> Liche (robe, couronne, ralentit) -> Roi liche (grand, trône flottant, aura).
   Le squelette évolué actuel n'est pas lisible : chaque palier doit montrer son arme ou son engin en gros.
-- [ ] **EVO-14 Bêtes (rapides)** | Lot 2 et Lot 3
+- [ ] **EVO-14 Bêtes (rapides)** | Lot 2 et Lot 3 | 10.10
   Base : Chien zombie. Sources : chiens errants, chiens de garde, loups.
   - Meute : Molosse -> Cerbère (3 têtes, frappe 3 cibles) -> Chien des enfers (grand, enflammé).
   - Sang : Loup putride -> Loup-garou (bipède) -> Seigneur-garou (énorme, hurlement qui effraie).
@@ -130,26 +130,26 @@ Chaque lignée : une unité de base, 2 branches exclusives de 3 paliers. Soit 7 
 
 ## 4. Interface (UI)
 
-- [ ] **UI-01 Barres de PV permanentes** | Lot 1
+- [ ] **UI-01 Barres de PV permanentes** | Lot 1 | 9.11-9.12
   Une petite barre sans chiffres sous chaque unité, toujours visible. Plus l'unité est évoluée, plus sa barre est grande, pour repérer les unités importantes en bataille. Couleur de la barre : vert pour les alliés, rouge pour les ennemis.
   Technique : le snapshot ne contient pas les PV des unités (seulement position et drapeaux). Il faut ajouter un octet de PV quantifié par entité, envoyé seulement quand il change, et mesurer le débit avec `docs/load-test.md` (**À vérifier**).
-- [ ] **UI-02 Contours de couleur** | Lot 1
+- [ ] **UI-02 Contours de couleur** | Lot 1 | 9.13
   Contour vert sur toutes les troupes alliées, rouge sur toutes les troupes ennemies, jaune sur tout ce qui est utile (points d'intérêt, coffres, voitures, tombeaux, champions à recruter). Le décor sans intérêt n'a pas de contour : on distingue d'un coup d'oeil la tombe décorative du tombeau à fouiller.
   La couleur d'armée de chaque joueur reste sur son mage (nom, bannière, grimoire) et sur la minimap, pour distinguer deux ennemis dans une bataille à 3.
   Technique : un filtre de contour sur des centaines de sprites peut coûter cher sur téléphone. Comparer un filtre et des contours précalculés dans l'atlas (une variante blanche teintée à l'affichage), et mesurer les fps (**À vérifier**).
-- [ ] **UI-03 Grande barre des boss et événements** | Lot 1
+- [ ] **UI-03 Grande barre des boss et événements** | Lot 1 | 9.14
   Pour la Citrouille, les champions et les événements : grande barre en haut de l'écran avec le nom et « X PV / Y ».
-- [ ] **UI-04 Plaque des mages ennemis** | Lot 1
+- [ ] **UI-04 Plaque des mages ennemis** | Lot 1 | 9.15
   Au-dessus du mage ennemi : son nom (dans sa couleur d'armée), sa puissance actuelle / sa puissance si toutes ses troupes revivent, et en dessous sa barre de PV, plus grande que celle des troupes.
-- [ ] **UI-05 HUD en haut au centre** | Lot 1 | remplace le HUD de 2.17
+- [ ] **UI-05 HUD en haut au centre** | Lot 1 | remplace le HUD de 2.17 | 9.16
   En haut au centre, toujours visible : niveau, barre d'expérience, PV du mage, puissance actuelle / puissance si tout revit, indicateur de lenteur (MOV-03). Le classement reste en haut à droite. Les cartes de level up et le sort actif ne recouvrent pas ce bloc.
-- [ ] **UI-06 Minimap agrandie et détaillée** | Lot 1 pour la taille, Lot 3 pour le détail | remplace 5.11
+- [ ] **UI-06 Minimap agrandie et détaillée** | Lot 1 pour la taille, Lot 3 pour le détail | remplace 5.11 | 9.17
   Nettement plus grande (taille dans `client.json`, adaptée au téléphone), avec le plan de la ville (quartiers, remparts, forêt) et des icônes : lieux, points d'intérêt, ressources, événements, boss, champions, prime. Les mages ennemis n'apparaissent que dans un rayon de détection autour du joueur, qui grandit avec sa puissance. Le premier du classement reste visible partout (prime, §7.6).
-- [ ] **UI-07 Caméra qui dézoome avec la puissance** | Lot 1
+- [ ] **UI-07 Caméra qui dézoome avec la puissance** | Lot 1 | 9.18
   Plus l'armée est forte, plus la caméra dézoome, de façon continue et douce, entre un minimum et un maximum de config. La gestion d'intérêt (§9.2) s'élargit avec la vue : débit à mesurer (**À vérifier**).
-- [ ] **UI-08 Écran de fin de run** | Lot 2
+- [ ] **UI-08 Écran de fin de run** | Lot 2 | 10.14
   Après le screamer : statistiques de la vie (puissance maximale, temps de survie, civils infectés, unités tuées, mages tués, niveau atteint, mutations choisies, champions recrutés, nom du tueur), puis le bouton Rejouer en dessous. Le serveur compte ces statistiques pendant la vie du mage.
-- [ ] **UI-09 Recharges visibles** | Lot 1 et Lot 2
+- [ ] **UI-09 Recharges visibles** | Lot 1 et Lot 2 | 9.05, 10.13
   Recharge des formations (MOV-05) et du sort actif (EVO-10) affichée sur les boutons et à côté des touches.
 
 ## 5. Direction artistique (ART)
@@ -275,13 +275,13 @@ Ce qui disparaît : cercle d'aggro, bouton Retraite, tunnel de retraite, encercl
 
 ## 8. Points techniques à surveiller
 
-- [ ] **TECH-01 Débit réseau** | Lot 1
+- [ ] **TECH-01 Débit réseau** | Lot 1 | 9.19
   L'octet de PV par entité (UI-01) et la vue élargie par le dézoom (UI-07) augmentent le débit. Nouvelle mesure avec le script de test de charge, résultats dans `docs/load-test.md`.
-- [ ] **TECH-02 Performance du rendu** | Lot 1 et Lot 3
+- [ ] **TECH-02 Performance du rendu** | Lot 1 et Lot 3 | 9.19
   Contours (UI-02), barres de PV permanentes, voile de nuit et halos (ART-12) : mesure des fps sur un vrai téléphone avant de valider chaque technique.
 - [ ] **TECH-03 Obstacles côté serveur** | Lot 3
   Collisions des bâtiments (ART-02) dans la grille spatiale, et coût de l'évitement avec 40 participants (temps de tick).
-- [ ] **TECH-04 Config et registres** | Lot 2
+- [ ] **TECH-04 Config et registres** | Lot 2 | 10.01
   Nouveaux schémas zod : arbres à branches et ratios de fusion, cartes et dons, courbe de ralentissement, champions, compositions de décor. Tests unitaires pour la fusion, le transfert recalculé et les branches exclusives.
 
 ## 9. Idées en plus

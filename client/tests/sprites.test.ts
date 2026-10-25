@@ -43,22 +43,26 @@ describe("frameAt", () => {
 describe("spriteName", () => {
   const content = {
     units: [
-      { id: "zombie", name: "Zombie", evolutions: [] },
-      { id: "fat-zombie", name: "Fat zombie", evolutions: [] },
+      { id: "zombie", name: "Zombie", strength: 1 },
+      { id: "fat-zombie", name: "Fat zombie", strength: 2 },
     ],
     items: [],
     npcs: ["civilian"],
+    obstacles: [],
     pointsOfInterest: ["mass-grave"],
     events: [],
     projectiles: ["arrow"],
     mists: [{ id: "necrotic", radius: 12 }],
     formations: [],
+    lineages: [],
+    gifts: [],
+    spells: [],
     skins: [
       { id: "necromancer", name: "Necromancer" },
       { id: "lich", name: "Lich" },
     ],
   };
-  const entity = { id: 1, type: 1, army: 1, flags: 0, x: 0, y: 0 };
+  const entity = { id: 1, type: 1, army: 1, flags: 0, hp: 255, x: 0, y: 0 };
 
   test("names units after their type", () => {
     expect(spriteName({ ...entity, kind: EntityKind.Unit }, content)).toBe(
@@ -94,8 +98,20 @@ describe("spriteName", () => {
 describe("gearName", () => {
   const content = {
     units: [
-      { id: "zombie", name: "Zombie", equipment: "melee", evolutions: [] },
-      { id: "archer", name: "Archer", equipment: "helmet", evolutions: [] },
+      {
+        id: "zombie",
+        name: "Zombie",
+        strength: 1,
+        equipment: "melee",
+        evolutions: [],
+      },
+      {
+        id: "archer",
+        name: "Archer",
+        strength: 1,
+        equipment: "helmet",
+        evolutions: [],
+      },
     ],
     items: [
       { id: "shovel", name: "Shovel", category: "melee" },
@@ -103,17 +119,21 @@ describe("gearName", () => {
       { id: "bat", name: "Bat", category: "melee" },
     ],
     npcs: [],
+    obstacles: [],
     pointsOfInterest: [],
     events: [],
     projectiles: ["arrow"],
     mists: [{ id: "necrotic", radius: 12 }],
     formations: [],
+    lineages: [],
+    gifts: [],
+    spells: [],
     skins: [
       { id: "necromancer", name: "Necromancer" },
       { id: "lich", name: "Lich" },
     ],
   };
-  const unit = { id: 1, kind: EntityKind.Unit, army: 1, x: 0, y: 0 };
+  const unit = { id: 1, kind: EntityKind.Unit, army: 1, hp: 255, x: 0, y: 0 };
 
   test("finds the item from its slot in the unit category", () => {
     expect(gearName({ ...unit, type: 0, flags: levelFlags(2) }, content)).toBe(

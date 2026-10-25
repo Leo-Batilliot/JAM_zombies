@@ -2,7 +2,7 @@
 
 Jeu multijoueur en ligne (.io) sur le thème des zombies, jouable sur navigateur, PC et téléphone. Chaque joueur est un mage zombifié qui commande une armée de morts : les unités tuées se relèvent 30 s plus tard, et passent à l'ennemi si leur mage fuit ou meurt.
 
-Le concept complet est dans `docs/concept.md`.
+Le concept est dans `docs/concept.md`, et les changements du revamp dans `docs/conceptV2.md`.
 
 ## Prérequis
 
@@ -33,10 +33,11 @@ PC :
 - clic gauche sur le sol : déplacer le mage et son armée ;
 - clic gauche sur un ennemi : l'attaquer ;
 - `1` à `4` : formations (Phalanx, Wedge, Circle, Swarm) ;
-- `R` puis clic : Retraite vers le point choisi ;
-- popup Evolutions : faire évoluer les troupes.
+- s'éloigner d'une bataille : fuir, seules les unités au corps à corps restent sur place ;
+- cartes de level up : choisir une mutation, un don ou un sort ;
+- `Espace` : lancer le sort actif.
 
-Téléphone, en paysage : tap à la place du clic, et boutons à l'écran pour les formations, la Retraite et les évolutions.
+Téléphone, en paysage : tap à la place du clic, et boutons à l'écran pour les formations, les cartes et le sort.
 
 Mode démo (`DEMO_MODE=true` et `?demo=1` dans l'URL) : `K` screamer, `P` Citrouille maléfique, `U` renforts.
 

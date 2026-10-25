@@ -4,6 +4,45 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Concept V2, Lot 2 : évolution permanente | 10.01-10.14 | T.BE
+
+- `shared/config/units.json` : lignées à deux branches de trois paliers, 21 unités, ratio de fusion, PNJ obstacle du mur d'os.
+- `shared/config/gameplay.json` : cartes de level up, fusion, dons et sorts.
+- `shared/config/client.json` : touche du sort, sprites empruntés.
+- `shared/src/config/schema.ts` : schémas des lignées, dons et sorts, contenu client des lignées, dons, sorts et obstacles.
+- `shared/src/registry.ts` : arbre des lignées vérifié (famille, force, appartenance), registres des dons et sorts.
+- `shared/src/protocol/messages.ts` : messages `Choose`, `Cast` et `Respawn`, cartes, sort, vision et statistiques de la vie.
+- `server/src/systems/evolution.ts` : tirage des cartes, mutations exclusives, fusion automatique, découpage en unités de base.
+- `server/src/systems/gifts.ts` : effets des dons, soin des troupes.
+- `server/src/systems/spells.ts` : nova, cri de ralliement, mur d'os, relève immédiate, recharge.
+- `server/src/systems/enlist.ts`, `mage.ts` : unités reçues ou relevées recalculées selon les mutations, remise à zéro et statistiques à la mort, réapparition sur demande.
+- `server/src/systems/` : effets des dons dans la réanimation, le Lien d'âme, la marche, la détection et le butin.
+- `server/src/lobby/bots.ts` : choix des cartes par lignée majoritaire.
+- `server/src/net/sockets.ts` : cartes, sort et statistiques envoyés, suppression de l'ancienne évolution.
+- `client/src/cards.ts`, `spell.ts`, `death.ts` : cartes de level up, bouton de sort, écran de fin de run.
+- `client/src/game/entities.ts` : sprites empruntés, obstacles sans barre ni contour.
+- `server/tests/systems/evolution.test.ts`, `client/tests/levelup.test.ts` : tests des cartes, fusions, transferts, dons, sorts et de l'écran de fin.
+
+### Concept V2, Lot 1 : sensations et lisibilité | 9.01-9.19 | T.BE
+
+- `shared/config/` : ralentissement selon la force, fuite, recharge et rotation des formations, fatigue des civils, mage plus fragile, détection, abandon des proies, réglages des barres, contours, plaques et caméra.
+- `shared/src/protocol/messages.ts` : PV dans les snapshots, barres des boss, puissance si tout revit, expérience, lenteur, mages détectés. Suppression de la Retraite et des cercles d'aggro.
+- `server/src/systems/pace.ts` : vitesse de marche commune et ralentissement logarithmique.
+- `server/src/systems/movement.ts`, `formation.ts` : formation en bloc à places fixes, rotation progressive, retour rapide après la victoire.
+- `server/src/systems/flee.ts` : fuite libre par éloignement, remplace `retreat.ts`.
+- `server/src/systems/battle.ts`, `targeting.ts`, `tactics.ts` : bataille sans cercle ni encerclement, cible gardée au contact, formations instantanées avec recharge.
+- `server/src/systems/civilians.ts`, `separation.ts`, `combat.ts` : fatigue des civils, unités qui traversent leur mage, tolérance de portée.
+- `server/src/systems/detection.ts`, `strength.ts` : mages détectés selon la puissance, puissance si tout revit.
+- `server/src/lobby/` : bots qui fuient en marchant et lâchent les proies faibles, classement complet.
+- `server/src/net/` : PV et données du HUD envoyés.
+- `client/src/game/outlines.ts`, `entities.ts` : contours calculés depuis l'atlas, barres de PV.
+- `client/src/game/plates.ts`, `camera.ts` : plaques des mages ennemis, dézoom selon la puissance.
+- `client/src/hud.ts`, `bossbar.ts`, `minimap.ts`, `formations.ts` : HUD en haut au centre, barre des boss, mages détectés, recharge des formations. Suppression de la Retraite et du cercle d'aggro.
+- `server/tests/`, `shared/tests/`, `client/tests/` : tests de la marche, de la fuite, des formations, du protocole et du HUD.
+- `docs/load-test.md` : mesures du Lot 1.
+- `docs/plan.md`, `docs/conceptV2.md` : phases 9 et 10, numéros reportés à côté des cases.
+- `README.md`, `docs/demo.md` : contrôles sans Retraite, cartes et sort.
+
 ### Concept V2 du revamp | L.BA
 
 - `docs/conceptV2.md` : revamp du gameplay et du visuel en cases à cocher, par thème et par lot.

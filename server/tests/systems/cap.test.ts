@@ -1,7 +1,8 @@
 import { describe, expect, test } from "vitest";
 import { kill } from "../../src/systems/death.js";
-import { armyPace, enlist } from "../../src/systems/enlist.js";
+import { enlist } from "../../src/systems/enlist.js";
 import { killMage } from "../../src/systems/mage.js";
+import { powerPace } from "../../src/systems/pace.js";
 import { createBench } from "../support/bench.js";
 
 const capBench = (cap: number) =>
@@ -16,14 +17,7 @@ describe("army cap", () => {
     const army = addArmy(100, 100);
     world.addUnit(army, "zombie", 101, 100);
     world.addUnit(army, "zombie", 101, 100);
-    const unit = enlist(
-      world,
-      army,
-      { type: "big-zombie", item: "shovel" },
-      100,
-      100,
-    );
-    expect(unit).toBeUndefined();
+    enlist(world, army, { type: "big-zombie", item: "shovel" }, 100, 100);
     expect(army.units.size).toBe(2);
     expect(army.souls).toBe(world.registries.units.get("big-zombie").strength);
     expect(army.inventory).toEqual(["shovel"]);
@@ -60,32 +54,35 @@ describe("army cap", () => {
 });
 
 describe("army slowdown", () => {
-  const paceWith = (count: number): number => {
+  const paceWith = (type: string, count: number): number => {
     const { world, addArmy } = createBench((config) => {
-      config.gameplay.army.slowdown = { from: 60, to: 150, penalty: 0.35 };
-      config.gameplay.army.cap = 200;
+      config.gameplay.army.slowdown = { scale: 70, factor: 0.185, max: 0.6 };
+      config.gameplay.army.cap = 700;
     });
     const army = addArmy(100, 100);
     for (let index = 0; index < count; index++) {
-      world.addUnit(army, "zombie", 100, 100);
+      world.addUnit(army, type, 100, 100);
     }
-    return armyPace(world, army);
+    return powerPace(world, army);
   };
 
-  test("starts after the threshold and grows up to the penalty", () => {
-    expect(paceWith(10)).toBe(1);
-    expect(paceWith(60)).toBe(1);
-    expect(paceWith(105)).toBeCloseTo(0.825);
-    expect(paceWith(150)).toBeCloseTo(0.65);
-    expect(paceWith(180)).toBeCloseTo(0.65);
+  test("grows with the strength on a logarithmic curve", () => {
+    expect(paceWith("zombie", 0)).toBe(1);
+    expect(paceWith("zombie", 50)).toBeCloseTo(0.9, 1);
+    expect(paceWith("zombie", 200)).toBeCloseTo(0.75, 1);
+    expect(paceWith("zombie", 600)).toBeCloseTo(0.6, 1);
+  });
+
+  test("counts the strength, not the number of units", () => {
+    expect(paceWith("big-zombie", 25)).toBeCloseTo(paceWith("zombie", 50));
   });
 
   test("slows the mage", () => {
     const { config, world, addArmy, step } = createBench((config) => {
-      config.gameplay.army.slowdown = { from: 0, to: 1, penalty: 0.5 };
+      config.gameplay.army.slowdown = { scale: 1, factor: 1, max: 0.5 };
     });
     const army = addArmy(100, 100);
-    world.addUnit(army, "zombie", 100, 100);
+    world.addUnit(army, "big-zombie", 100, 100);
     army.mage.targetX = 200;
     step(config.network.tickRate);
     expect(army.mage.x - 100).toBeCloseTo(config.gameplay.mage.speed * 0.5, 1);

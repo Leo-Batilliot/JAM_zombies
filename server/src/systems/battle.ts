@@ -1,4 +1,4 @@
-import { EntityKind, type AggroCircle } from "@horde/shared";
+import { EntityKind } from "@horde/shared";
 import type {
   AbandonedGroup,
   Army,
@@ -14,8 +14,6 @@ import { currentTarget } from "./targeting.js";
 import { transferToKiller } from "./transfer.js";
 
 type ForceKey = Army | AbandonedGroup | BossEvent | Camp | Npc;
-
-const fullTurn = 2 * Math.PI;
 
 export const isHostile = (world: World, npc: Npc): boolean =>
   world.registries.npcs.get(npc.type).attack !== undefined;
@@ -88,36 +86,14 @@ const forceOfBody = (world: World, body: Body): Force => {
   }
 };
 
-const mainArmy = (body: Body): Army | undefined =>
-  body.kind === EntityKind.Mage ||
-  (body.kind === EntityKind.Unit && body.group === undefined)
-    ? body.army
-    : undefined;
-
-export const freeSector = (
-  x: number,
-  y: number,
-  threats: Body[],
-): { size: number; middle: number } => {
-  const angles = threats
-    .map((threat) => Math.atan2(threat.y - y, threat.x - x))
-    .sort((a, b) => a - b);
-  const first = angles[0];
-  const last = angles.at(-1);
-  if (first === undefined || last === undefined) {
-    return { size: fullTurn, middle: 0 };
-  }
-  let size = first + fullTurn - last;
-  let middle = last + size / 2;
-  for (let index = 1; index < angles.length; index++) {
-    const from = angles[index - 1] ?? 0;
-    const gap = (angles[index] ?? 0) - from;
-    if (gap > size) {
-      size = gap;
-      middle = from + gap / 2;
+export const nearestFoe = (army: Army, foes: Force[]): number => {
+  let nearest = Infinity;
+  for (const foe of foes) {
+    for (const body of foe.bodies) {
+      nearest = Math.min(nearest, distance(body, army.mage));
     }
   }
-  return { size, middle };
+  return nearest;
 };
 
 const resolveGroups = (world: World, army: Army): void => {
@@ -130,6 +106,7 @@ const resolveGroups = (world: World, army: Army): void => {
     } else if (world.time - group.engagedAt >= endDelaySec) {
       for (const unit of group.units) {
         unit.group = undefined;
+        unit.returning = true;
       }
       for (const corpse of group.corpses) {
         corpse.group = undefined;
@@ -142,11 +119,9 @@ const resolveGroups = (world: World, army: Army): void => {
 };
 
 export const updateBattles = (world: World): void => {
-  const { engageRadius, endDelaySec, freeSectorDeg } =
-    world.config.gameplay.battle;
+  const { engageRadius, endDelaySec } = world.config.gameplay.battle;
   const forces = new Map<ForceKey, Force>();
   const foes = new Map<ForceKey, Map<ForceKey, Force>>();
-  const threats = new Map<Army, Body[]>();
 
   const forceOf = (body: Body): [ForceKey, Force] => {
     const key = forceKey(world, body);
@@ -165,17 +140,6 @@ export const updateBattles = (world: World): void => {
     }
     known.set(foeKey, foe);
   };
-  const addThreat = (body: Body, threat: Body): void => {
-    const army = mainArmy(body);
-    if (army !== undefined) {
-      let known = threats.get(army);
-      if (known === undefined) {
-        known = [];
-        threats.set(army, known);
-      }
-      known.push(threat);
-    }
-  };
   const link = (a: Body, b: Body): void => {
     if (distance(a, b) > engageRadius) {
       return;
@@ -187,8 +151,6 @@ export const updateBattles = (world: World): void => {
     }
     addFoe(aKey, bKey, bForce);
     addFoe(bKey, aKey, aForce);
-    addThreat(a, b);
-    addThreat(b, a);
   };
 
   for (const army of world.armies.values()) {
@@ -215,14 +177,12 @@ export const updateBattles = (world: World): void => {
     if (!army.alive) {
       army.battle = undefined;
     } else if (engaged !== undefined) {
-      const center = forces.get(army) ?? enclose(army, mainBodies(army));
-      const sector = freeSector(center.x, center.y, threats.get(army) ?? []);
+      const foeForces = [...engaged.values()];
+      const nearest = nearestFoe(army, foeForces);
       army.battle = {
         engagedAt: world.time,
-        foes: [...engaged.values()],
-        encircled: sector.size < (freeSectorDeg * Math.PI) / 180,
-        freeSector: sector.size,
-        escapeAngle: sector.middle,
+        foes: foeForces,
+        closest: Math.min(army.battle?.closest ?? nearest, nearest),
       };
     } else if (
       army.battle !== undefined &&
@@ -237,51 +197,4 @@ export const updateBattles = (world: World): void => {
     }
     resolveGroups(world, army);
   }
-};
-
-export const aggroCircles = (world: World, army: Army): AggroCircle[] => {
-  const { circleMargin } = world.config.gameplay.battle;
-  return (army.battle?.foes ?? [])
-    .filter((foe) => foe.bodies.length > 0)
-    .map((foe) => ({ x: foe.x, y: foe.y, radius: foe.radius + circleMargin }));
-};
-
-const outside = (
-  circles: AggroCircle[],
-  x: number,
-  y: number,
-): { gap: number; circle: AggroCircle | undefined } => {
-  let gap = Infinity;
-  let nearest: AggroCircle | undefined;
-  for (const circle of circles) {
-    const circleGap = Math.hypot(x - circle.x, y - circle.y) - circle.radius;
-    if (circleGap < gap) {
-      gap = circleGap;
-      nearest = circle;
-    }
-  }
-  return { gap, circle: nearest };
-};
-
-export const clampToCircles = (
-  circles: AggroCircle[],
-  from: { x: number; y: number },
-  to: { x: number; y: number },
-): { x: number; y: number } => {
-  if (circles.length === 0) {
-    return to;
-  }
-  const allowed = Math.max(0, outside(circles, from.x, from.y).gap);
-  const { gap, circle } = outside(circles, to.x, to.y);
-  if (gap <= allowed || circle === undefined) {
-    return to;
-  }
-  const dx = to.x - circle.x;
-  const dy = to.y - circle.y;
-  const length = Math.hypot(dx, dy);
-  const radius = circle.radius + allowed;
-  return {
-    x: circle.x + (dx / length) * radius,
-    y: circle.y + (dy / length) * radius,
-  };
 };

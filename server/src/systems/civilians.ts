@@ -57,9 +57,13 @@ const moveGroup = (
   dt: number,
   near: number[],
 ): void => {
-  const { speed, fleeSpeed = speed } = world.registries.npcs.get(
-    population.npc,
-  );
+  const stats = world.registries.npcs.get(population.npc);
+  const { speed, fatigue } = stats;
+  const tired =
+    fatigue !== undefined &&
+    group.fleeingSince !== undefined &&
+    world.time - group.fleeingSince >= fatigue.afterSec;
+  const fleeSpeed = (stats.fleeSpeed ?? speed) * (tired ? fatigue.factor : 1);
   let awayX = 0;
   let awayY = 0;
   for (const npc of group.members) {
@@ -87,6 +91,7 @@ const moveGroup = (
     );
   }
   const fleeing = awayX !== 0 || awayY !== 0;
+  group.fleeingSince = fleeing ? (group.fleeingSince ?? world.time) : undefined;
   if (fleeing) {
     const length = Math.hypot(awayX, awayY);
     group.targetX = world.clampX(

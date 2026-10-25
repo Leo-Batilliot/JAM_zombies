@@ -1,6 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { damage } from "../../src/systems/death.js";
-import { killMage, respawnMage } from "../../src/systems/mage.js";
+import {
+  requestRespawn,
+  killMage,
+  respawnMage,
+} from "../../src/systems/mage.js";
 import { maxHp } from "../../src/systems/souls.js";
 import { createBench } from "../support/bench.js";
 
@@ -38,15 +42,16 @@ describe("mage death", () => {
     expect(army.level).toBe(1);
   });
 
-  test("the mage respawns after the delay with its starting army", () => {
+  test("a player respawns on request, after the delay, with its starting army", () => {
     const { config, world, addArmy, step } = createBench((config) => {
       config.gameplay.respawn.delaySec = 1;
     });
     const army = addArmy(100, 100);
     killMage(world, army, undefined);
-    step(config.network.tickRate / 2);
+    step(config.network.tickRate * 2);
     expect(army.alive).toBe(false);
-    step(config.network.tickRate);
+    requestRespawn(army);
+    step();
     expect(army.alive).toBe(true);
     expect(world.entities.get(army.mage.id)).toBe(army.mage);
     expect(army.mage.hp).toBe(maxHp(world, army));
@@ -111,9 +116,9 @@ describe("soul link", () => {
     const { world, config, addArmy } = createBench();
     const army = addArmy(100, 100);
     const far = world.addUnit(army, "zombie", 120, 100);
-    damage(world, army.mage, 5, undefined);
+    damage(world, army.mage, 4, undefined);
     expect(far.hp).toBe(config.units.units["zombie"]?.hp);
-    expect(army.mage.hp).toBe(config.gameplay.mage.baseHp - 5);
+    expect(army.mage.hp).toBe(config.gameplay.mage.baseHp - 4);
   });
 
   test("the mage loses at most the capped share of its max hp per second", () => {

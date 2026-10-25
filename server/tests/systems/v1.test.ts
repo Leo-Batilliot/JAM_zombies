@@ -3,7 +3,6 @@ import { EntityKind } from "@horde/shared";
 import { familyBonus } from "../../src/systems/combat.js";
 import { damage, kill } from "../../src/systems/death.js";
 import { equipInventory } from "../../src/systems/equipment.js";
-import { evolve } from "../../src/systems/evolution.js";
 import { killMage } from "../../src/systems/mage.js";
 import { maintainCamps } from "../../src/systems/camps.js";
 import { maintainMists } from "../../src/systems/mists.js";
@@ -132,29 +131,6 @@ describe("skeleton lineage", () => {
     );
     expect(familyBonus(world, "zombie", skeleton)).toBe(1);
     expect(familyBonus(world, "skeleton-archer", army.mage)).toBe(1);
-  });
-
-  test("ten zombies evolve into a flesh golem", () => {
-    const { world, addArmy } = createBench();
-    const army = addArmy(100, 100);
-    for (let index = 0; index < 11; index++) {
-      world.addUnit(army, "zombie", 101, 100);
-    }
-    expect(evolve(world, army, "flesh-golem")).toBe(true);
-    expect([...army.units].map((unit) => unit.type).sort()).toEqual([
-      "flesh-golem",
-      "zombie",
-    ]);
-  });
-
-  test("ten skeleton archers evolve into a bone ballista", () => {
-    const { world, addArmy } = createBench();
-    const army = addArmy(100, 100);
-    for (let index = 0; index < 10; index++) {
-      world.addUnit(army, "skeleton-archer", 101, 100);
-    }
-    expect(evolve(world, army, "bone-ballista")).toBe(true);
-    expect([...army.units].map((unit) => unit.type)).toEqual(["bone-ballista"]);
   });
 });
 

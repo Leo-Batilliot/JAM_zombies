@@ -50,14 +50,13 @@ export class FormationBar {
     this.element.replaceChildren(...this.#buttons);
   }
 
-  setStatus(formation: number, next: number, progress: number): void {
+  setStatus(formation: number, cooldown: number): void {
     this.#buttons.forEach((button, index) => {
       button.classList.toggle("active", formation === index + 1);
-      const changing = next === index + 1;
-      button.classList.toggle("changing", changing);
+      button.classList.toggle("cooling", cooldown > 0);
       button.style.setProperty(
         "--progress",
-        `${String(Math.round((changing ? progress : 0) * 100))}%`,
+        `${String(Math.round(cooldown * 100))}%`,
       );
     });
   }

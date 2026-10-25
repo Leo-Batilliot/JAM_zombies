@@ -16,8 +16,9 @@ export enum ClientMessageType {
   Move,
   Target,
   Formation,
-  Retreat,
-  Evolve,
+  Choose,
+  Cast,
+  Respawn,
   Demo,
   Spectate,
 }
@@ -55,6 +56,27 @@ export enum EntityKind {
   Bombing,
 }
 
+export enum CardKind {
+  Mutation = 1,
+  Gift,
+  Spell,
+}
+
+export interface Card {
+  kind: CardKind;
+  index: number;
+}
+
+export interface RunStats {
+  maxPower: number;
+  survivalSec: number;
+  infected: number;
+  kills: number;
+  mageKills: number;
+  level: number;
+  mutations: number[];
+}
+
 export enum EntityFlag {
   Fighting = 1,
   Rising = 2,
@@ -73,8 +95,6 @@ export const flagLevel = (flags: number): number => flags >> levelShift;
 
 export enum BattleFlag {
   InBattle = 1,
-  Encircled = 2,
-  Retreating = 4,
 }
 
 export const neutralArmy = 0;
@@ -92,10 +112,16 @@ export type ClientMessage =
   | { type: ClientMessageType.Move; x: number; y: number }
   | { type: ClientMessageType.Target; entityId: number }
   | { type: ClientMessageType.Formation; formation: number }
-  | { type: ClientMessageType.Retreat; x: number; y: number }
-  | { type: ClientMessageType.Evolve; evolution: string }
+  | { type: ClientMessageType.Choose; card: number }
+  | { type: ClientMessageType.Cast }
+  | { type: ClientMessageType.Respawn }
   | { type: ClientMessageType.Demo; command: DemoCommand }
   | { type: ClientMessageType.Spectate };
+
+export const hpSteps = 0xff;
+
+export const quantizeHp = (ratio: number): number =>
+  Math.ceil(Math.min(Math.max(ratio, 0), 1) * hpSteps);
 
 export interface SnapshotEntity {
   id: number;
@@ -103,6 +129,7 @@ export interface SnapshotEntity {
   type: number;
   army: number;
   flags: number;
+  hp: number;
   x: number;
   y: number;
 }
@@ -110,25 +137,16 @@ export interface SnapshotEntity {
 export interface SnapshotUpdate {
   id: number;
   flags: number;
+  hp: number;
   x: number;
   y: number;
-}
-
-export interface AggroCircle {
-  x: number;
-  y: number;
-  radius: number;
 }
 
 export interface LeaderboardEntry {
   army: number;
   name: string;
   strength: number;
-}
-
-export interface UnitCount {
-  type: number;
-  count: number;
+  potential: number;
 }
 
 export interface CrossStrength {
@@ -142,22 +160,41 @@ export interface Bounty {
   y: number;
 }
 
+export interface BossHealth {
+  event: number;
+  hp: number;
+  maxHp: number;
+}
+
+export interface MageSighting {
+  army: number;
+  x: number;
+  y: number;
+}
+
 export interface Status {
   army: number;
   hp: number;
   maxHp: number;
   level: number;
   souls: number;
+  levelSouls: number;
+  nextSouls: number;
   units: number;
   strength: number;
+  potential: number;
+  pace: number;
   battle: number;
   search: number;
   formation: number;
-  nextFormation: number;
-  formationProgress: number;
-  circles: AggroCircle[];
-  counts: UnitCount[];
+  formationCooldown: number;
+  cards: Card[];
+  spell: number;
+  spellCooldown: number;
+  vision: number;
   crosses: CrossStrength[];
+  bosses: BossHealth[];
+  mages: MageSighting[];
 }
 
 export type ServerMessage =
@@ -171,7 +208,7 @@ export type ServerMessage =
       updates: SnapshotUpdate[];
       removed: number[];
     }
-  | { type: ServerMessageType.Died; killer: string }
+  | { type: ServerMessageType.Died; killer: string; stats: RunStats }
   | {
       type: ServerMessageType.Leaderboard;
       rank: number;
@@ -200,10 +237,10 @@ export type ServerMessage =
       name: string;
     };
 
-const snapshotEntityBytes = 12;
-const snapshotUpdateBytes = 9;
-const radiusSteps = 100;
+const snapshotEntityBytes = 13;
+const snapshotUpdateBytes = 10;
 const searchSteps = 0xff;
+const visionSteps = 100;
 
 const readEnum = <T extends number>(
   value: number,
@@ -240,7 +277,6 @@ export const encodeClientMessage = (
       writer.float32(message.width).float32(message.height);
       break;
     case ClientMessageType.Move:
-    case ClientMessageType.Retreat:
       writer
         .uint16(quantizeX(message.x, requireBounds(bounds)))
         .uint16(quantizeY(message.y, requireBounds(bounds)));
@@ -251,8 +287,11 @@ export const encodeClientMessage = (
     case ClientMessageType.Formation:
       writer.uint8(message.formation);
       break;
-    case ClientMessageType.Evolve:
-      writer.shortString(message.evolution);
+    case ClientMessageType.Choose:
+      writer.uint8(message.card);
+      break;
+    case ClientMessageType.Cast:
+    case ClientMessageType.Respawn:
       break;
     case ClientMessageType.Demo:
       writer.uint8(message.command);
@@ -283,7 +322,6 @@ export const decodeClientMessage = (
       message = { type, width: reader.float32(), height: reader.float32() };
       break;
     case ClientMessageType.Move:
-    case ClientMessageType.Retreat:
       message = {
         type,
         x: dequantizeX(reader.uint16(), bounds),
@@ -296,8 +334,12 @@ export const decodeClientMessage = (
     case ClientMessageType.Formation:
       message = { type, formation: reader.uint8() };
       break;
-    case ClientMessageType.Evolve:
-      message = { type, evolution: reader.shortString() };
+    case ClientMessageType.Choose:
+      message = { type, card: reader.uint8() };
+      break;
+    case ClientMessageType.Cast:
+    case ClientMessageType.Respawn:
+      message = { type };
       break;
     case ClientMessageType.Demo:
       message = {
@@ -360,6 +402,7 @@ export const encodeServerMessage = (
           .uint8(entity.type)
           .uint8(entity.army)
           .uint8(entity.flags)
+          .uint8(entity.hp)
           .uint16(quantizeX(entity.x, bounds))
           .uint16(quantizeY(entity.y, bounds));
       }
@@ -368,6 +411,7 @@ export const encodeServerMessage = (
         writer
           .uint32(update.id)
           .uint8(update.flags)
+          .uint8(update.hp)
           .uint16(quantizeX(update.x, bounds))
           .uint16(quantizeY(update.y, bounds));
       }
@@ -377,11 +421,26 @@ export const encodeServerMessage = (
       }
       return writer.finish();
     }
-    case ServerMessageType.Died:
-      return new ByteWriter(16)
+    case ServerMessageType.Died: {
+      const { stats } = message;
+      if (stats.mutations.length > 0xff) {
+        throw new ProtocolError("Too many mutations");
+      }
+      const writer = new ByteWriter(48)
         .uint8(message.type)
         .shortString(message.killer)
-        .finish();
+        .uint32(stats.maxPower)
+        .uint32(Math.floor(stats.survivalSec))
+        .uint32(stats.infected)
+        .uint32(stats.kills)
+        .uint16(stats.mageKills)
+        .uint16(stats.level)
+        .uint8(stats.mutations.length);
+      for (const mutation of stats.mutations) {
+        writer.uint8(mutation);
+      }
+      return writer.finish();
+    }
     case ServerMessageType.Leaderboard: {
       if (message.entries.length > 0xff) {
         throw new ProtocolError("Too many leaderboard entries");
@@ -395,25 +454,31 @@ export const encodeServerMessage = (
         .uint16(quantizeY(message.bounty.y, bounds))
         .uint8(message.entries.length);
       for (const entry of message.entries) {
-        writer.uint8(entry.army).uint32(entry.strength).shortString(entry.name);
+        writer
+          .uint8(entry.army)
+          .uint32(entry.strength)
+          .uint32(entry.potential)
+          .shortString(entry.name);
       }
       return writer.finish();
     }
     case ServerMessageType.Status: {
       if (
         Math.max(
-          message.circles.length,
-          message.counts.length,
+          message.cards.length,
           message.crosses.length,
+          message.bosses.length,
+          message.mages.length,
         ) > 0xff
       ) {
         throw new ProtocolError("Too many status entries");
       }
       const writer = new ByteWriter(
-        30 +
-          message.circles.length * 6 +
-          message.counts.length * 3 +
-          message.crosses.length * 6,
+        52 +
+          message.cards.length * 2 +
+          message.crosses.length * 6 +
+          message.bosses.length * 9 +
+          message.mages.length * 5,
       )
         .uint8(message.type)
         .uint8(message.army)
@@ -421,33 +486,50 @@ export const encodeServerMessage = (
         .uint32(Math.ceil(message.maxHp))
         .uint16(message.level)
         .uint32(Math.floor(message.souls))
+        .uint32(Math.floor(message.levelSouls))
+        .uint32(Math.ceil(message.nextSouls))
         .uint16(message.units)
         .uint32(message.strength)
+        .uint32(message.potential)
+        .uint8(quantizeHp(message.pace))
         .uint8(message.battle)
         .uint8(
           Math.round(Math.min(Math.max(message.search, 0), 1) * searchSteps),
         )
         .uint8(message.formation)
-        .uint8(message.nextFormation)
         .uint8(
           Math.round(
-            Math.min(Math.max(message.formationProgress, 0), 1) * searchSteps,
+            Math.min(Math.max(message.formationCooldown, 0), 1) * searchSteps,
           ),
         )
-        .uint8(message.circles.length);
-      for (const circle of message.circles) {
-        writer
-          .uint16(quantizeX(circle.x, bounds))
-          .uint16(quantizeY(circle.y, bounds))
-          .uint16(Math.min(Math.round(circle.radius * radiusSteps), 0xffff));
-      }
-      writer.uint8(message.counts.length);
-      for (const entry of message.counts) {
-        writer.uint8(entry.type).uint16(Math.min(entry.count, 0xffff));
+        .uint8(message.spell)
+        .uint8(
+          Math.round(
+            Math.min(Math.max(message.spellCooldown, 0), 1) * searchSteps,
+          ),
+        )
+        .uint16(Math.round(message.vision * visionSteps))
+        .uint8(message.cards.length);
+      for (const card of message.cards) {
+        writer.uint8(card.kind).uint8(card.index);
       }
       writer.uint8(message.crosses.length);
       for (const entry of message.crosses) {
         writer.uint32(entry.id).uint16(Math.min(entry.strength, 0xffff));
+      }
+      writer.uint8(message.bosses.length);
+      for (const boss of message.bosses) {
+        writer
+          .uint8(boss.event)
+          .uint32(Math.ceil(Math.max(boss.hp, 0)))
+          .uint32(Math.ceil(boss.maxHp));
+      }
+      writer.uint8(message.mages.length);
+      for (const mage of message.mages) {
+        writer
+          .uint8(mage.army)
+          .uint16(quantizeX(mage.x, bounds))
+          .uint16(quantizeY(mage.y, bounds));
       }
       return writer.finish();
     }
@@ -523,6 +605,7 @@ export const decodeServerMessage = (
           type: reader.uint8(),
           army: reader.uint8(),
           flags: reader.uint8(),
+          hp: reader.uint8(),
           x: dequantizeX(reader.uint16(), snapshotBounds),
           y: dequantizeY(reader.uint16(), snapshotBounds),
         });
@@ -533,6 +616,7 @@ export const decodeServerMessage = (
         updates.push({
           id: reader.uint32(),
           flags: reader.uint8(),
+          hp: reader.uint8(),
           x: dequantizeX(reader.uint16(), snapshotBounds),
           y: dequantizeY(reader.uint16(), snapshotBounds),
         });
@@ -545,9 +629,24 @@ export const decodeServerMessage = (
       message = { type, tick, entities, updates, removed };
       break;
     }
-    case ServerMessageType.Died:
-      message = { type, killer: reader.shortString() };
+    case ServerMessageType.Died: {
+      const killer = reader.shortString();
+      const stats: RunStats = {
+        maxPower: reader.uint32(),
+        survivalSec: reader.uint32(),
+        infected: reader.uint32(),
+        kills: reader.uint32(),
+        mageKills: reader.uint16(),
+        level: reader.uint16(),
+        mutations: [],
+      };
+      const count = reader.uint8();
+      for (let index = 0; index < count; index++) {
+        stats.mutations.push(reader.uint8());
+      }
+      message = { type, killer, stats };
       break;
+    }
     case ServerMessageType.Leaderboard: {
       const rank = reader.uint16();
       const total = reader.uint16();
@@ -563,6 +662,7 @@ export const decodeServerMessage = (
         entries.push({
           army: reader.uint8(),
           strength: reader.uint32(),
+          potential: reader.uint32(),
           name: reader.shortString(),
         });
       }
@@ -577,34 +677,52 @@ export const decodeServerMessage = (
         maxHp: reader.uint32(),
         level: reader.uint16(),
         souls: reader.uint32(),
+        levelSouls: reader.uint32(),
+        nextSouls: reader.uint32(),
         units: reader.uint16(),
         strength: reader.uint32(),
+        potential: reader.uint32(),
+        pace: reader.uint8() / hpSteps,
         battle: reader.uint8(),
         search: reader.uint8() / searchSteps,
         formation: reader.uint8(),
-        nextFormation: reader.uint8(),
-        formationProgress: reader.uint8() / searchSteps,
+        formationCooldown: reader.uint8() / searchSteps,
+        spell: reader.uint8(),
+        spellCooldown: reader.uint8() / searchSteps,
+        vision: reader.uint16() / visionSteps,
       };
-      const circles: AggroCircle[] = [];
-      const circleCount = reader.uint8();
-      for (let index = 0; index < circleCount; index++) {
-        circles.push({
-          x: dequantizeX(reader.uint16(), statusBounds),
-          y: dequantizeY(reader.uint16(), statusBounds),
-          radius: reader.uint16() / radiusSteps,
+      const cards: Card[] = [];
+      const cardCount = reader.uint8();
+      for (let index = 0; index < cardCount; index++) {
+        cards.push({
+          kind: readEnum(reader.uint8(), CardKind, "card kind"),
+          index: reader.uint8(),
         });
-      }
-      const counts: UnitCount[] = [];
-      const countCount = reader.uint8();
-      for (let index = 0; index < countCount; index++) {
-        counts.push({ type: reader.uint8(), count: reader.uint16() });
       }
       const crosses: CrossStrength[] = [];
       const crossCount = reader.uint8();
       for (let index = 0; index < crossCount; index++) {
         crosses.push({ id: reader.uint32(), strength: reader.uint16() });
       }
-      message = { type, ...fields, circles, counts, crosses };
+      const bosses: BossHealth[] = [];
+      const bossCount = reader.uint8();
+      for (let index = 0; index < bossCount; index++) {
+        bosses.push({
+          event: reader.uint8(),
+          hp: reader.uint32(),
+          maxHp: reader.uint32(),
+        });
+      }
+      const mages: MageSighting[] = [];
+      const mageCount = reader.uint8();
+      for (let index = 0; index < mageCount; index++) {
+        mages.push({
+          army: reader.uint8(),
+          x: dequantizeX(reader.uint16(), statusBounds),
+          y: dequantizeY(reader.uint16(), statusBounds),
+        });
+      }
+      message = { type, ...fields, cards, crosses, bosses, mages };
       break;
     }
     case ServerMessageType.EventStarted: {

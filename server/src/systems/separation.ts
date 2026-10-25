@@ -4,6 +4,11 @@ import { bodyRadius, isFixedNpc, largestMovingRadius } from "./bodies.js";
 
 const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
+const isOwnMage = (entity: Body, other: Body): boolean =>
+  other.kind === EntityKind.Mage &&
+  entity.kind === EntityKind.Unit &&
+  entity.army === other.army;
+
 const push = (world: World, entity: Body, dx: number, dy: number): void => {
   world.setPosition(entity, entity.x + dx, entity.y + dy);
 };
@@ -26,7 +31,8 @@ export const separateBodies = (world: World): void => {
         other === undefined ||
         other === entity ||
         !isBody(other) ||
-        isFixedNpc(world, other)
+        isFixedNpc(world, other) ||
+        isOwnMage(entity, other)
       ) {
         continue;
       }

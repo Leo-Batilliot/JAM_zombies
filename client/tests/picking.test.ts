@@ -8,6 +8,7 @@ const entity = (id: number, kind: EntityKind, army: number, x: number) => ({
   type: 0,
   army,
   flags: 0,
+  hp: 255,
   x,
   y: 0,
 });

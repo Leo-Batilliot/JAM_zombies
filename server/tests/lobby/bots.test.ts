@@ -6,7 +6,7 @@ import { createBench } from "../support/bench.js";
 
 const botArmy = (bench: ReturnType<typeof createBench>, x = 100, y = 100) => {
   const army = bench.addArmy(x, y, "Bot");
-  army.bot = { thinkAt: 0 };
+  army.bot = { thinkAt: 0, chase: undefined, ignored: new Map() };
   return army;
 };
 
@@ -92,10 +92,11 @@ describe("bots in battle", () => {
     if (army.bot !== undefined) {
       army.bot.thinkAt = 0;
     }
+    army.formationReadyAt = 0;
     runBots(bench.world);
   };
 
-  test("flee a stronger army with a retreat away from it", () => {
+  test("flee a stronger army by walking away from it", () => {
     const bench = createBench();
     const army = botArmy(bench);
     withUnits(bench, army, [[103, 100]]);
@@ -109,7 +110,7 @@ describe("bots in battle", () => {
       [108, 101],
     ]);
     think(bench, army);
-    expect(army.retreat).toBeDefined();
+    expect(army.battle).toBeDefined();
     expect(army.mage.targetX).toBeLessThan(100);
   });
 
@@ -128,28 +129,7 @@ describe("bots in battle", () => {
     withUnits(bench, enemy, [[107, 100]]);
     think(bench, army);
     expect(army.battle).toBeDefined();
-    expect(army.retreat).toBeUndefined();
-  });
-
-  test("flee before an equal army closes the circle", () => {
-    const bench = createBench();
-    const army = botArmy(bench);
-    withUnits(bench, army, [
-      [100, 101],
-      [101, 100],
-      [100, 99],
-      [99, 100],
-    ]);
-    const enemy = bench.addArmy(100, 112, "Enemy");
-    withUnits(bench, enemy, [
-      [104, 100],
-      [100, 104],
-      [96, 100],
-      [100, 96],
-    ]);
-    think(bench, army);
-    expect(army.battle?.encircled).toBe(false);
-    expect(army.retreat).toBeDefined();
+    expect(army.formation).toBe(bench.config.lobby.bots.formations.attack);
   });
 
   test("attack a weaker army in range", () => {
@@ -197,15 +177,21 @@ describe("bots with equipment and crosses", () => {
     expect(items).toHaveLength(1);
   });
 
-  test("evolve their zombies when they can", () => {
+  test("pick the mutation of their strongest lineage", () => {
     const bench = createBench();
     const army = botArmy(bench);
     for (let index = 0; index < 6; index++) {
-      bench.world.addUnit(army, "zombie", 101, 100);
+      bench.world.addUnit(army, "skeleton-archer", 101, 100);
     }
+    army.pendingLevels = 1;
+    army.cards = [
+      { kind: "gift", gift: "haste" },
+      { kind: "mutation", unit: "ghoul" },
+      { kind: "mutation", unit: "pyromancer" },
+    ];
     runBots(bench.world);
-    const types = [...army.units].map((unit) => unit.type).sort();
-    expect(types).toEqual(["big-zombie", "zombie"]);
+    expect(army.mutations.get("skeleton")?.branch).toBe("sorcery");
+    expect(army.mutations.has("zombie")).toBe(false);
   });
 
   const crossBench = () =>
@@ -245,9 +231,7 @@ describe("bots in the V1 world", () => {
     const bench = createBench();
     const army = botArmy(bench);
     runBots(bench.world);
-    expect(army.formationChange?.to).toBe(
-      bench.config.lobby.bots.formations.explore,
-    );
+    expect(army.formation).toBe(bench.config.lobby.bots.formations.explore);
   });
 
   test("attack a camp they can beat in the attack formation", () => {
@@ -260,9 +244,7 @@ describe("bots in the V1 world", () => {
     bench.world.addCampNpc(camp, "soldier", 140, 100);
     runBots(bench.world);
     expect(army.mage.targetX).toBeCloseTo(140);
-    expect(army.formationChange?.to).toBe(
-      bench.config.lobby.bots.formations.attack,
-    );
+    expect(army.formation).toBe(bench.config.lobby.bots.formations.attack);
   });
 
   test("leave a camp too strong for them", () => {
@@ -306,10 +288,8 @@ describe("bots in the V1 world", () => {
     if (army.bot !== undefined) {
       army.bot.thinkAt = 0;
     }
+    army.formationReadyAt = 0;
     runBots(bench.world);
-    expect(army.retreat).toBeUndefined();
-    expect(army.formationChange?.to).toBe(
-      bench.config.lobby.bots.formations.defend,
-    );
+    expect(army.formation).toBe(bench.config.lobby.bots.formations.defend);
   });
 });

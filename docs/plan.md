@@ -441,3 +441,143 @@ README : installation, lancement en développement, lancement de la démo. Créd
 ### 8.04 Répétition de la démo | Tous
 
 Déroulé de la présentation, lancement du tunnel, page `/share`, raccourcis du mode démo pour montrer chaque critère.
+
+## Phase 9 : Concept V2, Lot 1 (sensations et lisibilité)
+
+Objectif : les cases du Lot 1 de `docs/conceptV2.md`. Les identifiants entre parenthèses renvoient à ce document.
+
+### 9.01 Vitesse de marche commune | T.BE
+
+Hors combat, le mage et ses unités avancent à la vitesse de la plus lente, sans accélération pour rattraper une place (MOV-01).
+
+### 9.02 Formation qui se déplace en bloc | T.BE
+
+Places attribuées une fois et redistribuées seulement quand la composition change. Petit déplacement : la formation se translate. Long déplacement dans une nouvelle direction : rotation progressive (MOV-02).
+
+### 9.03 Ralentissement selon la force | T.BE
+
+Malus logarithmique de la force brute, pour le mage et les unités, à la place du ralentissement par nombre d'unités (MOV-03).
+
+### 9.04 Civils plus lents qui se fatiguent | T.BE
+
+Vitesse de fuite plus basse, ralentissement après quelques secondes de fuite (MOV-04).
+
+### 9.05 Formations instantanées avec recharge | T.BE
+
+Changement immédiat, recharge affichée sur les boutons (MOV-05, UI-09).
+
+### 9.06 Abandon des proies trop faibles | T.BE
+
+Bots et PNJ hostiles lâchent une proie beaucoup plus faible au bout d'un temps qui baisse avec l'écart de force (MOV-06).
+
+### 9.07 Fin du cercle d'aggro | T.BE
+
+Le mage se déplace librement en bataille. L'état en bataille reste calculé (FIGHT-01).
+
+### 9.08 Fuite libre par distance | T.BE
+
+Le mage qui s'éloigne assez des ennemis engagés laisse sur place les unités au corps à corps, les autres le suivent. Suppression de la Retraite, du tunnel, de l'encerclement et de leurs messages. Bots adaptés (FIGHT-02).
+
+### 9.09 Retour rapide après la victoire | T.BE
+
+Une unité abandonnée revient vite vers son mage seulement quand son adversaire est mort (FIGHT-03).
+
+### 9.10 Mage plus fragile | T.BE
+
+PV de base et par niveau baissés, Lien d'âme réglé en conséquence (FIGHT-04).
+
+### 9.11 PV des entités dans les snapshots | T.BE
+
+Un octet de PV quantifié par corps, envoyé seulement quand il change (UI-01).
+
+### 9.12 Barres de PV permanentes | T.BE
+
+Petite barre sous chaque corps, plus grande pour les unités évoluées, verte pour les alliés et rouge pour les ennemis (UI-01).
+
+### 9.13 Contours de couleur | T.BE
+
+Vert sur les alliés, rouge sur les ennemis, jaune sur ce qui est utile (UI-02).
+
+### 9.14 Grande barre des boss | T.BE
+
+Barre en haut de l'écran avec le nom et les PV du boss (UI-03).
+
+### 9.15 Plaque des mages ennemis | T.BE
+
+Nom dans la couleur de l'armée, puissance actuelle et puissance si tout revit, barre de PV (UI-04).
+
+### 9.16 HUD en haut au centre | T.BE
+
+Niveau, barre d'expérience, PV du mage, puissance actuelle et si tout revit, indicateur de lenteur (UI-05).
+
+### 9.17 Minimap agrandie et rayon de détection | T.BE
+
+Minimap plus grande, mages ennemis visibles seulement dans un rayon qui grandit avec la puissance (UI-06).
+
+### 9.18 Caméra qui dézoome avec la puissance | T.BE
+
+Dézoom continu entre un minimum et un maximum, gestion d'intérêt élargie (UI-07).
+
+### 9.19 Mesures de débit et de fps | T.BE
+
+Test de charge et mesure côté client, résultats dans `docs/load-test.md` (TECH-01, TECH-02).
+
+## Phase 10 : Concept V2, Lot 2 (évolution permanente)
+
+Objectif : les cases du Lot 2 de `docs/conceptV2.md`.
+
+### 10.01 Config des arbres, des cartes et des dons | T.BE
+
+Schémas zod et registres : lignées, branches, paliers, ratio de fusion, dons et sorts (TECH-04).
+
+### 10.02 XP et level up à 3 cartes | T.BE
+
+Les âmes deviennent l'expérience. Chaque niveau propose 3 cartes tirées au hasard, pondérées par les lignées présentes (EVO-01, EVO-02).
+
+### 10.03 Branches exclusives et mutation de lignée | T.BE
+
+Prendre un palier ferme l'autre branche, la mutation s'applique à toute la lignée. Suppression du sacrifice et de la popup d'évolution (EVO-03, EVO-04).
+
+### 10.04 Fusion automatique | T.BE
+
+Les unités fusionnent seules selon le ratio, en gardant le meilleur équipement (EVO-04).
+
+### 10.05 Force en équivalent d'unités de base | T.BE
+
+Une unité vaut le nombre d'unités de base qu'elle représente, partout (EVO-05).
+
+### 10.06 Transfert recalculé et réanimation au même palier | T.BE
+
+Une unité reçue est convertie selon les mutations du receveur, une unité mutée se relève au même palier (EVO-06, EVO-07).
+
+### 10.07 Remise à zéro à la mort et plafond après fusion | T.BE
+
+Niveau, mutations et dons perdus à la mort, plafond compté après fusion (EVO-08, EVO-09).
+
+### 10.08 Dons passifs | T.BE
+
+Soin des troupes proches, réanimation plus rapide, Lien d'âme renforcé, vitesse du mage, vue, butin, PV du mage, fusion moins chère (EVO-10).
+
+### 10.09 Sort actif | T.BE
+
+Un emplacement de sort (Espace ou bouton) : nova nécrotique, cri de ralliement, mur d'os, relève immédiate (EVO-10).
+
+### 10.10 Arbres Zombies, Squelettes et Bêtes | T.BE
+
+Les 21 unités des trois lignées, avec des sprites empruntés aux unités existantes en attendant le Lot 3 (EVO-12 à EVO-14).
+
+### 10.11 Bots qui choisissent leurs cartes | T.BE
+
+Lignée majoritaire d'abord (EVO-11).
+
+### 10.12 Cartes de level up côté client | T.BE
+
+Trois cartes sans pause ni masquer le centre, en attente dans un coin pendant un combat (EVO-01).
+
+### 10.13 Sort actif et recharges à l'écran | T.BE
+
+Bouton et touche du sort, recharge visible (UI-09).
+
+### 10.14 Écran de fin de run | T.BE
+
+Statistiques de la vie après le screamer, puis Rejouer (UI-08).

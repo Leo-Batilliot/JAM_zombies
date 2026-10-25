@@ -4,8 +4,8 @@ import { slotOffsets } from "../../src/systems/formation.js";
 import { killMage } from "../../src/systems/mage.js";
 import { orderMove } from "../../src/systems/orders.js";
 import {
-  changeProgress,
   effectsOf,
+  formationCooldown,
   formationIndex,
   orderFormation,
 } from "../../src/systems/tactics.js";
@@ -15,21 +15,14 @@ import { createBench } from "../support/bench.js";
 const settle = (world: World, army: Army, id: string): void => {
   orderFormation(world, army, id);
   army.formation = id;
-  army.formationChange = undefined;
+  army.formationReadyAt = 0;
 };
 
 describe("formation changes", () => {
-  test("a new formation applies after the change delay", () => {
-    const { world, config, addArmy, step } = createBench((config) => {
-      config.formations.changeSec = 1;
-    });
+  test("a new formation applies at once", () => {
+    const { world, config, addArmy } = createBench();
     const army = addArmy(100, 100);
     expect(orderFormation(world, army, "phalanx")).toBe(true);
-    expect(army.formation).toBeUndefined();
-    expect(effectsOf(world, army)).toBe(config.formations.neutral);
-    step(config.network.tickRate / 2);
-    expect(changeProgress(world, army)).toBeCloseTo(0.5, 1);
-    step(config.network.tickRate / 2 + 1);
     expect(army.formation).toBe("phalanx");
     expect(formationIndex(world, army.formation)).toBe(1);
     expect(effectsOf(world, army)).toBe(
@@ -37,12 +30,18 @@ describe("formation changes", () => {
     );
   });
 
-  test("bonuses are lost during a change", () => {
-    const { world, config, addArmy } = createBench();
+  test("a cooldown prevents changing again right away", () => {
+    const { world, config, addArmy, step } = createBench((config) => {
+      config.formations.cooldownSec = 1;
+    });
     const army = addArmy(100, 100);
-    settle(world, army, "phalanx");
-    orderFormation(world, army, "swarm");
-    expect(effectsOf(world, army)).toBe(config.formations.neutral);
+    orderFormation(world, army, "phalanx");
+    expect(orderFormation(world, army, "swarm")).toBe(false);
+    step(config.network.tickRate / 2);
+    expect(formationCooldown(world, army)).toBeCloseTo(0.5, 1);
+    step(config.network.tickRate / 2 + 1);
+    expect(formationCooldown(world, army)).toBe(0);
+    expect(orderFormation(world, army, "swarm")).toBe(true);
   });
 
   test("an unknown or current formation is ignored", () => {
