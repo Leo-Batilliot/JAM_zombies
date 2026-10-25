@@ -177,6 +177,7 @@ export class CardPanel {
     readonly choose: (index: number) => void,
     readonly art: (sprite: string) => CardArt | undefined,
     readonly scale: () => number,
+    readonly lockMs: () => number,
   ) {
     this.element.className = "cards";
     this.element.hidden = true;
@@ -247,8 +248,11 @@ export class CardPanel {
       stats,
       description,
     );
+    button.disabled = true;
     button.addEventListener("click", () => {
-      this.choose(index);
+      if (!button.disabled) {
+        this.choose(index);
+      }
     });
     return button;
   }
@@ -258,9 +262,15 @@ export class CardPanel {
     if (!sameCards(cards, this.#cards)) {
       this.#cards = cards;
       this.#open = cards.length > 0;
-      this.#list.replaceChildren(
-        ...cards.map((card, index) => this.#card(card, index, content)),
+      const buttons = cards.map((card, index) =>
+        this.#card(card, index, content),
       );
+      this.#list.replaceChildren(...buttons);
+      setTimeout(() => {
+        for (const button of buttons) {
+          button.disabled = false;
+        }
+      }, this.lockMs());
     }
     this.#refresh();
   }

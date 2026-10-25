@@ -206,6 +206,7 @@ const serverMessages: ServerMessage[] = [
           "unit-ghoul": { sprite: "unit-zombie-dog", scale: 1.1 },
         },
         cardArtScale: 2,
+        cardLockMs: 800,
         city: {
           tilePixels: 32,
           edge: "#141017",

@@ -778,3 +778,7 @@ Plus de civils, groupe de civils près du mage à chaque apparition, apparition 
 ### 14.04 Attaque magique du mage | L.BA
 
 Tir de base du mage sur le PNJ ciblé ou le plus proche, pour se relancer sans troupes.
+
+### 14.05 Cartes verrouillées un instant | L.BA
+
+Les nouvelles cartes de level up restent visibles mais incliquables pendant un court délai, pour éviter un clic de déplacement pris pour un choix.

@@ -784,6 +784,7 @@ export const clientSettingsSchema = z.strictObject({
     z.strictObject({ sprite: id, scale: z.number().positive() }),
   ),
   cardArtScale: z.number().positive(),
+  cardLockMs: z.int().nonnegative(),
   city: cityLookSchema,
   layerLook: z.strictObject({
     airLift: z.number().nonnegative(),

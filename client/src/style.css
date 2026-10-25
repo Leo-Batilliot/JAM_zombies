@@ -544,6 +544,11 @@ body.share p {
   transform: translateY(-0.15rem);
 }
 
+.cards .card:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
 .cards .card-gift {
   border-color: #6ad46a;
 }

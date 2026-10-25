@@ -4,6 +4,11 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Cartes de level up verrouillées un instant | 14.05 | L.BA
+
+- `client/src/cards.ts`, `client/src/style.css` : nouvelles cartes visibles mais grisées et non cliquables pendant le délai.
+- `client/src/game/game.ts`, `shared/src/config/schema.ts`, `shared/config/client.json` : délai `cardLockMs` (800 ms).
+
 ### Retours de jeu sur les Lots 3 et 4 | 14.01-14.04 | L.BA
 
 - `shared/config/world.json` : carte en forêt sans bâtiments ni remparts, 130 civils, apparitions espacées, pub *Winchester* dans la clairière.

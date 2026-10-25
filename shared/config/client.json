@@ -467,6 +467,7 @@
     }
   },
   "cardArtScale": 2,
+  "cardLockMs": 800,
   "city": {
     "tilePixels": 64,
     "edge": "#141017",

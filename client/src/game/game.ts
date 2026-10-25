@@ -126,6 +126,7 @@ export const startGame = async (
           },
           (sprite) => cardArt(atlas, config().client.spriteAliases, sprite),
           () => config().client.cardArtScale,
+          () => config().client.cardLockMs,
         ),
         spell: new SpellButton(
           ui,

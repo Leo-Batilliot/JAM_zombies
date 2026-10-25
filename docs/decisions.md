@@ -4,6 +4,13 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Cartes verrouillées 800 ms | L.BA
+
+- **Quoi** : à chaque nouveau tirage, les cartes s'affichent grisées et ne réagissent pas aux clics pendant `cardLockMs` (800 ms).
+- **Pourquoi** : retour de jeu, un clic de déplacement juste au moment du level up choisissait une carte par erreur.
+- **Impact** : aucun sur le serveur.
+- **Avis** : À vérifier. Délai à régler entre 500 et 1000 ms.
+
 ### Abandon de la ville pour une forêt | L.BA
 
 - **Quoi** : la carte est une forêt d'herbe avec des arbres bloquants épars, sans rues, bâtiments ni remparts. La grille de quartiers reste en interne pour placer les lieux, les repaires et les sources, devenus des clairières.
