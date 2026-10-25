@@ -4,6 +4,13 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Revamp du concept : V2 en différences, par lots | L.BA
+
+- **Quoi** : `docs/conceptV2.md` liste en cases à cocher tout ce qui change par rapport au concept V1, par thème et par lot de priorité. Choix principaux : vitesse constante et formation qui se déplace en bloc, ralentissement selon la force brute, fin du cercle d'aggro et de la Retraite au profit d'une fuite libre par distance, évolution permanente par level up à 3 cartes avec 5 lignées de 2 branches exclusives sur 3 paliers et fusion automatique des unités, tout perdu à la mort, contours vert, rouge et jaune, barres de PV permanentes, cité fortifiée maudite en pixel art d'environ 48 px sous une nuit éclairée, assets LPC, itch.io et générés, champions uniques au serveur.
+- **Pourquoi** : les retours de jeu pointent des déplacements chaotiques, des poursuites sans fin, une évolution peu engageante, un visuel incohérent et des troupes difficiles à reconnaître. L'objectif est plus de constance dans la qualité et moins de répétition dans le contenu.
+- **Impact** : le concept V1 reste valable pour tout ce que la V2 ne cite pas. Les listes de contenu sont une base ouverte à de nouvelles idées. Les étapes recevront un numéro `X.YY` dans `docs/plan.md` (phase 9 et suivantes) quand l'équipe les prendra.
+- **Avis** : À vérifier. Les valeurs marquées comme telles dans la V2 sont à régler en jeu, et le coût réseau et rendu des barres de PV, du dézoom et des contours est à mesurer.
+
 ### Lobbys multiples ouverts à la demande | G.WI
 
 - **Quoi** : un joueur entre dans le premier lobby qui peut l'accueillir (place libre ou bot à remplacer). Si aucun ne le peut, un nouveau lobby s'ouvre, avec son monde, sa boucle de tick et ses bots, jusqu'au maximum de `lobby.json` (3). Au-delà, le joueur est refusé. Un jeton de reprise ramène le joueur dans son lobby. Un lobby autre que le premier se ferme dès qu'il n'a plus de joueur connecté ni en délai de grâce.

@@ -2,6 +2,8 @@
 
 > Nom provisoire. Jeu multijoueur en ligne (.io) jouable sur navigateur, PC et téléphone.
 > Thème de la JAM : les zombies.
+>
+> Le revamp de `docs/conceptV2.md` prime sur les sections qu'il remplace.
 
 ---
 
