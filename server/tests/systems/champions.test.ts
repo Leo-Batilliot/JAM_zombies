@@ -60,7 +60,7 @@ describe("champions", () => {
     expect(championExists(world, "executioner")).toBe(false);
     expect(
       [...world.points].every((point) =>
-        (point.corpses ?? []).every((corpse) => corpse.type !== "executioner"),
+        point.corpses.every((corpse) => corpse.type !== "executioner"),
       ),
     ).toBe(true);
     maintainPlaces(world);
