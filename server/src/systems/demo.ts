@@ -1,5 +1,6 @@
 import { DemoCommand } from "@horde/shared";
 import type { Army, World } from "../world/world.js";
+import { enlistNearMage } from "./enlist.js";
 import { startEvent } from "./events.js";
 import { killMage } from "./mage.js";
 
@@ -27,13 +28,10 @@ export const runDemo = (
       );
       break;
     }
-    case DemoCommand.Units: {
-      const { raiseRadius } = world.config.gameplay.reanimation;
+    case DemoCommand.Units:
       for (let index = 0; index < demo.unitCount; index++) {
-        const { x, y } = world.randomNear(mage.x, mage.y, raiseRadius);
-        world.addUnit(army, demo.unit, x, y).raisedAt = world.time;
+        enlistNearMage(world, army, { type: demo.unit, item: undefined });
       }
       break;
-    }
   }
 };

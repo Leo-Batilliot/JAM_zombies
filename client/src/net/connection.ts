@@ -72,6 +72,7 @@ export class Connection {
   onStatus: (status: Status) => void = () => undefined;
   onEventStarted: (start: EventStart) => void = () => undefined;
   onEventEnded: (end: EventEnd) => void = () => undefined;
+  onLoot: (item: number) => void = () => undefined;
 
   constructor(
     readonly socket: WebSocket,
@@ -144,6 +145,9 @@ export const join = (name: string): Promise<Connection> =>
           break;
         case ServerMessageType.EventEnded:
           connection?.onEventEnded(message);
+          break;
+        case ServerMessageType.Loot:
+          connection?.onLoot(message.item);
           break;
       }
     });

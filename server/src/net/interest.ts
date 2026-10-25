@@ -1,11 +1,14 @@
 import {
   EntityFlag,
   EntityKind,
+  maxFlagLevel,
   neutralArmy,
-  sizeFlags,
+  levelFlags,
+  type Registries,
   type SnapshotEntity,
 } from "@horde/shared";
-import type { Army, Entity, World } from "../world/world.js";
+import { corpseDelay } from "../systems/reanimation.js";
+import type { Army, Cross, Entity, Unit, World } from "../world/world.js";
 
 export interface View {
   width: number;
@@ -23,6 +26,8 @@ const typeIndex = (world: World, entity: Entity): number => {
       return world.registries.npcs.index(entity.type);
     case EntityKind.PointOfInterest:
       return world.registries.pointsOfInterest.index(entity.type);
+    case EntityKind.Cross:
+      return 0;
   }
 };
 
@@ -35,8 +40,39 @@ const armySlot = (entity: Entity): number => {
       return entity.owner.slot;
     case EntityKind.Npc:
     case EntityKind.PointOfInterest:
+    case EntityKind.Cross:
       return neutralArmy;
   }
+};
+
+const itemSlots = new WeakMap<Registries["items"], Map<string, number>>();
+
+const slotsOf = (items: Registries["items"]): Map<string, number> => {
+  let slots = itemSlots.get(items);
+  if (slots === undefined) {
+    const perCategory = new Map<string, number>();
+    slots = new Map();
+    for (const [id, { category }] of items.entries()) {
+      const slot = (perCategory.get(category) ?? 0) + 1;
+      perCategory.set(category, slot);
+      slots.set(id, slot);
+    }
+    itemSlots.set(items, slots);
+  }
+  return slots;
+};
+
+const itemSlot = (world: World, unit: Unit): number =>
+  unit.item === undefined
+    ? 0
+    : (slotsOf(world.registries.items).get(unit.item) ?? 0);
+
+const crossCharge = (world: World, cross: Cross): number => {
+  const { rechargeSec } = world.config.world.crosses;
+  const left = cross.readyAt - world.time;
+  return left <= 0 || rechargeSec <= 0
+    ? maxFlagLevel
+    : Math.floor((1 - left / rechargeSec) * maxFlagLevel);
 };
 
 const flags = (world: World, entity: Entity, viewer: Army): number => {
@@ -48,11 +84,11 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
         world.config.gameplay.reanimation.riseSec
           ? EntityFlag.Rising
           : 0) |
-        (entity.group === undefined ? 0 : EntityFlag.Abandoned)
+        (entity.group === undefined ? 0 : EntityFlag.Abandoned) |
+        levelFlags(itemSlot(world, entity))
       );
     case EntityKind.Corpse:
-      return world.time - entity.diedAt >=
-        world.config.gameplay.reanimation.delaySec
+      return world.time - entity.diedAt >= corpseDelay(world, entity)
         ? EntityFlag.Waiting
         : 0;
     case EntityKind.Npc:
@@ -60,8 +96,10 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
     case EntityKind.PointOfInterest:
       return (
         (entity.searchedBy.has(viewer) ? EntityFlag.Searched : 0) |
-        sizeFlags(Math.log2(Math.max(1, entity.corpses.length)))
+        levelFlags(Math.log2(Math.max(1, entity.corpses.length)))
       );
+    case EntityKind.Cross:
+      return levelFlags(crossCharge(world, entity));
     default:
       return 0;
   }

@@ -12,6 +12,14 @@ const world = {
     ],
     fixed: [{ sprite: "decor-pub", x: 40, y: 30 }],
   },
+  crosses: {
+    count: 0,
+    radius: 6,
+    threshold: 40,
+    rechargeSec: 60,
+    spacing: 50,
+    lifetimeSec: { min: 480, max: 720 },
+  },
 };
 
 describe("placeDecor", () => {

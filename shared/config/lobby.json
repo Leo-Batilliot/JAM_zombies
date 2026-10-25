@@ -33,7 +33,8 @@
     "attackRatio": 0.7,
     "fleeRatio": 1.3,
     "avoidSectorDeg": 120,
-    "fleeDistance": 30
+    "fleeDistance": 30,
+    "crossMargin": 3
   },
   "leaderboard": {
     "intervalSec": 1,

@@ -141,7 +141,7 @@ describe("soul link", () => {
 });
 
 describe("mage death hand-over", () => {
-  const typesInGraves = (world: { points: Set<{ corpses: string[] }> }) =>
+  const typesInGraves = (world: { points: Set<{ corpses: unknown[] }> }) =>
     [...world.points].flatMap((point) => point.corpses);
 
   test("the killer gets the configured share, the rest forms a mass grave", () => {

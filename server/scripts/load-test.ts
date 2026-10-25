@@ -25,6 +25,7 @@ interface Options {
   warmup: number;
   viewWidth: number;
   viewHeight: number;
+  bots: boolean;
 }
 
 interface ClientReport {
@@ -40,9 +41,10 @@ const readOptions = (): Options => {
       seconds: { type: "string" },
       warmup: { type: "string" },
       view: { type: "string" },
+      bots: { type: "boolean" },
     },
   });
-  const number = (name: keyof typeof values): number => {
+  const number = (name: Exclude<keyof typeof values, "bots">): number => {
     const value = Number(values[name]);
     if (!Number.isFinite(value) || value <= 0) {
       throw new Error(`Missing or invalid --${name}`);
@@ -60,6 +62,7 @@ const readOptions = (): Options => {
     warmup: number("warmup"),
     viewWidth,
     viewHeight,
+    bots: values.bots ?? false,
   };
 };
 
@@ -130,7 +133,9 @@ const wait = (seconds: number): Promise<void> =>
 const runServer = async (options: Options): Promise<void> => {
   const env = loadEnv();
   const config = loadConfig(env.CONFIG_DIR);
-  config.lobby.minParticipants = 0;
+  if (!options.bots) {
+    config.lobby.minParticipants = 0;
+  }
   config.lobby.maxParticipants = Math.max(
     config.lobby.maxParticipants,
     options.participants,
@@ -190,14 +195,16 @@ const runServer = async (options: Options): Promise<void> => {
   loop.stop();
 
   let units = 0;
+  let bots = 0;
   for (const army of world.armies.values()) {
     units += army.units.size;
+    bots += army.bot === undefined ? 0 : 1;
   }
   const perClient = report.bytes.map((total) => total / options.seconds / 1024);
   const budgetMs = 1000 / config.network.tickRate;
   console.info(
     [
-      `Participants: ${String(world.armies.size)}, units at the end: ${String(units)}, entities: ${String(world.entities.size)}`,
+      `Participants: ${String(world.armies.size)} (${String(bots)} bots), units at the end: ${String(units)}, entities: ${String(world.entities.size)}`,
       `View: ${String(options.viewWidth)} x ${String(options.viewHeight)} m, measured over ${String(options.seconds)} s`,
       `Tick: average ${(loop.stats.totalMs / loop.stats.ticks).toFixed(2)} ms, p95 ${percentile(tickTimes, 0.95).toFixed(2)} ms, max ${loop.stats.maxMs.toFixed(2)} ms (budget ${budgetMs.toFixed(1)} ms)`,
       `Throughput per client: average ${(perClient.reduce((a, b) => a + b, 0) / perClient.length).toFixed(1)} KB/s, max ${Math.max(...perClient).toFixed(1)} KB/s`,

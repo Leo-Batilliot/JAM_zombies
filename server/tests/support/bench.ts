@@ -25,6 +25,10 @@ export const createBench = (
 ): Bench => {
   const config = loadConfig(sharedConfigDir);
   config.world.populations = [];
+  for (const point of Object.values(config.world.pointsOfInterest)) {
+    point.count = 0;
+  }
+  config.world.crosses.count = 0;
   config.lobby.minParticipants = 0;
   patch(config);
   const world = new World(config, buildRegistries(config), seededRandom(seed));

@@ -11,7 +11,18 @@
       "summonCount": 3,
       "maxMinions": 9,
       "summonRadius": 5,
-      "rewardSouls": 200
+      "rewardSouls": 200,
+      "rewardLoot": [
+        {
+          "item": "shovel",
+          "weight": 60
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 40
+        }
+      ],
+      "rewardLegendary": "chainsaw"
     }
   }
 }

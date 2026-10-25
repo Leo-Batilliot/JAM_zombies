@@ -1,6 +1,8 @@
 import type { Config } from "@horde/shared";
-import type { Army, PointOfInterest, World } from "../world/world.js";
+import type { Army, PointOfInterest, Remains, World } from "../world/world.js";
 import { distance } from "./bodies.js";
+import { enlistNearMage } from "./enlist.js";
+import { drawLoot, grantItem } from "./equipment.js";
 
 type PointType = Config["world"]["pointsOfInterest"][string];
 
@@ -25,7 +27,7 @@ export const createMassGrave = (
   world: World,
   x: number,
   y: number,
-  corpses: string[],
+  corpses: Remains[],
 ): PointOfInterest | undefined => {
   if (corpses.length === 0) {
     return undefined;
@@ -40,12 +42,17 @@ const rewards: Record<
   (world: World, point: PointOfInterest, army: Army) => void
 > = {
   corpses: (world, point, army) => {
-    const { raiseRadius } = world.config.gameplay.reanimation;
-    for (const type of point.corpses) {
-      const { x, y } = world.randomNear(army.mage.x, army.mage.y, raiseRadius);
-      world.addUnit(army, type, x, y).raisedAt = world.time;
+    for (const remains of point.corpses) {
+      enlistNearMage(world, army, remains);
     }
     world.removeEntity(point);
+  },
+  items: (world, point, army) => {
+    const { loot } = world.registries.pointsOfInterest.get(point.type);
+    const item = loot === undefined ? undefined : drawLoot(world, loot);
+    if (item !== undefined) {
+      grantItem(world, army, item);
+    }
   },
 };
 

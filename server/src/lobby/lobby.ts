@@ -40,10 +40,10 @@ const botName = (world: World): string => {
 };
 
 const removeBot = (world: World, army: Army): void => {
-  const corpses = [
-    ...[...army.units].map((unit) => unit.type),
-    ...[...army.corpses].map((corpse) => corpse.type),
-  ];
+  const corpses = [...army.units, ...army.corpses].map(({ type, item }) => ({
+    type,
+    item,
+  }));
   const { x, y } = army.mage;
   world.removeArmy(army);
   createMassGrave(world, x, y, corpses);

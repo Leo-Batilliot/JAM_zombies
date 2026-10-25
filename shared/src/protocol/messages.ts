@@ -31,6 +31,7 @@ export enum ServerMessageType {
   Status,
   EventStarted,
   EventEnded,
+  Loot,
 }
 
 export enum DemoCommand {
@@ -45,6 +46,7 @@ export enum EntityKind {
   Npc,
   Corpse,
   PointOfInterest,
+  Cross,
 }
 
 export enum EntityFlag {
@@ -55,13 +57,13 @@ export enum EntityFlag {
   Abandoned = 16,
 }
 
-export const sizeShift = 5;
-export const maxSizeLevel = 7;
+export const levelShift = 5;
+export const maxFlagLevel = 7;
 
-export const sizeFlags = (level: number): number =>
-  Math.min(Math.max(Math.floor(level), 0), maxSizeLevel) << sizeShift;
+export const levelFlags = (level: number): number =>
+  Math.min(Math.max(Math.floor(level), 0), maxFlagLevel) << levelShift;
 
-export const sizeLevel = (flags: number): number => flags >> sizeShift;
+export const flagLevel = (flags: number): number => flags >> levelShift;
 
 export enum BattleFlag {
   InBattle = 1,
@@ -115,6 +117,16 @@ export interface LeaderboardEntry {
   strength: number;
 }
 
+export interface UnitCount {
+  type: number;
+  count: number;
+}
+
+export interface CrossStrength {
+  id: number;
+  strength: number;
+}
+
 export interface Status {
   army: number;
   hp: number;
@@ -124,7 +136,10 @@ export interface Status {
   units: number;
   strength: number;
   battle: number;
+  search: number;
   circles: AggroCircle[];
+  counts: UnitCount[];
+  crosses: CrossStrength[];
 }
 
 export type ServerMessage =
@@ -157,11 +172,13 @@ export type ServerMessage =
       event: number;
       defeated: boolean;
       souls: number;
-    };
+    }
+  | { type: ServerMessageType.Loot; item: number };
 
 const snapshotEntityBytes = 12;
 const snapshotUpdateBytes = 9;
 const radiusSteps = 100;
+const searchSteps = 0xff;
 
 const readEnum = <T extends number>(
   value: number,
@@ -346,10 +363,21 @@ export const encodeServerMessage = (
       return writer.finish();
     }
     case ServerMessageType.Status: {
-      if (message.circles.length > 0xff) {
-        throw new ProtocolError("Too many aggro circles");
+      if (
+        Math.max(
+          message.circles.length,
+          message.counts.length,
+          message.crosses.length,
+        ) > 0xff
+      ) {
+        throw new ProtocolError("Too many status entries");
       }
-      const writer = new ByteWriter(24 + message.circles.length * 6)
+      const writer = new ByteWriter(
+        27 +
+          message.circles.length * 6 +
+          message.counts.length * 3 +
+          message.crosses.length * 6,
+      )
         .uint8(message.type)
         .uint8(message.army)
         .uint32(Math.ceil(Math.max(message.hp, 0)))
@@ -359,12 +387,23 @@ export const encodeServerMessage = (
         .uint16(message.units)
         .uint32(message.strength)
         .uint8(message.battle)
+        .uint8(
+          Math.round(Math.min(Math.max(message.search, 0), 1) * searchSteps),
+        )
         .uint8(message.circles.length);
       for (const circle of message.circles) {
         writer
           .uint16(quantizeX(circle.x, bounds))
           .uint16(quantizeY(circle.y, bounds))
           .uint16(Math.min(Math.round(circle.radius * radiusSteps), 0xffff));
+      }
+      writer.uint8(message.counts.length);
+      for (const entry of message.counts) {
+        writer.uint8(entry.type).uint16(Math.min(entry.count, 0xffff));
+      }
+      writer.uint8(message.crosses.length);
+      for (const entry of message.crosses) {
+        writer.uint32(entry.id).uint16(Math.min(entry.strength, 0xffff));
       }
       return writer.finish();
     }
@@ -382,6 +421,8 @@ export const encodeServerMessage = (
         .uint8(message.defeated ? 1 : 0)
         .uint32(Math.floor(message.souls))
         .finish();
+    case ServerMessageType.Loot:
+      return new ByteWriter(2).uint8(message.type).uint8(message.item).finish();
   }
 };
 
@@ -482,6 +523,7 @@ export const decodeServerMessage = (
         units: reader.uint16(),
         strength: reader.uint32(),
         battle: reader.uint8(),
+        search: reader.uint8() / searchSteps,
       };
       const circles: AggroCircle[] = [];
       const circleCount = reader.uint8();
@@ -492,7 +534,17 @@ export const decodeServerMessage = (
           radius: reader.uint16() / radiusSteps,
         });
       }
-      message = { type, ...fields, circles };
+      const counts: UnitCount[] = [];
+      const countCount = reader.uint8();
+      for (let index = 0; index < countCount; index++) {
+        counts.push({ type: reader.uint8(), count: reader.uint16() });
+      }
+      const crosses: CrossStrength[] = [];
+      const crossCount = reader.uint8();
+      for (let index = 0; index < crossCount; index++) {
+        crosses.push({ id: reader.uint32(), strength: reader.uint16() });
+      }
+      message = { type, ...fields, circles, counts, crosses };
       break;
     }
     case ServerMessageType.EventStarted: {
@@ -512,6 +564,9 @@ export const decodeServerMessage = (
         defeated: reader.uint8() !== 0,
         souls: reader.uint32(),
       };
+      break;
+    case ServerMessageType.Loot:
+      message = { type, item: reader.uint8() };
       break;
   }
   reader.end();

@@ -4,6 +4,104 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Jalon MVP mesuré côté serveur, test sur téléphone à part | L.BA
+
+- **Quoi** : l'étape 5.13 se limite au test de charge à 4 joueurs et 8 bots, avec la nouvelle option `--bots` du script. La partie sur téléphone via le tunnel devient l'étape 5.14.
+- **Pourquoi** : la mesure serveur peut se faire seul et tout de suite, la partie sur téléphone demande l'équipe et le tunnel.
+- **Impact** : les fps sur téléphone restent à mesurer. Les résultats serveur sont dans `docs/load-test.md`.
+- **Avis** : Reportée. Le test sur téléphone se fait en 5.14.
+
+### Bots qui évoluent et contournent les croix | L.BA
+
+- **Quoi** : hors bataille, un bot fait l'évolution la plus chère qu'il peut payer dès qu'il réfléchit. Avant chaque déplacement, si la force totale de son armée atteint le seuil des croix, il remplace sa destination par un point sur le côté de la première croix prête que son chemin traverse, à la distance du rayon plus la marge de `lobby.json` (3 m). Le pillage des voitures et des coffres passe par la recherche de points d'intérêt existante.
+- **Pourquoi** : mêmes commandes qu'un joueur, et un détour recalculé à chaque réflexion suffit sans pathfinding.
+- **Impact** : une croix en recharge ne gêne pas les bots. Une proie réfugiée dans une croix reste hors de portée d'un gros bot.
+- **Avis** : À vérifier. Le détour ne garantit pas que les unités en formation ne mordent pas sur la zone.
+
+### Croix sacrées placées au hasard et déplacées rarement | L.BA
+
+- **Quoi** : 8 croix de 6 m de rayon, placées au hasard en s'écartant des autres croix (60 m visés), avec une durée de vie de 8 à 12 min. Une croix ne change de place qu'une fois sa durée écoulée et sa recharge finie. À chaque tick, la force de chaque armée dans la zone est recalculée. Une armée qui atteint le seuil (40) perd toutes ses unités dans la zone, mage épargné, et la croix se recharge 1 min. Si plusieurs armées atteignent le seuil au même tick, toutes sont frappées.
+- **Pourquoi** : le concept demande des zones qui changent rarement de place. Le calcul par tick reste léger avec une requête de rayon par croix.
+- **Impact** : les unités tuées laissent des cadavres marqués, qui se relèvent après le délai de croix de `gameplay.json` (60 s) au lieu de 30 s, sans tueur donc sans transfert. Une croix est un nouveau genre d'entité.
+- **Avis** : À vérifier. Nombre, rayon, seuil et durée de vie à équilibrer en jeu.
+
+### Recharge des croix et force du joueur dans les croix | L.BA
+
+- **Quoi** : les 3 bits de niveau des drapeaux d'une croix donnent sa recharge (7 quand elle est prête). La force du joueur dans chaque croix où il a des unités est envoyée dans l'état du joueur. Le client dessine la zone en or quand elle est prête, en gris avec un arc de progression pendant la recharge, et « force / seuil » au-dessus.
+- **Pourquoi** : la force dans une croix est propre à chaque joueur, elle n'a pas sa place dans le snapshot commun.
+- **Impact** : le rayon et le seuil sont envoyés dans la config du client.
+- **Avis** : Validée.
+
+### Plafond de 150 pour toute arrivée dans l'armée | L.BA
+
+- **Quoi** : toute unité qui rejoindrait une armée déjà à 150 unités (relève, infection, charnier, mode démo, unités vivantes reçues à la mort d'un mage) est convertie en âmes, à raison de sa force multipliée par `perStrength`. Son objet va dans l'inventaire.
+- **Pourquoi** : un seul passage pour toutes les arrivées évite que le plafond fuie. Le concept ne parlait que des cadavres.
+- **Impact** : `concept.md` §6.4 mis à jour. Les évolutions ne passent pas par le plafond, elles réduisent le nombre d'unités.
+- **Avis** : À vérifier. À confirmer en jeu avec de grosses armées.
+
+### Ralentissement linéaire de toute l'armée | L.BA
+
+- **Quoi** : de 60 à 150 unités, la vitesse du mage et de ses unités baisse linéairement jusqu'à 35 %, retour accéléré compris.
+- **Pourquoi** : ralentir seulement le mage laisserait l'armée filer devant lui, ralentir seulement les unités la laisserait derrière.
+- **Impact** : les unités abandonnées comptent dans le total et ralentissent aussi.
+- **Avis** : À vérifier. Seuils et pénalité à équilibrer en jeu.
+
+### Évolution par sacrifice des unités les plus proches | L.BA
+
+- **Quoi** : l'ordre d'évolution donne le type visé. Le serveur trouve le type de base qui y mène, prend les unités de ce type les plus proches du mage, hors unités abandonnées, et les remplace par une seule unité à leur barycentre, avec l'animation de relève. L'évolution est possible en bataille. L'unité obtenue garde le meilleur objet compatible des unités sacrifiées, les autres retournent à l'inventaire.
+- **Pourquoi** : les unités proches du mage sont celles qui ne sont pas au contact, et une évolution ne doit pas vider un groupe abandonné.
+- **Impact** : le gros zombie (force 5, 180 PV, 20 de dégâts) est le premier type obtenu par évolution.
+- **Avis** : À vérifier. Statistiques du gros zombie et évolution en bataille à confirmer en jeu.
+
+### Popup d'évolution à partir des compteurs du serveur | L.BA
+
+- **Quoi** : l'état du joueur contient le nombre d'unités de chaque type qui a une évolution, hors unités abandonnées. Le client affiche à droite, au-dessus du bouton Retraite, un bouton par évolution payable. La config du client donne le nom et les évolutions de chaque type d'unité.
+- **Pourquoi** : le client ne voit que les unités dans sa vue, il ne peut pas compter toute son armée.
+- **Impact** : la popup complète de 6.09 (progression des évolutions grisées) pourra s'appuyer sur les mêmes compteurs.
+- **Avis** : Validée.
+
+### Objet porté dans les 3 bits de niveau des drapeaux | L.BA
+
+- **Quoi** : les 3 bits hauts des drapeaux deviennent un niveau dont le sens dépend du genre : taille pour un point d'intérêt, recharge pour une croix, objet porté pour une unité. Pour une unité, c'est la position de l'objet parmi ceux de sa catégorie, plus un (0 sans objet). Le registre refuse plus de 7 objets par catégorie.
+- **Pourquoi** : aucun octet de plus dans le snapshot, et 3 objets par lignée sont prévus.
+- **Impact** : complète la décision « Taille du charnier sur une échelle logarithmique ». Un changement d'objet passe par une mise à jour de 9 octets.
+- **Avis** : Validée.
+
+### Message de butin et barre de fouille | L.BA
+
+- **Quoi** : chaque objet gagné pendant un tick (voiture, coffre, boss) est envoyé au joueur dans un message séparé, affiché « Found: X » en haut au centre. La progression de la fouille en cours est envoyée dans l'état du joueur et dessinée en barre au-dessus du mage.
+- **Pourquoi** : le butin est un événement ponctuel comme la mort du mage, la fouille change à chaque tick.
+- **Impact** : les objets rendus à l'inventaire par une évolution ou le plafond ne sont pas annoncés.
+- **Avis** : Validée.
+
+### Butin de la citrouille en équipement | L.BA
+
+- **Quoi** : à la mort du boss, chaque armée vivante qui a contribué reçoit un objet tiré dans la table de `events.json` (pelle ou batte), puis une seule d'entre elles reçoit l'objet légendaire (tronçonneuse), tirée au sort selon sa contribution relative.
+- **Pourquoi** : tous les participants repartent avec quelque chose, et la récompense rare suit la règle de contribution relative du concept.
+- **Impact** : un contributeur mort au moment de la victoire ne reçoit pas d'objet, mais garde sa part d'âmes.
+- **Avis** : À vérifier. Table et poids à équilibrer en jeu.
+
+### Voitures et coffres au butin individuel | L.BA
+
+- **Quoi** : nouveau type de récompense `items` : la fouille donne un objet tiré dans la table pondérée du point d'intérêt (voiture : pelle 70, batte 30, coffre : batte 85, tronçonneuse 15). Le point reste en place et chaque armée peut le fouiller une fois.
+- **Pourquoi** : c'est le butin individuel du concept, à la différence du charnier.
+- **Impact** : 10 voitures et 5 coffres sur la carte. Le banc de test met à zéro le nombre de points d'intérêt et de croix, chaque test ajoute ce dont il a besoin.
+- **Avis** : À vérifier. Nombre et tables à équilibrer en jeu.
+
+### Équipement par catégorie, auto-équipé depuis l'inventaire | L.BA
+
+- **Quoi** : chaque objet a une catégorie, une rareté (ordre de `rarities`) et un bonus de dégâts. Chaque type d'unité indique sa catégorie. Un objet gagné va dans l'inventaire du mage, qui équipe à chaque tick l'unité compatible la plus forte sans objet, hors unités abandonnées, en commençant par le meilleur objet. L'objet suit l'unité à sa mort, à sa relève, au changement de camp et dans un charnier. L'inventaire est perdu à la mort du mage.
+- **Pourquoi** : un objet qui attend dans l'inventaire équipe tout seul la prochaine unité, sans interface à ajouter.
+- **Impact** : seul le bonus de dégâts existe. Les casques (6.04) et colliers (7.02) ajouteront leurs bonus.
+- **Avis** : Validée.
+
+### Sprites de la phase 5 générés | L.BA
+
+- **Quoi** : le gros zombie (zombie agrandi et assombri), les armes, la voiture, le coffre et la croix sont dessinés par un script jetable et ajoutés à l'atlas existant.
+- **Pourquoi** : même démarche que les sprites provisoires des phases précédentes.
+- **Impact** : l'atlas passe à 48 sprites dans une texture de 512 x 256.
+- **Avis** : Provisoire. À remplacer avec les vrais sprites.
+
 ### Taille du charnier sur une échelle logarithmique | A.PI
 
 - **Quoi** : le serveur envoie pour chaque point d'intérêt un niveau de taille égal au logarithme en base 2 de son nombre de cadavres, de 0 à 7, dans les 3 bits libres des drapeaux. Le client agrandit le sprite de 25 % par niveau : 1 cadavre au niveau 0, 2 à 3 au niveau 1, 45 (le charnier d'une armée pleine) au niveau 5, 128 et plus au niveau 7, soit 2,75 fois la taille de base.

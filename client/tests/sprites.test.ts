@@ -1,8 +1,9 @@
 import { describe, expect, test } from "vitest";
-import { EntityKind } from "@horde/shared";
+import { EntityKind, levelFlags } from "@horde/shared";
 import {
   animationFrames,
   armyColor,
+  gearName,
   frameAt,
   spriteName,
 } from "../src/game/sprites.js";
@@ -41,7 +42,11 @@ describe("frameAt", () => {
 
 describe("spriteName", () => {
   const content = {
-    units: ["zombie", "fat-zombie"],
+    units: [
+      { id: "zombie", name: "Zombie", evolutions: [] },
+      { id: "fat-zombie", name: "Fat zombie", evolutions: [] },
+    ],
+    items: [],
     npcs: ["civilian"],
     pointsOfInterest: ["mass-grave"],
     events: [],
@@ -73,6 +78,40 @@ describe("spriteName", () => {
     expect(spriteName({ ...entity, kind: EntityKind.Mage }, content)).toBe(
       "mage",
     );
+  });
+});
+
+describe("gearName", () => {
+  const content = {
+    units: [
+      { id: "zombie", name: "Zombie", equipment: "melee", evolutions: [] },
+      { id: "archer", name: "Archer", equipment: "helmet", evolutions: [] },
+    ],
+    items: [
+      { id: "shovel", name: "Shovel", category: "melee" },
+      { id: "cap", name: "Cap", category: "helmet" },
+      { id: "bat", name: "Bat", category: "melee" },
+    ],
+    npcs: [],
+    pointsOfInterest: [],
+    events: [],
+  };
+  const unit = { id: 1, kind: EntityKind.Unit, army: 1, x: 0, y: 0 };
+
+  test("finds the item from its slot in the unit category", () => {
+    expect(gearName({ ...unit, type: 0, flags: levelFlags(2) }, content)).toBe(
+      "item-bat",
+    );
+    expect(gearName({ ...unit, type: 1, flags: levelFlags(1) }, content)).toBe(
+      "item-cap",
+    );
+  });
+
+  test("gives nothing without an item", () => {
+    expect(gearName({ ...unit, type: 0, flags: 0 }, content)).toBeUndefined();
+    expect(
+      gearName({ ...unit, type: 0, flags: levelFlags(3) }, content),
+    ).toBeUndefined();
   });
 });
 

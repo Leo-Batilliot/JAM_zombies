@@ -1,6 +1,7 @@
 import { EntityKind } from "@horde/shared";
 import type { Army, Mage, Npc, Unit, World } from "../world/world.js";
 import { eventNpcKilled, recordContribution } from "./events.js";
+import { enlist } from "./enlist.js";
 import { damageMage, nearestGuard } from "./mage.js";
 import { grantSouls } from "./souls.js";
 
@@ -26,6 +27,7 @@ export const kill = (
   world: World,
   victim: Unit | Npc,
   killer: Army | undefined,
+  sacred = false,
 ): void => {
   const { strength, owner, raisedAs, infects } = victimProfile(world, victim);
   if (killer !== undefined) {
@@ -43,7 +45,13 @@ export const kill = (
     return;
   }
   if (infects && killer !== undefined) {
-    world.addUnit(killer, raisedAs, victim.x, victim.y).raisedAt = world.time;
+    enlist(
+      world,
+      killer,
+      { type: raisedAs, item: undefined },
+      victim.x,
+      victim.y,
+    );
     return;
   }
   const corpseOwner = owner ?? killer;
@@ -56,7 +64,9 @@ export const kill = (
     killer,
     victim.x,
     victim.y,
+    victim.kind === EntityKind.Unit ? victim.item : undefined,
   );
+  corpse.sacred = sacred;
   if (victim.kind === EntityKind.Unit && victim.group !== undefined) {
     corpse.group = victim.group;
     victim.group.corpses.add(corpse);

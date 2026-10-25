@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { EntityFlag, EntityKind, sizeLevel } from "@horde/shared";
+import { EntityFlag, EntityKind, flagLevel, maxFlagLevel } from "@horde/shared";
 import { visibleEntities } from "../../src/net/interest.js";
 import { createMassGrave } from "../../src/systems/points.js";
 import { createBench } from "../support/bench.js";
@@ -132,7 +132,10 @@ describe("mass grave size", () => {
         world,
         101,
         100,
-        new Array<string>(count).fill("zombie"),
+        Array.from({ length: count }, () => ({
+          type: "zombie",
+          item: undefined,
+        })),
       );
       const entity = visibleEntities(world, army, viewAround).find(
         (candidate) => candidate.id === grave?.id,
@@ -140,11 +143,51 @@ describe("mass grave size", () => {
       if (grave !== undefined) {
         world.removeEntity(grave);
       }
-      return sizeLevel(entity?.flags ?? 0);
+      return flagLevel(entity?.flags ?? 0);
     };
     expect(level(1)).toBe(0);
     expect(level(3)).toBe(1);
     expect(level(45)).toBe(5);
     expect(level(1000)).toBe(7);
+  });
+});
+
+describe("sacred cross charge", () => {
+  test("is full when ready and grows during the recharge", () => {
+    const { world, addArmy } = createBench((config) => {
+      config.world.crosses.rechargeSec = 10;
+    });
+    const army = addArmy(100, 100);
+    const cross = world.addCross(102, 100, 600);
+    const charge = (): number =>
+      flagLevel(
+        visibleEntities(world, army, viewAround).find(
+          (entity) => entity.id === cross.id,
+        )?.flags ?? -1,
+      );
+    expect(charge()).toBe(maxFlagLevel);
+    cross.readyAt = world.time + 10;
+    expect(charge()).toBe(0);
+    cross.readyAt = world.time + 5;
+    expect(charge()).toBe(3);
+  });
+});
+
+describe("unit item", () => {
+  test("is sent as its slot within the unit category", () => {
+    const { world, addArmy } = createBench();
+    const army = addArmy(100, 100);
+    const unit = world.addUnit(army, "zombie", 101, 100);
+    const slot = (): number =>
+      flagLevel(
+        visibleEntities(world, army, viewAround).find(
+          (entity) => entity.id === unit.id,
+        )?.flags ?? -1,
+      );
+    expect(slot()).toBe(0);
+    unit.item = "cricket-bat";
+    expect(slot()).toBe(2);
+    unit.item = "laser";
+    expect(slot()).toBe(0);
   });
 });

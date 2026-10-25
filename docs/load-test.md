@@ -40,3 +40,25 @@ Phase 4, avec les snapshots en delta et les règles de bataille, deux passages e
 - Le débit passe sous les ~64 Ko/s visés, au pire comme en moyenne. Le gain vient surtout des entités immobiles (unités au repos, cadavres, points d'intérêt), qui ne sont plus renvoyées. La fréquence d'envoi n'a pas eu besoin d'être réduite.
 - Dans ce test, les mages ne bougent pas : seules les unités qui se battent changent de position. Une armée entière en marche coûte 9 octets par unité et par tick au lieu de 12, soit environ 75 % du débit de la phase 3 dans le pire cas. Le test ne mesure pas encore ce cas.
 - Les règles de bataille ajoutent environ 2 ms par tick, le budget de 50 ms reste large.
+
+## Résultats de la phase 5
+
+Machine : Intel Core i5-12450H, Node 24.21 (celle de la phase 2). Le script accepte maintenant `--bots`, qui garde le minimum du lobby : les joueurs du test remplacent des bots, qui bougent, se battent, pillent, font évoluer leurs troupes et contournent les croix.
+
+Jalon MVP, 4 joueurs et 8 bots, 150 unités par armée au départ, mesure sur 20 s après 3 s de chauffe :
+- vue téléphone (36 x 17 m) : tick de 8,0 ms en moyenne, 10,6 ms au 95e centile, 15,6 ms au pire, débit de 1,4 Ko/s en moyenne et 2,0 Ko/s au pire ;
+- vue PC (80 x 45 m) : tick de 10,9 ms en moyenne, 15,3 ms au 95e centile, 23,0 ms au pire, débit de 17,3 Ko/s en moyenne et 46,0 Ko/s au pire.
+
+40 participants sans bot, vue PC, mêmes paramètres que les phases précédentes :
+- phase 5 : tick de 37,4 ms en moyenne, 48,7 ms au 95e centile, 63,2 ms au pire, débit de 19,3 Ko/s en moyenne et 51,9 Ko/s au pire ;
+- version de `main` (phase 4) sur la même machine : tick de 37,2 ms en moyenne, 45,3 ms au 95e centile, 52,6 ms au pire, débit de 17,9 Ko/s en moyenne et 49,8 Ko/s au pire.
+
+Commande du jalon : `npx tsx --conditions=development --env-file-if-exists=../.env scripts/load-test.ts --participants 4 --bots --units 150 --seconds 20 --warmup 3 --view 36x17`, lancée depuis `server/`.
+
+## Conclusions de la phase 5
+
+- Le jalon MVP tient très largement dans le budget de 50 ms et sous les ~64 Ko/s, y compris en vue PC.
+- L'équipement, les croix et l'évolution ne changent pas le temps de tick à 40 participants : l'écart avec la phase 4 vient de la machine, plus lente que celle de la phase 4.
+- À 40 participants sur cette machine, le pire tick dépasse le budget. C'est déjà le cas en phase 4, à surveiller si le lobby se remplit.
+- Les fps sur téléphone ne sont pas mesurés ici : c'est l'étape 5.14.
+

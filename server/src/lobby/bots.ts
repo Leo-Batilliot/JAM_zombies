@@ -1,7 +1,14 @@
 import { EntityKind } from "@horde/shared";
 import { mainBodies } from "../systems/battle.js";
 import { distance } from "../systems/bodies.js";
-import { orderAttack, orderMove, orderRetreat } from "../systems/orders.js";
+import { isReady } from "../systems/crosses.js";
+import { evolvableCounts } from "../systems/evolution.js";
+import {
+  orderAttack,
+  orderEvolve,
+  orderMove,
+  orderRetreat,
+} from "../systems/orders.js";
 import { armyStrength, bodiesStrength } from "../systems/strength.js";
 import type {
   Army,
@@ -91,6 +98,80 @@ const weakerArmy = (world: World, army: Army): Army | undefined => {
   return best;
 };
 
+const closestOnPath = (
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+  point: { x: number; y: number },
+): { x: number; y: number } => {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const length = dx * dx + dy * dy;
+  const t =
+    length === 0
+      ? 0
+      : Math.min(
+          Math.max(
+            ((point.x - from.x) * dx + (point.y - from.y) * dy) / length,
+            0,
+          ),
+          1,
+        );
+  return { x: from.x + dx * t, y: from.y + dy * t };
+};
+
+export const detour = (
+  world: World,
+  army: Army,
+  x: number,
+  y: number,
+): { x: number; y: number } => {
+  const { radius, threshold } = world.config.world.crosses;
+  if (armyStrength(world, army) < threshold) {
+    return { x, y };
+  }
+  const reach = radius + world.config.lobby.bots.crossMargin;
+  const target = { x, y };
+  for (const cross of world.crosses) {
+    if (!isReady(world, cross)) {
+      continue;
+    }
+    const closest = closestOnPath(army.mage, target, cross);
+    const gap = Math.hypot(closest.x - cross.x, closest.y - cross.y);
+    if (gap >= reach) {
+      continue;
+    }
+    const dx = target.x - army.mage.x;
+    const dy = target.y - army.mage.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const side =
+      gap > 0
+        ? { x: (closest.x - cross.x) / gap, y: (closest.y - cross.y) / gap }
+        : { x: -dy / length, y: dx / length };
+    return {
+      x: world.clampX(cross.x + side.x * reach),
+      y: world.clampY(cross.y + side.y * reach),
+    };
+  }
+  return target;
+};
+
+const moveTo = (world: World, army: Army, x: number, y: number): void => {
+  const point = detour(world, army, x, y);
+  orderMove(world, army, point.x, point.y);
+};
+
+const bestEvolution = (world: World, army: Army): string | undefined => {
+  let best: { into: string; cost: number } | undefined;
+  for (const [type, count] of evolvableCounts(world, army)) {
+    for (const evolution of world.registries.units.get(type).evolutions) {
+      if (evolution.cost <= count && evolution.cost > (best?.cost ?? 0)) {
+        best = evolution;
+      }
+    }
+  }
+  return best?.into;
+};
+
 const think = (world: World, army: Army): void => {
   const { wanderDistance, huntRange, lootRange } = world.config.lobby.bots;
   const { mage } = army;
@@ -101,25 +182,29 @@ const think = (world: World, army: Army): void => {
     flee(world, army, army.battle);
     return;
   }
+  const evolution = bestEvolution(world, army);
+  if (evolution !== undefined) {
+    orderEvolve(world, army, evolution);
+  }
   const prey = weakerArmy(world, army);
   if (prey !== undefined) {
-    orderMove(world, army, prey.mage.x, prey.mage.y);
+    moveTo(world, army, prey.mage.x, prey.mage.y);
     return;
   }
   const point = nearestPoint(world, army, lootRange);
   if (point !== undefined) {
-    orderMove(world, army, point.x, point.y);
+    moveTo(world, army, point.x, point.y);
     return;
   }
   const civilian = nearestCivilian(world, army, huntRange);
   if (civilian !== undefined) {
-    orderMove(world, army, civilian.x, civilian.y);
+    moveTo(world, army, civilian.x, civilian.y);
     orderAttack(world, army, civilian.id);
     return;
   }
   if (mage.x === mage.targetX && mage.y === mage.targetY) {
     const { x, y } = world.randomNear(mage.x, mage.y, wanderDistance);
-    orderMove(world, army, x, y);
+    moveTo(world, army, x, y);
   }
 };
 

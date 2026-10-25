@@ -11,9 +11,9 @@ import {
   decodeServerMessage,
   encodeClientMessage,
   encodeServerMessage,
-  maxSizeLevel,
-  sizeFlags,
-  sizeLevel,
+  maxFlagLevel,
+  levelFlags,
+  flagLevel,
   type ClientMessage,
   type ServerMessage,
 } from "../../src/protocol/messages.js";
@@ -49,7 +49,10 @@ const serverMessages: ServerMessage[] = [
     units: 23,
     strength: 31,
     battle: 0,
+    search: 0,
     circles: [],
+    counts: [],
+    crosses: [],
   },
   {
     type: ServerMessageType.Status,
@@ -61,11 +64,18 @@ const serverMessages: ServerMessage[] = [
     units: 4,
     strength: 4,
     battle: BattleFlag.InBattle | BattleFlag.Encircled,
+    search: 0.4,
     circles: [
       { x: 120, y: 80, radius: 17.25 },
       { x: 0, y: 300, radius: 8 },
     ],
+    counts: [
+      { type: 0, count: 12 },
+      { type: 3, count: 150 },
+    ],
+    crosses: [{ id: 70000, strength: 12 }],
   },
+  { type: ServerMessageType.Loot, item: 2 },
   { type: ServerMessageType.Died, killer: "Evil Ash" },
   { type: ServerMessageType.Welcome, mageId: 42, token: "a1b2" },
   {
@@ -119,6 +129,8 @@ const serverMessages: ServerMessage[] = [
         retreatKey: "r",
         sizeScaleStep: 0.25,
         aggroPulseMs: 900,
+        lootMs: 2500,
+        minimapSize: 110,
       },
       world: {
         width: 400,
@@ -128,11 +140,28 @@ const serverMessages: ServerMessage[] = [
           scattered: [{ sprite: "decor-tree", count: 3 }],
           fixed: [{ sprite: "decor-winchester", x: 10, y: 20 }],
         },
+        crosses: {
+          count: 2,
+          radius: 6,
+          threshold: 40,
+          rechargeSec: 60,
+          spacing: 50,
+          lifetimeSec: { min: 480, max: 720 },
+        },
       },
       network: { tickRate: 20, interpolationDelayMs: 100 },
       gameplay: { riseSec: 0.8 },
       content: {
-        units: ["zombie"],
+        units: [
+          {
+            id: "zombie",
+            name: "Zombie",
+            equipment: "melee",
+            evolutions: [{ into: "big-zombie", cost: 5 }],
+          },
+          { id: "big-zombie", name: "Big zombie", evolutions: [] },
+        ],
+        items: [{ id: "shovel", name: "Shovel", category: "melee" }],
         npcs: ["civilian"],
         pointsOfInterest: ["mass-grave"],
         events: [{ id: "pumpkin", name: "the Evil Pumpkin" }],
@@ -172,6 +201,15 @@ const serverMessages: ServerMessage[] = [
         flags: 5,
         x: 399.9,
         y: 0.1,
+      },
+      {
+        id: 70002,
+        kind: EntityKind.Cross,
+        type: 0,
+        army: 0,
+        flags: levelFlags(4),
+        x: 200,
+        y: 150,
       },
     ],
     updates: [{ id: 5, flags: EntityFlag.Abandoned, x: 33.3, y: 44.4 }],
@@ -267,10 +305,10 @@ describe("server messages", () => {
 
 describe("size level", () => {
   test("is stored above the other flags and capped", () => {
-    expect(sizeLevel(sizeFlags(3) | EntityFlag.Searched)).toBe(3);
-    expect(sizeFlags(3) & 0x1f).toBe(0);
-    expect(sizeLevel(sizeFlags(99))).toBe(maxSizeLevel);
-    expect(sizeFlags(-1)).toBe(0);
+    expect(flagLevel(levelFlags(3) | EntityFlag.Searched)).toBe(3);
+    expect(levelFlags(3) & 0x1f).toBe(0);
+    expect(flagLevel(levelFlags(99))).toBe(maxFlagLevel);
+    expect(levelFlags(-1)).toBe(0);
   });
 });
 

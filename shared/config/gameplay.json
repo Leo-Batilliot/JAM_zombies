@@ -19,7 +19,13 @@
         "count": 5
       }
     ],
-    "spawnRadius": 2
+    "spawnRadius": 2,
+    "cap": 150,
+    "slowdown": {
+      "from": 60,
+      "to": 150,
+      "penalty": 0.35
+    }
   },
   "movement": {
     "separation": 0.5
@@ -32,7 +38,8 @@
   "reanimation": {
     "delaySec": 30,
     "raiseRadius": 3,
-    "riseSec": 0.8
+    "riseSec": 0.8,
+    "crossDelaySec": 60
   },
   "battle": {
     "engageRadius": 8,

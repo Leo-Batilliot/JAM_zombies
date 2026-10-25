@@ -19,6 +19,13 @@ export interface Army {
   groups: Set<AbandonedGroup>;
   battle: Battle | undefined;
   retreat: Retreat | undefined;
+  inventory: string[];
+  found: string[];
+}
+
+export interface Remains {
+  type: string;
+  item: string | undefined;
 }
 
 export interface AbandonedGroup {
@@ -103,6 +110,7 @@ export interface Unit {
   fighting: boolean;
   group: AbandonedGroup | undefined;
   returning: boolean;
+  item: string | undefined;
 }
 
 export interface NpcGroup {
@@ -158,6 +166,8 @@ export interface Corpse {
   killer: Army | undefined;
   group: AbandonedGroup | undefined;
   diedAt: number;
+  sacred: boolean;
+  item: string | undefined;
   x: number;
   y: number;
 }
@@ -170,10 +180,20 @@ export interface PointOfInterest {
   y: number;
   expiresAt: number;
   searchedBy: Set<Army>;
-  corpses: string[];
+  corpses: Remains[];
 }
 
-export type Entity = Mage | Unit | Npc | Corpse | PointOfInterest;
+export interface Cross {
+  id: number;
+  kind: EntityKind.Cross;
+  x: number;
+  y: number;
+  expiresAt: number;
+  readyAt: number;
+  strengths: Map<Army, number>;
+}
+
+export type Entity = Mage | Unit | Npc | Corpse | PointOfInterest | Cross;
 export type Body = Mage | Unit | Npc;
 
 const maxArmySlot = 0xff;
@@ -193,6 +213,7 @@ export class World {
   readonly armies = new Map<number, Army>();
   readonly npcGroups = new Set<NpcGroup>();
   readonly points = new Set<PointOfInterest>();
+  readonly crosses = new Set<Cross>();
   readonly populationSpawnAt = new Map<number, number>();
   readonly hostiles = new Set<Npc>();
   readonly events = new Map<string, BossEvent>();
@@ -269,6 +290,8 @@ export class World {
       groups: new Set(),
       battle: undefined,
       retreat: undefined,
+      inventory: [],
+      found: [],
     } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
@@ -291,7 +314,7 @@ export class World {
     return army;
   }
 
-  addUnit(army: Army, type: string, x: number, y: number): Unit {
+  addUnit(army: Army, type: string, x: number, y: number, item?: string): Unit {
     const unit: Unit = {
       id: this.#nextId++,
       kind: EntityKind.Unit,
@@ -307,6 +330,7 @@ export class World {
       fighting: false,
       group: undefined,
       returning: false,
+      item,
     };
     army.units.add(unit);
     this.#add(unit);
@@ -384,6 +408,7 @@ export class World {
     killer: Army | undefined,
     x: number,
     y: number,
+    item?: string,
   ): Corpse {
     const corpse: Corpse = {
       id: this.#nextId++,
@@ -393,6 +418,8 @@ export class World {
       killer,
       group: undefined,
       diedAt: this.time,
+      sacred: false,
+      item,
       x: this.clampX(x),
       y: this.clampY(y),
     };
@@ -420,6 +447,21 @@ export class World {
     this.points.add(point);
     this.#add(point);
     return point;
+  }
+
+  addCross(x: number, y: number, lifetimeSec: number): Cross {
+    const cross: Cross = {
+      id: this.#nextId++,
+      kind: EntityKind.Cross,
+      x: this.clampX(x),
+      y: this.clampY(y),
+      expiresAt: this.time + lifetimeSec,
+      readyAt: this.time,
+      strengths: new Map(),
+    };
+    this.crosses.add(cross);
+    this.#add(cross);
+    return cross;
   }
 
   clearArmy(army: Army): void {
@@ -468,6 +510,9 @@ export class World {
       case EntityKind.PointOfInterest:
         this.points.delete(entity);
         break;
+      case EntityKind.Cross:
+        this.crosses.delete(entity);
+        break;
       case EntityKind.Mage:
         break;
     }
@@ -478,6 +523,9 @@ export class World {
     this.clearArmy(army);
     for (const point of this.points) {
       point.searchedBy.delete(army);
+    }
+    for (const cross of this.crosses) {
+      cross.strengths.delete(army);
     }
     for (const event of this.events.values()) {
       event.contributions.delete(army);

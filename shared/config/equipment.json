@@ -1,1 +1,23 @@
-{ "items": {} }
+{
+  "rarities": ["common", "rare", "legendary"],
+  "items": {
+    "shovel": {
+      "name": "Shovel",
+      "category": "melee",
+      "rarity": "common",
+      "damage": 1.3
+    },
+    "cricket-bat": {
+      "name": "Cricket bat",
+      "category": "melee",
+      "rarity": "rare",
+      "damage": 1.6
+    },
+    "chainsaw": {
+      "name": "Chainsaw",
+      "category": "melee",
+      "rarity": "legendary",
+      "damage": 2.2
+    }
+  }
+}
