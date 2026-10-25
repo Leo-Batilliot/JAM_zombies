@@ -47,6 +47,9 @@ export enum EntityKind {
   Corpse,
   PointOfInterest,
   Cross,
+  Projectile,
+  Mist,
+  Camp,
 }
 
 export enum EntityFlag {
@@ -127,6 +130,12 @@ export interface CrossStrength {
   strength: number;
 }
 
+export interface Bounty {
+  army: number;
+  x: number;
+  y: number;
+}
+
 export interface Status {
   army: number;
   hp: number;
@@ -137,6 +146,9 @@ export interface Status {
   strength: number;
   battle: number;
   search: number;
+  formation: number;
+  nextFormation: number;
+  formationProgress: number;
   circles: AggroCircle[];
   counts: UnitCount[];
   crosses: CrossStrength[];
@@ -159,6 +171,7 @@ export type ServerMessage =
       rank: number;
       total: number;
       entries: LeaderboardEntry[];
+      bounty: Bounty;
     }
   | ({ type: ServerMessageType.Status } & Status)
   | {
@@ -356,6 +369,9 @@ export const encodeServerMessage = (
         .uint8(message.type)
         .uint16(message.rank)
         .uint16(message.total)
+        .uint8(message.bounty.army)
+        .uint16(quantizeX(message.bounty.x, bounds))
+        .uint16(quantizeY(message.bounty.y, bounds))
         .uint8(message.entries.length);
       for (const entry of message.entries) {
         writer.uint8(entry.army).uint32(entry.strength).shortString(entry.name);
@@ -373,7 +389,7 @@ export const encodeServerMessage = (
         throw new ProtocolError("Too many status entries");
       }
       const writer = new ByteWriter(
-        27 +
+        30 +
           message.circles.length * 6 +
           message.counts.length * 3 +
           message.crosses.length * 6,
@@ -389,6 +405,13 @@ export const encodeServerMessage = (
         .uint8(message.battle)
         .uint8(
           Math.round(Math.min(Math.max(message.search, 0), 1) * searchSteps),
+        )
+        .uint8(message.formation)
+        .uint8(message.nextFormation)
+        .uint8(
+          Math.round(
+            Math.min(Math.max(message.formationProgress, 0), 1) * searchSteps,
+          ),
         )
         .uint8(message.circles.length);
       for (const circle of message.circles) {
@@ -500,6 +523,12 @@ export const decodeServerMessage = (
     case ServerMessageType.Leaderboard: {
       const rank = reader.uint16();
       const total = reader.uint16();
+      const leaderBounds = requireBounds(bounds);
+      const bounty = {
+        army: reader.uint8(),
+        x: dequantizeX(reader.uint16(), leaderBounds),
+        y: dequantizeY(reader.uint16(), leaderBounds),
+      };
       const count = reader.uint8();
       const entries: LeaderboardEntry[] = [];
       for (let index = 0; index < count; index++) {
@@ -509,7 +538,7 @@ export const decodeServerMessage = (
           name: reader.shortString(),
         });
       }
-      message = { type, rank, total, entries };
+      message = { type, rank, total, entries, bounty };
       break;
     }
     case ServerMessageType.Status: {
@@ -524,6 +553,9 @@ export const decodeServerMessage = (
         strength: reader.uint32(),
         battle: reader.uint8(),
         search: reader.uint8() / searchSteps,
+        formation: reader.uint8(),
+        nextFormation: reader.uint8(),
+        formationProgress: reader.uint8() / searchSteps,
       };
       const circles: AggroCircle[] = [];
       const circleCount = reader.uint8();

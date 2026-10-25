@@ -2,6 +2,8 @@
   "units": {
     "zombie": {
       "name": "Zombie",
+      "family": "zombie",
+      "bonus": {},
       "equipment": "melee",
       "strength": 1,
       "rank": "front",
@@ -16,11 +18,19 @@
         {
           "into": "big-zombie",
           "cost": 5
+        },
+        {
+          "into": "flesh-golem",
+          "cost": 10
         }
       ]
     },
     "big-zombie": {
       "name": "Big zombie",
+      "family": "zombie",
+      "bonus": {
+        "beast": 1.5
+      },
       "equipment": "melee",
       "strength": 5,
       "rank": "front",
@@ -31,6 +41,90 @@
       "attackIntervalSec": 1.2,
       "attackRange": 0.4,
       "aggroRange": 8,
+      "evolutions": []
+    },
+    "flesh-golem": {
+      "name": "Flesh golem",
+      "family": "zombie",
+      "bonus": {
+        "beast": 1.75
+      },
+      "equipment": "melee",
+      "strength": 10,
+      "rank": "front",
+      "speed": 5.5,
+      "radius": 0.95,
+      "hp": 420,
+      "damage": 38,
+      "attackIntervalSec": 1.4,
+      "attackRange": 0.5,
+      "aggroRange": 8,
+      "evolutions": []
+    },
+    "skeleton-archer": {
+      "name": "Skeleton archer",
+      "family": "skeleton",
+      "bonus": {
+        "zombie": 1.5
+      },
+      "projectile": "arrow",
+      "equipment": "helmet",
+      "strength": 1,
+      "rank": "back",
+      "speed": 7,
+      "radius": 0.4,
+      "hp": 22,
+      "damage": 4,
+      "attackIntervalSec": 1.5,
+      "attackRange": 7,
+      "aggroRange": 9,
+      "evolutions": [
+        {
+          "into": "skeleton-crossbowman",
+          "cost": 5
+        },
+        {
+          "into": "bone-ballista",
+          "cost": 10
+        }
+      ]
+    },
+    "skeleton-crossbowman": {
+      "name": "Skeleton crossbowman",
+      "family": "skeleton",
+      "bonus": {
+        "zombie": 1.5
+      },
+      "projectile": "bolt",
+      "equipment": "helmet",
+      "strength": 5,
+      "rank": "back",
+      "speed": 6.5,
+      "radius": 0.5,
+      "hp": 90,
+      "damage": 16,
+      "attackIntervalSec": 1.8,
+      "attackRange": 8,
+      "aggroRange": 10,
+      "evolutions": []
+    },
+    "bone-ballista": {
+      "name": "Bone ballista",
+      "family": "skeleton",
+      "bonus": {
+        "zombie": 1.75
+      },
+      "projectile": "ballista-bolt",
+      "equipment": "helmet",
+      "strength": 10,
+      "rank": "back",
+      "speed": 4.5,
+      "radius": 0.9,
+      "hp": 200,
+      "damage": 42,
+      "attackIntervalSec": 2.8,
+      "attackRange": 10,
+      "aggroRange": 12,
       "evolutions": []
     }
   },
@@ -74,6 +168,53 @@
         "aggroRange": 10,
         "leashDistance": 25
       }
+    },
+    "hunter": {
+      "name": "a Hunter",
+      "corpse": "skeleton-archer",
+      "infects": false,
+      "strength": 2,
+      "hp": 40,
+      "radius": 0.4,
+      "speed": 4,
+      "attack": {
+        "damage": 6,
+        "attackIntervalSec": 1.6,
+        "attackRange": 8,
+        "aggroRange": 11,
+        "leashDistance": 14,
+        "projectile": "bullet"
+      }
+    },
+    "soldier": {
+      "name": "a Soldier",
+      "corpse": "skeleton-archer",
+      "infects": false,
+      "strength": 3,
+      "hp": 70,
+      "radius": 0.45,
+      "speed": 4.5,
+      "attack": {
+        "damage": 9,
+        "attackIntervalSec": 1.2,
+        "attackRange": 0.4,
+        "aggroRange": 10,
+        "leashDistance": 12
+      }
+    }
+  },
+  "projectiles": {
+    "arrow": {
+      "speed": 18
+    },
+    "bolt": {
+      "speed": 22
+    },
+    "ballista-bolt": {
+      "speed": 15
+    },
+    "bullet": {
+      "speed": 28
     }
   }
 }

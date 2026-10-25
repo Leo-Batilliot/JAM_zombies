@@ -34,7 +34,16 @@
     "fleeRatio": 1.3,
     "avoidSectorDeg": 120,
     "fleeDistance": 30,
-    "crossMargin": 3
+    "crossMargin": 3,
+    "campRange": 60,
+    "campRatio": 1.5,
+    "bountyRange": 120,
+    "bountyRatio": 1,
+    "formations": {
+      "explore": "swarm",
+      "attack": "wedge",
+      "defend": "phalanx"
+    }
   },
   "leaderboard": {
     "intervalSec": 1,

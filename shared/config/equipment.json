@@ -18,6 +18,27 @@
       "category": "melee",
       "rarity": "legendary",
       "damage": 2.2
+    },
+    "leather-helmet": {
+      "name": "Leather helmet",
+      "category": "helmet",
+      "rarity": "common",
+      "hp": 1.25,
+      "armor": 0.1
+    },
+    "iron-helmet": {
+      "name": "Iron helmet",
+      "category": "helmet",
+      "rarity": "rare",
+      "hp": 1.5,
+      "armor": 0.2
+    },
+    "cursed-helm": {
+      "name": "Cursed helm",
+      "category": "helmet",
+      "rarity": "legendary",
+      "hp": 2,
+      "armor": 0.3
     }
   }
 }

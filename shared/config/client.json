@@ -55,5 +55,15 @@
   "sizeScaleStep": 0.25,
   "aggroPulseMs": 900,
   "lootMs": 2500,
-  "minimapSize": 110
+  "minimapSize": 110,
+  "gearOffsets": {
+    "melee": { "x": 7, "y": 2 },
+    "helmet": { "x": 0, "y": -12 }
+  },
+  "mistColors": {
+    "purifying": "#cfe8ff",
+    "necrotic": "#5fd45a"
+  },
+  "formationKeys": ["1", "2", "3", "4"],
+  "evolutionCollapseMs": 6000
 }

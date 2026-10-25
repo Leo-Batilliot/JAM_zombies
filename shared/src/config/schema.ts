@@ -100,18 +100,43 @@ const gameplaySchema = z.strictObject({
   }),
 });
 
+export const layouts = ["block", "wedge", "ring", "cloud"] as const;
+
+const formationSchema = z.strictObject({
+  name: z.string().min(1),
+  layout: z.enum(layouts),
+  spacing: z.number().positive(),
+  frontOffset: z.number().nonnegative(),
+  backOffset: z.number().nonnegative(),
+  width: z.number().positive(),
+  speed: z.number().positive(),
+  defense: z.number().lt(1),
+  impact: z
+    .strictObject({
+      damage: z.number().positive(),
+      durationSec: z.number().positive(),
+    })
+    .optional(),
+  fullGuard: z.boolean(),
+});
+
 const formationsSchema = z.strictObject({
-  default: z.strictObject({
-    spacing: z.number().positive(),
-    frontOffset: z.number().nonnegative(),
-    backOffset: z.number().nonnegative(),
-  }),
+  changeSec: z.number().nonnegative(),
+  neutral: formationSchema,
+  selectable: z
+    .record(id, formationSchema)
+    .refine((list) => Object.keys(list).length < 0xff, {
+      message: "Too many formations",
+    }),
 });
 
 export const ranks = ["front", "back"] as const;
 
 const unitTypeSchema = z.strictObject({
   name: z.string().min(1),
+  family: id,
+  bonus: z.record(id, z.number().positive()),
+  projectile: id.optional(),
   equipment: id.optional(),
   strength: z.int().positive(),
   rank: z.enum(ranks),
@@ -146,6 +171,7 @@ const npcTypeSchema = z.strictObject({
       attackRange: z.number().nonnegative(),
       aggroRange: z.number().positive(),
       leashDistance: z.number().positive(),
+      projectile: id.optional(),
     })
     .optional(),
 });
@@ -153,6 +179,7 @@ const npcTypeSchema = z.strictObject({
 const unitsSchema = z.strictObject({
   units: z.record(id, unitTypeSchema),
   npcs: z.record(id, npcTypeSchema),
+  projectiles: z.record(id, z.strictObject({ speed: z.number().positive() })),
 });
 
 const equipmentSchema = z
@@ -164,7 +191,9 @@ const equipmentSchema = z
         name: z.string().min(1),
         category: id,
         rarity: id,
-        damage: z.number().positive(),
+        damage: z.number().positive().optional(),
+        hp: z.number().positive().optional(),
+        armor: z.number().min(0).lt(1).optional(),
       }),
     ),
   })
@@ -180,7 +209,13 @@ const lootSchema = z
   .array(z.strictObject({ item: id, weight: z.number().positive() }))
   .min(1);
 
-export const rewards = ["corpses", "items"] as const;
+export const rewards = ["corpses", "items", "units"] as const;
+
+const lifetimeSchema = z
+  .strictObject({ min: z.number().positive(), max: z.number().positive() })
+  .refine((lifetime) => lifetime.min <= lifetime.max, {
+    message: "min must not exceed max",
+  });
 
 const pointOfInterestSchema = z.strictObject({
   count: z.int().nonnegative(),
@@ -193,6 +228,38 @@ const pointOfInterestSchema = z.strictObject({
     }),
   reward: z.enum(rewards),
   loot: lootSchema.optional(),
+  units: z
+    .strictObject({
+      unit: id,
+      min: z.int().positive(),
+      max: z.int().positive(),
+    })
+    .refine((units) => units.min <= units.max, {
+      message: "min must not exceed max",
+    })
+    .optional(),
+});
+
+const mistSchema = z.strictObject({
+  name: z.string().min(1),
+  count: z.int().nonnegative(),
+  radius: z.number().positive(),
+  speed: z.number().nonnegative(),
+  turnIntervalSec: z.number().positive(),
+  lifetimeSec: lifetimeSchema,
+  damagePerSec: z.number().nonnegative(),
+  reanimationDelaySec: z.number().nonnegative().optional(),
+});
+
+const campsSchema = z.strictObject({
+  count: z.int().nonnegative(),
+  spread: z.number().positive(),
+  safeDistance: z.number().nonnegative(),
+  lifetimeSec: lifetimeSchema,
+  defenders: z
+    .array(z.strictObject({ npc: id, count: z.int().positive() }))
+    .min(1),
+  chest: id,
 });
 
 const worldSchema = z.strictObject({
@@ -248,6 +315,8 @@ const worldSchema = z.strictObject({
         message: "min must not exceed max",
       }),
   }),
+  mists: z.record(id, mistSchema),
+  camps: campsSchema,
 });
 
 const eventsSchema = z.strictObject({
@@ -269,6 +338,9 @@ const eventsSchema = z.strictObject({
       rewardLegendary: id,
     }),
   ),
+  bounty: z.strictObject({
+    souls: z.number().nonnegative(),
+  }),
 });
 
 export const maxParticipants = 254;
@@ -290,6 +362,15 @@ const lobbySchema = z
       avoidSectorDeg: z.number().nonnegative().max(360),
       fleeDistance: z.number().positive(),
       crossMargin: z.number().nonnegative(),
+      campRange: z.number().positive(),
+      campRatio: z.number().positive(),
+      bountyRange: z.number().positive(),
+      bountyRatio: z.number().positive(),
+      formations: z.strictObject({
+        explore: id,
+        attack: id,
+        defend: id,
+      }),
     }),
     leaderboard: z.strictObject({
       intervalSec: z.number().positive(),
@@ -380,6 +461,10 @@ export const clientSettingsSchema = z.strictObject({
   aggroPulseMs: z.int().positive(),
   lootMs: z.int().positive(),
   minimapSize: z.int().positive(),
+  gearOffsets: z.record(id, z.strictObject({ x: z.number(), y: z.number() })),
+  mistColors: z.record(id, color),
+  formationKeys: z.array(z.string().length(1)),
+  evolutionCollapseMs: z.int().positive(),
 });
 
 export const configSchema = z.strictObject({
@@ -424,6 +509,9 @@ export const clientConfigSchema = z.strictObject({
     npcs: z.array(id),
     pointsOfInterest: z.array(id),
     events: z.array(z.strictObject({ id, name: z.string().min(1) })),
+    projectiles: z.array(id),
+    mists: z.array(z.strictObject({ id, radius: z.number().positive() })),
+    formations: z.array(z.strictObject({ id, name: z.string().min(1) })),
   }),
 });
 
@@ -462,6 +550,14 @@ export const toClientConfig = (config: Config): ClientConfig => ({
       id: eventId,
       name: config.units.npcs[event.boss]?.name ?? eventId,
     })),
+    projectiles: Object.keys(config.units.projectiles),
+    mists: Object.entries(config.world.mists).map(([mistId, mist]) => ({
+      id: mistId,
+      radius: mist.radius,
+    })),
+    formations: Object.entries(config.formations.selectable).map(
+      ([formationId, formation]) => ({ id: formationId, name: formation.name }),
+    ),
   },
 });
 

@@ -51,6 +51,8 @@ type NpcType = Config["units"]["npcs"][string];
 type ItemType = Config["equipment"]["items"][string];
 type PointOfInterestType = Config["world"]["pointsOfInterest"][string];
 type EventType = Config["events"]["events"][string];
+type ProjectileType = Config["units"]["projectiles"][string];
+type MistType = Config["world"]["mists"][string];
 
 export interface Registries {
   units: Registry<UnitType>;
@@ -58,6 +60,8 @@ export interface Registries {
   items: Registry<ItemType>;
   pointsOfInterest: Registry<PointOfInterestType>;
   events: Registry<EventType>;
+  projectiles: Registry<ProjectileType>;
+  mists: Registry<MistType>;
 }
 
 const checkReference = (
@@ -110,6 +114,54 @@ const checkItems = (registries: Registries): void => {
   }
 };
 
+const checkCombat = (config: Config, registries: Registries): void => {
+  for (const [unitId, unit] of registries.units.entries()) {
+    if (unit.projectile !== undefined) {
+      checkReference(
+        registries.projectiles,
+        unit.projectile,
+        `Projectile of unit "${unitId}"`,
+      );
+    }
+  }
+  for (const [npcId, npc] of registries.npcs.entries()) {
+    if (npc.attack?.projectile !== undefined) {
+      checkReference(
+        registries.projectiles,
+        npc.attack.projectile,
+        `Projectile of npc "${npcId}"`,
+      );
+    }
+  }
+  for (const [pointId, point] of registries.pointsOfInterest.entries()) {
+    if (point.reward === "units" && point.units === undefined) {
+      throw new RegistryError(`Point of interest "${pointId}" has no units`);
+    }
+    if (point.units !== undefined) {
+      checkReference(
+        registries.units,
+        point.units.unit,
+        `Units of "${pointId}"`,
+      );
+    }
+  }
+  const { camps } = config.world;
+  for (const { npc } of camps.defenders) {
+    checkReference(registries.npcs, npc, "Camp defender");
+    if (registries.npcs.get(npc).attack === undefined) {
+      throw new RegistryError(`Camp defender "${npc}" has no attack`);
+    }
+  }
+  checkReference(registries.pointsOfInterest, camps.chest, "Camp chest");
+  for (const formation of Object.values(config.lobby.bots.formations)) {
+    if (!(formation in config.formations.selectable)) {
+      throw new RegistryError(
+        `Bots reference unknown formation "${formation}"`,
+      );
+    }
+  }
+};
+
 export const buildRegistries = (config: Config): Registries => {
   const registries: Registries = {
     units: new Registry("unit", config.units.units),
@@ -120,6 +172,8 @@ export const buildRegistries = (config: Config): Registries => {
       config.world.pointsOfInterest,
     ),
     events: new Registry("event", config.events.events),
+    projectiles: new Registry("projectile", config.units.projectiles),
+    mists: new Registry("mist", config.world.mists),
   };
 
   for (const [unitId, unit] of registries.units.entries()) {
@@ -156,6 +210,7 @@ export const buildRegistries = (config: Config): Registries => {
     "Mass grave",
   );
   checkItems(registries);
+  checkCombat(config, registries);
   for (const { unit } of config.gameplay.army.startingUnits) {
     checkReference(registries.units, unit, "Starting army");
   }

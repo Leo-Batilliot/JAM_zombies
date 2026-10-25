@@ -21,6 +21,8 @@ const unit = (
   evolutions: { into: string; cost: number }[] = [],
 ) => ({
   name: "Unit",
+  family: "zombie",
+  bonus: {},
   strength,
   rank: "front" as const,
   speed: 1,
@@ -44,17 +46,33 @@ const npc = (corpse: string) => ({
   fleeSpeed: 2,
 });
 
-const withUnits = (units: Config["units"]): Config => {
+const withUnits = (units: Pick<Config["units"], "units" | "npcs">): Config => {
   const config = loadSharedConfig();
   const eventNpcs = Object.fromEntries(
     Object.entries(config.units.npcs).filter(
-      ([, npc]) => npc.attack !== undefined,
+      ([, npc]) => npc.attack !== undefined && npc.corpse === undefined,
     ),
   );
   return {
     ...config,
-    units: { units: units.units, npcs: { ...eventNpcs, ...units.npcs } },
-    world: { ...config.world, populations: [] },
+    units: {
+      units: units.units,
+      npcs: { ...eventNpcs, ...units.npcs },
+      projectiles: config.units.projectiles,
+    },
+    world: {
+      ...config.world,
+      populations: [],
+      pointsOfInterest: Object.fromEntries(
+        Object.entries(config.world.pointsOfInterest).filter(
+          ([, point]) => point.reward !== "units",
+        ),
+      ),
+      camps: {
+        ...config.world.camps,
+        defenders: [{ npc: "jack-o-lantern", count: 1 }],
+      },
+    },
   };
 };
 
@@ -219,5 +237,39 @@ describe("equipment references", () => {
       },
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("phase 6 references", () => {
+  test("fails on a unit with an unknown projectile", () => {
+    const config = loadSharedConfig();
+    const archer = config.units.units["skeleton-archer"];
+    if (archer !== undefined) {
+      archer.projectile = "laser";
+    }
+    expect(() => buildRegistries(config)).toThrow(
+      /skeleton-archer[\s\S]*laser/,
+    );
+  });
+
+  test("fails on a units reward without units", () => {
+    const config = loadSharedConfig();
+    const graveyard = config.world.pointsOfInterest["graveyard"];
+    if (graveyard !== undefined) {
+      delete graveyard.units;
+    }
+    expect(() => buildRegistries(config)).toThrow(/graveyard/);
+  });
+
+  test("fails on a camp defender that cannot attack", () => {
+    const config = loadSharedConfig();
+    config.world.camps.defenders = [{ npc: "civilian", count: 2 }];
+    expect(() => buildRegistries(config)).toThrow(/civilian/);
+  });
+
+  test("fails on bots using an unknown formation", () => {
+    const config = loadSharedConfig();
+    config.lobby.bots.formations.attack = "turtle";
+    expect(() => buildRegistries(config)).toThrow(/turtle/);
   });
 });
