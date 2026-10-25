@@ -4,6 +4,48 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Sprites générés par modèles | L.BA
+
+- **Quoi** : tous les sprites (unités, PNJ, champions, mages, sols, bâtiments, décor) sont dessinés par `tools/assets/draw/` à partir de modèles paramétrés (humanoïde de face, bêtes, volants et engins de profil, spectres), décrits en données dans `creatures.json` et `city.json`, contour sombre et pixels doublés. Les packs LPC sont supprimés.
+- **Pourquoi** : la maquette dans l'esprit de l'atlas d'avant la V2 a été validée, et une seule chaîne garde un style cohérent pour tout le contenu.
+- **Impact** : l'atlas passe de 1 Mo à environ 100 Ko. Un nouveau sprite est une entrée de données.
+- **Avis** : Validée. Maquette validée, rendu en jeu à revoir après des parties.
+
+### Champions uniques en repaire | L.BA
+
+- **Quoi** : 4 champions hors lignées (Grand chevalier au musée, Bourreau sur la place, Évêque déchu à la crypte, Gargouille sur le rempart près de la caserne). Un repaire ne réapparaît que si le champion n'existe nulle part. À la mort de son mage, le champion passe entier au tueur, sinon il retourne au repaire, jamais en fosse commune. Capacités en config : charge, piqué sur les unités à distance, exécution sous 20 % de PV et frappe en arc, soins.
+- **Pourquoi** : CONT-11 et CONT-12, sans exception dans la fusion ni les mutations puisqu'une unité hors lignée n'est ni découpée ni fusionnée.
+- **Impact** : leurs positions partent dans le statut de chaque joueur pour la minimap. La grande barre de boss ne les montre pas encore.
+- **Avis** : À vérifier. Stats et capacités à régler en jeu.
+
+### Lieux en garnison | L.BA
+
+- **Quoi** : cathédrale, caserne, hôpital et cabane du chasseur sont des camps permanents liés à leur quartier : défenseurs, coffre au butin propre une fois vidés, retour plus tard. La caserne a une mitrailleuse et un mortier qui bombarde les armées proches, l'hôpital des patients et du gaz qui épargne volants et spectres. Caserne, place et forêt existent dans chaque ville.
+- **Pourquoi** : CONT-06 à CONT-10 en réutilisant les camps, les brumes et les bombardements.
+- **Impact** : les bots n'attaquent un lieu que s'ils sont assez forts, comme les camps.
+- **Avis** : À vérifier. Garnisons et délais à régler en jeu.
+
+### Bandes hostiles dans les populations | L.BA
+
+- **Quoi** : chiens errants, pillards, loups, corbeaux et chauves-souris sont des populations avec un comportement de raid : elles attaquent une armée moins forte que la bande (rapport en config), fuient une plus forte ou quand elles sont trop blessées. Les loups encerclent. Les moines défilent en file entre la cathédrale, les rues et la place. Le total reste à 150 PNJ errants : 90 civils et 60 pour les nouvelles sources.
+- **Pourquoi** : CONT-01 à CONT-05 sans nouveau système, et un tick déjà proche du budget sur la machine de mesure.
+- **Impact** : les nouvelles lignées s'obtiennent moins souvent que les zombies (EVO-18 partiel).
+- **Avis** : À vérifier. Budget de PNJ à revoir après des parties.
+
+### Couches des corps | L.BA
+
+- **Quoi** : chaque unité ou PNJ est au sol, en l'air ou éthéré. Les volants ignorent murs, remparts et séparation avec le sol. Les spectres traversent les rangs. Le triangle passe par des bonus de dégâts : volants contre squelettes, bêtes contre volants, spectres contre zombies, sorcellerie contre spectres.
+- **Pourquoi** : EVO-15 à EVO-17 sans réécrire le ciblage.
+- **Impact** : le client reçoit la couche dans le contenu pour l'ombre et la transparence, sans changement de snapshot.
+- **Avis** : À vérifier. Équilibre du triangle à régler.
+
+### Transferts limités sous le plafond des bots | L.BA
+
+- **Quoi** : un bot ne reçoit des unités ou cadavres que tant que sa force potentielle reste sous son plafond. Le surplus va à la fosse commune.
+- **Pourquoi** : en simulation, un bot sous le plafond qui tuait un mage passait de 37 à 67 de force en un tick.
+- **Impact** : le meilleur bot reste entre 40 et 42 de force sans joueur.
+- **Avis** : Validée.
+
 ### Retour aux sprites générés | L.BA
 
 - **Quoi** : les visuels tirés des packs LPC (unités, bâtiments, rues, fontaine) seront remplacés par des sprites générés par script, dans l'esprit de l'atlas d'avant la V2. La passe se fait une fois, après les mécaniques du Lot 4 (étape 13.18). L'interface en cuir et parchemin est gardée.

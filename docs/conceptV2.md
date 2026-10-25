@@ -121,17 +121,17 @@ Chaque lignée : une unité de base, 2 branches exclusives de 3 paliers. Soit 7 
   Base : Chien zombie. Sources : chiens errants, chiens de garde, loups.
   - Meute : Molosse -> Cerbère (3 têtes, frappe 3 cibles) -> Chien des enfers (grand, enflammé).
   - Sang : Loup putride -> Loup-garou (bipède) -> Seigneur-garou (énorme, hurlement qui effraie).
-- [ ] **EVO-15 Volants (harcèlement)** | Lot 4
+- [ ] **EVO-15 Volants (harcèlement)** | Lot 4 | 13.03
   Base : Volée de charognards (petit groupe d'oiseaux qui tournent, une seule unité). Sources : corbeaux et chauves-souris. Les volants passent au-dessus des autres unités et des obstacles, sont fragiles et harcèlent les unités à distance. Silhouette : ailes et ombre au sol.
   - Nuée : Essaim de chauves-souris -> Vampire -> Nosferatu (référence au film de 1922).
   - Charogne : Harpie -> Vouivre d'os -> Dragon d'os.
-- [ ] **EVO-16 Spectres (traversants)** | Lot 4
+- [ ] **EVO-16 Spectres (traversants)** | Lot 4 | 13.04
   Base : Âme errante. Sources : moines et templiers (processions dans les rues, cathédrale). Les spectres traversent les rangs, ignorent la séparation entre unités et sont semi-transparents.
   - Hantise : Spectre -> Banshee (cri qui étourdit) -> Reine des lamentations.
   - Ombre : Ombre (invisible hors combat) -> Faucheur -> Ankou (figure de la mort des légendes bretonnes).
-- [ ] **EVO-17 Triangle de force étendu** | Lot 4
+- [ ] **EVO-17 Triangle de force étendu** | Lot 4 | 13.05
   Placer Volants et Spectres dans le triangle de force (§6.2) : par exemple, les volants battent les unités à distance et sont battus par les bêtes qui sautent, les spectres battent la mêlée lourde et sont battus par la sorcellerie (**À vérifier**).
-- [ ] **EVO-18 Sources aussi fréquentes que les civils** | Lot 4
+- [ ] **EVO-18 Sources aussi fréquentes que les civils** | Lot 4 | 13.10
   On doit obtenir chaque lignée à peu près aussi souvent que des zombies. Chaque source (pillards, chiens errants, loups, corbeaux, processions) est répartie sur la carte et repeuplée comme les civils, pas seulement dans des lieux rares. Les zombies restent la lignée de départ, et le mage reste un mage zombie (ART-09).
 
 ## 4. Interface (UI)
@@ -223,37 +223,37 @@ Une vieille ville médiévale d'Europe, comme Carcassonne, de nos jours, envahie
 
 ### Ennemis naturels
 
-- [ ] **CONT-01 Chiens errants** | Lot 4
+- [ ] **CONT-01 Chiens errants** | Lot 4 | 13.06
   Meutes de quelques chiens dans les rues, agressifs envers les petites armées. Leurs cadavres donnent des chiens zombies.
-- [ ] **CONT-02 Loups** | Lot 4
+- [ ] **CONT-02 Loups** | Lot 4 | 13.07
   Meutes dans la forêt et le parc, qui chassent en groupe et encerclent. Leurs cadavres donnent des chiens zombies.
-- [ ] **CONT-03 Corbeaux et chauves-souris** | Lot 4
+- [ ] **CONT-03 Corbeaux et chauves-souris** | Lot 4 | 13.08
   Nuées volantes qui harcèlent et fuient, rapides. Leurs cadavres donnent des volées de charognards (lignée Volants).
-- [ ] **CONT-04 Pillards survivants** | Lot 4
+- [ ] **CONT-04 Pillards survivants** | Lot 4 | 13.06
   Humains armés (torches, fusils) qui errent, attaquent les petites armées et fuient les grosses. Leurs cadavres donnent des squelettes archers.
-- [ ] **CONT-05 Processions de moines** | Lot 4
+- [ ] **CONT-05 Processions de moines** | Lot 4 | 13.09
   Moines et pèlerins qui circulent entre la cathédrale et la ville. Leurs cadavres donnent des âmes errantes (lignée Spectres).
 
 ### Lieux à conquérir
 
 En plus du cimetière, des camps armés et des points d'intérêt actuels.
 
-- [ ] **CONT-06 Cathédrale et crypte** | Lot 4
+- [ ] **CONT-06 Cathédrale et crypte** | Lot 4 | 13.11
   Défendue par des moines et des templiers. Butin rare, source de spectres, repaire de l'Évêque déchu dans la crypte.
-- [ ] **CONT-07 Caserne et barrages militaires** | Lot 4
+- [ ] **CONT-07 Caserne et barrages militaires** | Lot 4 | 13.12
   Soldats, mitrailleuse fixe et mortier qui bombarde les armées proches. Butin : casques et armes lourdes. Donne une origine visible aux bombardements.
-- [ ] **CONT-08 Hôpital de quarantaine** | Lot 4
+- [ ] **CONT-08 Hôpital de quarantaine** | Lot 4 | 13.11, 13.13
   Plein de civils malades, regroupés et peu mobiles : une grosse source de zombies d'un coup. En échange, des pièges de gaz blessent les troupes.
-- [ ] **CONT-09 Forêt et parc** | Lot 4
+- [ ] **CONT-09 Forêt et parc** | Lot 4 | 13.11
   Zone sauvage entre les remparts : loups, corbeaux, cabane de chasseur avec butin. Casse la répétition des rues.
-- [ ] **CONT-10 Musée du château et place du marché** | Lot 4
+- [ ] **CONT-10 Musée du château et place du marché** | Lot 4 | 13.15
   Repaires du Grand chevalier et du Bourreau (CONT-12).
 
 ### Champions uniques
 
-- [ ] **CONT-11 Règles des champions** | Lot 4
+- [ ] **CONT-11 Règles des champions** | Lot 4 | 13.14
   Un seul exemplaire de chaque champion par lobby, dans son repaire. Le vaincre le relève pour son armée, comme tout cadavre. Il porte une icône sur la minimap de tous. Il suit les règles de nécromancie : il passe au tueur de son mage, et retourne à son repaire si son porteur meurt autrement (PNJ, brume, bombardement) ou quitte la partie. Il compte comme une unité de palier élevé pour la force, ne fusionne pas et n'est pas touché par les mutations.
-- [ ] **CONT-12 Les 4 premiers champions** | Lot 4
+- [ ] **CONT-12 Les 4 premiers champions** | Lot 4 | 13.15
   - Grand chevalier (musée) : tank de mêlée, charge qui renverse les petites unités.
   - Gargouille des remparts (tour du mur d'enceinte) : volante, plonge sur les armées qui passent, frappe les unités à distance.
   - Bourreau (échafaud de la place du marché) : hache en arc de cercle, exécute les unités sous 20 % de PV.
@@ -261,9 +261,9 @@ En plus du cimetière, des camps armés et des points d'intérêt actuels.
 
 ### Butin
 
-- [ ] **CONT-13 Équipement des nouvelles lignées** | Lot 4
+- [ ] **CONT-13 Équipement des nouvelles lignées** | Lot 4 | 13.16
   Une catégorie d'équipement par nouvelle lignée, sur le modèle du §6.3 : par exemple serres de fer pour les Volants, chaînes et lanternes spectrales pour les Spectres, avec commun, rare et légendaire (**À vérifier**).
-- [ ] **CONT-14 Butin des nouveaux lieux** | Lot 4
+- [ ] **CONT-14 Butin des nouveaux lieux** | Lot 4 | 13.16
   Tables de butin propres à chaque lieu (armes lourdes à la caserne, objets sacrés à la cathédrale...), dans `world.json`.
 
 ## 7. Ce qui reste du concept V1

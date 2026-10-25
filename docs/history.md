@@ -4,6 +4,28 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Concept V2, Lot 4 : nouveau contenu et sprites générés | 13.01-13.19 | L.BA
+
+- `shared/src/config/schema.ts`, `shared/src/registry.ts` : couche des corps, comportement de raid, quartiers et trajets des populations, lieux, champions et capacités, couche et apparence envoyées au client, vérification des lieux et des champions.
+- `shared/src/protocol/messages.ts` : position des champions dans le statut.
+- `shared/config/units.json` : lignées Volants et Spectres, triangle étendu, chiens errants, pillards, loups, corbeaux, chauves-souris, moines, templiers, patients, mitrailleuse, mortier, 4 champions.
+- `shared/config/world.json` : populations du Lot 4 (150 PNJ errants au total), lieux en garnison, repaires, gaz, coffres et butin par lieu, caserne, place et forêt dans chaque ville.
+- `shared/config/equipment.json` : serres et reliques des nouvelles lignées.
+- `shared/config/client.json`, `lobby.json` : ombre et transparence, échelles des sprites, couleur du gaz, portée de chasse aux champions.
+- `server/src/systems/bodies.ts`, `separation.ts`, `walls.ts`, `mists.ts` : volants au-dessus des murs, spectres à travers les rangs, gaz pour les corps au sol.
+- `server/src/systems/civilians.ts`, `hostiles.ts` : bandes qui attaquent les petites armées et fuient les grosses, encerclement, processions.
+- `server/src/systems/places.ts` : garnisons, coffres, réapparition, repaires de champions, mortier, gaz.
+- `server/src/systems/abilities.ts`, `combat.ts` : charge, piqué, exécution, frappe en arc, soins.
+- `server/src/systems/mage.ts`, `points.ts`, `transfer.ts`, `server/src/lobby/handicap.ts` : champions transmis entiers ou renvoyés au repaire, hors fosse commune, transferts limités sous le plafond des bots.
+- `server/src/systems/detection.ts`, `server/src/net/sockets.ts`, `interest.ts` : positions des champions, marqueur des lieux.
+- `server/src/lobby/bots.ts` : chasse aux repaires de champions.
+- `client/src/game/entities.ts`, `sprites.ts`, `client/src/minimap.ts`, `game.ts` : ombre des volants, transparence des spectres, sprites des lieux, champions sur la minimap.
+- `tools/assets/draw/`, `creatures.json`, `city.json`, `build.py`, `recipes.json` : sprites générés pour les unités, PNJ, champions, mages, sols, bâtiments et décor, chaîne LPC retirée.
+- `assets/` : packs LPC supprimés, ancien atlas gardé.
+- `client/public/atlas/` : atlas régénéré.
+- `server/tests/`, `shared/tests/`, `client/tests/` : couches, raids, lieux, champions, capacités, transferts, chasse des bots, sprites du contenu.
+- `docs/assets.md`, `docs/credits.md`, `docs/load-test.md`, `docs/conceptV2.md`, `docs/plan.md` : génération des sprites, crédits, mesures du Lot 4, numéros d'étape, phase 13.
+
 ### Ville dessinée, nuit, effets et interface du Lot 3 | 12.01, 12.07-12.17 | L.BA
 
 - `tools/assets/recipes.json` : sols, toits, murs, remparts, tours, porte, arbres, fontaine, étals, tombes, lampadaires, tonneaux, voiture, calvaire et palissade tirés des packs LPC.

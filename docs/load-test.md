@@ -152,3 +152,13 @@ Simulation hors réseau d'un lobby de 12 bots sans joueur (script jetable, 10 à
 - avant la correction des cibles, 2 à 6 bots sur 12 restaient sur place chaque minute, collés à un rempart ou visant un point dans un muret ; après, 1 à 3, pour la plupart en bataille. Un bot qui a perdu toutes ses unités reste à côté d'un civil qu'il ne peut pas infecter, comme avant la ville.
 
 Côté client, le voile de nuit se désactive seul si le jeu reste sous 28 fps pendant 6 s (`client.night`). Les fps sur un vrai téléphone restent à mesurer.
+
+## Concept V2, Lot 4 (nouveau contenu)
+
+Machine : Intel Core i5-12450H, Node 24.21. 40 participants, 150 zombies chacun, vue PC, 20 s après 3 s de chauffe, avec les bandes hostiles, les lieux en garnison, les champions et le gaz.
+
+- Tick de 42,6 ms en moyenne, 55 ms au 95e centile, 71 ms au pire. Débit de 26,5 Ko/s en moyenne, 55,6 Ko/s au pire. Dans la marge des mesures du Lot 3 sur la même machine (47 à 54 ms).
+
+Simulation hors réseau d'un lobby de 12 bots sans joueur (script jetable, 16 min de jeu calculées en 46 s) : le meilleur bot reste entre 40 et 42 de force pour une marge de 40, au plus 1 bot sur 12 reste sur place une minute, pire tick de 23 ms. Avant la limite de transfert sous le plafond, un bot qui tuait un mage pouvait passer de 37 à 67 de force en un tick.
+
+Le total de PNJ errants est resté à 150 (90 civils, 60 pour les nouvelles sources), à revoir après des parties.
