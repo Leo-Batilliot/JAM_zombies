@@ -1,31 +1,16 @@
-# Assets du Lot 3
+# Assets
 
-Liste par besoin des sources retenues (ART-08). Les PNG bruts et leurs licences sont dans `assets/`, la liste complète des sources dans `assets/sources.json` et les crédits dans `docs/credits.md`. L'atlas se reconstruit avec `python3 tools/assets/build.py` (Pillow, voir `tools/assets/requirements.txt`) : les recettes sont dans `tools/assets/recipes.json`, la palette dans `tools/assets/palette.json`.
+Tous les sprites sont générés par script, dans l'esprit de l'atlas d'avant la V2 (ART-07). Les packs LPC du Lot 3 ont été retirés après retour de jeu (voir `docs/decisions.md`).
 
-Licences : CC-BY-SA 3.0 et GPL 3.0 pour la plupart des packs LPC. Les sprites recolorés restent sous la même licence et chaque auteur doit être crédité.
+## Reconstruire l'atlas
 
-## Unités, PNJ et mages
+`python3 tools/assets/build.py` (Pillow, voir `tools/assets/requirements.txt`). Le script réunit :
+- `assets/legacy/` : l'atlas d'avant la V2, pour ce qui n'est pas régénéré (Citrouille, citrouilles-lanternes, pub *Winchester*, objets, icônes, projectiles, coffres, âmes, buissons, rochers) ;
+- `tools/assets/creatures.json` : unités, PNJ, champions et apparences du mage ;
+- `tools/assets/city.json` : sols, toits, façades, remparts, tours, porte, arbres, fontaine, étals, lampadaires, tonneaux, voiture, tombes, calvaires et palissades.
 
-- Zombies (zombie, gros zombie, abomination, titan de chair, rôdeur, wendigo) : `lpc/zombie` recoloré par palier.
-- Goule, molosse, cerbère, chien des enfers, loup putride : `lpc/wolf` recoloré.
-- Chien zombie et chien de garde : `lpc/cats-and-dogs`.
-- Loup-garou et seigneur-garou : `lpc/wolfman`.
-- Squelettes (archer, arbalétrier, pyromancien, liche, roi liche) : `lpc/medieval-characters` (corps squelette, arcs, robes).
-- Civils, chasseurs, soldats : `lpc/medieval-characters`.
-- Apparences du mage : `lpc/medieval-characters`, peau zombifiée par recoloration.
-- Reste à générer : baliste et catapulte d'os (encore empruntées), Citrouille et ses citrouilles-lanternes (atlas d'origine).
+Chaque entrée choisit un modèle de `tools/assets/draw/` (humanoïde, quadrupède, volant, spectre, engin, sol, toit, façade, tour, arbre, fontaine, accessoire) et ses couleurs. Le contour sombre vient de `tools/assets/palette.json`, la taille finale de `generatedScale` dans `tools/assets/recipes.json`.
 
-## Ville
+## Ajouter un sprite
 
-- Sols : `lpc/base-assets/tiles` (pavés et dalles de `castlefloors_outside`, terre, herbe, herbe recolorée en feuilles, mousse).
-- Toits et murs des bâtiments : `lpc/base-assets/tiles/house.png`.
-- Remparts, tours et pierre : `lpc/castle-mega-pack`, porte de `lpc/base-assets/tiles/castle_outside.png`.
-- Arbres et sapins : `lpc/misc-tile-atlas`.
-- Fontaine, étals, tombes, calvaires : `lpc/medieval-village-decorations`.
-- Palissades des camps : `lpc/medieval-village-decorations/fence_medieval.png`.
-- Lampadaires : `lpc/lamp-posts`. Tonneaux : `lpc/base-assets/tiles/barrel.png`. Voitures : `lpc/modern-cars`. Fissures : `lpc/modern-streets`.
-
-## Effets et interface
-
-- Halos de la nuit, anneaux de fusion et de level up : générés par le client.
-- Icônes des dons et des sorts, objets, projectiles : atlas d'origine (`assets/legacy`).
+Ajouter une entrée dans `creatures.json` ou `city.json` avec le nom attendu par le client (`unit-<id>`, `npc-<id>`, `mage-<apparence>`, `ground-<sol>`...), relancer le script, puis régler l'échelle dans `spriteAliases` de `shared/config/client.json` si besoin. Un test client vérifie que chaque unité, PNJ, objet, point d'intérêt et lieu a un sprite dans l'atlas.

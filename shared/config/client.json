@@ -140,45 +140,49 @@
   },
   "spellKey": " ",
   "spriteAliases": {
-    "unit-bone-catapult": {
-      "sprite": "unit-bone-ballista",
-      "scale": 1.3
-    },
-    "npc-bone-wall": {
-      "sprite": "decor-rock",
-      "scale": 1
-    },
-    "projectile-fire": {
-      "sprite": "projectile-bolt",
+    "unit-zombie": {
+      "sprite": "unit-zombie",
       "scale": 1
     },
     "unit-big-zombie": {
       "sprite": "unit-big-zombie",
-      "scale": 1.2
+      "scale": 1.15
     },
     "unit-abomination": {
       "sprite": "unit-abomination",
-      "scale": 1.45
+      "scale": 1.35
     },
     "unit-flesh-titan": {
       "sprite": "unit-flesh-titan",
-      "scale": 1.75
+      "scale": 1.6
     },
     "unit-ghoul": {
       "sprite": "unit-ghoul",
-      "scale": 0.85
+      "scale": 1.15
     },
     "unit-stalker": {
       "sprite": "unit-stalker",
-      "scale": 1.15
+      "scale": 1.35
     },
     "unit-wendigo": {
       "sprite": "unit-wendigo",
-      "scale": 1.4
+      "scale": 1.6
+    },
+    "unit-skeleton-archer": {
+      "sprite": "unit-skeleton-archer",
+      "scale": 1
     },
     "unit-skeleton-crossbowman": {
       "sprite": "unit-skeleton-crossbowman",
-      "scale": 1.2
+      "scale": 1.15
+    },
+    "unit-bone-ballista": {
+      "sprite": "unit-bone-ballista",
+      "scale": 1.35
+    },
+    "unit-bone-catapult": {
+      "sprite": "unit-bone-catapult",
+      "scale": 1.6
     },
     "unit-pyromancer": {
       "sprite": "unit-pyromancer",
@@ -194,114 +198,126 @@
     },
     "unit-zombie-dog": {
       "sprite": "unit-zombie-dog",
-      "scale": 1.6
+      "scale": 1
     },
     "unit-mastiff": {
       "sprite": "unit-mastiff",
-      "scale": 0.85
+      "scale": 1.15
     },
     "unit-cerberus": {
       "sprite": "unit-cerberus",
-      "scale": 1.05
+      "scale": 1.35
     },
     "unit-hellhound": {
       "sprite": "unit-hellhound",
-      "scale": 1.3
+      "scale": 1.6
     },
     "unit-rotting-wolf": {
       "sprite": "unit-rotting-wolf",
-      "scale": 0.85
+      "scale": 1.15
     },
     "unit-werewolf": {
       "sprite": "unit-werewolf",
-      "scale": 1.2
+      "scale": 1.35
     },
     "unit-werelord": {
       "sprite": "unit-werelord",
-      "scale": 1.5
-    },
-    "npc-guard-dog": {
-      "sprite": "npc-guard-dog",
-      "scale": 1.5
+      "scale": 1.6
     },
     "unit-carrion-flock": {
-      "sprite": "unit-bat",
-      "scale": 0.8
+      "sprite": "unit-carrion-flock",
+      "scale": 1
     },
     "unit-bat-swarm": {
-      "sprite": "unit-bat",
-      "scale": 1
-    },
-    "unit-vampire": {
-      "sprite": "unit-bat",
-      "scale": 1.2
-    },
-    "unit-nosferatu": {
-      "sprite": "unit-bat",
-      "scale": 1.45
-    },
-    "unit-harpy": {
-      "sprite": "unit-bat",
-      "scale": 1.05
-    },
-    "unit-bone-wyvern": {
-      "sprite": "unit-bat",
-      "scale": 1.3
-    },
-    "unit-bone-dragon": {
-      "sprite": "unit-bat",
-      "scale": 1.7
-    },
-    "unit-wandering-soul": {
-      "sprite": "unit-ghost",
-      "scale": 0.8
-    },
-    "unit-spectre": {
-      "sprite": "unit-ghost",
-      "scale": 0.95
-    },
-    "unit-banshee": {
-      "sprite": "unit-ghost",
+      "sprite": "unit-bat-swarm",
       "scale": 1.15
     },
-    "unit-lament-queen": {
-      "sprite": "unit-ghost",
-      "scale": 1.45
+    "unit-vampire": {
+      "sprite": "unit-vampire",
+      "scale": 1.35
     },
-    "unit-shade": {
-      "sprite": "unit-ghost",
-      "scale": 0.95
+    "unit-nosferatu": {
+      "sprite": "unit-nosferatu",
+      "scale": 1.6
     },
-    "unit-reaper": {
-      "sprite": "unit-ghost",
-      "scale": 1.2
+    "unit-harpy": {
+      "sprite": "unit-harpy",
+      "scale": 1.15
     },
-    "unit-ankou": {
-      "sprite": "unit-ghost",
-      "scale": 1.5
+    "unit-bone-wyvern": {
+      "sprite": "unit-bone-wyvern",
+      "scale": 1.35
     },
-    "npc-stray-dog": {
-      "sprite": "npc-guard-dog",
-      "scale": 1.4
+    "unit-bone-dragon": {
+      "sprite": "unit-bone-dragon",
+      "scale": 1.6
     },
-    "npc-looter": {
-      "sprite": "npc-hunter",
+    "unit-wandering-soul": {
+      "sprite": "unit-wandering-soul",
       "scale": 1
     },
-    "npc-wolf": {
-      "sprite": "unit-rotting-wolf",
-      "scale": 0.85
+    "unit-spectre": {
+      "sprite": "unit-spectre",
+      "scale": 1.15
     },
-    "npc-crow": {
-      "sprite": "unit-bat",
-      "scale": 0.7
+    "unit-banshee": {
+      "sprite": "unit-banshee",
+      "scale": 1.35
     },
-    "npc-bat": {
-      "sprite": "unit-bat",
-      "scale": 0.7
+    "unit-lament-queen": {
+      "sprite": "unit-lament-queen",
+      "scale": 1.6
     },
-    "npc-monk": {
-      "sprite": "npc-civilian",
+    "unit-shade": {
+      "sprite": "unit-shade",
+      "scale": 1.15
+    },
+    "unit-reaper": {
+      "sprite": "unit-reaper",
+      "scale": 1.35
+    },
+    "unit-ankou": {
+      "sprite": "unit-ankou",
+      "scale": 1.6
+    },
+    "unit-grand-knight": {
+      "sprite": "unit-grand-knight",
+      "scale": 1.5
+    },
+    "unit-gargoyle": {
+      "sprite": "unit-gargoyle",
+      "scale": 1.5
+    },
+    "unit-executioner": {
+      "sprite": "unit-executioner",
+      "scale": 1.5
+    },
+    "unit-fallen-bishop": {
+      "sprite": "unit-fallen-bishop",
+      "scale": 1.5
+    },
+    "npc-grand-knight": {
+      "sprite": "unit-grand-knight",
+      "scale": 1.6
+    },
+    "npc-gargoyle": {
+      "sprite": "unit-gargoyle",
+      "scale": 1.6
+    },
+    "npc-executioner": {
+      "sprite": "unit-executioner",
+      "scale": 1.6
+    },
+    "npc-fallen-bishop": {
+      "sprite": "unit-fallen-bishop",
+      "scale": 1.6
+    },
+    "npc-bone-wall": {
+      "sprite": "decor-rock",
+      "scale": 1
+    },
+    "projectile-fire": {
+      "sprite": "projectile-bolt",
       "scale": 1
     },
     "place-cathedral": {
@@ -313,27 +329,11 @@
       "scale": 1
     },
     "place-hospital": {
-      "sprite": "poi-mass-grave",
-      "scale": 1
+      "sprite": "cross",
+      "scale": 0.8
     },
     "place-cabin": {
       "sprite": "camp",
-      "scale": 1
-    },
-    "npc-templar": {
-      "sprite": "npc-soldier",
-      "scale": 1
-    },
-    "npc-patient": {
-      "sprite": "npc-civilian",
-      "scale": 1
-    },
-    "npc-machine-gun": {
-      "sprite": "projectile-bullet",
-      "scale": 3
-    },
-    "npc-mortar": {
-      "sprite": "decor-barrel",
       "scale": 1
     },
     "poi-cathedral-chest": {
@@ -351,38 +351,6 @@
     "poi-cabin-chest": {
       "sprite": "poi-chest",
       "scale": 1
-    },
-    "unit-grand-knight": {
-      "sprite": "npc-soldier",
-      "scale": 1.8
-    },
-    "npc-grand-knight": {
-      "sprite": "npc-soldier",
-      "scale": 1.8
-    },
-    "unit-gargoyle": {
-      "sprite": "unit-bat",
-      "scale": 2.2
-    },
-    "npc-gargoyle": {
-      "sprite": "unit-bat",
-      "scale": 2.2
-    },
-    "unit-executioner": {
-      "sprite": "npc-hunter",
-      "scale": 1.8
-    },
-    "npc-executioner": {
-      "sprite": "npc-hunter",
-      "scale": 1.8
-    },
-    "unit-fallen-bishop": {
-      "sprite": "mage-lich",
-      "scale": 1.6
-    },
-    "npc-fallen-bishop": {
-      "sprite": "mage-lich",
-      "scale": 1.6
     },
     "place-museum": {
       "sprite": "poi-chest",
@@ -431,7 +399,7 @@
   },
   "cardArtScale": 2,
   "city": {
-    "tilePixels": 32,
+    "tilePixels": 64,
     "edge": "#141017",
     "grounds": {
       "cobble": {
@@ -474,7 +442,7 @@
     "obstacles": {
       "rampart": {
         "roof": "obstacle-stone",
-        "wall": "obstacle-wall",
+        "wall": "obstacle-rampart",
         "wallMeters": 2
       },
       "building": {
@@ -484,12 +452,12 @@
       },
       "cathedral": {
         "roof": "obstacle-stone",
-        "wall": "obstacle-wall",
+        "wall": "obstacle-rampart",
         "wallMeters": 2.5
       },
       "keep": {
         "roof": "obstacle-stone",
-        "wall": "obstacle-wall",
+        "wall": "obstacle-rampart",
         "wallMeters": 2.5
       },
       "hospital": {
@@ -499,7 +467,7 @@
       },
       "wall": {
         "roof": "obstacle-stone",
-        "wall": "obstacle-wall",
+        "wall": "obstacle-rampart",
         "wallMeters": 0.5
       },
       "stall": {
@@ -509,18 +477,18 @@
       },
       "tree": {
         "sprite": "obstacle-tree",
-        "scale": 2.2,
-        "anchorY": 0.85
+        "scale": 1.6,
+        "anchorY": 0.8
       },
       "tower": {
         "sprite": "obstacle-tower",
-        "scale": 1.2,
-        "anchorY": 0.75
+        "scale": 1.1,
+        "anchorY": 0.5
       },
       "fountain": {
         "sprite": "obstacle-fountain",
         "scale": 1.1,
-        "anchorY": 0.55
+        "anchorY": 0.6
       }
     },
     "minimapObstacle": "#141017",

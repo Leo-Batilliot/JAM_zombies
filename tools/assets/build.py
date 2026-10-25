@@ -4,6 +4,8 @@ import json
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from PIL import Image, ImageChops, ImageFilter
 
 
@@ -11,26 +13,6 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 ASSETS = os.path.join(ROOT, "assets")
 OUTPUT = os.path.join(ROOT, "client", "public", "atlas")
 HERE = os.path.dirname(os.path.abspath(__file__))
-
-DIRECTIONS = ["n", "w", "s", "e"]
-CELL = 64
-UNIVERSAL = {
-    "cast": (0, 7),
-    "thrust": (4, 8),
-    "walk": (8, 9),
-    "slash": (12, 6),
-    "shoot": (16, 13),
-    "hurt": (20, 6),
-}
-FOLDERS = {
-    "cast": "spellcast",
-    "thrust": "thrust",
-    "walk": "walkcycle",
-    "slash": "slash",
-    "shoot": "bow",
-    "hurt": "hurt",
-}
-
 
 def load_json(path):
     with open(path, encoding="utf-8") as handle:
@@ -46,77 +28,13 @@ def hex_color(value):
     return tuple(int(value[i : i + 2], 16) for i in (0, 2, 4)) + (255,)
 
 
-def hue_mask(hsv_bands, op):
-    hue, saturation, _ = hsv_bands
-    low, high = (round(d * 255 / 360) for d in op.get("hue", [0, 360]))
-    inside = (
-        (lambda p: 255 if low <= p <= high else 0)
-        if low <= high
-        else (lambda p: 255 if p >= low or p <= high else 0)
-    )
-    threshold = round(op.get("satMin", 0) * 255)
-    return ImageChops.multiply(
-        hue.point(inside),
-        saturation.point(lambda p: 255 if p >= threshold else 0),
-    )
-
-
-def apply(img, op):
-    alpha = img.getchannel("A")
-    rgb = img.convert("RGB")
-    bands = rgb.convert("HSV").split()
-    mask = ImageChops.multiply(hue_mask(bands, op), alpha.point(lambda p: 255 if p else 0))
-    kind = op["op"]
-    if kind == "hsv":
-        shift = round(op.get("shift", 0) * 255 / 360)
-        sat, val = op.get("sat", 1), op.get("val", 1)
-        hue, saturation, value = bands
-        changed = Image.merge(
-            "HSV",
-            (
-                hue.point(lambda p: (p + shift) % 256),
-                saturation.point(lambda p: min(255, round(p * sat))),
-                value.point(lambda p: min(255, round(p * val))),
-            ),
-        ).convert("RGB")
-    elif kind == "multiply":
-        changed = ImageChops.multiply(rgb, Image.new("RGB", rgb.size, hex_color(op["color"])[:3]))
-    elif kind == "mix":
-        changed = Image.blend(rgb, Image.new("RGB", rgb.size, hex_color(op["color"])[:3]), op["amount"])
-    else:
-        raise ValueError(f"Unknown recolor op {kind}")
-    result = Image.composite(changed, rgb, mask).convert("RGBA")
-    result.putalpha(alpha)
-    return result
-
-
 def recolor(img, ops, palette):
     for op in ops:
-        if op["op"] == "palette":
-            img = normalize(img, palette)
-        elif op["op"] != "outline":
-            img = apply(img, op)
-    if any(op["op"] == "outline" for op in ops):
+        if op["op"] != "outline":
+            raise ValueError(f"Unknown recolor op {op['op']}")
+    if ops:
         return outline(img, hex_color(palette["outline"]))
     return img
-
-
-def palette_image(palette):
-    colors = [hex_color(color)[:3] for color in palette["colors"]]
-    flat = [channel for color in colors for channel in color]
-    flat += flat[:3] * (256 - len(colors))
-    holder = Image.new("P", (1, 1))
-    holder.putpalette(flat)
-    return holder
-
-
-def normalize(img, palette):
-    alpha = img.getchannel("A")
-    mapped = img.convert("RGB").quantize(
-        palette=palette_image(palette), dither=Image.Dither.NONE
-    ).convert("RGBA")
-    mapped.putalpha(alpha)
-    return mapped
 
 
 def outline(img, color):
@@ -128,64 +46,6 @@ def outline(img, color):
     border.putalpha(ring)
     border.alpha_composite(grown)
     return border
-
-
-def layer_path(recipe, layer, source_anim):
-    if recipe["layout"] == "universal":
-        return layer
-    name = recipe.get("bodies", {}).get(source_anim, layer) if layer == "BODY" else layer
-    return os.path.join(recipe["folder"], FOLDERS[source_anim], f"{name}.png")
-
-
-def layer_stack(recipe, source_anim, palette):
-    stack = []
-    for entry in recipe["layers"]:
-        layer = entry if isinstance(entry, str) else entry["layer"]
-        path = layer_path(recipe, layer, source_anim)
-        if os.path.exists(os.path.join(ASSETS, path)):
-            loaded = image(path)
-            ops = [] if isinstance(entry, str) else entry.get("recolor", [])
-            stack.append(recolor(loaded, ops, palette) if ops else loaded)
-    return stack
-
-
-def character_frames(recipe, palette):
-    frames = {}
-    for anim, source_anim in recipe["anims"].items():
-        stack = layer_stack(recipe, source_anim, palette)
-        top, count = UNIVERSAL[source_anim]
-        if recipe["layout"] != "universal":
-            top = 0
-        rows = 1 if source_anim == "hurt" else 4
-        for row in range(rows):
-            direction = "s" if rows == 1 else DIRECTIONS[row]
-            for index in range(count):
-                frame = Image.new("RGBA", (CELL, CELL), (0, 0, 0, 0))
-                box = (index * CELL, (top + row) * CELL, (index + 1) * CELL, (top + row + 1) * CELL)
-                for layer in stack:
-                    if box[2] <= layer.width and box[3] <= layer.height:
-                        frame.alpha_composite(layer.crop(box))
-                frames[f"{recipe['name']}-{anim}-{direction}-{index}"] = frame
-    return frames
-
-
-def grid_frames(recipe, palette):
-    sheet = image(recipe["file"])
-    frames = {}
-    for anim, directions in recipe["anims"].items():
-        for direction, (x, y, w, h, count) in directions.items():
-            for index in range(count):
-                box = (x + index * w, y, x + (index + 1) * w, y + h)
-                frames[f"{recipe['name']}-{anim}-{direction}-{index}"] = sheet.crop(box)
-    return frames
-
-
-def image_frames(recipe, palette):
-    sheet = image(recipe["file"])
-    frames = {}
-    for name, (x, y, w, h) in recipe["rects"].items():
-        frames[name] = sheet.crop((x, y, x + w, y + h))
-    return frames
 
 
 def legacy_frames(recipe, palette):
@@ -200,31 +60,31 @@ def legacy_frames(recipe, palette):
     return frames
 
 
+def generated_frames(recipe, palette):
+    from draw import MODELS
+
+    return MODELS[recipe["model"]](recipe["name"], recipe.get("params", {}))
+
+
 BUILDERS = {
-    "character": character_frames,
-    "grid": grid_frames,
-    "image": image_frames,
+    "generated": generated_frames,
     "legacy": legacy_frames,
 }
 
 
-def resolve(recipe, by_name):
-    if "base" not in recipe:
-        return recipe
-    merged = dict(resolve(by_name[recipe["base"]], by_name))
-    merged.update({key: value for key, value in recipe.items() if key != "base"})
-    return merged
-
-
 def collect(recipes, palette):
-    by_name = {recipe["name"]: recipe for recipe in recipes if "name" in recipe}
     frames = {}
-    for raw in recipes:
-        recipe = resolve(raw, by_name)
+    for recipe in recipes:
         built = BUILDERS[recipe["kind"]](recipe, palette)
         ops = recipe.get("recolor", [])
+        scale = recipe.get("scale", 1)
         for name, frame in built.items():
-            frames[name] = recolor(frame, ops, palette) if ops else frame
+            frame = recolor(frame, ops, palette) if ops else frame
+            if scale != 1:
+                frame = frame.resize(
+                    (frame.width * scale, frame.height * scale), Image.NEAREST
+                )
+            frames[name] = frame
     return frames
 
 
@@ -283,33 +143,16 @@ def write(pages, max_size):
     return sheets
 
 
-def expand(ops, presets):
-    expanded = []
-    for op in ops:
-        expanded.extend(expand(presets[op], presets) if isinstance(op, str) else [op])
-    return expanded
-
-
-def expand_recipe(recipe, presets):
-    recipe = dict(recipe)
-    if "recolor" in recipe:
-        recipe["recolor"] = expand(recipe["recolor"], presets)
-    if "layers" in recipe:
-        recipe["layers"] = [
-            layer
-            if isinstance(layer, str)
-            else {**layer, "recolor": expand(layer.get("recolor", []), presets)}
-            for layer in recipe["layers"]
-        ]
-    return recipe
-
-
 def main():
     settings = load_json(os.path.join(HERE, "recipes.json"))
     palette = load_json(os.path.join(HERE, "palette.json"))
-    presets = settings.get("presets", {})
-    recipes = [expand_recipe(recipe, presets) for recipe in settings["recipes"]]
-    frames = collect(recipes, palette)
+    listed = list(settings["recipes"])
+    for include in settings.get("includes", []):
+        listed.extend(
+            {"scale": settings.get("generatedScale", 1), **recipe}
+            for recipe in load_json(os.path.join(HERE, include))
+        )
+    frames = collect(listed, palette)
     pages = pack(frames, settings["maxSize"], settings["padding"])
     sheets = write(pages, settings["maxSize"])
     print(f"{len(frames)} frames in {len(sheets)} atlas")

@@ -1,0 +1,462 @@
+[
+  {
+    "kind": "generated",
+    "name": "ground-cobble",
+    "model": "ground",
+    "params": {
+      "kind": "cobble",
+      "color": "#6a6a72",
+      "mortar": "#30303a",
+      "seed": 4
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-stone",
+    "model": "ground",
+    "params": {
+      "kind": "flag",
+      "color": "#5a6070",
+      "mortar": "#2e3240",
+      "seed": 2
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-dirt",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#5e452b",
+      "density": 0.2,
+      "spread": 0.3,
+      "spots": [
+        {
+          "count": 12,
+          "colors": ["#45321f", "#7a5a38"],
+          "size": 2
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-grass",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#4a5a2e",
+      "density": 0.15,
+      "spread": 0.25,
+      "spots": [
+        {
+          "count": 10,
+          "colors": ["#6f7d46", "#3e4a2a"],
+          "size": 2
+        }
+      ],
+      "seed": 1
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-grass-1",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#4a5a2e",
+      "density": 0.15,
+      "spread": 0.25,
+      "seed": 11,
+      "spots": [
+        {
+          "count": 14,
+          "colors": ["#6f7d46", "#8d9a5c", "#3e4a2a"],
+          "size": 2
+        },
+        {
+          "count": 2,
+          "colors": ["#e8a64a", "#cfe8ff"]
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-grass-2",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#4a5a2e",
+      "density": 0.15,
+      "spread": 0.25,
+      "seed": 12,
+      "spots": [
+        {
+          "count": 14,
+          "colors": ["#6f7d46", "#8d9a5c", "#3e4a2a"],
+          "size": 2
+        },
+        {
+          "count": 2,
+          "colors": ["#e8a64a", "#cfe8ff"]
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-grass-3",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#4a5a2e",
+      "density": 0.15,
+      "spread": 0.25,
+      "seed": 13,
+      "spots": [
+        {
+          "count": 14,
+          "colors": ["#6f7d46", "#8d9a5c", "#3e4a2a"],
+          "size": 2
+        },
+        {
+          "count": 2,
+          "colors": ["#e8a64a", "#cfe8ff"]
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-leaves",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#4a3220",
+      "density": 0.2,
+      "spread": 0.25,
+      "seed": 5,
+      "spots": [
+        {
+          "count": 40,
+          "colors": ["#a04f22", "#c2692e", "#d98a45", "#7c3a1a"],
+          "size": 2
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-leaves-1",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#4a3220",
+      "density": 0.2,
+      "spread": 0.25,
+      "seed": 21,
+      "spots": [
+        {
+          "count": 40,
+          "colors": ["#a04f22", "#c2692e", "#d98a45", "#7c3a1a"],
+          "size": 2
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-leaves-2",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#4a3220",
+      "density": 0.2,
+      "spread": 0.25,
+      "seed": 22,
+      "spots": [
+        {
+          "count": 40,
+          "colors": ["#a04f22", "#c2692e", "#d98a45", "#7c3a1a"],
+          "size": 2
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-leaves-3",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#4a3220",
+      "density": 0.2,
+      "spread": 0.25,
+      "seed": 23,
+      "spots": [
+        {
+          "count": 40,
+          "colors": ["#a04f22", "#c2692e", "#d98a45", "#7c3a1a"],
+          "size": 2
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "ground-moss",
+    "model": "ground",
+    "params": {
+      "kind": "speckle",
+      "color": "#2c3320",
+      "density": 0.25,
+      "spread": 0.3,
+      "spots": [
+        {
+          "count": 20,
+          "colors": ["#3e4a2a", "#556337"],
+          "size": 2
+        }
+      ]
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-roof",
+    "model": "roof",
+    "params": {
+      "color": "#4a5068",
+      "seed": 1
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-roof-red",
+    "model": "roof",
+    "params": {
+      "color": "#8a3a2a",
+      "seed": 2
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-wall",
+    "model": "facade",
+    "params": {
+      "color": "#7a4a3a",
+      "mortar": "#3a2a22",
+      "window": "#f3c46d"
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-rampart",
+    "model": "facade",
+    "params": {
+      "color": "#66707f",
+      "mortar": "#353b52"
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-stone",
+    "model": "ground",
+    "params": {
+      "kind": "flag",
+      "color": "#7a808e",
+      "mortar": "#3a4150",
+      "seed": 7
+    }
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-tower",
+    "model": "tower",
+    "params": {
+      "color": "#7a808e",
+      "size": 48
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-gate",
+    "model": "prop",
+    "params": {
+      "kind": "gate",
+      "color": "#5e452b",
+      "stone": "#66707f"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-tree",
+    "model": "tree",
+    "params": {
+      "color": "#3e6a3a",
+      "size": 40,
+      "seed": 3
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-pine",
+    "model": "tree",
+    "params": {
+      "color": "#2e4a2a",
+      "pine": true,
+      "size": 36
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "decor-tree",
+    "model": "tree",
+    "params": {
+      "color": "#7a4a1a",
+      "accent": "#c2692e",
+      "size": 32,
+      "seed": 9
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-fountain",
+    "model": "fountain",
+    "params": {
+      "color": "#8a8e98",
+      "water": "#3a6a9a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "obstacle-stall",
+    "model": "prop",
+    "params": {
+      "kind": "stall",
+      "color": "#7a5a38",
+      "awning": "#a03030",
+      "stripe": "#e8e0cc"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "decor-lamp",
+    "model": "prop",
+    "params": {
+      "kind": "lamp",
+      "color": "#2b2430",
+      "light": "#f3c46d"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "decor-barrel",
+    "model": "prop",
+    "params": {
+      "kind": "barrel",
+      "color": "#7a5a38"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "decor-car",
+    "model": "prop",
+    "params": {
+      "kind": "car",
+      "color": "#6a3a2a"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "decor-grave",
+    "model": "prop",
+    "params": {
+      "kind": "grave",
+      "color": "#858e9b"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "cross",
+    "model": "prop",
+    "params": {
+      "kind": "cross",
+      "color": "#a6adb6"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  },
+  {
+    "kind": "generated",
+    "name": "camp",
+    "model": "prop",
+    "params": {
+      "kind": "palisade",
+      "color": "#7a5a38"
+    },
+    "recolor": [
+      {
+        "op": "outline"
+      }
+    ]
+  }
+]
