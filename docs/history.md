@@ -4,6 +4,12 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Concept V2 du revamp | L.BA
+
+- `docs/conceptV2.md` : revamp du gameplay et du visuel en cases à cocher, par thème et par lot.
+- `docs/concept.md` : renvoi vers la V2 pour les sections remplacées.
+- `docs/decisions.md` : décision sur le revamp.
+
 ### Préparation de la démo et documentation de lancement | 8.02-8.04 | T.BE
 
 - `client/src/style.css` : boutons du mode démo en haut au centre, ils passaient sous les boutons de formation sur téléphone.
