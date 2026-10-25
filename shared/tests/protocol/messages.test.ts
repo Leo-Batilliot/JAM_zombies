@@ -203,6 +203,38 @@ const serverMessages: ServerMessage[] = [
           "unit-ghoul": { sprite: "unit-zombie-dog", scale: 1.1 },
         },
         cardArtScale: 2,
+        city: {
+          tilePixels: 32,
+          edge: "#141017",
+          grounds: {
+            grass: {
+              tile: "ground-grass",
+              variants: ["ground-grass-1"],
+              variantRate: 0.2,
+            },
+          },
+          obstacles: {
+            building: {
+              roof: "obstacle-roof",
+              wall: "obstacle-wall",
+              wallMeters: 1.5,
+            },
+            tree: { sprite: "obstacle-tree", scale: 2, anchorY: 0.85 },
+          },
+          ramparts: {
+            tower: "obstacle-tower",
+            towerSpacing: 50,
+            gate: "obstacle-gate",
+          },
+          outside: {
+            depth: 15,
+            ground: "ground-leaves",
+            trees: ["obstacle-pine"],
+            treeSpacing: 5,
+            shade: "#0a080c",
+            shadeAlpha: 0.5,
+          },
+        },
       },
       world: {
         width: 400,

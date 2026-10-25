@@ -245,7 +245,7 @@
     "columns": 4,
     "rows": 4,
     "street": 12,
-    "streetGround": "cobble",
+    "streetGround": "stone",
     "templates": {
       "houses": {
         "name": "Houses",

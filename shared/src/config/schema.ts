@@ -561,6 +561,52 @@ const effectSchema = z.strictObject({
   gapMs: z.int().nonnegative(),
 });
 
+const obstacleLookSchema = z.union([
+  z.strictObject({
+    roof: id,
+    wall: id,
+    wallMeters: z.number().nonnegative(),
+  }),
+  z.strictObject({
+    sprite: id,
+    scale: z.number().positive(),
+    anchorY: fraction,
+  }),
+]);
+
+const cityLookSchema = z.strictObject({
+  tilePixels: z.int().positive(),
+  edge: color,
+  grounds: z.record(
+    id,
+    z.strictObject({
+      tile: id,
+      variants: z.array(id),
+      variantRate: fraction,
+      minimap: color,
+    }),
+  ),
+  obstacles: z.record(id, obstacleLookSchema),
+  minimapObstacle: color,
+  landmarks: z.record(
+    id,
+    z.strictObject({ symbol: z.string().min(1).max(2), color }),
+  ),
+  ramparts: z.strictObject({
+    tower: id,
+    towerSpacing: z.number().positive(),
+    gate: id,
+  }),
+  outside: z.strictObject({
+    depth: z.number().positive(),
+    ground: id,
+    trees: z.array(id).min(1),
+    treeSpacing: z.number().positive(),
+    shade: color,
+    shadeAlpha: fraction,
+  }),
+});
+
 export const clientSettingsSchema = z.strictObject({
   maxPixelRatio: z.number().positive(),
   pixelsPerMeter: z.number().positive(),
@@ -644,6 +690,15 @@ export const clientSettingsSchema = z.strictObject({
     z.strictObject({ sprite: id, scale: z.number().positive() }),
   ),
   cardArtScale: z.number().positive(),
+  city: cityLookSchema,
+  night: z.strictObject({
+    color,
+    alpha: fraction,
+    resolution: z.number().positive().max(1),
+    lights: z.record(id, z.number().positive()),
+    minFps: z.number().positive(),
+    slowSec: z.number().positive(),
+  }),
 });
 
 export const configSchema = z.strictObject({

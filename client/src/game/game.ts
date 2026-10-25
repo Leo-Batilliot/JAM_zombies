@@ -31,6 +31,7 @@ import { SnapshotBuffer } from "./interpolation.js";
 import { MapLayer } from "./map.js";
 import { ClickMarker } from "./marker.js";
 import { MistLayer } from "./mists.js";
+import { entityLights, NightLayer, SlowFrames } from "./night.js";
 import { buildOutlines } from "./outlines.js";
 import { pickEnemy } from "./picking.js";
 import { armyHex } from "./sprites.js";
@@ -101,7 +102,9 @@ export const startGame = async (
     mists.graphics,
     searchBar.graphics,
   );
-  app.stage.addChild(world);
+  const night = new NightLayer(app.renderer);
+  const slowFrames = new SlowFrames(() => config().client.night);
+  app.stage.addChild(world, night.sprite);
 
   const hud = new Hud(ui, () => config().gameplay.leaderboardSize);
   const bossBar = new BossBar(ui);
@@ -311,6 +314,21 @@ export const startGame = async (
       maxX: camera.x + halfWidth,
       maxY: camera.y + halfHeight,
     };
+    slowFrames.record(app.ticker.FPS, app.ticker.deltaMS);
+    night.update(
+      config().client.night,
+      [
+        ...(map.layout?.lights ?? []),
+        ...entityLights(frame, config().client.night.lights),
+      ],
+      (x, y) => ({
+        x: world.position.x + x * scale,
+        y: world.position.y + y * scale,
+      }),
+      app.screen,
+      scale,
+      slowFrames.degraded,
+    );
     entities.update(frame, view, now, self?.army);
     plates.update(frame, self?.army, config());
     crosses.update(frame, status?.crosses ?? [], config().world.crosses, scale);
@@ -332,6 +350,7 @@ export const startGame = async (
         y: mage.y,
         color: armyHex(config().client.armyColors, mage.army),
       })),
+      map.layout && { layout: map.layout, look: config().client.city },
     );
     marker.update(now);
     playCues(view, now);

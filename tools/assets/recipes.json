@@ -154,6 +154,40 @@
       {
         "op": "palette"
       }
+    ],
+    "autumn-leaves": [
+      {
+        "op": "hsv",
+        "hue": [50, 170],
+        "satMin": 0.1,
+        "shift": -75,
+        "sat": 1.1,
+        "val": 0.85
+      }
+    ],
+    "dark-moss": [
+      {
+        "op": "hsv",
+        "hue": [50, 170],
+        "satMin": 0.1,
+        "shift": -12,
+        "sat": 0.7,
+        "val": 0.7
+      }
+    ],
+    "night-stone": [
+      {
+        "op": "mix",
+        "color": "#353b52",
+        "amount": 0.3
+      }
+    ],
+    "night-ground": [
+      {
+        "op": "mix",
+        "color": "#1f1a22",
+        "amount": 0.25
+      }
     ]
   },
   "recipes": [
@@ -1000,6 +1034,184 @@
         "death": "hurt"
       },
       "recolor": ["normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/castlefloors_outside.png",
+      "rects": {
+        "ground-cobble": [64, 96, 32, 32],
+        "ground-stone": [32, 128, 32, 32]
+      },
+      "recolor": ["night-stone", "normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/dirt.png",
+      "rects": {
+        "ground-dirt": [32, 96, 32, 32]
+      },
+      "recolor": ["night-ground", "normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/grass.png",
+      "rects": {
+        "ground-grass": [32, 96, 32, 32],
+        "ground-grass-1": [0, 160, 32, 32],
+        "ground-grass-2": [32, 160, 32, 32],
+        "ground-grass-3": [64, 160, 32, 32]
+      },
+      "recolor": ["night-ground", "normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/grass.png",
+      "rects": {
+        "ground-leaves": [32, 96, 32, 32],
+        "ground-leaves-1": [0, 160, 32, 32],
+        "ground-leaves-2": [32, 160, 32, 32],
+        "ground-leaves-3": [64, 160, 32, 32]
+      },
+      "recolor": ["autumn-leaves", "night-ground", "normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/grassalt.png",
+      "rects": {
+        "ground-moss": [32, 96, 32, 32]
+      },
+      "recolor": ["dark-moss", "normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/modern-streets/cracks_transparent.png",
+      "rects": {
+        "detail-crack-0": [0, 0, 64, 48],
+        "detail-crack-1": [64, 0, 64, 48],
+        "detail-crack-2": [128, 0, 64, 48]
+      },
+      "recolor": ["normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/house.png",
+      "rects": {
+        "obstacle-roof": [0, 128, 32, 32],
+        "obstacle-wall": [128, 160, 32, 32]
+      },
+      "recolor": ["normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/house.png",
+      "rects": {
+        "obstacle-roof-red": [32, 32, 32, 32]
+      },
+      "recolor": ["normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/castle-mega-pack/castle8.png",
+      "rects": {
+        "obstacle-stone": [32, 160, 32, 32]
+      },
+      "recolor": ["night-stone", "normalize"]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/misc-tile-atlas/aks_assets.png",
+      "rects": {
+        "obstacle-pine": [0, 488, 96, 88],
+        "obstacle-tree": [256, 480, 96, 160]
+      },
+      "recolor": [
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/medieval-village-decorations/decorations-medieval.png",
+      "rects": {
+        "obstacle-fountain": [0, 512, 64, 64],
+        "obstacle-stall": [64, 800, 96, 96],
+        "decor-grave": [32, 64, 32, 32]
+      },
+      "recolor": [
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/lamp-posts/lamp-1-post-1-tall-single.png",
+      "rects": {
+        "decor-lamp": [0, 0, 32, 96]
+      },
+      "recolor": [
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/barrel.png",
+      "rects": {
+        "decor-barrel": [0, 0, 32, 64]
+      },
+      "recolor": [
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/modern-cars/carsskorpiosall.png",
+      "rects": {
+        "decor-car": [768, 700, 192, 100]
+      },
+      "recolor": [
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/castle-mega-pack/castle8.png",
+      "rects": {
+        "obstacle-tower": [448, 96, 64, 128]
+      },
+      "recolor": [
+        "night-stone",
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/base-assets/tiles/castle_outside.png",
+      "rects": {
+        "obstacle-gate": [288, 160, 64, 80]
+      },
+      "recolor": [
+        "night-stone",
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
     }
   ]
 }

@@ -2,3 +2,5 @@ dist/
 coverage/
 package-lock.json
 *.md
+client/public/atlas/
+assets/

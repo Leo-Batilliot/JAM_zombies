@@ -216,5 +216,149 @@
       "scale": 1.5
     }
   },
-  "cardArtScale": 2
+  "cardArtScale": 2,
+  "city": {
+    "tilePixels": 32,
+    "edge": "#141017",
+    "grounds": {
+      "cobble": {
+        "tile": "ground-cobble",
+        "variants": [],
+        "variantRate": 0,
+        "minimap": "#4e5666"
+      },
+      "stone": {
+        "tile": "ground-stone",
+        "variants": [],
+        "variantRate": 0,
+        "minimap": "#3a4150"
+      },
+      "dirt": {
+        "tile": "ground-dirt",
+        "variants": [],
+        "variantRate": 0,
+        "minimap": "#5e452b"
+      },
+      "grass": {
+        "tile": "ground-grass",
+        "variants": ["ground-grass-1", "ground-grass-2", "ground-grass-3"],
+        "variantRate": 0.2,
+        "minimap": "#3e4a2a"
+      },
+      "leaves": {
+        "tile": "ground-leaves",
+        "variants": ["ground-leaves-1", "ground-leaves-2", "ground-leaves-3"],
+        "variantRate": 0.25,
+        "minimap": "#7c3a1a"
+      },
+      "moss": {
+        "tile": "ground-moss",
+        "variants": [],
+        "variantRate": 0,
+        "minimap": "#2c3320"
+      }
+    },
+    "obstacles": {
+      "rampart": {
+        "roof": "obstacle-stone",
+        "wall": "obstacle-wall",
+        "wallMeters": 2
+      },
+      "building": {
+        "roof": "obstacle-roof",
+        "wall": "obstacle-wall",
+        "wallMeters": 1.5
+      },
+      "cathedral": {
+        "roof": "obstacle-stone",
+        "wall": "obstacle-wall",
+        "wallMeters": 2.5
+      },
+      "keep": {
+        "roof": "obstacle-stone",
+        "wall": "obstacle-wall",
+        "wallMeters": 2.5
+      },
+      "hospital": {
+        "roof": "obstacle-roof-red",
+        "wall": "obstacle-wall",
+        "wallMeters": 1.5
+      },
+      "wall": {
+        "roof": "obstacle-stone",
+        "wall": "obstacle-wall",
+        "wallMeters": 0.5
+      },
+      "stall": {
+        "sprite": "obstacle-stall",
+        "scale": 1,
+        "anchorY": 0.5
+      },
+      "tree": {
+        "sprite": "obstacle-tree",
+        "scale": 2.2,
+        "anchorY": 0.85
+      },
+      "tower": {
+        "sprite": "obstacle-tower",
+        "scale": 1.2,
+        "anchorY": 0.75
+      },
+      "fountain": {
+        "sprite": "obstacle-fountain",
+        "scale": 1.1,
+        "anchorY": 0.55
+      }
+    },
+    "minimapObstacle": "#141017",
+    "landmarks": {
+      "cathedral": {
+        "symbol": "+",
+        "color": "#c7ccd1"
+      },
+      "castle": {
+        "symbol": "C",
+        "color": "#d4b48c"
+      },
+      "hospital": {
+        "symbol": "H",
+        "color": "#e0605a"
+      },
+      "barracks": {
+        "symbol": "B",
+        "color": "#b8936a"
+      },
+      "graveyard": {
+        "symbol": "t",
+        "color": "#a6adb6"
+      }
+    },
+    "ramparts": {
+      "tower": "obstacle-tower",
+      "towerSpacing": 50,
+      "gate": "obstacle-gate"
+    },
+    "outside": {
+      "depth": 15,
+      "ground": "ground-leaves",
+      "trees": ["obstacle-pine", "obstacle-tree"],
+      "treeSpacing": 5,
+      "shade": "#0a080c",
+      "shadeAlpha": 0.55
+    }
+  },
+  "night": {
+    "color": "#0a0814",
+    "alpha": 0.55,
+    "resolution": 0.5,
+    "lights": {
+      "Mage": 9,
+      "Camp": 8,
+      "PointOfInterest": 4,
+      "Cross": 5,
+      "Bombing": 6
+    },
+    "minFps": 28,
+    "slowSec": 6
+  }
 }

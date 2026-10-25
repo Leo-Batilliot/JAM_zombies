@@ -1,10 +1,10 @@
 :root {
-  --background: #141018;
-  --panel: #241c2c;
-  --text: #ece3f5;
-  --muted: #a99bb8;
-  --accent: #8e44ad;
-  --accent-light: #b36ad4;
+  --background: #120d0a;
+  --panel: #2e2219;
+  --text: #ecdcb8;
+  --muted: #a68c6a;
+  --accent: #7a5a38;
+  --accent-light: #b8936a;
   --danger: #e0605a;
   --pumpkin: #ff9a1f;
 }
@@ -222,7 +222,7 @@ body.share p {
   justify-content: center;
   gap: 0.8rem;
   padding: 1rem;
-  background: rgb(20 16 24 / 70%);
+  background: rgb(20 14 10 / 70%);
   color: var(--danger);
   font-size: clamp(1.2rem, 4vw, 2rem);
   text-align: center;
@@ -247,7 +247,7 @@ body.share p {
 .hud section {
   padding: 0.5rem 0.7rem;
   border-radius: 0.5rem;
-  background: rgb(36 28 44 / 75%);
+  background: rgb(46 34 25 / 75%);
 }
 
 .hud-self {
@@ -399,7 +399,7 @@ body.share p {
   max-width: 90vw;
   padding: 0.5rem 1.2rem;
   border-radius: 0.5rem;
-  background: rgb(20 16 24 / 80%);
+  background: rgb(20 14 10 / 80%);
   color: var(--pumpkin);
   font-size: clamp(1rem, 3.5vw, 1.8rem);
   font-weight: bold;
@@ -453,7 +453,7 @@ body.share p {
   padding: 0.35rem 0.6rem;
   border: 1px solid var(--accent);
   border-radius: 0.4rem;
-  background: rgb(36 28 44 / 80%);
+  background: rgb(46 34 25 / 80%);
   color: var(--text);
   cursor: pointer;
 }
@@ -466,7 +466,7 @@ body.share p {
   bottom: calc(max(0.6rem, env(safe-area-inset-bottom)) + 2.6rem);
   border: 1px solid var(--accent);
   border-radius: 0.3rem;
-  background: rgb(36 28 44 / 75%);
+  background: rgb(46 34 25 / 75%);
 }
 
 .loot {
@@ -483,7 +483,7 @@ body.share p {
 .loot div {
   padding: 0.3rem 0.9rem;
   border-radius: 0.4rem;
-  background: rgb(20 16 24 / 80%);
+  background: rgb(20 14 10 / 80%);
   color: #f6d660;
   font-size: clamp(0.85rem, 2.6vw, 1.2rem);
   font-weight: bold;
@@ -520,7 +520,7 @@ body.share p {
   padding: 0.45rem 0.8rem;
   border: 2px solid var(--accent-light);
   border-radius: 0.5rem;
-  background: rgb(36 28 44 / 85%);
+  background: rgb(46 34 25 / 85%);
   color: var(--text);
   cursor: pointer;
 }
@@ -534,7 +534,7 @@ body.share p {
   padding: 0.5rem 0.6rem 0.6rem;
   border-width: 3px;
   border-radius: 0.7rem;
-  background: rgb(28 22 34 / 92%);
+  background: rgb(38 28 20 / 92%);
   text-align: center;
   box-shadow: 0 0.3rem 0.8rem rgb(0 0 0 / 50%);
   animation: event-banner-in 0.3s ease-out;
@@ -549,7 +549,7 @@ body.share p {
 }
 
 .cards .card-spell {
-  border-color: #b36ad4;
+  border-color: var(--accent-light);
 }
 
 .card-kind {
@@ -634,7 +634,7 @@ body.share p {
   bottom: max(0.8rem, env(safe-area-inset-bottom));
   background: linear-gradient(
     to right,
-    rgb(36 28 44 / 85%) var(--progress, 0%),
+    rgb(46 34 25 / 85%) var(--progress, 0%),
     var(--accent) var(--progress, 0%)
   );
 }
@@ -666,7 +666,7 @@ body.share p {
   background: linear-gradient(
     to right,
     var(--accent) var(--progress, 0%),
-    rgb(36 28 44 / 85%) var(--progress, 0%)
+    rgb(46 34 25 / 85%) var(--progress, 0%)
   );
   color: var(--text);
   cursor: pointer;

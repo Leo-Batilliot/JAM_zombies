@@ -1,7 +1,28 @@
 import { describe, expect, test } from "vitest";
-import { createBench } from "../support/bench.js";
+import { buildRegistries, generateCity, toClientConfig } from "@horde/shared";
+import { loadConfig } from "../../src/config/load.js";
+import { World } from "../../src/world/world.js";
+import {
+  createBench,
+  seededRandom,
+  sharedConfigDir,
+} from "../support/bench.js";
 
 describe("World", () => {
+  test("builds the same city as the one the client draws from its seed", () => {
+    const config = loadConfig(sharedConfigDir);
+    const world = new World(config, buildRegistries(config), seededRandom(5));
+    const sent = toClientConfig(config, world.citySeed);
+    expect(
+      generateCity(
+        sent.world.city,
+        sent.world.width,
+        sent.world.height,
+        sent.citySeed,
+      ),
+    ).toEqual(world.city);
+  });
+
   test("picks random points inside the map, away from the edges", () => {
     const { world, config } = createBench();
     const { width, height, spawnMargin } = config.world;
