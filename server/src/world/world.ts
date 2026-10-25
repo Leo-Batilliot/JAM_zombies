@@ -4,6 +4,7 @@ import { SpatialGrid } from "./grid.js";
 export interface Army {
   slot: number;
   name: string;
+  skin: string;
   mage: Mage;
   units: Set<Unit>;
   corpses: Set<Corpse>;
@@ -237,6 +238,15 @@ export interface Camp {
   defenders: Set<Npc>;
 }
 
+export interface Bombing {
+  id: number;
+  kind: EntityKind.Bombing;
+  x: number;
+  y: number;
+  strikeAt: number;
+  struck: boolean;
+}
+
 export type Entity =
   | Mage
   | Unit
@@ -246,7 +256,8 @@ export type Entity =
   | Cross
   | Projectile
   | Mist
-  | Camp;
+  | Camp
+  | Bombing;
 export type Body = Mage | Unit | Npc;
 
 const maxArmySlot = 0xff;
@@ -270,11 +281,13 @@ export class World {
   readonly projectiles = new Set<Projectile>();
   readonly mists = new Set<Mist>();
   readonly camps = new Set<Camp>();
+  readonly bombings = new Set<Bombing>();
   readonly populationSpawnAt = new Map<number, number>();
   readonly hostiles = new Set<Npc>();
   readonly events = new Map<string, BossEvent>();
   readonly reconnects = new Map<string, Reconnect>();
   readonly grid: SpatialGrid;
+  bombingAt: number;
   #nextId = 1;
 
   constructor(
@@ -283,6 +296,7 @@ export class World {
     readonly random: () => number = Math.random,
   ) {
     this.grid = new SpatialGrid(config.world.gridCellSize);
+    this.bombingAt = config.world.bombings.firstDelaySec;
   }
 
   clampX(x: number): number {
@@ -328,10 +342,16 @@ export class World {
     this.grid.insert(entity.id, entity.x, entity.y);
   }
 
-  addArmy(name: string, x: number, y: number): Army {
+  addArmy(
+    name: string,
+    x: number,
+    y: number,
+    skin = this.registries.skins.ids()[0] ?? "",
+  ): Army {
     const army = {
       slot: this.#freeSlot(),
       name,
+      skin,
       units: new Set(),
       corpses: new Set(),
       souls: 0,
@@ -535,6 +555,20 @@ export class World {
     return mist;
   }
 
+  addBombing(x: number, y: number, delaySec: number): Bombing {
+    const bombing: Bombing = {
+      id: this.#nextId++,
+      kind: EntityKind.Bombing,
+      x: this.clampX(x),
+      y: this.clampY(y),
+      strikeAt: this.time + delaySec,
+      struck: false,
+    };
+    this.bombings.add(bombing);
+    this.#add(bombing);
+    return bombing;
+  }
+
   addCorpse(
     type: string,
     owner: Army,
@@ -655,6 +689,9 @@ export class World {
         break;
       case EntityKind.Camp:
         this.camps.delete(entity);
+        break;
+      case EntityKind.Bombing:
+        this.bombings.delete(entity);
         break;
       case EntityKind.Mage:
         break;

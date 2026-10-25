@@ -81,3 +81,21 @@ Machine : AMD Ryzen 5 7535HS, Node 22.23. Camps, brumes, cimetières et projecti
 - Le tick reste sous le budget de 50 ms, y compris au pire à 40 participants. Les nouveaux systèmes coûtent 2 à 5 ms en moyenne.
 - Le débit dépend surtout de ce que le joueur croise : un camp en vue, avec ses tirs, fait monter le débit d'un joueur de quelques Ko/s. En moyenne, il reste très en dessous des ~64 Ko/s. Au pire, un passage à 40 participants atteint 66 Ko/s pour un joueur, comme la phase 5 (70 Ko/s) : ce pire cas dépasse légèrement la cible depuis la phase 5.
 - Les armées de squelettes (beaucoup de projectiles en vol) ne sont pas mesurées par ce test.
+
+## Résultats de la phase 7
+
+Machine : Intel Xeon 2,8 GHz (2 cœurs virtuels), Node 22.23. Les bombardements ne tombent pas pendant la mesure (première vague après 150 s). La version de `main` (phase 6) a été mesurée sur la même machine pour comparer.
+
+40 participants sans bot, vue PC :
+- phase 7 (deux passages) : tick de 39,3 à 43,3 ms en moyenne, 59 à 66 ms au 95e centile, 72 à 86 ms au pire, débit de 18,5 à 18,7 Ko/s en moyenne et 38 à 45 Ko/s au pire ;
+- phase 6 (deux passages) : tick de 39,7 à 44,1 ms en moyenne, 63 à 68 ms au 95e centile, 73 à 78 ms au pire, débit de 15,6 à 16,0 Ko/s en moyenne et 51 à 54 Ko/s au pire.
+
+4 joueurs et 8 bots, vue PC :
+- phase 7 : tick de 7,6 ms en moyenne, 22 ms au pire, débit de 9,8 Ko/s en moyenne et 19,6 Ko/s au pire ;
+- phase 6 : tick de 8,6 ms en moyenne, 23 ms au pire, débit de 9,7 Ko/s en moyenne et 21,6 Ko/s au pire.
+
+## Conclusions de la phase 7
+
+- Le contenu bonus ne change pas le temps de tick : l'écart avec la phase 6 reste dans le bruit d'un passage à l'autre. Cette machine est deux fois plus lente que celles des phases précédentes, d'où un pire cas au-dessus du budget à 40 participants, pour les deux versions.
+- Le jalon à 4 joueurs et 8 bots tient très largement dans le budget.
+- Deux lobbys pleins tournent dans le même processus : leurs temps de tick s'additionnent. Ce cas n'est pas mesuré par le script.

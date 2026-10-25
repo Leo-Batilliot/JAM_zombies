@@ -71,15 +71,19 @@
       "loot": [
         {
           "item": "shovel",
-          "weight": 55
+          "weight": 50
         },
         {
           "item": "cricket-bat",
-          "weight": 25
+          "weight": 20
         },
         {
           "item": "leather-helmet",
-          "weight": 20
+          "weight": 15
+        },
+        {
+          "item": "spiked-collar",
+          "weight": 15
         }
       ]
     },
@@ -95,19 +99,27 @@
       "loot": [
         {
           "item": "cricket-bat",
-          "weight": 60
+          "weight": 50
         },
         {
           "item": "iron-helmet",
-          "weight": 25
+          "weight": 20
+        },
+        {
+          "item": "bone-collar",
+          "weight": 15
         },
         {
           "item": "chainsaw",
-          "weight": 10
+          "weight": 7
         },
         {
           "item": "cursed-helm",
-          "weight": 5
+          "weight": 4
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 4
         }
       ]
     },
@@ -138,23 +150,35 @@
       "loot": [
         {
           "item": "leather-helmet",
-          "weight": 40
-        },
-        {
-          "item": "iron-helmet",
           "weight": 30
         },
         {
-          "item": "cricket-bat",
+          "item": "iron-helmet",
           "weight": 20
         },
         {
+          "item": "spiked-collar",
+          "weight": 15
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 15
+        },
+        {
+          "item": "bone-collar",
+          "weight": 10
+        },
+        {
           "item": "cursed-helm",
-          "weight": 5
+          "weight": 4
         },
         {
           "item": "chainsaw",
-          "weight": 5
+          "weight": 3
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 3
         }
       ]
     }
@@ -214,8 +238,28 @@
       {
         "npc": "soldier",
         "count": 4
+      },
+      {
+        "npc": "guard-dog",
+        "count": 3
       }
     ],
     "chest": "camp-chest"
+  },
+  "bombings": {
+    "name": "the bombing",
+    "firstDelaySec": 150,
+    "intervalSec": {
+      "min": 75,
+      "max": 120
+    },
+    "zones": 3,
+    "radius": 7,
+    "spread": 5,
+    "delaySec": 10,
+    "blastSec": 0.6,
+    "damage": 20,
+    "crowding": 0.03,
+    "maxMultiplier": 3
   }
 }

@@ -1,7 +1,13 @@
 {
   "minParticipants": 12,
   "maxParticipants": 40,
+  "maxLobbies": 3,
   "graceSec": 60,
+  "spectators": {
+    "max": 4,
+    "holdSec": 8,
+    "battleStrength": 10
+  },
   "bots": {
     "names": [
       "Herbert West",

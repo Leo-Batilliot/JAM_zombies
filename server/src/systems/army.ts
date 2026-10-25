@@ -17,9 +17,9 @@ export const addStartingUnits = (world: World, army: Army): void => {
   }
 };
 
-export const spawnArmy = (world: World, name: string): Army => {
+export const spawnArmy = (world: World, name: string, skin?: string): Army => {
   const { x, y } = world.randomPoint();
-  const army = world.addArmy(name, x, y);
+  const army = world.addArmy(name, x, y, skin);
   addStartingUnits(world, army);
   return army;
 };

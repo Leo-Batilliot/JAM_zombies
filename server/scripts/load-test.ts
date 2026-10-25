@@ -10,10 +10,10 @@ import {
   decodeServerMessage,
   encodeClientMessage,
   socketPath,
-  type ClientConfig,
 } from "@horde/shared";
 import { loadConfig } from "../src/config/load.js";
 import { loadEnv } from "../src/env.js";
+import { Lobbies } from "../src/lobby/lobbies.js";
 import { attachSockets } from "../src/net/sockets.js";
 import { startLoop } from "../src/world/loop.js";
 import { World } from "../src/world/world.js";
@@ -72,7 +72,7 @@ const runClients = (url: string, options: Options): void => {
   let counting = false;
   for (let index = 0; index < options.participants; index++) {
     const socket = new WebSocket(url);
-    let config: ClientConfig | undefined;
+    let welcomed = false;
     socket.on("open", () => {
       socket.send(
         encodeClientMessage(
@@ -80,6 +80,7 @@ const runClients = (url: string, options: Options): void => {
             type: ClientMessageType.Join,
             name: `Load ${String(index + 1)}`,
             token: "",
+            skin: 0,
           },
           undefined,
         ),
@@ -90,12 +91,12 @@ const runClients = (url: string, options: Options): void => {
         bytes[index] = (bytes[index] ?? 0) + data.byteLength;
         messages[index] = (messages[index] ?? 0) + 1;
       }
-      if (config !== undefined) {
+      if (welcomed) {
         return;
       }
       const message = decodeServerMessage(data, undefined);
-      if (message.type === ServerMessageType.Config) {
-        config = message.config;
+      if (message.type === ServerMessageType.Welcome) {
+        welcomed = true;
         socket.send(
           encodeClientMessage(
             {
@@ -103,7 +104,7 @@ const runClients = (url: string, options: Options): void => {
               width: options.viewWidth,
               height: options.viewHeight,
             },
-            config.world,
+            undefined,
           ),
         );
         process.send?.({ joined: index });
@@ -140,12 +141,27 @@ const runServer = async (options: Options): Promise<void> => {
     config.lobby.maxParticipants,
     options.participants,
   );
-  const world = new World(config, buildRegistries(config));
+  const registries = buildRegistries(config);
+  const loops = new Map<World, ReturnType<typeof startLoop>>();
+  const lobbies = new Lobbies(
+    config,
+    () => new World(config, registries),
+    (lobby, afterTick) => {
+      const started = startLoop(lobby, afterTick);
+      loops.set(lobby, started);
+      return started.stop;
+    },
+  );
+  const world = lobbies.main;
+  const loop = loops.get(world);
+  if (loop === undefined) {
+    throw new Error("The lobby loop did not start");
+  }
   const server = createServer();
-  const sockets = attachSockets(server, world);
+  const sockets = attachSockets(server, lobbies);
+  lobbies.onTick = sockets.sendSnapshots;
   await new Promise<void>((resolve) => server.listen(0, resolve));
   const { port } = server.address() as AddressInfo;
-  const loop = startLoop(world, sockets.sendSnapshots);
 
   const clients = fork(process.argv[1] ?? "", process.argv.slice(2), {
     env: {

@@ -2,6 +2,7 @@ import type { Army, Unit, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 import { reachDistance } from "./combat.js";
 import { armyPace } from "./enlist.js";
+import { speedBonus } from "./equipment.js";
 import { interceptPoint, tunnelSlots } from "./retreat.js";
 import { layoutOf, type Formation } from "./tactics.js";
 import { currentTarget, type Target } from "./targeting.js";
@@ -215,7 +216,10 @@ export const followMages = (world: World, dt: number): void => {
     );
     const pace = armyPace(world, army) * dt;
     for (const unit of army.units) {
-      const step = world.registries.units.get(unit.type).speed * pace;
+      const step =
+        world.registries.units.get(unit.type).speed *
+        speedBonus(world, unit) *
+        pace;
       const target = currentTarget(world, unit);
       const wall = tunnel.get(unit);
       const slot = formation.get(unit);

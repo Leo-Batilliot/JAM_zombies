@@ -39,6 +39,27 @@
       "rarity": "legendary",
       "hp": 2,
       "armor": 0.3
+    },
+    "spiked-collar": {
+      "name": "Spiked collar",
+      "category": "collar",
+      "rarity": "common",
+      "damage": 1.15,
+      "speed": 1.1
+    },
+    "bone-collar": {
+      "name": "Bone collar",
+      "category": "collar",
+      "rarity": "rare",
+      "damage": 1.3,
+      "speed": 1.2
+    },
+    "cerberus-chain": {
+      "name": "Cerberus chain",
+      "category": "collar",
+      "rarity": "legendary",
+      "damage": 1.6,
+      "speed": 1.3
     }
   }
 }

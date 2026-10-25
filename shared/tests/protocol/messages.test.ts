@@ -27,8 +27,8 @@ const bounds = { width: 400, height: 300 };
 const step = 400 / 0xffff;
 
 const clientMessages: ClientMessage[] = [
-  { type: ClientMessageType.Join, name: "Léa la nécro", token: "" },
-  { type: ClientMessageType.Join, name: "Ash", token: "00ff" },
+  { type: ClientMessageType.Join, name: "Léa la nécro", token: "", skin: 0 },
+  { type: ClientMessageType.Join, name: "Ash", token: "00ff", skin: 3 },
   { type: ClientMessageType.View, width: 80, height: 45 },
   { type: ClientMessageType.Move, x: 120.5, y: 33.25 },
   { type: ClientMessageType.Target, entityId: 123456 },
@@ -36,6 +36,7 @@ const clientMessages: ClientMessage[] = [
   { type: ClientMessageType.Retreat, x: 0, y: 300 },
   { type: ClientMessageType.Evolve, evolution: "fat-zombie" },
   { type: ClientMessageType.Demo, command: DemoCommand.Boss },
+  { type: ClientMessageType.Spectate },
 ];
 
 const serverMessages: ServerMessage[] = [
@@ -82,6 +83,8 @@ const serverMessages: ServerMessage[] = [
     crosses: [{ id: 70000, strength: 12 }],
   },
   { type: ServerMessageType.Loot, item: 2 },
+  { type: ServerMessageType.Focus, army: 4, mageId: 70123, name: "Léa" },
+  { type: ServerMessageType.Focus, army: 0, mageId: 0, name: "" },
   { type: ServerMessageType.Died, killer: "Evil Ash" },
   { type: ServerMessageType.Welcome, mageId: 42, token: "a1b2" },
   {
@@ -127,6 +130,7 @@ const serverMessages: ServerMessage[] = [
             rise: { url: "audio/rise.mp3", volume: 1, gapMs: 100 },
             scream: { url: "audio/scream.mp3", volume: 1, gapMs: 0 },
             boss: { url: "audio/boss.mp3", volume: 1, gapMs: 0 },
+            blast: { url: "audio/blast.mp3", volume: 1, gapMs: 300 },
           },
         },
         screamer: { image: "face.png", durationMs: 800, vibrateMs: [200] },
@@ -140,6 +144,7 @@ const serverMessages: ServerMessage[] = [
         minimapSize: 110,
         gearOffsets: { melee: { x: 7, y: 2 } },
         mistColors: { necrotic: "#00ff00" },
+        bombingColors: { mark: "#ff0000", blast: "#ffaa00" },
         formationKeys: ["1", "2"],
         evolutionCollapseMs: 6000,
       },
@@ -158,6 +163,19 @@ const serverMessages: ServerMessage[] = [
           rechargeSec: 60,
           spacing: 50,
           lifetimeSec: { min: 480, max: 720 },
+        },
+        bombings: {
+          name: "the bombing",
+          firstDelaySec: 150,
+          intervalSec: { min: 75, max: 120 },
+          zones: 3,
+          radius: 7,
+          spread: 5,
+          delaySec: 10,
+          blastSec: 0.6,
+          damage: 20,
+          crowding: 0.03,
+          maxMultiplier: 3,
         },
       },
       network: { tickRate: 20, interpolationDelayMs: 100 },
@@ -179,6 +197,7 @@ const serverMessages: ServerMessage[] = [
         projectiles: ["arrow"],
         mists: [{ id: "necrotic", radius: 12 }],
         formations: [{ id: "phalanx", name: "Phalanx" }],
+        skins: [{ id: "lich", name: "Lich" }],
       },
     },
   },
@@ -224,6 +243,15 @@ const serverMessages: ServerMessage[] = [
         flags: levelFlags(4),
         x: 200,
         y: 150,
+      },
+      {
+        id: 70003,
+        kind: EntityKind.Bombing,
+        type: 0,
+        army: 0,
+        flags: levelFlags(7),
+        x: 120,
+        y: 30,
       },
     ],
     updates: [{ id: 5, flags: EntityFlag.Abandoned, x: 33.3, y: 44.4 }],

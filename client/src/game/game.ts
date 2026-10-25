@@ -7,6 +7,7 @@ import {
 import {
   ClientMessageType,
   neutralArmy,
+  spectatorMageId,
   type Bounty,
   type SnapshotEntity,
   type Status,
@@ -26,6 +27,7 @@ import type { Connection } from "../net/connection.js";
 import { RetreatControl } from "../retreat.js";
 import { Screamer } from "../screamer.js";
 import { BattleLayer } from "./battle.js";
+import { BombingLayer } from "./bombings.js";
 import { CrossLayer } from "./crosses.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
@@ -45,6 +47,7 @@ export const startGame = async (
   audio: AudioEngine,
 ): Promise<void> => {
   const config = () => connection.config;
+  const { spectating } = connection;
   const app = new Application();
   await app.init({
     resizeTo: window,
@@ -70,9 +73,11 @@ export const startGame = async (
   const crosses = new CrossLayer();
   const searchBar = new SearchBar();
   const mists = new MistLayer();
+  const bombings = new BombingLayer();
   world.addChild(
     map.container,
     crosses.container,
+    bombings.graphics,
     battle.container,
     marker.graphics,
     entities.container,
@@ -82,23 +87,35 @@ export const startGame = async (
   app.stage.addChild(world);
 
   const hud = new Hud(ui);
-  if (isDemo(location.search)) {
+  if (isDemo(location.search) && !spectating) {
     startDemo(ui, connection);
   }
-  const retreat = new RetreatControl(ui, () => config().client.retreatKey);
   const minimap = new Minimap(ui);
-  const loot = new LootNotice(ui);
-  const evolution = new EvolutionPopup(ui, (into) => {
-    connection.send({ type: ClientMessageType.Evolve, evolution: into });
-  });
-  const formations = new FormationBar(ui, config, (formation) => {
-    connection.send({ type: ClientMessageType.Formation, formation });
-  });
+  const controls = spectating
+    ? undefined
+    : {
+        retreat: new RetreatControl(ui, () => config().client.retreatKey),
+        loot: new LootNotice(ui),
+        evolution: new EvolutionPopup(ui, (into) => {
+          connection.send({ type: ClientMessageType.Evolve, evolution: into });
+        }),
+        formations: new FormationBar(ui, config, (formation) => {
+          connection.send({ type: ClientMessageType.Formation, formation });
+        }),
+      };
   let bounty: Bounty | undefined;
+  let focusId: number | undefined;
+  connection.onFocus = (focus) => {
+    focusId = focus.mageId === spectatorMageId ? undefined : focus.mageId;
+    hud.setWatching(focus.name);
+  };
+  if (connection.focus !== undefined) {
+    connection.onFocus(connection.focus);
+  }
   connection.onLoot = (item) => {
     const name = config().content.items[item]?.name;
     if (name !== undefined) {
-      loot.show(name, config().client.lootMs);
+      controls?.loot.show(name, config().client.lootMs);
     }
   };
   let status: Status | undefined;
@@ -106,13 +123,13 @@ export const startGame = async (
   connection.onStatus = (next) => {
     status = next;
     hud.setStatus(next);
-    retreat.setBattle(next.battle);
-    evolution.update(
+    controls?.retreat.setBattle(next.battle);
+    controls?.evolution.update(
       evolutionOptions(next.counts, config().content),
       performance.now(),
       config().client.evolutionCollapseMs,
     );
-    formations.setStatus(
+    controls?.formations.setStatus(
       next.formation,
       next.nextFormation,
       next.formationProgress,
@@ -152,8 +169,8 @@ export const startGame = async (
   connection.onConfig = (next) => {
     buffer.settings = next.network;
     map.build(next);
-    retreat.setKey(next.client.retreatKey);
-    formations.build();
+    controls?.retreat.setKey(next.client.retreatKey);
+    controls?.formations.build();
     configureAudio();
     sendView();
   };
@@ -175,11 +192,14 @@ export const startGame = async (
   let frame: SnapshotEntity[] = [];
 
   const command = (event: FederatedPointerEvent): void => {
+    if (controls === undefined) {
+      return;
+    }
     const { width, height } = config().world;
     const point = world.toLocal(event.global);
     const x = Math.min(Math.max(point.x, 0), width);
     const y = Math.min(Math.max(point.y, 0), height);
-    if (retreat.take()) {
+    if (controls.retreat.take()) {
       connection.send({ type: ClientMessageType.Retreat, x, y });
       marker.show(x, y, performance.now(), false);
       exit = { x, y };
@@ -216,7 +236,7 @@ export const startGame = async (
   });
 
   const playCues = (view: Rect, now: number): void => {
-    const { fighting, deaths, rises } = cues.read(frame, view);
+    const { fighting, deaths, rises, blasts } = cues.read(frame, view);
     if (fighting > 0) {
       audio.play("hit", now);
     }
@@ -225,6 +245,9 @@ export const startGame = async (
     }
     if (rises > 0) {
       audio.play("rise", now);
+    }
+    if (blasts > 0) {
+      audio.play("blast", now);
     }
     const { combatFullUnits, fadeSec } = config().client.audio;
     music.update(musicMix(fighting, combatFullUnits, events.active), fadeSec);
@@ -236,9 +259,14 @@ export const startGame = async (
     const scale = config().client.pixelsPerMeter;
     frame = buffer.sample(now);
     const self = frame.find((entity) => entity.id === connection.mageId);
+    const followed = spectating
+      ? frame.find((entity) => entity.id === focusId)
+      : self;
+    if (followed !== undefined) {
+      camera.x = followed.x;
+      camera.y = followed.y;
+    }
     if (self !== undefined) {
-      camera.x = self.x;
-      camera.y = self.y;
       death.hide();
     }
     world.scale.set(scale);
@@ -266,10 +294,11 @@ export const startGame = async (
     crosses.update(frame, status?.crosses ?? [], config().world.crosses, scale);
     searchBar.update(status?.search ?? 0, self);
     mists.update(frame, config());
+    bombings.update(frame, config());
     minimap.draw(
       config().client.minimapSize,
       config().world,
-      self,
+      followed,
       events.positions,
       bounty === undefined ||
         bounty.army === neutralArmy ||

@@ -5,6 +5,7 @@ import {
   decodeServerMessage,
   encodeClientMessage,
   socketPath,
+  spectatorMageId,
   type ClientConfig,
   type Bounty,
   type ClientMessage,
@@ -36,6 +37,12 @@ export interface EventEnd {
   event: number;
   defeated: boolean;
   souls: number;
+}
+
+export interface Focus {
+  army: number;
+  mageId: number;
+  name: string;
 }
 
 const tokenKey = "horde.reconnect";
@@ -75,12 +82,18 @@ export class Connection {
   onEventStarted: (start: EventStart) => void = () => undefined;
   onEventEnded: (end: EventEnd) => void = () => undefined;
   onLoot: (item: number) => void = () => undefined;
+  onFocus: (focus: Focus) => void = () => undefined;
+  focus: Focus | undefined;
 
   constructor(
     readonly socket: WebSocket,
     public config: ClientConfig,
     readonly mageId: number,
   ) {}
+
+  get spectating(): boolean {
+    return this.mageId === spectatorMageId;
+  }
 
   send(message: ClientMessage): void {
     if (this.socket.readyState === WebSocket.OPEN) {
@@ -89,43 +102,93 @@ export class Connection {
   }
 }
 
-export const join = (name: string): Promise<Connection> =>
+interface Request {
+  resolve: (connection: Connection) => void;
+  reject: (error: JoinError) => void;
+}
+
+export class Gate {
+  #request: Request | undefined;
+
+  constructor(
+    readonly socket: WebSocket,
+    public config: ClientConfig,
+  ) {}
+
+  get open(): boolean {
+    return this.socket.readyState === WebSocket.OPEN;
+  }
+
+  join(name: string, skin: number): Promise<Connection> {
+    return this.#ask({
+      type: ClientMessageType.Join,
+      name,
+      token: loadToken(),
+      skin,
+    });
+  }
+
+  watch(): Promise<Connection> {
+    return this.#ask({ type: ClientMessageType.Spectate });
+  }
+
+  #ask(message: ClientMessage): Promise<Connection> {
+    return new Promise((resolve, reject) => {
+      if (!this.open || this.#request !== undefined) {
+        reject(new JoinError(undefined));
+        return;
+      }
+      this.#request = { resolve, reject };
+      this.socket.send(encodeClientMessage(message, this.config.world));
+    });
+  }
+
+  settle(outcome: Connection | JoinError): void {
+    const request = this.#request;
+    this.#request = undefined;
+    if (outcome instanceof JoinError) {
+      request?.reject(outcome);
+    } else {
+      request?.resolve(outcome);
+    }
+  }
+}
+
+export const connect = (): Promise<Gate> =>
   new Promise((resolve, reject) => {
     const scheme = location.protocol === "https:" ? "wss" : "ws";
     const socket = new WebSocket(`${scheme}://${location.host}${socketPath}`);
     socket.binaryType = "arraybuffer";
-    let mageId: number | undefined;
+    let gate: Gate | undefined;
     let connection: Connection | undefined;
     const snapshots = new SnapshotState();
 
-    socket.addEventListener("open", () => {
-      socket.send(
-        encodeClientMessage(
-          { type: ClientMessageType.Join, name, token: loadToken() },
-          undefined,
-        ),
-      );
-    });
-
     socket.addEventListener("message", (event: MessageEvent<ArrayBuffer>) => {
-      const message = decodeServerMessage(event.data, connection?.config.world);
+      const message = decodeServerMessage(event.data, gate?.config.world);
       switch (message.type) {
-        case ServerMessageType.Welcome:
-          mageId = message.mageId;
-          saveToken(message.token);
-          break;
-        case ServerMessageType.Rejected:
-          socket.close();
-          reject(new JoinError(message.reason));
-          break;
         case ServerMessageType.Config:
+          if (gate === undefined) {
+            gate = new Gate(socket, message.config);
+            resolve(gate);
+          } else {
+            gate.config = message.config;
+          }
           if (connection !== undefined) {
             connection.config = message.config;
             connection.onConfig(message.config);
-          } else if (mageId !== undefined) {
-            connection = new Connection(socket, message.config, mageId);
-            resolve(connection);
           }
+          break;
+        case ServerMessageType.Welcome:
+          if (gate !== undefined) {
+            connection = new Connection(socket, gate.config, message.mageId);
+            if (!connection.spectating) {
+              saveToken(message.token);
+            }
+            gate.settle(connection);
+          }
+          break;
+        case ServerMessageType.Rejected:
+          gate?.settle(new JoinError(message.reason));
           break;
         case ServerMessageType.Snapshot:
           connection?.onSnapshot({
@@ -151,14 +214,21 @@ export const join = (name: string): Promise<Connection> =>
         case ServerMessageType.Loot:
           connection?.onLoot(message.item);
           break;
+        case ServerMessageType.Focus:
+          if (connection !== undefined) {
+            connection.focus = message;
+            connection.onFocus(message);
+          }
+          break;
       }
     });
 
     socket.addEventListener("close", () => {
-      if (connection === undefined) {
-        reject(new JoinError(undefined));
-      } else {
+      if (connection !== undefined) {
         connection.onClose();
+        return;
       }
+      gate?.settle(new JoinError(undefined));
+      reject(new JoinError(undefined));
     });
   });

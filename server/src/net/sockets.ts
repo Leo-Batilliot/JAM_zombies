@@ -11,6 +11,7 @@ import {
   encodeServerMessage,
   neutralArmy,
   socketPath,
+  spectatorMageId,
   toClientConfig,
   type ClientMessage,
   type LeaderboardEntry,
@@ -18,7 +19,8 @@ import {
 } from "@horde/shared";
 import { validatePlayerName } from "../lobby/name.js";
 import { rankArmies } from "../lobby/leaderboard.js";
-import { joinLobby, leaveLobby } from "../lobby/lobby.js";
+import type { Lobbies } from "../lobby/lobbies.js";
+import { joinLobby, leaveLobby, skinId } from "../lobby/lobby.js";
 import { runDemo } from "../systems/demo.js";
 import { aggroCircles } from "../systems/battle.js";
 import { evolvableCounts } from "../systems/evolution.js";
@@ -39,12 +41,15 @@ import { armyStrength } from "../systems/strength.js";
 import type { Army, World } from "../world/world.js";
 import { SnapshotDelta } from "./delta.js";
 import { visibleEntities, type View } from "./interest.js";
+import { updateFocus, type Focus } from "./spectate.js";
 
 const protocolErrorCode = 1008;
 
 interface Session {
   socket: WebSocket;
+  world: World;
   army?: Army;
+  focus?: Focus;
   deaths: number;
   view: View;
   bosses: Map<string, number | undefined>;
@@ -69,39 +74,49 @@ export interface SocketOptions {
 
 export const attachSockets = (
   server: Server,
-  world: World,
+  lobbies: Lobbies,
   options: SocketOptions = { demo: false },
 ) => {
+  const { config } = lobbies;
   const sessions = new Set<Session>();
   const sockets = new WebSocketServer({
     server,
     path: socketPath,
-    maxPayload: world.config.network.maxMessageBytes,
+    maxPayload: config.network.maxMessageBytes,
   });
 
   const send = (session: Session, message: ServerMessage): void => {
     if (session.socket.readyState === WebSocket.OPEN) {
-      session.socket.send(encodeServerMessage(message, world.config.world));
+      session.socket.send(encodeServerMessage(message, config.world));
     }
   };
 
-  const join = (session: Session, name: string, token: string): void => {
-    const validName = validatePlayerName(name, world.config.lobby.playerName);
+  const reject = (session: Session, reason: JoinRejection): void => {
+    send(session, { type: ServerMessageType.Rejected, reason });
+  };
+
+  const join = (
+    session: Session,
+    name: string,
+    token: string,
+    skin: number,
+  ): void => {
+    const validName = validatePlayerName(name, config.lobby.playerName);
     if (validName === undefined) {
-      send(session, {
-        type: ServerMessageType.Rejected,
-        reason: JoinRejection.InvalidName,
-      });
+      reject(session, JoinRejection.InvalidName);
       return;
     }
-    const result = joinLobby(world, validName, token);
+    const world = lobbies.place(token);
+    if (world === undefined) {
+      reject(session, JoinRejection.Full);
+      return;
+    }
+    const result = joinLobby(world, validName, token, skinId(world, skin));
     if ("rejection" in result) {
-      send(session, {
-        type: ServerMessageType.Rejected,
-        reason: result.rejection,
-      });
+      reject(session, result.rejection);
       return;
     }
+    session.world = world;
     session.army = result.army;
     session.deaths = result.army.deaths;
     send(session, {
@@ -109,13 +124,26 @@ export const attachSockets = (
       mageId: result.army.mage.id,
       token: result.token,
     });
+  };
+
+  const spectate = (session: Session): void => {
+    const watching = [...sessions].filter(
+      (other) => other.focus !== undefined,
+    ).length;
+    if (watching >= config.lobby.spectators.max) {
+      reject(session, JoinRejection.Full);
+      return;
+    }
+    session.world = lobbies.main;
+    session.focus = { army: undefined, until: -Infinity };
     send(session, {
-      type: ServerMessageType.Config,
-      config: toClientConfig(world.config),
+      type: ServerMessageType.Welcome,
+      mageId: spectatorMageId,
+      token: "",
     });
   };
 
-  const searchProgress = (army: Army): number => {
+  const searchProgress = (world: World, army: Army): number => {
     const point =
       army.search === undefined
         ? undefined
@@ -130,13 +158,13 @@ export const attachSockets = (
     return searchSec > 0 ? army.search.progress / searchSec : 1;
   };
 
-  const crossStrengths = (army: Army) =>
+  const crossStrengths = (world: World, army: Army) =>
     [...world.crosses].flatMap((cross) => {
       const strength = cross.strengths.get(army) ?? 0;
       return strength > 0 ? [{ id: cross.id, strength }] : [];
     });
 
-  const bounty = (leader: LeaderboardEntry | undefined) => {
+  const bounty = (world: World, leader: LeaderboardEntry | undefined) => {
     const army =
       leader === undefined ? undefined : world.armies.get(leader.army);
     return army === undefined || !army.alive || (leader?.strength ?? 0) <= 0
@@ -144,14 +172,20 @@ export const attachSockets = (
       : { army: army.slot, x: army.mage.x, y: army.mage.y };
   };
 
-  const sendLeaderboards = (): void => {
+  const sendLeaderboards = (world: World): void => {
     const ranking = rankArmies(world);
-    const target = bounty(ranking.entries[0]);
+    const target = bounty(world, ranking.entries[0]);
     for (const session of sessions) {
-      if (session.army !== undefined) {
+      if (
+        session.world === world &&
+        (session.army !== undefined || session.focus !== undefined)
+      ) {
         send(session, {
           type: ServerMessageType.Leaderboard,
-          rank: ranking.ranks.get(session.army) ?? ranking.total,
+          rank:
+            session.army === undefined
+              ? 0
+              : (ranking.ranks.get(session.army) ?? ranking.total),
           total: ranking.total,
           entries: ranking.entries,
           bounty: target,
@@ -160,7 +194,8 @@ export const attachSockets = (
     }
   };
 
-  const sendEvents = (session: Session, army: Army): void => {
+  const sendEvents = (session: Session, army: Army | undefined): void => {
+    const { world } = session;
     for (const [type, state] of world.events) {
       const bossId = state.boss?.id;
       const known = session.bosses.get(type);
@@ -173,7 +208,8 @@ export const attachSockets = (
           type: ServerMessageType.EventEnded,
           event,
           defeated: state.result?.defeated ?? false,
-          souls: state.result?.rewards.get(army) ?? 0,
+          souls:
+            army === undefined ? 0 : (state.result?.rewards.get(army) ?? 0),
         });
       }
       if (state.boss !== undefined) {
@@ -189,13 +225,23 @@ export const attachSockets = (
   };
 
   const handle = (session: Session, message: ClientMessage): void => {
-    if (session.army === undefined) {
-      if (message.type !== ClientMessageType.Join) {
-        throw new ProtocolError("Message before join");
+    if (session.focus !== undefined) {
+      if (message.type === ClientMessageType.View) {
+        session.view = { width: message.width, height: message.height };
       }
-      join(session, message.name, message.token);
       return;
     }
+    if (session.army === undefined) {
+      if (message.type === ClientMessageType.Join) {
+        join(session, message.name, message.token, message.skin);
+      } else if (message.type === ClientMessageType.Spectate) {
+        spectate(session);
+      } else {
+        throw new ProtocolError("Message before join");
+      }
+      return;
+    }
+    const { world } = session;
     switch (message.type) {
       case ClientMessageType.View:
         session.view = { width: message.width, height: message.height };
@@ -232,18 +278,23 @@ export const attachSockets = (
   sockets.on("connection", (socket) => {
     const session: Session = {
       socket,
+      world: lobbies.main,
       deaths: 0,
       view: { width: 0, height: 0 },
       bosses: new Map(),
       delta: new SnapshotDelta(),
     };
     sessions.add(session);
+    send(session, {
+      type: ServerMessageType.Config,
+      config: toClientConfig(config),
+    });
     socket.on("message", (data, isBinary) => {
       try {
         if (!isBinary) {
           throw new ProtocolError("Text message");
         }
-        handle(session, decodeClientMessage(toBytes(data), world.config.world));
+        handle(session, decodeClientMessage(toBytes(data), config.world));
       } catch (error) {
         if (!(error instanceof ProtocolError)) {
           throw error;
@@ -254,31 +305,60 @@ export const attachSockets = (
     socket.on("close", () => {
       sessions.delete(session);
       if (session.army !== undefined) {
-        leaveLobby(world, session.army);
+        leaveLobby(session.world, session.army);
       }
     });
   });
 
-  let leaderboardAt = -Infinity;
+  const leaderboardAt = new WeakMap<World, number>();
+
+  const sendSpectator = (session: Session, focus: Focus): void => {
+    const { world } = session;
+    if (updateFocus(world, focus)) {
+      send(session, {
+        type: ServerMessageType.Focus,
+        army: focus.army?.slot ?? neutralArmy,
+        mageId: focus.army?.mage.id ?? spectatorMageId,
+        name: focus.army?.name ?? "",
+      });
+    }
+    sendEvents(session, undefined);
+    send(session, {
+      type: ServerMessageType.Snapshot,
+      tick: world.tick,
+      ...session.delta.next(
+        visibleEntities(world, focus.army, session.view),
+        config.world,
+      ),
+    });
+  };
 
   return {
     sessions,
     broadcastConfig: (): void => {
       for (const session of sessions) {
-        if (session.army !== undefined) {
-          send(session, {
-            type: ServerMessageType.Config,
-            config: toClientConfig(world.config),
-          });
-        }
+        send(session, {
+          type: ServerMessageType.Config,
+          config: toClientConfig(config),
+        });
       }
     },
-    sendSnapshots: (): void => {
-      if (world.time >= leaderboardAt) {
-        leaderboardAt = world.time + world.config.lobby.leaderboard.intervalSec;
-        sendLeaderboards();
+    sendSnapshots: (world: World = lobbies.main): void => {
+      if (world.time >= (leaderboardAt.get(world) ?? -Infinity)) {
+        leaderboardAt.set(
+          world,
+          world.time + config.lobby.leaderboard.intervalSec,
+        );
+        sendLeaderboards(world);
       }
       for (const session of sessions) {
+        if (session.world !== world) {
+          continue;
+        }
+        if (session.focus !== undefined) {
+          sendSpectator(session, session.focus);
+          continue;
+        }
         if (session.army === undefined) {
           continue;
         }
@@ -309,7 +389,7 @@ export const attachSockets = (
           units: army.units.size,
           strength: armyStrength(world, army),
           battle: battleFlags(army),
-          search: searchProgress(army),
+          search: searchProgress(world, army),
           formation: formationIndex(world, army.formation),
           nextFormation: formationIndex(world, army.formationChange?.to),
           formationProgress: changeProgress(world, army),
@@ -318,14 +398,14 @@ export const attachSockets = (
             type: world.registries.units.index(type),
             count,
           })),
-          crosses: crossStrengths(army),
+          crosses: crossStrengths(world, army),
         });
         send(session, {
           type: ServerMessageType.Snapshot,
           tick: world.tick,
           ...session.delta.next(
             visibleEntities(world, army, session.view),
-            world.config.world,
+            config.world,
           ),
         });
       }

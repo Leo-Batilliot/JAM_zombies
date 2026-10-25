@@ -278,4 +278,31 @@ describe("phase 6 references", () => {
     config.lobby.bots.formations.defend = "toString";
     expect(() => buildRegistries(config)).toThrow(/toString/);
   });
+
+  test("lists the mage skins in their order", () => {
+    const registries = buildRegistries(loadSharedConfig());
+    expect(registries.skins.index("necromancer")).toBe(0);
+    expect(registries.skins.ids().length).toBeGreaterThan(1);
+  });
+
+  test("guard dogs leave a corpse of the beast lineage", () => {
+    const registries = buildRegistries(loadSharedConfig());
+    const corpse = registries.npcs.get("guard-dog").corpse ?? "";
+    expect(registries.units.get(corpse).family).toBe("beast");
+    expect(registries.units.get(corpse).equipment).toBe("collar");
+  });
+});
+
+describe("config schema of the bonus content", () => {
+  test("refuses a config without mage skins", () => {
+    const raw = loadSharedConfig();
+    raw.gameplay.mage.skins = {};
+    expect(configSchema.safeParse(raw).success).toBe(false);
+  });
+
+  test("refuses bombings whose interval is reversed", () => {
+    const raw = loadSharedConfig();
+    raw.world.bombings.intervalSec = { min: 10, max: 5 };
+    expect(configSchema.safeParse(raw).success).toBe(false);
+  });
 });
