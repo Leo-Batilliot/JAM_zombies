@@ -214,6 +214,62 @@
     "npc-guard-dog": {
       "sprite": "npc-guard-dog",
       "scale": 1.5
+    },
+    "unit-carrion-flock": {
+      "sprite": "unit-bat",
+      "scale": 0.8
+    },
+    "unit-bat-swarm": {
+      "sprite": "unit-bat",
+      "scale": 1
+    },
+    "unit-vampire": {
+      "sprite": "unit-bat",
+      "scale": 1.2
+    },
+    "unit-nosferatu": {
+      "sprite": "unit-bat",
+      "scale": 1.45
+    },
+    "unit-harpy": {
+      "sprite": "unit-bat",
+      "scale": 1.05
+    },
+    "unit-bone-wyvern": {
+      "sprite": "unit-bat",
+      "scale": 1.3
+    },
+    "unit-bone-dragon": {
+      "sprite": "unit-bat",
+      "scale": 1.7
+    },
+    "unit-wandering-soul": {
+      "sprite": "unit-ghost",
+      "scale": 0.8
+    },
+    "unit-spectre": {
+      "sprite": "unit-ghost",
+      "scale": 0.95
+    },
+    "unit-banshee": {
+      "sprite": "unit-ghost",
+      "scale": 1.15
+    },
+    "unit-lament-queen": {
+      "sprite": "unit-ghost",
+      "scale": 1.45
+    },
+    "unit-shade": {
+      "sprite": "unit-ghost",
+      "scale": 0.95
+    },
+    "unit-reaper": {
+      "sprite": "unit-ghost",
+      "scale": 1.2
+    },
+    "unit-ankou": {
+      "sprite": "unit-ghost",
+      "scale": 1.5
     }
   },
   "cardArtScale": 2,
@@ -374,5 +430,10 @@
       "width": 0.4,
       "durationMs": 1100
     }
+  },
+  "layerLook": {
+    "airLift": 14,
+    "shadowAlpha": 0.35,
+    "etherealAlpha": 0.55
   }
 }

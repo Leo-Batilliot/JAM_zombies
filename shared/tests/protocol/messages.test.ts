@@ -238,6 +238,7 @@ const serverMessages: ServerMessage[] = [
             shadeAlpha: 0.5,
           },
         },
+        layerLook: { airLift: 14, shadowAlpha: 0.35, etherealAlpha: 0.55 },
         effects: {
           fusion: { color: "#5fd45a", radius: 2, width: 0.2, durationMs: 700 },
           levelUp: { color: "#9b59d0", radius: 7, width: 0.4, durationMs: 900 },
@@ -342,6 +343,7 @@ const serverMessages: ServerMessage[] = [
             branches: { mass: { name: "Mass", tiers: ["big-zombie"] } },
           },
         ],
+        layers: { crow: "air" },
         gifts: [
           {
             id: "haste",

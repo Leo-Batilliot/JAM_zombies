@@ -181,6 +181,9 @@ const formationsSchema = z.strictObject({
 
 export const ranks = ["front", "back"] as const;
 
+export const layers = ["ground", "air", "ethereal"] as const;
+export type Layer = (typeof layers)[number];
+
 const unitTypeSchema = z.strictObject({
   name: z.string().min(1),
   family: id,
@@ -189,6 +192,7 @@ const unitTypeSchema = z.strictObject({
   equipment: id.optional(),
   strength: z.int().positive(),
   rank: z.enum(ranks),
+  layer: z.enum(layers).optional(),
   speed: z.number().positive(),
   radius: z.number().positive(),
   hp: z.number().positive(),
@@ -217,6 +221,7 @@ const npcTypeSchema = z.strictObject({
   strength: z.int().positive(),
   hp: z.number().positive(),
   radius: z.number().positive(),
+  layer: z.enum(layers).optional(),
   speed: z.number().nonnegative(),
   fleeSpeed: z.number().positive().optional(),
   obstacle: z.boolean(),
@@ -699,6 +704,11 @@ export const clientSettingsSchema = z.strictObject({
   ),
   cardArtScale: z.number().positive(),
   city: cityLookSchema,
+  layerLook: z.strictObject({
+    airLift: z.number().nonnegative(),
+    shadowAlpha: fraction,
+    etherealAlpha: fraction,
+  }),
   effects: z.strictObject({
     fusion: ringSchema,
     levelUp: ringSchema,
@@ -769,6 +779,7 @@ export const clientConfigSchema = z.strictObject({
     formations: z.array(z.strictObject({ id, name: z.string().min(1) })),
     skins: z.array(z.strictObject({ id, name: z.string().min(1) })),
     lineages: z.array(lineageSchema.extend({ id })),
+    layers: z.record(id, z.enum(layers)),
     gifts: z.array(giftSchema.extend({ id })),
     spells: z.array(spellSchema.extend({ id })),
   }),
@@ -844,6 +855,16 @@ export const toClientConfig = (
       name: skin.name,
     })),
     lineages: withIds(config.units.lineages),
+    layers: Object.fromEntries(
+      [
+        ...Object.entries(config.units.units),
+        ...Object.entries(config.units.npcs),
+      ].flatMap(([typeId, type]) =>
+        type.layer === undefined || type.layer === "ground"
+          ? []
+          : [[typeId, type.layer]],
+      ),
+    ),
     gifts: withIds(config.gameplay.gifts),
     spells: withIds(config.gameplay.spells),
   },

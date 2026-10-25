@@ -1,6 +1,7 @@
 import {
   EntityKind,
   flagLevel,
+  type Layer,
   type ClientConfig,
   type SnapshotEntity,
 } from "@horde/shared";
@@ -79,6 +80,21 @@ export const frameAt = <T>(
   frames[Math.floor(Math.max(time, 0) / frameMs) % frames.length];
 
 export const skinSprite = (id: string): string => `mage-${id}`;
+
+export const layerOf = (
+  entity: SnapshotEntity,
+  content: ClientConfig["content"],
+): Layer => {
+  const typeId =
+    entity.kind === EntityKind.Unit
+      ? content.units[entity.type]?.id
+      : entity.kind === EntityKind.Npc
+        ? content.npcs[entity.type]
+        : undefined;
+  return (
+    (typeId === undefined ? undefined : content.layers[typeId]) ?? "ground"
+  );
+};
 
 export const spriteName = (
   entity: SnapshotEntity,

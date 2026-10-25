@@ -415,7 +415,11 @@ export class World {
       x: clamp(x, margin, width - margin),
       y: clamp(y, margin, height - margin),
     };
-    return this.obstacles.resolve(inside.x, inside.y, radius) ?? inside;
+    const free = this.obstacles.resolve(inside.x, inside.y, radius) ?? inside;
+    return {
+      x: clamp(free.x, margin, width - margin),
+      y: clamp(free.y, margin, height - margin),
+    };
   }
 
   randomPoint(tags?: string[]): { x: number; y: number } {

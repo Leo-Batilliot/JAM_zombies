@@ -73,6 +73,7 @@ describe("spriteName", () => {
     mists: [{ id: "necrotic", radius: 12 }],
     formations: [],
     lineages: [],
+    layers: {},
     gifts: [],
     spells: [],
     skins: [
@@ -152,6 +153,7 @@ describe("gearName", () => {
     mists: [{ id: "necrotic", radius: 12 }],
     formations: [],
     lineages: [],
+    layers: {},
     gifts: [],
     spells: [],
     skins: [

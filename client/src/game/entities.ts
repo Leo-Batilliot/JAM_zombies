@@ -17,6 +17,7 @@ import {
   parseHex,
   frameAt,
   gearName,
+  layerOf,
   spriteName,
   type Direction,
 } from "./sprites.js";
@@ -56,6 +57,7 @@ const bob = (now: number, periodMs: number): number =>
 class EntityView {
   readonly container = new Container();
   readonly aura = new Sprite();
+  readonly shadow = new Sprite();
   readonly outline = new Sprite();
   readonly body = new Sprite();
   readonly hpBack = new Sprite(Texture.WHITE);
@@ -76,11 +78,14 @@ class EntityView {
   constructor() {
     this.aura.anchor.set(0.5);
     this.aura.alpha = auraAlpha;
+    this.shadow.anchor.set(0.5);
+    this.shadow.tint = 0x000000;
     this.body.anchor.set(bodyAnchor.x, bodyAnchor.y);
     this.extra.anchor.set(0.5);
     this.gear.anchor.set(0.5);
     this.hpBack.anchor.set(0.5, 0);
     this.container.addChild(
+      this.shadow,
       this.aura,
       this.outline,
       this.body,
@@ -102,6 +107,9 @@ class EntityView {
     this.diedAt = undefined;
     this.container.alpha = 1;
     this.body.alpha = 1;
+    this.body.y = 0;
+    this.outline.y = 0;
+    this.shadow.visible = false;
     this.body.scale.set(1);
     this.body.rotation = 0;
     this.body.anchor.set(bodyAnchor.x, bodyAnchor.y);
@@ -228,6 +236,8 @@ export class EntityLayer {
       view.aura.y = view.body.texture.height * (1 - view.body.anchor.y) * 0.5;
     }
 
+    this.#drawLayer(view, entity);
+
     const gear = gearName(entity, content);
     view.gear.visible = gear !== undefined;
     if (gear !== undefined) {
@@ -262,6 +272,22 @@ export class EntityLayer {
     }
   }
 
+  #drawLayer(view: EntityView, entity: SnapshotEntity): void {
+    const { client, content } = this.connection.config;
+    const layer = layerOf(entity, content);
+    const lift = layer === "air" ? client.layerLook.airLift : 0;
+    view.body.y = -lift;
+    view.body.alpha = layer === "ethereal" ? client.layerLook.etherealAlpha : 1;
+    view.shadow.visible = lift > 0;
+    if (view.shadow.visible) {
+      const footprint = this.#footprint(view);
+      view.shadow.texture = this.#texture("fx-aura");
+      view.shadow.alpha = client.layerLook.shadowAlpha;
+      view.shadow.width = footprint * 0.8;
+      view.shadow.height = footprint * 0.3;
+    }
+  }
+
   #relationColor(entity: SnapshotEntity): number {
     const { outline } = this.connection.config.client;
     return parseHex(
@@ -287,6 +313,7 @@ export class EntityLayer {
         (height + 2 * outline.border),
     );
     view.outline.scale.copyFrom(view.body.scale);
+    view.outline.y = view.body.y;
     view.outline.rotation = view.body.rotation;
     view.outline.alpha = this.connection.config.client.outline.alpha;
     view.outline.tint = color;
