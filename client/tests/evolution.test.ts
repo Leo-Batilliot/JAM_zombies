@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { availableEvolutions } from "../src/evolution.js";
+import { evolutionOptions, newlyAvailable } from "../src/evolution.js";
 
 const content = {
   units: [
@@ -18,25 +18,48 @@ const content = {
   npcs: [],
   pointsOfInterest: [],
   events: [],
+  projectiles: [],
+  mists: [],
+  formations: [],
 };
 
-describe("availableEvolutions", () => {
-  test("lists nothing below the cost", () => {
-    expect(availableEvolutions([{ type: 0, count: 4 }], content)).toEqual([]);
+describe("evolutionOptions", () => {
+  test("lists nothing below the first threshold", () => {
+    expect(evolutionOptions([{ type: 0, count: 4 }], content)).toEqual([]);
   });
 
-  test("lists every evolution the army can pay", () => {
-    expect(availableEvolutions([{ type: 0, count: 5 }], content)).toEqual([
-      { into: "big-zombie", name: "Big zombie", from: "Zombie", cost: 5 },
+  test("lists every evolution of the type, locked ones with progress", () => {
+    expect(evolutionOptions([{ type: 0, count: 7 }], content)).toEqual([
+      {
+        into: "big-zombie",
+        name: "Big zombie",
+        from: "Zombie",
+        cost: 5,
+        count: 7,
+        available: true,
+      },
+      {
+        into: "golem",
+        name: "Flesh golem",
+        from: "Zombie",
+        cost: 10,
+        count: 7,
+        available: false,
+      },
     ]);
-    expect(
-      availableEvolutions([{ type: 0, count: 12 }], content).map(
-        (choice) => choice.into,
-      ),
-    ).toEqual(["big-zombie", "golem"]);
   });
 
   test("ignores unknown unit types", () => {
-    expect(availableEvolutions([{ type: 9, count: 50 }], content)).toEqual([]);
+    expect(evolutionOptions([{ type: 9, count: 50 }], content)).toEqual([]);
+  });
+});
+
+describe("newlyAvailable", () => {
+  test("is true only when a new evolution becomes payable", () => {
+    const seven = evolutionOptions([{ type: 0, count: 7 }], content);
+    const twelve = evolutionOptions([{ type: 0, count: 12 }], content);
+    expect(newlyAvailable(seven, new Set())).toBe(true);
+    expect(newlyAvailable(seven, new Set(["big-zombie"]))).toBe(false);
+    expect(newlyAvailable(twelve, new Set(["big-zombie"]))).toBe(true);
   });
 });

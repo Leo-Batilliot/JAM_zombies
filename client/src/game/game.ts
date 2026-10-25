@@ -6,6 +6,8 @@ import {
 } from "pixi.js";
 import {
   ClientMessageType,
+  neutralArmy,
+  type Bounty,
   type SnapshotEntity,
   type Status,
 } from "@horde/shared";
@@ -15,7 +17,8 @@ import { Music, musicMix } from "../audio/music.js";
 import { DeathScreen } from "../death.js";
 import { isDemo, startDemo } from "../demo.js";
 import { EventDisplay } from "../events.js";
-import { EvolutionPopup, availableEvolutions } from "../evolution.js";
+import { EvolutionPopup, evolutionOptions } from "../evolution.js";
+import { FormationBar } from "../formations.js";
 import { Hud } from "../hud.js";
 import { LootNotice } from "../loot.js";
 import { Minimap } from "../minimap.js";
@@ -28,6 +31,7 @@ import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
 import { MapLayer } from "./map.js";
 import { ClickMarker } from "./marker.js";
+import { MistLayer } from "./mists.js";
 import { pickEnemy } from "./picking.js";
 import { SearchBar } from "./search.js";
 
@@ -65,12 +69,14 @@ export const startGame = async (
   const battle = new BattleLayer();
   const crosses = new CrossLayer();
   const searchBar = new SearchBar();
+  const mists = new MistLayer();
   world.addChild(
     map.container,
     crosses.container,
     battle.container,
     marker.graphics,
     entities.container,
+    mists.graphics,
     searchBar.graphics,
   );
   app.stage.addChild(world);
@@ -85,6 +91,10 @@ export const startGame = async (
   const evolution = new EvolutionPopup(ui, (into) => {
     connection.send({ type: ClientMessageType.Evolve, evolution: into });
   });
+  const formations = new FormationBar(ui, config, (formation) => {
+    connection.send({ type: ClientMessageType.Formation, formation });
+  });
+  let bounty: Bounty | undefined;
   connection.onLoot = (item) => {
     const name = config().content.items[item]?.name;
     if (name !== undefined) {
@@ -97,10 +107,20 @@ export const startGame = async (
     status = next;
     hud.setStatus(next);
     retreat.setBattle(next.battle);
-    evolution.update(availableEvolutions(next.counts, config().content));
+    evolution.update(
+      evolutionOptions(next.counts, config().content),
+      performance.now(),
+      config().client.evolutionCollapseMs,
+    );
+    formations.setStatus(
+      next.formation,
+      next.nextFormation,
+      next.formationProgress,
+    );
   };
   connection.onLeaderboard = (leaderboard) => {
     hud.setLeaderboard(leaderboard);
+    bounty = leaderboard.bounty;
   };
   const death = new DeathScreen(ui);
   const screamer = new Screamer(ui, audio);
@@ -133,6 +153,7 @@ export const startGame = async (
     buffer.settings = next.network;
     map.build(next);
     retreat.setKey(next.client.retreatKey);
+    formations.build();
     configureAudio();
     sendView();
   };
@@ -244,11 +265,17 @@ export const startGame = async (
     );
     crosses.update(frame, status?.crosses ?? [], config().world.crosses, scale);
     searchBar.update(status?.search ?? 0, self);
+    mists.update(frame, config());
     minimap.draw(
       config().client.minimapSize,
       config().world,
       self,
       events.positions,
+      bounty === undefined ||
+        bounty.army === neutralArmy ||
+        bounty.army === status?.army
+        ? undefined
+        : bounty,
     );
     marker.update(now);
     playCues(view, now);

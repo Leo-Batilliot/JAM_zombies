@@ -8,6 +8,7 @@ const leaderboard = (rank: number) => ({
     { army: 4, name: "Liz", strength: 30 },
     { army: 2, name: "Ash", strength: 12 },
   ],
+  bounty: { army: 4, x: 10, y: 20 },
 });
 
 describe("leaderboardRows", () => {
