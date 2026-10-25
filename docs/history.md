@@ -4,6 +4,38 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Contenu V1 | 6.01-6.14 | A.PI
+
+- `shared/src/config/schema.ts` : lignée et bonus de lignée des unités, projectiles, casques (PV et armure), récompense en unités, brumes, camps, formations (placement, vitesse, défense, impact, garde), prime, réglages des bots V1, décalage d'objet par catégorie, couleurs des brumes, touches de formation, réduction de la popup d'évolution, contenu envoyé au client.
+- `shared/config/units.json` : golem de chair, squelette archer, arbalétrier squelette, baliste d'os, chasseur, soldat, quatre projectiles, lignées et triangle de force.
+- `shared/config/equipment.json` : casque de cuir, casque de fer, heaume maudit.
+- `shared/config/world.json` : cimetières, coffre de camp, casques dans les voitures et les coffres, deux brumes de chaque sorte, trois camps.
+- `shared/config/formations.json` : formation neutre, phalange, coin, cercle et nuée, changement en 1,5 s.
+- `shared/config/events.json`, `lobby.json`, `client.json` : prime de 100 âmes, camps, prime et formations des bots, réglages du client.
+- `shared/src/registry.ts` : registres des projectiles et des brumes, vérification des projectiles, des unités des cimetières, des défenseurs et du coffre des camps, des formations des bots.
+- `shared/src/protocol/messages.ts` : genres projectile, brume et camp, formation et changement en cours dans l'état du joueur, prime dans le classement.
+- `server/src/world/world.ts` : formation de l'armée, instant du contact des unités, camp des PNJ, projectiles, brumes et camps, PV max avec le casque.
+- `server/src/systems/projectiles.ts` : projectiles à tête chercheuse, brûlés en entrant dans une croix active.
+- `server/src/systems/tactics.ts` : choix et changement de formation, effets de la formation en cours.
+- `server/src/systems/formation.ts` : placements en bloc, en coin, en cercles et en nuée.
+- `server/src/systems/mists.ts` : dérive, dégâts de la brume purificatrice, délai de la brume nécrotique.
+- `server/src/systems/camps.ts` : camps et défenseurs, coffre à la destruction, départ une fois la durée écoulée.
+- `server/src/systems/combat.ts`, `death.ts`, `hostiles.ts` : bonus de lignée, bonus d'impact du coin, tirs des unités et des PNJ à distance, défense de la formation et armure du casque.
+- `server/src/systems/equipment.ts`, `points.ts` : armure et PV du casque, récompense en unités des cimetières.
+- `server/src/systems/mage.ts`, `enlist.ts`, `reanimation.ts`, `battle.ts` : garde toujours pleine en cercle, prime, formation neutre à la mort, vitesse de la formation, délai de la brume nécrotique, camp comme force engagée.
+- `server/src/world/loop.ts` : systèmes des formations, projectiles, brumes et camps.
+- `server/src/lobby/bots.ts` : formations selon la situation, attaque des camps, chasse à la prime.
+- `server/src/net/interest.ts`, `sockets.ts` : nouveaux genres dans le snapshot, brumes toujours envoyées, ordre de formation, formation dans l'état du joueur, prime dans le classement.
+- `client/src/formations.ts` : boutons et touches 1 à 4, formation active et changement en cours.
+- `client/src/evolution.ts` : toutes les évolutions avec la progression des inaccessibles, réduction dans un coin, retour à chaque palier.
+- `client/src/game/mists.ts` : brumes.
+- `client/src/game/entities.ts`, `sprites.ts` : projectiles orientés, camps, objet placé selon sa catégorie.
+- `client/src/minimap.ts`, `net/connection.ts`, `game/game.ts`, `style.css` : prime sur la minimap, branchement des nouveaux éléments.
+- `client/public/atlas/` : squelettes, golem, baliste, chasseur, soldat, projectiles, casques, cimetière, coffre de camp et camp, atlas agrandi à 512 x 512.
+- `docs/concept.md` : formation neutre, coffre des camps, brume qui blesse le mage.
+- `docs/load-test.md` : mesures de la phase 6.
+- `server/tests/`, `shared/tests/`, `client/tests/` : projectiles, lignée, évolutions, casques, cimetières, camps, brumes, prime, formations, bots, protocole, registres, popup, touches.
+
 ### Monde et équipement du MVP | 5.01-5.13 | L.BA
 
 - `shared/src/config/schema.ts` : équipement (raretés, objets, bonus de dégâts), catégorie et nom des unités, tables de loot, croix sacrées, plafond et ralentissement de l'armée, délai de relève après une croix, butin du boss, marge des bots autour des croix, durée de la notification de butin et taille de la minimap, contenu envoyé au client.

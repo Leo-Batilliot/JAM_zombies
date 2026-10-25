@@ -4,6 +4,76 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Bots V1 : formation selon la situation, camps et prime | A.PI
+
+- **Quoi** : hors bataille, un bot prend la formation d'exploration (nuée). Quand il marche sur une cible, il prend la formation d'attaque (coin). En bataille, il garde le coin s'il est au moins aussi fort, prend la phalange sinon, et bat en retraite comme avant. Ses priorités hors bataille deviennent : prime (le premier du classement à moins de 120 m, s'il n'est pas plus fort que lui), armée plus faible, camp (à moins de 60 m, s'il a 1,5 fois la force des défenseurs), pillage, chasse, errance.
+- **Pourquoi** : les mêmes ordres qu'un joueur, avec des formations qui collent à leur usage dans le concept.
+- **Impact** : les cimetières passent par la recherche de points d'intérêt existante. Les formations et les seuils sont dans `lobby.json`.
+- **Avis** : À vérifier. Seuils à équilibrer en jeu.
+
+### Prime sur le premier du classement | A.PI
+
+- **Quoi** : le classement envoyé chaque seconde contient l'armée et la position du premier, s'il est vivant et a une force non nulle. La minimap l'affiche en rouge, sauf pour lui-même. Le tueur de ce mage gagne 100 âmes (`events.json`), en plus des règles habituelles.
+- **Pourquoi** : la position change à chaque seconde du classement, ce qui suffit pour une minimap.
+- **Impact** : le premier est calculé au moment de sa mort, avant le transfert de son armée.
+- **Avis** : À vérifier. Montant à équilibrer en jeu.
+
+### Brumes envoyées à tous les joueurs | A.PI
+
+- **Quoi** : une brume a un type de `world.json` (rayon, vitesse, dégâts par seconde, délai de réanimation optionnel), dérive en ligne droite, change de direction toutes les 20 s et rebondit sur les bords. La purificatrice blesse les unités et les mages (Lien d'âme et plafond compris), sans tueur. La nécrotique ramène à 10 s le délai des cadavres qui y sont. Les brumes sont envoyées à tous les joueurs, où qu'ils soient.
+- **Pourquoi** : une brume de 14 m de rayon peut couvrir l'écran sans que son centre y soit. Elles sont 4, le coût réseau est négligeable.
+- **Impact** : un mage tué par la brume affiche son nom. Le délai d'une croix (60 s) l'emporte sur la brume nécrotique.
+- **Avis** : À vérifier. Nombre, rayon, vitesse et dégâts à équilibrer en jeu.
+
+### Camps armés avec coffre au sol | A.PI
+
+- **Quoi** : 3 camps de 4 chasseurs (tir à distance) et 4 soldats (mêlée), placés loin des mages, pour 5 à 8 min. Les défenseurs sont des PNJ hostiles en laisse autour de leur position. Quand le dernier tombe, un coffre de camp apparaît à la place du camp et chaque armée peut le fouiller une fois. Un camp dont la durée est écoulée part dès que ses défenseurs n'ont plus de cible.
+- **Pourquoi** : choix de l'équipe. Les cadavres des défenseurs (squelettes archers) récompensent déjà ceux qui se battent.
+- **Impact** : un camp compte comme une seule force dans les batailles et le cercle d'aggro. Le camp est un nouveau genre d'entité, dessiné au sol.
+- **Avis** : À vérifier. Nombre, défenseurs et butin à équilibrer en jeu.
+
+### Cimetières au butin individuel | A.PI
+
+- **Quoi** : nouveau type de récompense `units` : la fouille d'un cimetière relève 3 à 6 squelettes archers près du mage, avec le plafond d'armée. Comme les voitures, chaque armée peut le fouiller une fois.
+- **Pourquoi** : c'est la règle commune des points d'intérêt du concept.
+- **Impact** : 4 cimetières sur la carte. C'est, avec les camps, la porte d'entrée de la lignée Squelettes.
+- **Avis** : À vérifier. Nombre et quantité à équilibrer en jeu.
+
+### Casques en PV et armure | A.PI
+
+- **Quoi** : un objet peut donner un multiplicateur de dégâts, un multiplicateur de PV et une armure (part des dégâts évitée). Les casques (cuir, fer, heaume maudit) donnent PV et armure à la lignée Squelettes. L'équiper augmente aussi les PV actuels. Les voitures, les coffres et les coffres de camp peuvent en donner.
+- **Pourquoi** : le concept donne « PV et armure » aux casques. Le multiplicateur suit l'unité à la relève comme l'arme.
+- **Impact** : les tables de butin des voitures et des coffres de la phase 5 ont changé. Le décalage d'affichage de l'objet dépend maintenant de sa catégorie (`client.json`).
+- **Avis** : À vérifier. Valeurs à équilibrer en jeu.
+
+### Formations : neutre au départ, effets suspendus pendant le changement | A.PI
+
+- **Quoi** : l'armée démarre et réapparaît dans la formation neutre (le placement d'avant). Les touches 1 à 4 lancent un changement de 1,5 s : l'ancien placement reste, sans aucun bonus ni malus, puis la nouvelle formation s'applique. Placements : phalange en bloc trois fois plus large, coin en triangle devant le mage, cercle en anneaux autour du mage (distance à l'intérieur), nuée en spirale espacée. Effets : vitesse (mage et unités), défense (dégâts reçus par les unités), bonus de dégâts du coin pendant 3 s après le contact de chaque unité, garde du cercle qui prend l'unité la plus proche quelle que soit sa distance.
+- **Pourquoi** : choix de l'équipe pour le neutre. Suspendre les effets rend le changement en plein combat coûteux, comme le veut le concept.
+- **Impact** : la Retraite remplace toujours le placement par le tunnel. Une formation retirée de la config ramène au neutre.
+- **Avis** : À vérifier. Placements et valeurs à confirmer en jeu.
+
+### Triangle de force par lignée | A.PI
+
+- **Quoi** : chaque type d'unité a une lignée et une table de bonus par lignée visée. Gros zombie et golem frappent plus fort les bêtes, les squelettes frappent plus fort les zombies (les unités lentes), et les bêtes (phase 7) frapperont plus fort les squelettes.
+- **Pourquoi** : le triangle du concept, sans tester de type précis dans le code.
+- **Impact** : le zombie de base n'a pas de bonus. Les PNJ n'ont pas de lignée et ne reçoivent ni ne donnent de bonus.
+- **Avis** : À vérifier. Multiplicateurs à équilibrer en jeu.
+
+### Projectiles à tête chercheuse | A.PI
+
+- **Quoi** : une unité ou un PNJ qui a un projectile tire au lieu de frapper. Le projectile (vitesse dans `units.json`) suit sa cible et lui inflige les dégâts calculés au tir, avec les règles habituelles à l'arrivée. Il disparaît si sa cible meurt avant. Il brûle en entrant dans une croix active s'il a été tiré de l'extérieur.
+- **Pourquoi** : choix de l'équipe : simple, lisible, pas de collisions à calculer.
+- **Impact** : un projectile est un nouveau genre d'entité, envoyé dans les snapshots et orienté par le client selon son déplacement.
+- **Avis** : Validée.
+
+### Sprites de la phase 6 générés | A.PI
+
+- **Quoi** : squelettes, golem, baliste, chasseur, soldat, projectiles, casques, cimetière, coffre de camp et camp sont dessinés par un script jetable et ajoutés à l'atlas, agrandi à 512 x 512.
+- **Pourquoi** : même démarche que les sprites des phases précédentes.
+- **Impact** : les brumes sont dessinées par le client (cercles colorés), pas par l'atlas.
+- **Avis** : Provisoire. À remplacer avec les vrais sprites.
+
 ### Jalon MVP mesuré côté serveur, test sur téléphone à part | L.BA
 
 - **Quoi** : l'étape 5.13 se limite au test de charge à 4 joueurs et 8 bots, avec la nouvelle option `--bots` du script. La partie sur téléphone via le tunnel devient l'étape 5.14.
