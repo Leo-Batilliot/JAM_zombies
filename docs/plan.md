@@ -581,3 +581,28 @@ Bouton et touche du sort, recharge visible (UI-09).
 ### 10.14 Écran de fin de run | T.BE
 
 Statistiques de la vie après le screamer, puis Rejouer (UI-08).
+
+## Phase 11 : Retours de jeu sur les Lots 1 et 2
+
+Objectif : corriger ce qui ressort des premières parties sur les Lots 1 et 2, avant le Lot 3. Les identifiants renvoient à `docs/conceptV2.md`.
+
+### 11.01 Bots calés sur les joueurs | A.PI
+
+Plafond de force des bots selon le meilleur joueur humain, âmes réduites et réflexion ralentie à l'approche, plus aucune croissance au plafond (MOV-07).
+
+### 11.02 Moins d'attraction vers un groupe plus fort | A.PI
+
+Pas de ciblage automatique d'un ennemi nettement plus fort que l'armée, sauf au contact ou s'il attaque (FIGHT-05).
+
+### 11.03 Cartes de level up illustrées | A.PI
+
+Cartes en haut au centre, dépliées à chaque niveau, avec image (sprite ou icône) et stats. Icônes des dons et des sorts dans l'atlas (EVO-01).
+
+### 11.04 Courbe d'expérience et choix des mutations des bots | A.PI
+
+Niveaux moins chers, bots qui mutent la lignée qui a le plus d'unités en attente de fusion (EVO-19).
+
+### 11.05 Vérification | A.PI
+
+Tests, simulation d'un lobby de bots avant et après, test de charge, documentation.
+

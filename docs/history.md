@@ -4,6 +4,23 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Retours de jeu sur les Lots 1 et 2 | 11.01-11.05 | A.PI
+
+- `server/src/lobby/handicap.ts` : plafond des bots selon le meilleur joueur humain, handicap calculé sur la force potentielle (vivants et cadavres).
+- `server/src/lobby/bots.ts`, `lobby.ts` : réflexion ralentie avec le handicap, errance seule au plafond, choix de la mutation de la lignée qui a le plus d'unités en attente de fusion.
+- `server/src/systems/souls.ts` : âmes des bots multipliées par leur handicap.
+- `server/src/systems/transfer.ts`, `death.ts`, `points.ts` : un bot au plafond ne reçoit plus de troupes ni de cadavres, ne gagne rien sur les PNJ et ne fouille plus.
+- `server/src/systems/targeting.ts` : pas de ciblage automatique d'un ennemi nettement plus fort que l'armée, sauf au contact ou s'il attaque, civils ignorés par un bot au plafond.
+- `server/src/world/world.ts`, `loop.ts` : handicap des bots, mis à jour à chaque tick.
+- `shared/src/config/schema.ts` : réglages du handicap et de l'attraction, taille des images de carte, stats des unités, branches des lignées et effets des dons et des sorts envoyés au client.
+- `shared/config/gameplay.json`, `lobby.json`, `client.json` : croissance des niveaux à x1,2, attraction (rapport 1,5, contact à 3 m), handicap (marge 40, ratio 1,2), images de carte x2.
+- `client/src/cards.ts` : cartes illustrées avec type, lignée, branche et palier, stats et description, dépliées à chaque niveau.
+- `client/src/game/game.ts`, `assets.ts`, `style.css` : image des cartes tirée de l'atlas, cartes en haut au centre sous le HUD.
+- `client/public/atlas/` : icônes des dons et des sorts, une par effet.
+- `docs/conceptV2.md`, `docs/plan.md` : retours de jeu (MOV-07, FIGHT-05, EVO-01, EVO-19), phase 11.
+- `docs/load-test.md` : mesures et simulation de la phase 11.
+- `server/tests/`, `shared/tests/`, `client/tests/` : plafond et handicap, croissance bloquée, attraction, choix des cartes, cartes illustrées.
+
 ### Concept V2, Lot 2 : évolution permanente | 10.01-10.14 | T.BE
 
 - `shared/config/units.json` : lignées à deux branches de trois paliers, 21 unités, ratio de fusion, PNJ obstacle du mur d'os.

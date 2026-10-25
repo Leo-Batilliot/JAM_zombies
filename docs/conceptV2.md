@@ -55,6 +55,8 @@ Cause réelle des problèmes actuels, vérifiée dans le code :
   Le placement et les bonus de la nouvelle formation s'appliquent tout de suite. Une recharge de 3 s (**À vérifier**) empêche de changer en boucle, et s'affiche sur les boutons et les touches.
 - [ ] **MOV-06 Les ennemis lâchent vite une proie trop faible** | Lot 1 | 9.06
   Un bot ou un PNJ hostile qui poursuit une armée beaucoup plus faible que lui abandonne au bout d'un temps qui diminue avec l'écart de force (**À vérifier**). Il préfère une cible à sa taille. Avec MOV-03, c'est ce qui empêche un gros de chasser un petit pendant des minutes.
+- [ ] **MOV-07 Bots calés sur les joueurs** | Lot 1 | 11.01
+  Retour de jeu : sans joueur, les bots progressaient sans frein et devenaient impossibles à rattraper. Un bot ne dépasse plus la force du meilleur joueur humain multipliée par un ratio, plus une marge (seule la marge quand aucun humain n'est là). En s'en approchant, il gagne moins d'âmes et réfléchit moins vite. Au plafond, il ne gagne plus rien (âmes, troupes reçues, pillage, chasse) et se contente d'errer et de se défendre (valeurs **À vérifier**).
 
 ## 2. Combat et fuite (FIGHT)
 
@@ -66,6 +68,8 @@ Cause réelle des problèmes actuels, vérifiée dans le code :
   Une unité abandonnée revient vers son mage à vitesse augmentée seulement quand la troupe en face d'elle est morte. C'est le seul boost de vitesse légitime des troupes.
 - [ ] **FIGHT-04 Mage plus fragile** | Lot 1 | 9.10
   PV de base et PV par niveau du mage baissés (aujourd'hui 100 + 20 par niveau, cible **À vérifier**), pour que l'exposer soit un vrai risque. Le Lien d'âme (§4.3) est réglé en conséquence.
+- [ ] **FIGHT-05 Moins d'attraction vers un groupe plus fort** | Lot 1 | 11.02
+  Retour de jeu : en passant près d'un groupe trop fort, les troupes allaient s'y suicider et ne suivaient plus le mage. Une unité ne fonce plus d'elle-même sur un ennemi dont la force (armée, camp ou boss) dépasse nettement celle de son armée, sauf s'il est au contact ou s'il attaque son armée. L'ordre d'attaque reste prioritaire (seuils **À vérifier**).
 
 ## 3. Évolution permanente (EVO)
 
@@ -73,8 +77,8 @@ Remplace le sacrifice de N unités et la popup d'évolution (§6.2), ainsi que l
 
 ### Règles
 
-- [ ] **EVO-01 Expérience et level up** | Lot 2 | 10.02, 10.12
-  Les âmes deviennent l'expérience du joueur. À chaque niveau, le joueur choisit une carte parmi 3 tirées au hasard. Le choix ne met pas le jeu en pause et ne masque pas le centre de l'écran. La carte reste en attente dans un coin si le joueur est en plein combat.
+- [ ] **EVO-01 Expérience et level up** | Lot 2 | 10.02, 10.12, 11.03
+  Les âmes deviennent l'expérience du joueur. À chaque niveau, le joueur choisit une carte parmi 3 tirées au hasard. Le choix ne met pas le jeu en pause. Les cartes s'affichent en haut au centre, sous le HUD, dépliées à chaque level up (retour de jeu, à la place de l'attente dans un coin pendant un combat), avec une image et des stats par carte. Le joueur peut les replier.
 - [ ] **EVO-02 Contenu des cartes** | Lot 2 | 10.02
   Les cartes mélangent les mutations de troupes (le prochain palier d'une branche encore ouverte) et les dons du mage (EVO-10). Toutes les lignées peuvent sortir, mais celles déjà présentes dans l'armée sortent plus souvent (pondération **À vérifier**). Une fois les arbres terminés, les dons assurent toujours 3 choix.
 - [ ] **EVO-03 Branches exclusives** | Lot 2 | 10.03
@@ -95,6 +99,8 @@ Remplace le sacrifice de N unités et la popup d'évolution (§6.2), ainsi que l
   Base de départ, à compléter :
   - passifs : aura de soin des troupes proches, réanimation plus rapide, Lien d'âme renforcé, vitesse du mage, portée de détection et de caméra, butin amélioré, PV du mage, fusion à moindre coût pour une lignée ;
   - sorts actifs, sur un seul emplacement (touche Espace sur PC, un bouton sur téléphone), un nouveau sort remplace l'ancien : nova nécrotique (dégâts autour du mage), cri de ralliement (vitesse et dégâts des troupes quelques secondes), mur d'os (obstacle temporaire qui coupe une poursuite), relève immédiate (cadavres proches debout tout de suite, hors bataille).
+- [ ] **EVO-19 Courbe d'expérience et fusion de toutes les lignées** | Lot 2 | 11.04
+  Retour de jeu : vers 500 de force, les bots avaient énormément de troupes. Les niveaux coûtaient trop cher (x1,5 par niveau) et les lignées sans mutation (squelettes des cimetières, chiens) ne fusionnaient jamais. Croissance des niveaux abaissée à x1,2, et les bots prennent la mutation de la lignée qui a le plus d'unités en attente de fusion (**À vérifier**).
 - [ ] **EVO-11 Bots qui choisissent leurs cartes** | Lot 2 | 10.11
   Les bots tirent les mêmes cartes et choisissent selon leur armée (lignée majoritaire d'abord).
 

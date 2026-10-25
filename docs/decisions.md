@@ -4,6 +4,41 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Bots qui mutent la lignée en attente de fusion | A.PI
+
+- **Quoi** : un bot prend la carte de mutation de la lignée qui a le plus d'unités au palier le plus haut qu'elle a débloqué (toutes ses unités si elle n'a pas de mutation), à force égale celle qui pèse le plus. Si aucune mutation n'aide son armée, il prend un don.
+- **Pourquoi** : en simulation, les bots prenaient toujours les zombies, et les squelettes des cimetières restaient au palier de base sans jamais fusionner.
+- **Impact** : les armées des bots restent compactes. Les joueurs gardent le choix libre.
+- **Avis** : À vérifier. À confirmer avec la courbe d'expérience en jeu.
+
+### Courbe d'expérience moins raide | A.PI
+
+- **Quoi** : chaque niveau coûte 1,2 fois le précédent au lieu de 1,5 (`souls.levelGrowth`).
+- **Pourquoi** : à x1,5, le meilleur bot ne prenait qu'un niveau entre 10 et 16 min. Les mutations ne suivaient plus la taille de l'armée, et il faut 9 cartes de mutation pour finir 3 lignées.
+- **Impact** : touche aussi les joueurs, qui montent plus vite et voient plus de cartes.
+- **Avis** : À vérifier. À régler en jeu.
+
+### Cartes de level up en haut au centre, dépliées à chaque niveau | A.PI
+
+- **Quoi** : les 3 cartes s'affichent en haut au centre, sous le HUD, dépliées à chaque nouveau tirage, même en bataille, et le joueur peut les replier. Chaque carte montre son type, une image (sprite de l'unité, ou icône de l'effet pour un don ou un sort), sa lignée, sa branche et son palier, ses stats (PV, dégâts par seconde, vitesse, portée, équivalent en unités, ou recharge) et une description.
+- **Pourquoi** : retour de jeu, à la place de la ligne de boutons en bas à droite. Cela remplace la règle d'EVO-01 qui gardait les cartes repliées dans un coin pendant un combat.
+- **Impact** : le serveur envoie au client les stats des unités, les branches des lignées et les effets des dons et des sorts. Les icônes sont dans l'atlas, nommées par effet : un nouveau don au même effet réutilise son icône.
+- **Avis** : Validée.
+
+### Moins d'attraction vers un groupe plus fort | A.PI
+
+- **Quoi** : une unité ne prend pas d'elle-même pour cible un ennemi dont la force (armée entière, camp, boss et sbires) dépasse 1,5 fois celle de son armée, sauf s'il est à moins de 3 m ou s'il attaque une unité ou le mage de son armée. L'ordre d'attaque passe outre. Les forces sont calculées une fois par tick.
+- **Pourquoi** : retour de jeu : en passant près d'un groupe trop fort, les troupes allaient s'y suicider et ne suivaient plus le mage.
+- **Impact** : un groupe plus fort qui attaque reçoit une riposte, un groupe plus fort qui passe à côté est laissé tranquille.
+- **Avis** : À vérifier. Rapport et distance de contact à régler en jeu.
+
+### Bots calés sur le meilleur joueur humain | A.PI
+
+- **Quoi** : le plafond d'un bot vaut la force du meilleur joueur humain vivant multipliée par 1,2, plus 40 (seulement 40 sans humain). Le handicap se calcule sur la force potentielle du bot (troupes vivantes et cadavres). Entre 60 % et 100 % du plafond, ses âmes baissent jusqu'à zéro et il réfléchit jusqu'à 3 fois moins souvent. Au plafond, il ne gagne plus d'âmes, ne reçoit plus de troupes ni de cadavres (mort d'un mage, fuite), ne gagne rien sur les PNJ, ne fouille plus, ses unités ignorent les civils, et il se contente d'errer et de se défendre. Ses propres morts se relèvent toujours.
+- **Pourquoi** : retour de jeu : sans joueur, les bots progressaient sans frein (631 de force en 16 min de simulation). Avec la force vivante, un bot qui perdait des troupes repassait sous le plafond, grossissait, puis ses morts se relevaient par-dessus : d'où la force potentielle.
+- **Impact** : avec un joueur de force 5, les bots s'arrêtent à 46. Le plafond suit le meilleur joueur, un nouveau venu peut donc croiser des bots calés sur un autre joueur plus fort.
+- **Avis** : À vérifier. Marge et ratio à régler en jeu.
+
 ### Réapparition sur demande du joueur | T.BE
 
 - **Quoi** : après sa mort, un joueur voit l'écran de fin de run et ne réapparaît qu'en cliquant sur Play again, une fois le délai écoulé. Les bots réapparaissent seuls, ainsi qu'un joueur déconnecté repris par un bot.

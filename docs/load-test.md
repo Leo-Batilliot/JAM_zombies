@@ -123,3 +123,17 @@ Côté client, en Chrome headless sur écran de téléphone simulé avec contour
 
 - L'octet de PV ajoute environ 6 Ko/s en moyenne en vue PC, sous la cible.
 - Le dézoom maximal dépasse le budget du tick et la cible de débit au pire. Ce cas suppose les 40 clients dézoomés au maximum avec des armées pleines. Si c'est gênant en jeu, remonter `camera.minZoom` (`client.json`) ou baisser `network.maxViewSize`.
+
+## Retours de jeu, phase 11
+
+Machine : AMD Ryzen 5 7535HS, Node 22.23. 40 participants, 150 zombies chacun, vue PC, 20 s après 3 s de chauffe. Le code des Lots 1 et 2 a été mesuré sur la même machine pour comparer.
+
+- Lots 1 et 2 : tick de 20,2 ms en moyenne, 23 ms au 95e centile, 26 ms au pire, débit de 15 Ko/s en moyenne et 50 Ko/s au pire.
+- Phase 11 : tick de 20,3 ms en moyenne, 25 ms au 95e centile, 29 ms au pire, débit de 15 Ko/s en moyenne et 27 Ko/s au pire.
+
+Le cache de force par tick du ciblage ne coûte rien de mesurable.
+
+Simulation hors réseau d'un lobby de 12 bots (script jetable, 16 min de jeu) :
+- avant : le meilleur bot atteint 631 de force et le plafond de 150 unités, dont 110 squelettes archers jamais fusionnés chez un autre bot, niveau 11 après 16 min ;
+- après, sans joueur : le meilleur bot plafonne entre 50 et 63 de force pour une marge de 40 (léger dépassement quand un gain d'un seul coup arrive juste avant le plafond) ;
+- après, avec un joueur immobile de force 5 : tous les bots s'arrêtent à 46 (5 x 1,2 + 40) et n'en bougent plus.
