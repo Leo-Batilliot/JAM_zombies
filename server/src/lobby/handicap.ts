@@ -37,3 +37,7 @@ export const updateHandicaps = (world: World): void => {
 export const growthFactor = (army: Army): number => army.bot?.handicap ?? 1;
 
 export const isCapped = (army: Army): boolean => growthFactor(army) <= 0;
+
+export const hasRoom = (world: World, army: Army): boolean =>
+  !isCapped(army) &&
+  (army.bot === undefined || armyPotential(world, army) < botCap(world));

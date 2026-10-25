@@ -720,6 +720,114 @@
       "radius": 0.6,
       "speed": 0,
       "obstacle": true
+    },
+    "stray-dog": {
+      "name": "a Stray dog",
+      "corpse": "zombie-dog",
+      "infects": false,
+      "strength": 1,
+      "hp": 24,
+      "radius": 0.4,
+      "speed": 7,
+      "fleeSpeed": 8,
+      "attack": {
+        "damage": 4.5,
+        "attackIntervalSec": 0.8,
+        "attackRange": 0.3,
+        "aggroRange": 9,
+        "leashDistance": 14
+      },
+      "obstacle": false
+    },
+    "looter": {
+      "name": "a Looter",
+      "corpse": "skeleton-archer",
+      "infects": false,
+      "strength": 2,
+      "hp": 45,
+      "radius": 0.45,
+      "speed": 4.5,
+      "fleeSpeed": 5.5,
+      "attack": {
+        "damage": 7,
+        "attackIntervalSec": 1.4,
+        "attackRange": 6,
+        "aggroRange": 10,
+        "leashDistance": 14,
+        "projectile": "bullet"
+      },
+      "obstacle": false
+    },
+    "wolf": {
+      "name": "a Wolf",
+      "corpse": "zombie-dog",
+      "infects": false,
+      "strength": 2,
+      "hp": 40,
+      "radius": 0.45,
+      "speed": 7.5,
+      "fleeSpeed": 9,
+      "attack": {
+        "damage": 7,
+        "attackIntervalSec": 0.8,
+        "attackRange": 0.3,
+        "aggroRange": 10,
+        "leashDistance": 18
+      },
+      "obstacle": false
+    },
+    "crow": {
+      "name": "a Crow",
+      "corpse": "carrion-flock",
+      "infects": false,
+      "strength": 1,
+      "hp": 10,
+      "radius": 0.35,
+      "layer": "air",
+      "speed": 8,
+      "fleeSpeed": 11,
+      "attack": {
+        "damage": 2.5,
+        "attackIntervalSec": 0.7,
+        "attackRange": 0.4,
+        "aggroRange": 9,
+        "leashDistance": 12
+      },
+      "obstacle": false
+    },
+    "bat": {
+      "name": "a Bat",
+      "corpse": "carrion-flock",
+      "infects": false,
+      "strength": 1,
+      "hp": 12,
+      "radius": 0.35,
+      "layer": "air",
+      "speed": 8.5,
+      "fleeSpeed": 11,
+      "attack": {
+        "damage": 3,
+        "attackIntervalSec": 0.7,
+        "attackRange": 0.4,
+        "aggroRange": 9,
+        "leashDistance": 12
+      },
+      "obstacle": false
+    },
+    "monk": {
+      "name": "a Monk",
+      "corpse": "wandering-soul",
+      "infects": true,
+      "strength": 1,
+      "hp": 12,
+      "radius": 0.4,
+      "speed": 1.4,
+      "fleeSpeed": 2.8,
+      "fatigue": {
+        "afterSec": 3,
+        "factor": 0.6
+      },
+      "obstacle": false
     }
   },
   "projectiles": {

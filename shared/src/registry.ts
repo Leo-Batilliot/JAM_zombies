@@ -289,6 +289,12 @@ const checkCity = (config: Config): void => {
       ],
     ),
     ["Camps", config.world.camps.districts],
+    ...config.world.populations.flatMap(
+      (population): [string, string[] | undefined][] => [
+        [`Population "${population.npc}"`, population.districts],
+        [`Population "${population.npc}" route`, population.route],
+      ],
+    ),
     ...Object.entries(config.events.events).map(
       ([eventId, event]): [string, string[] | undefined] => [
         `Event "${eventId}"`,
@@ -330,10 +336,13 @@ export const buildRegistries = (config: Config): Registries => {
       checkReference(registries.units, npc.corpse, `Corpse of npc "${npcId}"`);
     }
   }
-  for (const { npc } of config.world.populations) {
+  for (const { npc, raid } of config.world.populations) {
     checkReference(registries.npcs, npc, "Population");
     if (registries.npcs.get(npc).fleeSpeed === undefined) {
       throw new RegistryError(`Population npc "${npc}" has no fleeSpeed`);
+    }
+    if (raid !== undefined && registries.npcs.get(npc).attack === undefined) {
+      throw new RegistryError(`Raiding population npc "${npc}" cannot attack`);
     }
   }
   for (const [eventId, event] of registries.events.entries()) {

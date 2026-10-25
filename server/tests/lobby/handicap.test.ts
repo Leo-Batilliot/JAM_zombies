@@ -160,3 +160,19 @@ describe("a capped bot stops growing", () => {
     );
   });
 });
+
+describe("a bot below its cap", () => {
+  test("only takes what fits under the cap from a slain mage", () => {
+    const bench = createBench();
+    const bot = botArmy(bench);
+    fill(bench, bot, 30);
+    const victim = botArmy(bench, 150, 150, "Victim");
+    fill(bench, victim, 40);
+    updateHandicaps(bench.world);
+    killMage(bench.world, victim, bot);
+    expect(bot.units.size + bot.corpses.size).toBeLessThanOrEqual(
+      botCap(bench.world),
+    );
+    expect(bot.units.size + bot.corpses.size).toBeGreaterThan(30);
+  });
+});

@@ -1,4 +1,4 @@
-import { isCapped } from "../lobby/handicap.js";
+import { hasRoom } from "../lobby/handicap.js";
 import type { Army, Corpse, Unit, World } from "../world/world.js";
 
 export const receiver = (
@@ -9,7 +9,7 @@ export const receiver = (
   army !== undefined &&
   army !== from &&
   army.alive &&
-  !isCapped(army) &&
+  hasRoom(world, army) &&
   world.armies.get(army.slot) === army
     ? army
     : undefined;

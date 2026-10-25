@@ -7,7 +7,7 @@
   "populations": [
     {
       "npc": "civilian",
-      "count": 150,
+      "count": 90,
       "groupSize": {
         "min": 3,
         "max": 6
@@ -18,6 +18,120 @@
       "fleeRadius": 10,
       "respawnIntervalSec": 2,
       "safeDistance": 30
+    },
+    {
+      "npc": "stray-dog",
+      "count": 15,
+      "groupSize": {
+        "min": 3,
+        "max": 5
+      },
+      "groupSpread": 3,
+      "wanderDistance": 30,
+      "wanderIntervalSec": 8,
+      "fleeRadius": 12,
+      "respawnIntervalSec": 6,
+      "safeDistance": 30,
+      "raid": {
+        "attackRatio": 1.2,
+        "fleeHpRatio": 0.4,
+        "encircle": 0
+      }
+    },
+    {
+      "npc": "looter",
+      "count": 12,
+      "groupSize": {
+        "min": 3,
+        "max": 4
+      },
+      "groupSpread": 3,
+      "wanderDistance": 25,
+      "wanderIntervalSec": 10,
+      "fleeRadius": 14,
+      "respawnIntervalSec": 8,
+      "safeDistance": 30,
+      "raid": {
+        "attackRatio": 1.0,
+        "fleeHpRatio": 0.5,
+        "encircle": 0
+      }
+    },
+    {
+      "npc": "wolf",
+      "count": 10,
+      "groupSize": {
+        "min": 4,
+        "max": 5
+      },
+      "groupSpread": 4,
+      "wanderDistance": 30,
+      "wanderIntervalSec": 8,
+      "fleeRadius": 14,
+      "respawnIntervalSec": 10,
+      "safeDistance": 30,
+      "districts": ["park", "forest"],
+      "raid": {
+        "attackRatio": 1.4,
+        "fleeHpRatio": 0.35,
+        "encircle": 3
+      }
+    },
+    {
+      "npc": "crow",
+      "count": 10,
+      "groupSize": {
+        "min": 4,
+        "max": 6
+      },
+      "groupSpread": 2.5,
+      "wanderDistance": 35,
+      "wanderIntervalSec": 6,
+      "fleeRadius": 12,
+      "respawnIntervalSec": 8,
+      "safeDistance": 30,
+      "raid": {
+        "attackRatio": 0.8,
+        "fleeHpRatio": 0.6,
+        "encircle": 0
+      }
+    },
+    {
+      "npc": "bat",
+      "count": 5,
+      "groupSize": {
+        "min": 4,
+        "max": 5
+      },
+      "groupSpread": 2.5,
+      "wanderDistance": 35,
+      "wanderIntervalSec": 6,
+      "fleeRadius": 12,
+      "respawnIntervalSec": 10,
+      "safeDistance": 30,
+      "districts": ["graveyard", "cathedral"],
+      "raid": {
+        "attackRatio": 0.8,
+        "fleeHpRatio": 0.6,
+        "encircle": 0
+      }
+    },
+    {
+      "npc": "monk",
+      "count": 8,
+      "groupSize": {
+        "min": 4,
+        "max": 4
+      },
+      "groupSpread": 0,
+      "wanderDistance": 90,
+      "wanderIntervalSec": 20,
+      "fleeRadius": 10,
+      "respawnIntervalSec": 12,
+      "safeDistance": 30,
+      "districts": ["cathedral"],
+      "route": ["cathedral", "street", "plaza"],
+      "lineSpacing": 1.2
     }
   ],
   "pointsOfInterest": {
@@ -298,7 +412,7 @@
       "plaza": {
         "name": "Market square",
         "weight": 2,
-        "min": 0,
+        "min": 1,
         "max": 3,
         "ground": "cobble",
         "tags": ["plaza", "car", "cross", "camp"],
@@ -466,7 +580,7 @@
       "barracks": {
         "name": "Barracks",
         "weight": 1,
-        "min": 0,
+        "min": 1,
         "max": 1,
         "ground": "dirt",
         "tags": ["barracks", "camp"],
@@ -566,7 +680,7 @@
       "forest": {
         "name": "Forest",
         "weight": 1.5,
-        "min": 0,
+        "min": 1,
         "max": 2,
         "ground": "leaves",
         "tags": ["forest", "camp"],

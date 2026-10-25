@@ -1,21 +1,29 @@
 import { EntityKind, type Config } from "@horde/shared";
 import { distanceToMages, farPoint } from "../world/spawn.js";
-import type { Entity, Npc, NpcGroup, World } from "../world/world.js";
+import type {
+  Entity,
+  Mage,
+  Npc,
+  NpcGroup,
+  Unit,
+  World,
+} from "../world/world.js";
+import { armyStrength, bodiesStrength } from "./strength.js";
 
 type Population = Config["world"]["populations"][number];
 
-const isThreat = (entity: Entity | undefined): entity is Entity =>
+const isThreat = (entity: Entity | undefined): entity is Mage | Unit =>
   entity?.kind === EntityKind.Mage || entity?.kind === EntityKind.Unit;
 
 const nearestThreat = (
   world: World,
-  npc: Npc,
+  npc: { x: number; y: number },
   radius: number,
   near: number[],
-): Entity | undefined => {
+): Mage | Unit | undefined => {
   near.length = 0;
   world.grid.queryRadius(npc.x, npc.y, radius, near);
-  let best: Entity | undefined;
+  let best: Mage | Unit | undefined;
   let bestDistance = Infinity;
   for (const id of near) {
     const entity = world.entities.get(id);
@@ -50,6 +58,72 @@ const step = (
   };
 };
 
+const groupHealth = (world: World, group: NpcGroup): number => {
+  let hp = 0;
+  let max = 0;
+  for (const npc of group.members) {
+    hp += npc.hp;
+    max += world.registries.npcs.get(npc.type).hp;
+  }
+  return max > 0 ? hp / max : 0;
+};
+
+const raidThreat = (
+  world: World,
+  group: NpcGroup,
+  population: Population,
+  near: number[],
+): { threat: Mage | Unit | undefined; flee: boolean } => {
+  const { raid } = population;
+  const threat = nearestThreat(world, group, population.fleeRadius, near);
+  if (raid === undefined || threat === undefined) {
+    return { threat, flee: threat !== undefined };
+  }
+  const weak =
+    armyStrength(world, threat.army) <=
+    bodiesStrength(world, group.members) * raid.attackRatio;
+  return {
+    threat,
+    flee: !weak || groupHealth(world, group) < raid.fleeHpRatio,
+  };
+};
+
+const nextTarget = (
+  world: World,
+  group: NpcGroup,
+  population: Population,
+): { x: number; y: number } =>
+  population.route === undefined
+    ? world.randomNear(group.x, group.y, population.wanderDistance)
+    : world.randomPoint(population.route);
+
+const driftRaiders = (
+  world: World,
+  group: NpcGroup,
+  population: Population,
+  threat: Mage | Unit | undefined,
+  dt: number,
+): void => {
+  const { speed } = world.registries.npcs.get(population.npc);
+  group.fleeingSince = undefined;
+  if (threat !== undefined) {
+    group.targetX = threat.x;
+    group.targetY = threat.y;
+  } else if (world.time >= group.wanderAt) {
+    const target = nextTarget(world, group, population);
+    group.targetX = target.x;
+    group.targetY = target.y;
+    group.wanderAt = world.time + population.wanderIntervalSec;
+  }
+  const anchor = step(world, group, group.targetX, group.targetY, speed * dt);
+  group.x = anchor.x;
+  group.y = anchor.y;
+  for (const npc of group.members) {
+    npc.homeX = world.clampX(group.x + npc.offsetX);
+    npc.homeY = world.clampY(group.y + npc.offsetY);
+  }
+};
+
 const moveGroup = (
   world: World,
   group: NpcGroup,
@@ -57,6 +131,13 @@ const moveGroup = (
   dt: number,
   near: number[],
 ): void => {
+  if (population.raid !== undefined) {
+    const { threat, flee } = raidThreat(world, group, population, near);
+    if (!flee) {
+      driftRaiders(world, group, population, threat, dt);
+      return;
+    }
+  }
   const stats = world.registries.npcs.get(population.npc);
   const { speed, fatigue } = stats;
   const tired =
@@ -102,11 +183,7 @@ const moveGroup = (
     );
     group.wanderAt = world.time + population.wanderIntervalSec;
   } else if (world.time >= group.wanderAt) {
-    const target = world.randomNear(
-      group.x,
-      group.y,
-      population.wanderDistance,
-    );
+    const target = nextTarget(world, group, population);
     group.targetX = target.x;
     group.targetY = target.y;
     group.wanderAt = world.time + population.wanderIntervalSec;
@@ -142,10 +219,14 @@ const spawnGroup = (
     world,
     (px, py) => distanceToMages(world, px, py),
     population.safeDistance,
+    population.districts,
   );
   const group = world.addNpcGroup(index, x, y);
   for (let member = 0; member < size; member++) {
-    const offset = world.randomNear(0, 0, population.groupSpread);
+    const offset =
+      population.lineSpacing === undefined
+        ? world.randomNear(0, 0, population.groupSpread)
+        : { x: 0, y: member * population.lineSpacing };
     world.addNpc(group, population.npc, offset.x, offset.y);
   }
   return group;

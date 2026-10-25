@@ -270,6 +270,30 @@
     "unit-ankou": {
       "sprite": "unit-ghost",
       "scale": 1.5
+    },
+    "npc-stray-dog": {
+      "sprite": "npc-guard-dog",
+      "scale": 1.4
+    },
+    "npc-looter": {
+      "sprite": "npc-hunter",
+      "scale": 1
+    },
+    "npc-wolf": {
+      "sprite": "unit-rotting-wolf",
+      "scale": 0.85
+    },
+    "npc-crow": {
+      "sprite": "unit-bat",
+      "scale": 0.7
+    },
+    "npc-bat": {
+      "sprite": "unit-bat",
+      "scale": 0.7
+    },
+    "npc-monk": {
+      "sprite": "npc-civilian",
+      "scale": 1
     }
   },
   "cardArtScale": 2,

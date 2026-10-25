@@ -429,6 +429,16 @@ const worldSchema = z.strictObject({
       fleeRadius: z.number().positive(),
       respawnIntervalSec: z.number().positive(),
       safeDistance: z.number().nonnegative(),
+      districts: z.array(id).optional(),
+      route: z.array(id).optional(),
+      lineSpacing: z.number().positive().optional(),
+      raid: z
+        .strictObject({
+          attackRatio: z.number().positive(),
+          fleeHpRatio: fraction,
+          encircle: z.number().nonnegative(),
+        })
+        .optional(),
     }),
   ),
   city: structural(citySchema),

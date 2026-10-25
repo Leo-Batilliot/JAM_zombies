@@ -1,4 +1,5 @@
 import { EntityKind } from "@horde/shared";
+import { hasRoom } from "../lobby/handicap.js";
 import { rankArmies } from "../lobby/leaderboard.js";
 import { farPoint } from "../world/spawn.js";
 import type {
@@ -43,7 +44,7 @@ const handOver = (world: World, army: Army, killer: Army | undefined): void => {
       remain.kind === EntityKind.Unit
         ? heir
         : (receiver(world, remain.killer, army) ?? heir);
-    if (index >= kept || to === undefined) {
+    if (index >= kept || to === undefined || !hasRoom(world, to)) {
       grave.push({ type: remain.type, item: remain.item });
       world.removeEntity(remain);
     } else if (
