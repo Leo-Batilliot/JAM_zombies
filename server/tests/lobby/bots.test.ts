@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { runBots } from "../../src/lobby/bots.js";
+import { detour, runBots } from "../../src/lobby/bots.js";
 import { createMassGrave } from "../../src/systems/points.js";
+import { armyStrength } from "../../src/systems/strength.js";
 import { createBench } from "../support/bench.js";
 
 const botArmy = (bench: ReturnType<typeof createBench>, x = 100, y = 100) => {
@@ -68,7 +69,7 @@ describe("bots", () => {
     }
     bench.addCivilians(115, 100, 4);
     bench.step(bench.config.network.tickRate * 30);
-    expect(army.units.size).toBeGreaterThan(5);
+    expect(armyStrength(bench.world, army)).toBeGreaterThan(5);
   });
 });
 
@@ -171,5 +172,66 @@ describe("bots in battle", () => {
     withUnits(bench, strong, [[130, 101]]);
     runBots(bench.world);
     expect(army.mage.targetX).not.toBeCloseTo(strong.mage.x);
+  });
+});
+
+describe("bots with equipment and crosses", () => {
+  test("loot a car to get an item", () => {
+    const bench = createBench((config) => {
+      Object.assign(config.world.pointsOfInterest["car"] ?? {}, {
+        searchSec: 1,
+        radius: 3,
+      });
+    });
+    const army = botArmy(bench);
+    bench.world.addUnit(army, "zombie", 100, 100);
+    bench.world.addPointOfInterest("car", 115, 100, 600);
+    runBots(bench.world);
+    expect(army.mage.targetX).toBeCloseTo(115);
+    bench.step(bench.config.network.tickRate * 5);
+    const [unit] = army.units;
+    expect(unit?.item).toBeDefined();
+  });
+
+  test("evolve their zombies when they can", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    for (let index = 0; index < 6; index++) {
+      bench.world.addUnit(army, "zombie", 101, 100);
+    }
+    runBots(bench.world);
+    const types = [...army.units].map((unit) => unit.type).sort();
+    expect(types).toEqual(["big-zombie", "zombie"]);
+  });
+
+  const crossBench = () =>
+    createBench((config) => {
+      Object.assign(config.world.crosses, { radius: 6, threshold: 5 });
+      config.lobby.bots.crossMargin = 2;
+    });
+
+  test("go around a cross that would strike their army", () => {
+    const bench = crossBench();
+    const army = botArmy(bench);
+    for (let index = 0; index < 5; index++) {
+      bench.world.addUnit(army, "zombie", 100, 100);
+    }
+    const cross = bench.world.addCross(120, 101, 600);
+    const point = detour(bench.world, army, 140, 100);
+    expect(Math.hypot(point.x - cross.x, point.y - cross.y)).toBeCloseTo(8);
+    expect(point.y).toBeLessThan(cross.y);
+  });
+
+  test("walk through a cross when their army is too small or it is recharging", () => {
+    const bench = crossBench();
+    const army = botArmy(bench);
+    for (let index = 0; index < 4; index++) {
+      bench.world.addUnit(army, "zombie", 100, 100);
+    }
+    const cross = bench.world.addCross(120, 100, 600);
+    expect(detour(bench.world, army, 140, 100)).toEqual({ x: 140, y: 100 });
+    bench.world.addUnit(army, "zombie", 100, 100);
+    cross.readyAt = bench.world.time + 10;
+    expect(detour(bench.world, army, 140, 100)).toEqual({ x: 140, y: 100 });
   });
 });
