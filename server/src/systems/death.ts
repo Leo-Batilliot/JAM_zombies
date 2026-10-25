@@ -1,4 +1,5 @@
 import { EntityKind } from "@horde/shared";
+import { isCapped } from "../lobby/handicap.js";
 import type { Army, Mage, Npc, Unit, World } from "../world/world.js";
 import { eventNpcKilled, recordContribution } from "./events.js";
 import { enlist } from "./enlist.js";
@@ -45,7 +46,10 @@ export const kill = (
   if (victim.kind === EntityKind.Npc && victim.event !== undefined) {
     eventNpcKilled(world, victim);
   }
-  if (raisedAs === undefined) {
+  if (
+    raisedAs === undefined ||
+    (owner === undefined && killer !== undefined && isCapped(killer))
+  ) {
     return;
   }
   if (infects && killer !== undefined) {

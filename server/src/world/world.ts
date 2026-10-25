@@ -119,6 +119,7 @@ export interface Chase {
 
 export interface Bot {
   thinkAt: number;
+  handicap: number;
   chase: Chase | undefined;
   ignored: Map<Army, number>;
 }

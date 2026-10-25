@@ -13,6 +13,7 @@ import type {
   PointOfInterest,
   World,
 } from "../world/world.js";
+import { growthFactor, isCapped } from "./handicap.js";
 import { rankArmies } from "./leaderboard.js";
 
 type Mode = keyof World["config"]["lobby"]["bots"]["formations"];
@@ -243,31 +244,55 @@ const moveTo = (world: World, army: Army, x: number, y: number): void => {
   orderMove(world, army, point.x, point.y);
 };
 
-const strongestLineage = (world: World, army: Army): string | undefined => {
-  const strengths = new Map<string, number>();
+export const lineageNeeds = (
+  world: World,
+  army: Army,
+): Map<string, { waiting: number; strength: number }> => {
+  const needs = new Map<string, { waiting: number; strength: number }>();
   for (const unit of army.units) {
     const node = world.registries.tree.get(unit.type);
-    if (node !== undefined) {
-      strengths.set(
-        node.lineage,
-        (strengths.get(node.lineage) ?? 0) +
-          world.registries.units.get(unit.type).strength,
-      );
+    if (node === undefined) {
+      continue;
     }
+    const need = needs.get(node.lineage) ?? { waiting: 0, strength: 0 };
+    if (node.tier >= (army.mutations.get(node.lineage)?.tier ?? 0)) {
+      need.waiting++;
+    }
+    need.strength += world.registries.units.get(unit.type).strength;
+    needs.set(node.lineage, need);
   }
-  return [...strengths].sort((a, b) => b[1] - a[1])[0]?.[0];
+  return needs;
 };
 
 const pickCard = (world: World, army: Army): void => {
   if (army.cards.length === 0) {
     return;
   }
-  const lineage = strongestLineage(world, army);
-  const mutation = army.cards.findIndex(
-    (card) =>
-      card.kind === "mutation" &&
-      world.registries.tree.get(card.unit)?.lineage === lineage,
-  );
+  const needs = lineageNeeds(world, army);
+  const score = (unit: string): [number, number] => {
+    const lineage = world.registries.tree.get(unit)?.lineage ?? "";
+    const need = needs.get(lineage);
+    return [need?.waiting ?? 0, need?.strength ?? 0];
+  };
+  let mutation = -1;
+  army.cards.forEach((card, index) => {
+    const best = army.cards[mutation];
+    if (card.kind !== "mutation" || score(card.unit)[0] === 0) {
+      return;
+    }
+    if (best?.kind !== "mutation") {
+      mutation = index;
+      return;
+    }
+    const [waiting, strength] = score(card.unit);
+    const [bestWaiting, bestStrength] = score(best.unit);
+    if (
+      waiting > bestWaiting ||
+      (waiting === bestWaiting && strength > bestStrength)
+    ) {
+      mutation = index;
+    }
+  });
   const gift = army.cards.findIndex((card) => card.kind === "gift");
   orderCard(world, army, mutation >= 0 ? mutation : Math.max(gift, 0));
 };
@@ -280,6 +305,14 @@ const think = (world: World, army: Army): void => {
     return;
   }
   pickCard(world, army);
+  if (isCapped(army)) {
+    setFormation(world, army, "explore");
+    if (mage.x === mage.targetX && mage.y === mage.targetY) {
+      const { x, y } = world.randomNear(mage.x, mage.y, wanderDistance);
+      moveTo(world, army, x, y);
+    }
+    return;
+  }
   const prey = pursue(
     world,
     army,
@@ -310,7 +343,7 @@ const think = (world: World, army: Army): void => {
 };
 
 export const runBots = (world: World): void => {
-  const { thinkIntervalSec } = world.config.lobby.bots;
+  const { thinkIntervalSec, handicap } = world.config.lobby.bots;
   for (const army of world.armies.values()) {
     if (
       army.bot === undefined ||
@@ -319,7 +352,10 @@ export const runBots = (world: World): void => {
     ) {
       continue;
     }
-    army.bot.thinkAt = world.time + thinkIntervalSec * (0.5 + world.random());
+    const slowdown =
+      1 + (handicap.thinkSlowdown - 1) * (1 - growthFactor(army));
+    army.bot.thinkAt =
+      world.time + thinkIntervalSec * slowdown * (0.5 + world.random());
     think(world, army);
   }
 };

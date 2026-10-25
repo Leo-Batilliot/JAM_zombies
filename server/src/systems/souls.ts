@@ -1,6 +1,7 @@
 import type { Config } from "@horde/shared";
 import type { Army, World } from "../world/world.js";
 import { offerCards } from "./evolution.js";
+import { growthFactor } from "../lobby/handicap.js";
 import { giftValue } from "./gifts.js";
 
 type SoulRules = Config["gameplay"]["souls"];
@@ -29,7 +30,7 @@ export const maxHp = (world: World, army: Army): number => {
 export const grantSouls = (world: World, army: Army, souls: number): void => {
   const previousMax = maxHp(world, army);
   const previousLevel = army.level;
-  army.souls += souls;
+  army.souls += souls * growthFactor(army);
   army.level = levelForSouls(army.souls, world.config.gameplay.souls);
   army.mage.hp += maxHp(world, army) - previousMax;
   army.pendingLevels += army.level - previousLevel;

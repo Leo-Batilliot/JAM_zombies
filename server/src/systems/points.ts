@@ -1,4 +1,5 @@
 import type { Config } from "@horde/shared";
+import { isCapped } from "../lobby/handicap.js";
 import type { Army, PointOfInterest, Remains, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 import { enlistNearMage } from "./enlist.js";
@@ -98,7 +99,10 @@ const nearestUnsearched = (
 
 export const searchPoints = (world: World, dt: number): void => {
   for (const army of world.armies.values()) {
-    const point = army.alive ? nearestUnsearched(world, army) : undefined;
+    const point =
+      army.alive && !isCapped(army)
+        ? nearestUnsearched(world, army)
+        : undefined;
     if (point === undefined || army.mage.hitAt >= world.time - dt) {
       army.search = undefined;
       continue;

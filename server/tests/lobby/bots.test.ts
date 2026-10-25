@@ -6,7 +6,7 @@ import { createBench } from "../support/bench.js";
 
 const botArmy = (bench: ReturnType<typeof createBench>, x = 100, y = 100) => {
   const army = bench.addArmy(x, y, "Bot");
-  army.bot = { thinkAt: 0, chase: undefined, ignored: new Map() };
+  army.bot = { thinkAt: 0, handicap: 1, chase: undefined, ignored: new Map() };
   return army;
 };
 
@@ -291,5 +291,41 @@ describe("bots in the V1 world", () => {
     army.formationReadyAt = 0;
     runBots(bench.world);
     expect(army.formation).toBe(bench.config.lobby.bots.formations.defend);
+  });
+});
+
+describe("bots choosing cards", () => {
+  test("mutate the lineage with the most units waiting to fuse", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    for (let index = 0; index < 3; index++) {
+      bench.world.addUnit(army, "zombie", 101, 100);
+    }
+    for (let index = 0; index < 10; index++) {
+      bench.world.addUnit(army, "skeleton-archer", 99, 100);
+    }
+    army.cards = [
+      { kind: "mutation", unit: "big-zombie" },
+      { kind: "gift", gift: "haste" },
+      { kind: "mutation", unit: "skeleton-crossbowman" },
+    ];
+    army.pendingLevels = 1;
+    runBots(bench.world);
+    expect(army.mutations.get("skeleton")?.tier).toBe(1);
+    expect(army.mutations.has("zombie")).toBe(false);
+  });
+
+  test("take a gift when no mutation helps their army", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    bench.world.addUnit(army, "zombie", 101, 100);
+    army.cards = [
+      { kind: "mutation", unit: "skeleton-crossbowman" },
+      { kind: "gift", gift: "haste" },
+    ];
+    army.pendingLevels = 1;
+    runBots(bench.world);
+    expect(army.gifts.get("haste")).toBe(1);
+    expect(army.mutations.size).toBe(0);
   });
 });

@@ -24,6 +24,7 @@ const isReplaceable = (world: World, army: Army): boolean => {
 
 const newBot = (world: World): Bot => ({
   thinkAt: world.time,
+  handicap: 1,
   chase: undefined,
   ignored: new Map(),
 });
