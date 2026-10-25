@@ -5,7 +5,6 @@ import {
   type Spritesheet,
 } from "pixi.js";
 import {
-  BattleFlag,
   ClientMessageType,
   neutralArmy,
   spectatorMageId,
@@ -20,7 +19,7 @@ import { Music, musicMix } from "../audio/music.js";
 import { DeathScreen } from "../death.js";
 import { isDemo, startDemo } from "../demo.js";
 import { EventDisplay } from "../events.js";
-import { CardPanel } from "../cards.js";
+import { CardPanel, type CardArt } from "../cards.js";
 import { FormationBar } from "../formations.js";
 import { Hud } from "../hud.js";
 import { LootNotice } from "../loot.js";
@@ -31,6 +30,7 @@ import { SpellButton } from "../spell.js";
 import { BombingLayer } from "./bombings.js";
 import { easeZoom, zoomFor } from "./camera.js";
 import { CrossLayer } from "./crosses.js";
+import { atlasImage } from "./assets.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
 import { MapLayer } from "./map.js";
@@ -41,6 +41,28 @@ import { pickEnemy } from "./picking.js";
 import { armyHex } from "./sprites.js";
 import { PlateLayer } from "./plates.js";
 import { SearchBar } from "./search.js";
+
+const cardArt = (
+  atlas: Spritesheet,
+  aliases: Record<string, { sprite: string }>,
+  sprite: string,
+): CardArt | undefined => {
+  const name = aliases[sprite]?.sprite ?? sprite;
+  const frame = (atlas.data.frames[`${name}-walk-0`] ?? atlas.data.frames[name])
+    ?.frame;
+  const size = atlas.data.meta.size;
+  return frame === undefined || size === undefined
+    ? undefined
+    : {
+        url: atlasImage(atlas),
+        x: frame.x,
+        y: frame.y,
+        width: frame.w,
+        height: frame.h,
+        sheetWidth: size.w,
+        sheetHeight: size.h,
+      };
+};
 
 const leftButton = 0;
 
@@ -105,9 +127,14 @@ export const startGame = async (
     ? undefined
     : {
         loot: new LootNotice(ui),
-        cards: new CardPanel(ui, (card) => {
-          connection.send({ type: ClientMessageType.Choose, card });
-        }),
+        cards: new CardPanel(
+          ui,
+          (card) => {
+            connection.send({ type: ClientMessageType.Choose, card });
+          },
+          (sprite) => cardArt(atlas, config().client.spriteAliases, sprite),
+          () => config().client.cardArtScale,
+        ),
         spell: new SpellButton(
           ui,
           () => config().client.spellKey,
@@ -141,11 +168,7 @@ export const startGame = async (
     status = next;
     hud.setStatus(next);
     bossBar.update(next.bosses, eventName);
-    controls?.cards.update(
-      next.cards,
-      (next.battle & BattleFlag.InBattle) !== 0,
-      config().content,
-    );
+    controls?.cards.update(next.cards, config().content);
     controls?.spell.update(next.spell, next.spellCooldown, config().content);
     controls?.formations.setStatus(next.formation, next.formationCooldown);
   };

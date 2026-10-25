@@ -492,12 +492,14 @@ body.share p {
 
 .cards {
   position: absolute;
-  right: max(0.8rem, env(safe-area-inset-right));
-  bottom: calc(max(0.8rem, env(safe-area-inset-bottom)) + 3.4rem);
+  top: calc(max(0.6rem, env(safe-area-inset-top)) + 5.4rem);
+  left: 50%;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 0.4rem;
+  max-width: calc(100vw - 1.2rem);
+  transform: translateX(-50%);
 }
 
 .cards[hidden],
@@ -507,7 +509,8 @@ body.share p {
 
 .cards-list {
   display: flex;
-  gap: 0.4rem;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .cards button,
@@ -522,20 +525,107 @@ body.share p {
   cursor: pointer;
 }
 
-.cards-list button {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 7rem;
+.cards .card {
+  display: grid;
+  grid-template-rows: auto auto auto auto auto 1fr;
+  justify-items: center;
+  gap: 0.2rem;
+  width: clamp(8.5rem, 22vw, 11.5rem);
+  padding: 0.5rem 0.6rem 0.6rem;
+  border-width: 3px;
+  border-radius: 0.7rem;
+  background: rgb(28 22 34 / 92%);
+  text-align: center;
+  box-shadow: 0 0.3rem 0.8rem rgb(0 0 0 / 50%);
+  animation: event-banner-in 0.3s ease-out;
 }
 
-.cards-list button span {
+.cards .card:hover {
+  transform: translateY(-0.15rem);
+}
+
+.cards .card-gift {
+  border-color: #6ad46a;
+}
+
+.cards .card-spell {
+  border-color: #b36ad4;
+}
+
+.card-kind {
+  font-size: 0.7em;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--muted);
-  font-size: 0.85em;
+}
+
+.card-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 0.5rem;
+  background: rgb(0 0 0 / 35%);
+}
+
+.card-art div {
+  image-rendering: pixelated;
+}
+
+.card-subtitle {
+  font-size: 0.75em;
+  color: var(--muted);
+}
+
+.cards .card dl {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 0.6rem;
+  margin: 0.1rem 0 0;
+  font-size: 0.8em;
+}
+
+.cards .card dt {
+  color: var(--muted);
+  text-align: left;
+}
+
+.cards .card dd {
+  margin: 0;
+  text-align: right;
+}
+
+.cards .card p {
+  margin: 0.2rem 0 0;
+  font-size: 0.75em;
+  line-height: 1.25;
+  color: var(--text);
 }
 
 .cards-toggle {
   font-weight: bold;
+}
+
+@media (max-height: 480px) {
+  .cards {
+    top: calc(max(0.4rem, env(safe-area-inset-top)) + 4.4rem);
+  }
+
+  .cards .card {
+    width: clamp(7.5rem, 20vw, 9.5rem);
+    padding: 0.35rem 0.45rem 0.45rem;
+  }
+
+  .card-art {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .cards .card p {
+    display: none;
+  }
 }
 
 .spell {
