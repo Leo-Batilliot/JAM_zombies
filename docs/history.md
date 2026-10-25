@@ -4,6 +4,37 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Contenu bonus | 7.01-7.06 | G.WI
+
+- `shared/src/config/schema.ts` : apparences du mage, vitesse des objets, bombardements, nombre de lobbys et spectateurs, son et couleurs des bombardements, apparences et bombardements envoyés au client.
+- `shared/config/units.json` : chien zombie, molosse, cerbère, chien de garde.
+- `shared/config/equipment.json` : collier à clous, collier en os, chaîne de Cerbère.
+- `shared/config/world.json` : chiens de garde dans les camps, colliers dans les tables de butin, bombardements.
+- `shared/config/gameplay.json`, `lobby.json`, `client.json` : quatre apparences du mage, 3 lobbys et 4 spectateurs au plus, son d'explosion, décalage des colliers, couleurs des zones.
+- `shared/src/registry.ts` : registre des apparences.
+- `shared/src/protocol/messages.ts` : apparence dans l'entrée en jeu, message d'entrée en spectateur, message de cible suivie, genre bombardement, identifiant de mage du spectateur.
+- `server/src/world/world.ts` : apparence de l'armée, bombardements et prochaine vague.
+- `server/src/world/loop.ts` : système des bombardements, arrêt de la boucle possible pendant un tick.
+- `server/src/systems/bombings.ts` : vagues de zones sur les armées, explosion selon la densité de chaque armée.
+- `server/src/systems/equipment.ts`, `formation.ts` : bonus de vitesse de l'objet porté.
+- `server/src/systems/army.ts` : armée créée avec son apparence.
+- `server/src/lobby/lobby.ts` : apparence à l'entrée et au retour, test de place libre, reprise possible, joueurs présents.
+- `server/src/lobby/lobbies.ts` : ouverture et fermeture des lobbys, choix du lobby d'un joueur.
+- `server/src/net/spectate.ts` : choix de la cible suivie par un spectateur.
+- `server/src/net/interest.ts` : apparence comme type du mage, compte à rebours des bombardements, vue sans armée.
+- `server/src/net/sockets.ts` : config à la connexion, sessions rattachées à leur lobby, spectateurs.
+- `server/src/main.ts`, `server/scripts/load-test.ts` : lancement par les lobbys, faux clients qui attendent la bienvenue.
+- `client/src/net/connection.ts` : connexion au chargement de la page, entrée en jeu ou en spectateur, cible suivie.
+- `client/src/main.ts`, `home.ts`, `game/preview.ts` : choix de l'apparence avec son sprite, bouton de spectateur.
+- `client/src/game/game.ts`, `hud.ts` : caméra sur la cible suivie, interface du spectateur, zones de bombardement.
+- `client/src/game/bombings.ts`, `audio/cues.ts` : zones, explosion et son d'explosion.
+- `client/src/game/sprites.ts`, `entities.ts` : sprite selon l'apparence, bombardements hors des sprites.
+- `client/src/style.css` : apparences, bouton de spectateur, interface du spectateur, écran d'accueil sur petit écran.
+- `client/public/atlas/` : bêtes, chien de garde, colliers, apparences du mage.
+- `client/public/audio/` : explosion.
+- `docs/deploy.md`, `docs/credits.md`, `docs/load-test.md` : spectateur sur le projecteur, lobbys, crédits, mesures de la phase 7.
+- `server/tests/`, `shared/tests/`, `client/tests/` : bêtes, colliers, bombardements, lobbys, apparences, spectateur, protocole, registres.
+
 ### Correctifs de la phase 6 | 6.01-6.07 | A.PI
 
 - `server/src/systems/projectiles.ts` : un projectile tiré de l'extérieur d'une croix active brûle aussi s'il atteint une cible qui s'y trouve, au lieu de la toucher depuis le bord.

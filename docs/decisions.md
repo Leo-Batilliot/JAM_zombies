@@ -4,6 +4,62 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Lobbys multiples ouverts à la demande | G.WI
+
+- **Quoi** : un joueur entre dans le premier lobby qui peut l'accueillir (place libre ou bot à remplacer). Si aucun ne le peut, un nouveau lobby s'ouvre, avec son monde, sa boucle de tick et ses bots, jusqu'au maximum de `lobby.json` (3). Au-delà, le joueur est refusé. Un jeton de reprise ramène le joueur dans son lobby. Un lobby autre que le premier se ferme dès qu'il n'a plus de joueur connecté ni en délai de grâce.
+- **Pourquoi** : c'est l'étape 7.06, sans changer les règles d'un lobby. La config et les registres sont partagés, le rechargement à chaud vaut pour tous.
+- **Impact** : le serveur journalise l'ouverture et la fermeture des lobbys. Les spectateurs regardent toujours le premier lobby. Deux lobbys pleins partagent le même processus : le temps de tick de chacun s'ajoute.
+- **Avis** : À vérifier. Le maximum de lobbys est à régler avec un test de charge à plusieurs lobbys.
+
+### Mode spectateur depuis l'écran d'accueil | G.WI
+
+- **Quoi** : le bouton « Watch the game » de l'écran d'accueil entre sans mage (identifiant 0 dans le message de bienvenue). Le serveur choisit qui suivre : la plus grosse bataille (force des deux camps) si elle atteint le seuil de `lobby.json`, sinon le premier vivant du classement. Il garde sa cible 8 s au moins, sauf si son mage meurt, et l'annonce au client par un message « Focus ». Le spectateur reçoit les snapshots autour de ce mage, le classement et les événements, sans état du joueur ni commandes. Ses ordres sont ignorés. 4 spectateurs au plus.
+- **Pourquoi** : seul le serveur voit toute la carte, le client ne peut pas trouver les combats lui-même. Un bouton plutôt qu'un paramètre d'URL, parce que le clic débloque l'audio du projecteur.
+- **Impact** : la musique suit les combats du spectateur comme pour un joueur. Le spectateur ne voit pas le screamer du mage qu'il suit.
+- **Avis** : À vérifier. Seuil de bataille et durée de maintien à régler sur le projecteur.
+
+### Config envoyée dès la connexion | G.WI
+
+- **Quoi** : le serveur envoie la config du client à l'ouverture du WebSocket, avant toute demande d'entrée, et plus après le message de bienvenue. Le client se connecte au chargement de la page, puis envoie l'entrée en jeu ou l'entrée en spectateur. Un refus garde la connexion ouverte pour réessayer.
+- **Pourquoi** : l'écran d'accueil a besoin de la liste des apparences du mage avant que le joueur entre en jeu.
+- **Impact** : remplace l'ordre « bienvenue puis config » de la phase 1. Le rechargement de config est envoyé à toutes les connexions, entrées ou non.
+- **Avis** : Validée.
+
+### Apparence du mage dans le type du snapshot | G.WI
+
+- **Quoi** : les apparences sont listées dans `gameplay.json` (`mage.skins`), la première est celle par défaut. L'écran d'accueil les montre avec leur sprite, l'entrée en jeu envoie la position de l'apparence choisie, et le serveur la renvoie comme type du mage dans le snapshot. Une position inconnue donne la première apparence. Un joueur qui revient avec son jeton peut changer d'apparence. Les bots gardent l'apparence par défaut.
+- **Pourquoi** : aucun octet de plus dans le snapshot, le type du mage valait toujours 0.
+- **Impact** : les sprites du mage s'appellent `mage-<apparence>-walk-<image>` (l'ancien `mage-walk-*` devient `mage-necromancer-walk-*`). Purement visuel, aucun effet sur le jeu.
+- **Avis** : Validée.
+
+### Bombardements sur les armées, dégâts selon la densité | G.WI
+
+- **Quoi** : toutes les 75 à 120 s (première vague après 150 s), 3 zones de 7 m sont marquées au sol, chacune sur une armée vivante tirée au sort selon sa force, avec un décalage de 5 m au plus. 10 s plus tard, chaque unité et chaque mage dans la zone subit 20 dégâts, multipliés par 1 + 0,03 par autre corps de la même armée dans la zone, jusqu'à x3. Les dégâts passent par les règles habituelles (Lien d'âme, défense, armure), sans tueur. Le client dessine la zone qui se remplit pendant le compte à rebours, puis l'explosion, avec un son.
+- **Pourquoi** : des zones au hasard sur une carte de 400 x 400 m ne toucheraient presque personne. Viser surtout les grosses armées et compter la densité donne l'effet anti-boule de neige du concept (§7.5) : une armée nombreuse et serrée perd beaucoup, une armée en nuée beaucoup moins.
+- **Impact** : comme pour la brume, une unité tuée par un bombardement reste à son camp et un mage tué affiche « the bombing ». Les PNJ ne sont pas touchés. Les bots ne fuient pas encore les zones. Le compte à rebours passe dans les 3 bits de niveau des drapeaux (7 pour l'explosion).
+- **Avis** : À vérifier. Fréquence, nombre de zones, rayon et dégâts à équilibrer en jeu.
+
+### Colliers en vitesse et morsure | G.WI
+
+- **Quoi** : un objet peut donner un multiplicateur de vitesse. Les colliers (à clous, en os, chaîne de Cerbère) donnent vitesse et dégâts à la lignée Bêtes. Les voitures, les coffres et les coffres de camp peuvent en donner, leurs tables de butin ont été rééquilibrées.
+- **Pourquoi** : le concept donne « vitesse et morsure » aux colliers. La vitesse s'applique au déplacement de l'unité, comme le bonus de dégâts de l'arme.
+- **Impact** : une bête équipée court devant sa place de formation plus vite que les autres, sans effet sur le mage.
+- **Avis** : À vérifier. Valeurs et poids des tables à équilibrer en jeu.
+
+### Lignée Bêtes et chiens de garde des camps | G.WI
+
+- **Quoi** : chien zombie (force 1, rapide), molosse (5 chiens) et cerbère (10 chiens), de la lignée `beast`, plus forts contre les squelettes. Chaque camp a 3 chiens de garde, PNJ hostiles dont le cadavre se relève en chien zombie pour l'armée qui les tue.
+- **Pourquoi** : ferme le triangle de force décidé en phase 6 sans code en plus : tout passe par `units.json` et les registres.
+- **Impact** : les camps sont la seule source de bêtes. Les bots font évoluer leurs chiens comme les autres unités.
+- **Avis** : À vérifier. Statistiques à équilibrer en jeu.
+
+### Sprites et son de la phase 7 générés | G.WI
+
+- **Quoi** : chien zombie, molosse, cerbère, chien de garde, colliers et les trois nouvelles apparences du mage (liche, sorcière, médecin de peste) sont dessinés par un script jetable et ajoutés à l'atlas. Le son d'explosion est synthétisé puis encodé en MP3.
+- **Pourquoi** : même démarche que les assets des phases précédentes.
+- **Impact** : les zones de bombardement sont dessinées par le client, pas par l'atlas.
+- **Avis** : Provisoire. À remplacer avec les vrais sprites et sons.
+
 ### Bots V1 : formation selon la situation, camps et prime | A.PI
 
 - **Quoi** : hors bataille, un bot prend la formation d'exploration (nuée). Quand il marche sur une cible, il prend la formation d'attaque (coin). En bataille, il garde le coin s'il est au moins aussi fort, prend la phalange sinon, et bat en retraite comme avant. Ses priorités hors bataille deviennent : prime (le premier du classement à moins de 120 m, s'il n'est pas plus fort que lui), armée plus faible, camp (à moins de 60 m, s'il a 1,5 fois la force des défenseurs), pillage, chasse, errance.
