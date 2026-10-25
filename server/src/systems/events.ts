@@ -1,5 +1,6 @@
 import { distanceToMages, farPoint } from "../world/spawn.js";
 import type { Army, BossEvent, Npc, World } from "../world/world.js";
+import { drawLoot, drawWeighted, grantItem } from "./equipment.js";
 import { grantSouls } from "./souls.js";
 import { armyStrength } from "./strength.js";
 
@@ -45,6 +46,30 @@ const shareRewards = (
   return rewards;
 };
 
+const shareItems = (world: World, state: BossEvent): void => {
+  const event = world.registries.events.get(state.type);
+  const receivers = new Map<Army, number>();
+  for (const [army, contribution] of state.contributions) {
+    if (
+      contribution > 0 &&
+      army.alive &&
+      world.armies.get(army.slot) === army
+    ) {
+      receivers.set(army, contribution);
+      const item = drawLoot(world, event.rewardLoot);
+      if (item !== undefined) {
+        grantItem(world, army, item);
+      }
+    }
+  }
+  const [winner] =
+    drawWeighted(world, [...receivers], ([, contribution]) => contribution) ??
+    [];
+  if (winner !== undefined) {
+    grantItem(world, winner, event.rewardLegendary);
+  }
+};
+
 export const endEvent = (
   world: World,
   state: BossEvent,
@@ -66,6 +91,9 @@ export const endEvent = (
         ? shareRewards(world, state, event.rewardSouls)
         : new Map<Army, number>(),
   };
+  if (defeated && event !== undefined) {
+    shareItems(world, state);
+  }
   state.boss = undefined;
   state.minions.clear();
   state.contributions = new Map();

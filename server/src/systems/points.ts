@@ -49,8 +49,9 @@ const rewards: Record<
   },
   items: (world, point, army) => {
     const { loot } = world.registries.pointsOfInterest.get(point.type);
-    if (loot !== undefined) {
-      grantItem(world, army, drawLoot(world, loot));
+    const item = loot === undefined ? undefined : drawLoot(world, loot);
+    if (item !== undefined) {
+      grantItem(world, army, item);
     }
   },
 };

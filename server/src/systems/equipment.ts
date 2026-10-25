@@ -35,17 +35,24 @@ export const damageBonus = (world: World, unit: Unit): number =>
     ? world.registries.items.get(unit.item).damage
     : 1;
 
-export const drawLoot = (world: World, loot: LootEntry[]): string => {
-  const total = loot.reduce((sum, entry) => sum + entry.weight, 0);
+export const drawWeighted = <T>(
+  world: World,
+  entries: T[],
+  weight: (entry: T) => number,
+): T | undefined => {
+  const total = entries.reduce((sum, entry) => sum + weight(entry), 0);
   let roll = world.random() * total;
-  for (const entry of loot) {
-    roll -= entry.weight;
+  for (const entry of entries) {
+    roll -= weight(entry);
     if (roll < 0) {
-      return entry.item;
+      return entry;
     }
   }
-  return (loot[loot.length - 1] as LootEntry).item;
+  return entries[entries.length - 1];
 };
+
+export const drawLoot = (world: World, loot: LootEntry[]): string | undefined =>
+  drawWeighted(world, loot, (entry) => entry.weight)?.item;
 
 export const grantItem = (world: World, army: Army, item: string): void => {
   army.inventory.push(item);

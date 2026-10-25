@@ -172,3 +172,89 @@ describe("hostile npcs", () => {
     }
   });
 });
+
+describe("boss equipment rewards", () => {
+  const defeat = (
+    bench: ReturnType<typeof createBench>,
+    hits: [ReturnType<ReturnType<typeof createBench>["addArmy"]>, number][],
+  ) => {
+    const state = startEvent(bench.world, "pumpkin", 200, 200);
+    const boss = state.boss;
+    if (boss === undefined) {
+      throw new Error("Expected a boss");
+    }
+    boss.hp = hits.reduce((total, [, amount]) => total + amount, 0);
+    for (const [army, amount] of hits) {
+      damage(bench.world, boss, amount, army);
+    }
+    return state;
+  };
+
+  test("each contributor gets an item and one gets the legendary", () => {
+    const bench = createBench((config) => {
+      event(config).rewardLoot = [{ item: "shovel", weight: 1 }];
+    });
+    const first = bench.addArmy(50, 50, "First");
+    const second = bench.addArmy(80, 50, "Second");
+    defeat(bench, [
+      [first, 10],
+      [second, 10],
+    ]);
+    const items = [...first.inventory, ...second.inventory].sort();
+    expect(items).toEqual(["chainsaw", "shovel", "shovel"]);
+    expect(first.found.length + second.found.length).toBe(3);
+  });
+
+  test("the legendary goes to contributors in proportion", () => {
+    let small = 0;
+    for (let seed = 1; seed <= 200; seed++) {
+      const bench = createBench(() => undefined, seed);
+      const weak = bench.addArmy(50, 50, "Weak");
+      const strong = bench.addArmy(80, 50, "Strong");
+      defeat(bench, [
+        [weak, 1],
+        [strong, 3],
+      ]);
+      if (weak.inventory.includes("chainsaw")) {
+        small++;
+      }
+      expect(
+        [...weak.inventory, ...strong.inventory].filter(
+          (item) => item === "chainsaw",
+        ),
+      ).toHaveLength(1);
+    }
+    expect(small).toBeGreaterThan(30);
+    expect(small).toBeLessThan(70);
+  });
+
+  test("a boss that leaves gives no item", () => {
+    const bench = createBench();
+    const army = bench.addArmy(50, 50);
+    const state = startEvent(bench.world, "pumpkin", 200, 200);
+    if (state.boss !== undefined) {
+      damage(bench.world, state.boss, 10, army);
+    }
+    bench.step(
+      event(bench.config).lifetimeSec * bench.config.network.tickRate + 1,
+    );
+    expect(army.inventory).toEqual([]);
+  });
+
+  test("a dead contributor gets nothing", () => {
+    const bench = createBench();
+    const dead = bench.addArmy(50, 50, "Dead");
+    const alive = bench.addArmy(80, 50, "Alive");
+    const state = startEvent(bench.world, "pumpkin", 200, 200);
+    const boss = state.boss;
+    if (boss === undefined) {
+      throw new Error("Expected a boss");
+    }
+    boss.hp = 20;
+    damage(bench.world, boss, 10, dead);
+    dead.alive = false;
+    damage(bench.world, boss, 10, alive);
+    expect(dead.inventory).toEqual([]);
+    expect(alive.inventory).toHaveLength(2);
+  });
+});
