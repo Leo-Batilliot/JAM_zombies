@@ -172,3 +172,22 @@ describe("sacred cross charge", () => {
     expect(charge()).toBe(3);
   });
 });
+
+describe("unit item", () => {
+  test("is sent as its slot within the unit category", () => {
+    const { world, addArmy } = createBench();
+    const army = addArmy(100, 100);
+    const unit = world.addUnit(army, "zombie", 101, 100);
+    const slot = (): number =>
+      flagLevel(
+        visibleEntities(world, army, viewAround).find(
+          (entity) => entity.id === unit.id,
+        )?.flags ?? -1,
+      );
+    expect(slot()).toBe(0);
+    unit.item = "cricket-bat";
+    expect(slot()).toBe(2);
+    unit.item = "laser";
+    expect(slot()).toBe(0);
+  });
+});

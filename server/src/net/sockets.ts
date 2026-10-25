@@ -3,6 +3,7 @@ import { WebSocket, WebSocketServer, type RawData } from "ws";
 import {
   BattleFlag,
   ClientMessageType,
+  EntityKind,
   JoinRejection,
   ProtocolError,
   ServerMessageType,
@@ -18,6 +19,7 @@ import { rankArmies } from "../lobby/leaderboard.js";
 import { joinLobby, leaveLobby } from "../lobby/lobby.js";
 import { runDemo } from "../systems/demo.js";
 import { aggroCircles } from "../systems/battle.js";
+import { evolvableCounts } from "../systems/evolution.js";
 import {
   orderAttack,
   orderEvolve,
@@ -104,6 +106,27 @@ export const attachSockets = (
       config: toClientConfig(world.config),
     });
   };
+
+  const searchProgress = (army: Army): number => {
+    const point =
+      army.search === undefined
+        ? undefined
+        : world.entities.get(army.search.pointId);
+    if (
+      army.search === undefined ||
+      point?.kind !== EntityKind.PointOfInterest
+    ) {
+      return 0;
+    }
+    const { searchSec } = world.registries.pointsOfInterest.get(point.type);
+    return searchSec > 0 ? army.search.progress / searchSec : 1;
+  };
+
+  const crossStrengths = (army: Army) =>
+    [...world.crosses].flatMap((cross) => {
+      const strength = cross.strengths.get(army) ?? 0;
+      return strength > 0 ? [{ id: cross.id, strength }] : [];
+    });
 
   const sendLeaderboards = (): void => {
     const ranking = rankArmies(world);
@@ -243,6 +266,14 @@ export const attachSockets = (
           });
         }
         sendEvents(session, army);
+        for (const item of army.found) {
+          if (world.registries.items.has(item)) {
+            send(session, {
+              type: ServerMessageType.Loot,
+              item: world.registries.items.index(item),
+            });
+          }
+        }
         send(session, {
           type: ServerMessageType.Status,
           army: army.slot,
@@ -253,7 +284,13 @@ export const attachSockets = (
           units: army.units.size,
           strength: armyStrength(world, army),
           battle: battleFlags(army),
+          search: searchProgress(army),
           circles: aggroCircles(world, army),
+          counts: [...evolvableCounts(world, army)].map(([type, count]) => ({
+            type: world.registries.units.index(type),
+            count,
+          })),
+          crosses: crossStrengths(army),
         });
         send(session, {
           type: ServerMessageType.Snapshot,

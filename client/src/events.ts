@@ -66,6 +66,10 @@ export class EventDisplay {
     return this.#active.size > 0;
   }
 
+  get positions(): { x: number; y: number }[] {
+    return [...this.#active.values()];
+  }
+
   start(start: EventStart, name: string, announceMs: number): void {
     this.#active.set(start.event, { x: start.x, y: start.y });
     this.#announce(eventMessage(name), announceMs);

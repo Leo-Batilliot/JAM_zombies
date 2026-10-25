@@ -15,16 +15,21 @@ import { Music, musicMix } from "../audio/music.js";
 import { DeathScreen } from "../death.js";
 import { isDemo, startDemo } from "../demo.js";
 import { EventDisplay } from "../events.js";
+import { EvolutionPopup, availableEvolutions } from "../evolution.js";
 import { Hud } from "../hud.js";
+import { LootNotice } from "../loot.js";
+import { Minimap } from "../minimap.js";
 import type { Connection } from "../net/connection.js";
 import { RetreatControl } from "../retreat.js";
 import { Screamer } from "../screamer.js";
 import { BattleLayer } from "./battle.js";
+import { CrossLayer } from "./crosses.js";
 import { EntityLayer, type Rect } from "./entities.js";
 import { SnapshotBuffer } from "./interpolation.js";
 import { MapLayer } from "./map.js";
 import { ClickMarker } from "./marker.js";
 import { pickEnemy } from "./picking.js";
+import { SearchBar } from "./search.js";
 
 const leftButton = 0;
 
@@ -58,11 +63,15 @@ export const startGame = async (
   const entities = new EntityLayer(atlas.textures, connection);
   const marker = new ClickMarker(() => config().client.markerDurationMs);
   const battle = new BattleLayer();
+  const crosses = new CrossLayer();
+  const searchBar = new SearchBar();
   world.addChild(
     map.container,
+    crosses.container,
     battle.container,
     marker.graphics,
     entities.container,
+    searchBar.graphics,
   );
   app.stage.addChild(world);
 
@@ -71,12 +80,24 @@ export const startGame = async (
     startDemo(ui, connection);
   }
   const retreat = new RetreatControl(ui, () => config().client.retreatKey);
+  const minimap = new Minimap(ui);
+  const loot = new LootNotice(ui);
+  const evolution = new EvolutionPopup(ui, (into) => {
+    connection.send({ type: ClientMessageType.Evolve, evolution: into });
+  });
+  connection.onLoot = (item) => {
+    const name = config().content.items[item]?.name;
+    if (name !== undefined) {
+      loot.show(name, config().client.lootMs);
+    }
+  };
   let status: Status | undefined;
   let exit: { x: number; y: number } | undefined;
   connection.onStatus = (next) => {
     status = next;
     hud.setStatus(next);
     retreat.setBattle(next.battle);
+    evolution.update(availableEvolutions(next.counts, config().content));
   };
   connection.onLeaderboard = (leaderboard) => {
     hud.setLeaderboard(leaderboard);
@@ -220,6 +241,14 @@ export const startGame = async (
       exit,
       now,
       config().client.aggroPulseMs,
+    );
+    crosses.update(frame, status?.crosses ?? [], config().world.crosses, scale);
+    searchBar.update(status?.search ?? 0, self);
+    minimap.draw(
+      config().client.minimapSize,
+      config().world,
+      self,
+      events.positions,
     );
     marker.update(now);
     playCues(view, now);

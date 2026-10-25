@@ -4,10 +4,11 @@ import {
   maxFlagLevel,
   neutralArmy,
   levelFlags,
+  type Registries,
   type SnapshotEntity,
 } from "@horde/shared";
 import { corpseDelay } from "../systems/reanimation.js";
-import type { Army, Cross, Entity, World } from "../world/world.js";
+import type { Army, Cross, Entity, Unit, World } from "../world/world.js";
 
 export interface View {
   width: number;
@@ -44,6 +45,28 @@ const armySlot = (entity: Entity): number => {
   }
 };
 
+const itemSlots = new WeakMap<Registries["items"], Map<string, number>>();
+
+const slotsOf = (items: Registries["items"]): Map<string, number> => {
+  let slots = itemSlots.get(items);
+  if (slots === undefined) {
+    const perCategory = new Map<string, number>();
+    slots = new Map();
+    for (const [id, { category }] of items.entries()) {
+      const slot = (perCategory.get(category) ?? 0) + 1;
+      perCategory.set(category, slot);
+      slots.set(id, slot);
+    }
+    itemSlots.set(items, slots);
+  }
+  return slots;
+};
+
+const itemSlot = (world: World, unit: Unit): number =>
+  unit.item === undefined
+    ? 0
+    : (slotsOf(world.registries.items).get(unit.item) ?? 0);
+
 const crossCharge = (world: World, cross: Cross): number => {
   const { rechargeSec } = world.config.world.crosses;
   const left = cross.readyAt - world.time;
@@ -61,7 +84,8 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
         world.config.gameplay.reanimation.riseSec
           ? EntityFlag.Rising
           : 0) |
-        (entity.group === undefined ? 0 : EntityFlag.Abandoned)
+        (entity.group === undefined ? 0 : EntityFlag.Abandoned) |
+        levelFlags(itemSlot(world, entity))
       );
     case EntityKind.Corpse:
       return world.time - entity.diedAt >= corpseDelay(world, entity)

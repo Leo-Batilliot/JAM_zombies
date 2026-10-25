@@ -2,12 +2,19 @@ import { Container, Sprite, Texture } from "pixi.js";
 import {
   EntityFlag,
   EntityKind,
+  maxFlagLevel,
   neutralArmy,
   flagLevel,
   type SnapshotEntity,
 } from "@horde/shared";
 import type { Connection } from "../net/connection.js";
-import { animationFrames, armyColor, frameAt, spriteName } from "./sprites.js";
+import {
+  animationFrames,
+  armyColor,
+  frameAt,
+  gearName,
+  spriteName,
+} from "./sprites.js";
 
 export interface Rect {
   minX: number;
@@ -21,9 +28,15 @@ const auraAlpha = 0.55;
 const searchedAlpha = 0.4;
 const grimoireOffset = { x: 14, y: -26 };
 const flagOffset = { x: -8, y: -18 };
+const gearOffset = { x: 7, y: 2 };
+const rechargingAlpha = 0.45;
 const soulOffset = -16;
 const bobHeight = 3;
-const groundKinds = new Set([EntityKind.Corpse, EntityKind.PointOfInterest]);
+const groundKinds = new Set([
+  EntityKind.Corpse,
+  EntityKind.PointOfInterest,
+  EntityKind.Cross,
+]);
 
 const bob = (now: number, periodMs: number): number =>
   Math.sin((now / periodMs) * 2 * Math.PI) * bobHeight;
@@ -33,6 +46,7 @@ class EntityView {
   readonly aura = new Sprite();
   readonly body = new Sprite();
   readonly extra = new Sprite();
+  readonly gear = new Sprite();
   kind = EntityKind.Mage;
   x = Number.NaN;
   y = 0;
@@ -46,7 +60,8 @@ class EntityView {
     this.aura.alpha = auraAlpha;
     this.body.anchor.set(0.5, 0.6);
     this.extra.anchor.set(0.5);
-    this.container.addChild(this.aura, this.body, this.extra);
+    this.gear.anchor.set(0.5);
+    this.container.addChild(this.aura, this.body, this.gear, this.extra);
   }
 
   reset(): void {
@@ -58,6 +73,7 @@ class EntityView {
     this.container.alpha = 1;
     this.body.alpha = 1;
     this.body.scale.set(1);
+    this.gear.visible = false;
   }
 
   track(x: number, y: number, now: number, holdMs: number): boolean {
@@ -150,6 +166,14 @@ export class EntityLayer {
       view.aura.y = view.body.texture.height * 0.3;
     }
 
+    const gear = gearName(entity, content);
+    view.gear.visible = gear !== undefined;
+    if (gear !== undefined) {
+      view.gear.texture = this.#texture(gear);
+      view.gear.scale.x = view.facing;
+      view.gear.position.set(gearOffset.x * view.facing, gearOffset.y);
+    }
+
     const abandoned = (entity.flags & EntityFlag.Abandoned) !== 0;
     view.extra.visible = entity.kind === EntityKind.Mage || abandoned;
     if (entity.kind === EntityKind.Mage) {
@@ -184,9 +208,15 @@ export class EntityLayer {
     const { client, content } = this.connection.config;
     view.aura.visible = false;
     view.body.texture = this.#texture(spriteName(entity, content));
-    view.body.scale.set(1 + flagLevel(entity.flags) * client.sizeScaleStep);
-    view.body.alpha =
-      (entity.flags & EntityFlag.Searched) !== 0 ? searchedAlpha : 1;
+    if (entity.kind === EntityKind.Cross) {
+      view.body.scale.set(1);
+      view.body.alpha =
+        flagLevel(entity.flags) === maxFlagLevel ? 1 : rechargingAlpha;
+    } else {
+      view.body.scale.set(1 + flagLevel(entity.flags) * client.sizeScaleStep);
+      view.body.alpha =
+        (entity.flags & EntityFlag.Searched) !== 0 ? searchedAlpha : 1;
+    }
     view.extra.visible =
       entity.kind === EntityKind.Corpse &&
       (entity.flags & EntityFlag.Waiting) !== 0;

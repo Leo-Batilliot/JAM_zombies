@@ -1,5 +1,6 @@
 import {
   EntityKind,
+  flagLevel,
   type ClientConfig,
   type SnapshotEntity,
 } from "@horde/shared";
@@ -49,6 +50,21 @@ export const spriteName = (
     case EntityKind.Cross:
       return "cross";
   }
+};
+
+export const gearName = (
+  entity: SnapshotEntity,
+  content: ClientConfig["content"],
+): string | undefined => {
+  const slot = flagLevel(entity.flags);
+  if (entity.kind !== EntityKind.Unit || slot === 0) {
+    return undefined;
+  }
+  const category = content.units[entity.type]?.equipment;
+  const item = content.items.filter((entry) => entry.category === category)[
+    slot - 1
+  ];
+  return item === undefined ? undefined : `item-${item.id}`;
 };
 
 const parseColor = (color: string): number =>

@@ -161,6 +161,29 @@ describe("playing", () => {
     client.socket.close();
   });
 
+  test("the player is told what it found and can evolve", async () => {
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    if (army === undefined) {
+      throw new Error("Expected an army");
+    }
+    army.found.push("chainsaw");
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      expect(client.of(ServerMessageType.Loot)).toEqual([
+        {
+          type: ServerMessageType.Loot,
+          item: bench.world.registries.items.index("chainsaw"),
+        },
+      ]);
+      const [status] = client.of(ServerMessageType.Status);
+      expect(status?.counts).toEqual([
+        { type: bench.world.registries.units.index("zombie"), count: 5 },
+      ]);
+    });
+    client.socket.close();
+  });
+
   test("the player receives the leaderboard with its rank", async () => {
     const client = await joined();
     sockets.sendSnapshots();

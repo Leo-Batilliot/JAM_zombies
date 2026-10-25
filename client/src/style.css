@@ -44,7 +44,9 @@ body {
 #ui > .screamer,
 #ui > .event-banner,
 #ui > .event-arrow,
-#ui > .retreat-hint {
+#ui > .retreat-hint,
+#ui > .minimap,
+#ui > .loot {
   pointer-events: none;
 }
 
@@ -398,4 +400,66 @@ body.share p {
 
 .retreat-hint[hidden] {
   display: none;
+}
+
+.minimap {
+  position: absolute;
+  left: max(0.6rem, env(safe-area-inset-left));
+  bottom: calc(max(0.6rem, env(safe-area-inset-bottom)) + 2.6rem);
+  border: 1px solid var(--accent);
+  border-radius: 0.3rem;
+  background: rgb(36 28 44 / 75%);
+}
+
+.loot {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  transform: translateX(-50%);
+}
+
+.loot div {
+  padding: 0.3rem 0.9rem;
+  border-radius: 0.4rem;
+  background: rgb(20 16 24 / 80%);
+  color: #f6d660;
+  font-size: clamp(0.85rem, 2.6vw, 1.2rem);
+  font-weight: bold;
+  animation: event-banner-in 0.3s ease-out;
+}
+
+.evolution {
+  position: absolute;
+  right: max(0.8rem, env(safe-area-inset-right));
+  bottom: calc(max(0.8rem, env(safe-area-inset-bottom)) + 3.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.evolution[hidden] {
+  display: none;
+}
+
+.evolution button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font: inherit;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  padding: 0.45rem 0.8rem;
+  border: 2px solid var(--accent-light);
+  border-radius: 0.5rem;
+  background: rgb(36 28 44 / 85%);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.evolution button span {
+  color: var(--muted);
+  font-size: 0.85em;
 }
