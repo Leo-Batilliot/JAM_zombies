@@ -18,7 +18,12 @@ import { rankArmies } from "../lobby/leaderboard.js";
 import { joinLobby, leaveLobby } from "../lobby/lobby.js";
 import { runDemo } from "../systems/demo.js";
 import { aggroCircles } from "../systems/battle.js";
-import { orderAttack, orderMove, orderRetreat } from "../systems/orders.js";
+import {
+  orderAttack,
+  orderEvolve,
+  orderMove,
+  orderRetreat,
+} from "../systems/orders.js";
 import { maxHp } from "../systems/souls.js";
 import { armyStrength } from "../systems/strength.js";
 import type { Army, World } from "../world/world.js";
@@ -162,6 +167,9 @@ export const attachSockets = (
         break;
       case ClientMessageType.Retreat:
         orderRetreat(world, session.army, message.x, message.y);
+        break;
+      case ClientMessageType.Evolve:
+        orderEvolve(world, session.army, message.evolution);
         break;
       case ClientMessageType.Demo:
         if (options.demo) {

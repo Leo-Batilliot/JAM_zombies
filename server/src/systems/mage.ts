@@ -10,6 +10,7 @@ import type {
 } from "../world/world.js";
 import { addStartingUnits } from "./army.js";
 import { distance } from "./bodies.js";
+import { absorb, isFull } from "./enlist.js";
 import { createMassGrave } from "./points.js";
 import { maxHp } from "./souls.js";
 import { armyStrength } from "./strength.js";
@@ -40,6 +41,9 @@ const handOver = (world: World, army: Army, killer: Army | undefined): void => {
         : (receiver(world, remain.killer, army) ?? heir);
     if (index >= kept || to === undefined) {
       grave.push({ type: remain.type, item: remain.item });
+      world.removeEntity(remain);
+    } else if (remain.kind === EntityKind.Unit && isFull(world, to)) {
+      absorb(world, to, remain);
       world.removeEntity(remain);
     } else if (remain.kind === EntityKind.Unit) {
       transferUnit(remain, to);

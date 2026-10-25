@@ -1,5 +1,6 @@
 import type { Army, Mage, World } from "../world/world.js";
 import { aggroCircles, clampToCircles } from "./battle.js";
+import { armyPace } from "./enlist.js";
 
 export const setMageTarget = (
   world: World,
@@ -30,12 +31,12 @@ const endRetreat = (world: World, army: Army): void => {
 };
 
 export const moveMages = (world: World, dt: number): void => {
-  const step = world.config.gameplay.mage.speed * dt;
   for (const army of world.armies.values()) {
     const { alive, mage } = army;
     if (!alive) {
       continue;
     }
+    const step = world.config.gameplay.mage.speed * dt * armyPace(world, army);
     endRetreat(world, army);
     const dx = mage.targetX - mage.x;
     const dy = mage.targetY - mage.y;

@@ -2,6 +2,7 @@ import type { Config } from "@horde/shared";
 import type { Army, Unit, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 import { reachDistance } from "./combat.js";
+import { armyPace } from "./enlist.js";
 import { interceptPoint, tunnelSlots } from "./retreat.js";
 import { currentTarget, type Target } from "./targeting.js";
 
@@ -126,8 +127,9 @@ export const followMages = (world: World, dt: number): void => {
         (unit) => unit.group === undefined && !tunnel.has(unit),
       ),
     );
+    const pace = armyPace(world, army) * dt;
     for (const unit of army.units) {
-      const step = world.registries.units.get(unit.type).speed * dt;
+      const step = world.registries.units.get(unit.type).speed * pace;
       const target = currentTarget(world, unit);
       const wall = tunnel.get(unit);
       const slot = formation.get(unit);

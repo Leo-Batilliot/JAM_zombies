@@ -148,6 +148,19 @@ describe("playing", () => {
     client.socket.close();
   });
 
+  test("the player evolves its zombies", async () => {
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    if (army === undefined) {
+      throw new Error("Expected an army");
+    }
+    client.send({ type: ClientMessageType.Evolve, evolution: "big-zombie" });
+    await vi.waitFor(() => {
+      expect([...army.units].map((unit) => unit.type)).toEqual(["big-zombie"]);
+    });
+    client.socket.close();
+  });
+
   test("the player receives the leaderboard with its rank", async () => {
     const client = await joined();
     sockets.sendSnapshots();
