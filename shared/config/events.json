@@ -24,5 +24,8 @@
       ],
       "rewardLegendary": "chainsaw"
     }
+  },
+  "bounty": {
+    "souls": 100
   }
 }

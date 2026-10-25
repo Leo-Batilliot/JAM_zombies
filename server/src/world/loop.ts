@@ -3,16 +3,20 @@ import { updateLobby } from "../lobby/lobby.js";
 import { maintainPopulations, moveCivilians } from "../systems/civilians.js";
 import { updateBattles } from "../systems/battle.js";
 import { fight } from "../systems/combat.js";
+import { maintainCamps } from "../systems/camps.js";
 import { maintainCrosses, updateCrosses } from "../systems/crosses.js";
 import { clearFound, equipArmies } from "../systems/equipment.js";
 import { runEvents } from "../systems/events.js";
 import { updateHostiles } from "../systems/hostiles.js";
 import { regenerateMages, respawnMages } from "../systems/mage.js";
+import { maintainMists, updateMists } from "../systems/mists.js";
 import { maintainPoints, searchPoints } from "../systems/points.js";
+import { moveProjectiles } from "../systems/projectiles.js";
 import { followMages } from "../systems/formation.js";
 import { moveMages } from "../systems/movement.js";
 import { reanimate } from "../systems/reanimation.js";
 import { separateBodies } from "../systems/separation.js";
+import { updateFormations } from "../systems/tactics.js";
 import { updateTargets } from "../systems/targeting.js";
 import type { World } from "./world.js";
 
@@ -25,12 +29,15 @@ export const systems: System[] = [
   maintainPopulations,
   runEvents,
   moveCivilians,
+  updateFormations,
   moveMages,
   updateTargets,
   followMages,
   updateHostiles,
   separateBodies,
   fight,
+  moveProjectiles,
+  updateMists,
   updateCrosses,
   updateBattles,
   reanimate,
@@ -39,6 +46,8 @@ export const systems: System[] = [
   equipArmies,
   maintainPoints,
   maintainCrosses,
+  maintainMists,
+  maintainCamps,
   respawnMages,
 ];
 

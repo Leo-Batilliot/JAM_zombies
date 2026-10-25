@@ -1,10 +1,14 @@
 import type { Corpse, World } from "../world/world.js";
 import { enlistNearMage } from "./enlist.js";
+import { mistDelay } from "./mists.js";
 
-export const corpseDelay = (world: World, corpse: Corpse): number =>
-  corpse.sacred
-    ? world.config.gameplay.reanimation.crossDelaySec
-    : world.config.gameplay.reanimation.delaySec;
+export const corpseDelay = (world: World, corpse: Corpse): number => {
+  const { crossDelaySec, delaySec } = world.config.gameplay.reanimation;
+  if (corpse.sacred) {
+    return crossDelaySec;
+  }
+  return Math.min(delaySec, mistDelay(world, corpse.x, corpse.y) ?? Infinity);
+};
 
 export const reanimate = (world: World): void => {
   for (const army of world.armies.values()) {

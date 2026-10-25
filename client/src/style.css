@@ -463,3 +463,46 @@ body.share p {
   color: var(--muted);
   font-size: 0.85em;
 }
+
+.evolution button:disabled {
+  border-color: var(--muted);
+  opacity: 0.55;
+  cursor: default;
+}
+
+.evolution .evolution-toggle {
+  font-weight: bold;
+}
+
+.formations {
+  position: absolute;
+  bottom: max(0.6rem, env(safe-area-inset-bottom));
+  left: 50%;
+  display: flex;
+  gap: 0.4rem;
+  transform: translateX(-50%);
+}
+
+.formations button {
+  font: inherit;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  padding: 0.5rem 0.8rem;
+  border: 2px solid var(--accent);
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--progress, 0%),
+    rgb(36 28 44 / 85%) var(--progress, 0%)
+  );
+  color: var(--text);
+  cursor: pointer;
+}
+
+.formations button.active {
+  border-color: var(--accent-light);
+  background: var(--accent);
+}
+
+.formations button.changing {
+  border-style: dashed;
+}

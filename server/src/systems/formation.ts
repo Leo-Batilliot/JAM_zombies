@@ -1,9 +1,9 @@
-import type { Config } from "@horde/shared";
 import type { Army, Unit, World } from "../world/world.js";
 import { distance } from "./bodies.js";
 import { reachDistance } from "./combat.js";
 import { armyPace } from "./enlist.js";
 import { interceptPoint, tunnelSlots } from "./retreat.js";
+import { layoutOf, type Formation } from "./tactics.js";
 import { currentTarget, type Target } from "./targeting.js";
 
 export interface SlotOffset {
@@ -11,15 +11,16 @@ export interface SlotOffset {
   right: number;
 }
 
-type Layout = Config["formations"]["default"];
+const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
 const blockOffsets = (
   count: number,
   spacing: number,
   start: number,
   direction: number,
+  width = 1,
 ): SlotOffset[] => {
-  const columns = Math.ceil(Math.sqrt(count));
+  const columns = Math.ceil(Math.sqrt(count * width));
   const offsets: SlotOffset[] = [];
   for (let index = 0; index < count; index++) {
     const row = Math.floor(index / columns);
@@ -32,14 +33,103 @@ const blockOffsets = (
   return offsets;
 };
 
+const wedgeOffsets = (
+  count: number,
+  spacing: number,
+  start: number,
+): SlotOffset[] => {
+  let rows = 0;
+  while (((rows + 1) * (rows + 2)) / 2 < count) {
+    rows++;
+  }
+  const offsets: SlotOffset[] = [];
+  for (let row = 0; offsets.length < count; row++) {
+    for (let place = 0; place <= row && offsets.length < count; place++) {
+      offsets.push({
+        forward: start + (rows - row) * spacing,
+        right: (place - row / 2) * spacing,
+      });
+    }
+  }
+  return offsets;
+};
+
+const ringOffsets = (
+  count: number,
+  spacing: number,
+  inner: number,
+): SlotOffset[] => {
+  const offsets: SlotOffset[] = [];
+  for (let ring = 0; offsets.length < count; ring++) {
+    const radius = inner + ring * spacing;
+    const capacity = Math.max(
+      1,
+      Math.min(
+        Math.floor((2 * Math.PI * radius) / spacing),
+        count - offsets.length,
+      ),
+    );
+    for (let place = 0; place < capacity; place++) {
+      const angle = (place / capacity) * 2 * Math.PI;
+      offsets.push({
+        forward: Math.cos(angle) * radius,
+        right: Math.sin(angle) * radius,
+      });
+    }
+  }
+  return offsets;
+};
+
+const cloudOffsets = (
+  count: number,
+  spacing: number,
+  inner: number,
+): SlotOffset[] =>
+  Array.from({ length: count }, (_, index) => {
+    const radius = inner + spacing * Math.sqrt(index);
+    const angle = index * goldenAngle;
+    return {
+      forward: Math.cos(angle) * radius,
+      right: Math.sin(angle) * radius,
+    };
+  });
+
+const insideOut = (
+  front: number,
+  back: number,
+  place: (count: number) => SlotOffset[],
+): SlotOffset[] => {
+  const offsets = place(front + back);
+  return [...offsets.slice(back), ...offsets.slice(0, back)];
+};
+
 export const slotOffsets = (
   front: number,
   back: number,
-  layout: Layout,
-): SlotOffset[] => [
-  ...blockOffsets(front, layout.spacing, layout.frontOffset, 1),
-  ...blockOffsets(back, layout.spacing, layout.backOffset, -1),
-];
+  formation: Formation,
+): SlotOffset[] => {
+  const { spacing, frontOffset, backOffset, width } = formation;
+  switch (formation.layout) {
+    case "block":
+      return [
+        ...blockOffsets(front, spacing, frontOffset, 1, width),
+        ...blockOffsets(back, spacing, backOffset, -1, width),
+      ];
+    case "wedge":
+      return [
+        ...wedgeOffsets(front, spacing, frontOffset),
+        ...blockOffsets(back, spacing, backOffset, -1),
+      ];
+    case "ring":
+      return insideOut(front, back, (count) =>
+        ringOffsets(count, spacing, frontOffset),
+      );
+    case "cloud":
+      return insideOut(front, back, (count) =>
+        cloudOffsets(count, spacing, frontOffset),
+      );
+  }
+};
 
 export const formationSlots = (
   world: World,
@@ -52,11 +142,7 @@ export const formationSlots = (
     const { rank } = world.registries.units.get(unit.type);
     (rank === "front" ? front : back).push(unit);
   }
-  const offsets = slotOffsets(
-    front.length,
-    back.length,
-    world.config.formations.default,
-  );
+  const offsets = slotOffsets(front.length, back.length, layoutOf(world, army));
   const { x, y, facingX, facingY } = army.mage;
   const slots = new Map<Unit, { x: number; y: number }>();
   [...front, ...back].forEach((unit, index) => {

@@ -4,6 +4,7 @@ import type {
   Army,
   Body,
   BossEvent,
+  Camp,
   Force,
   Npc,
   World,
@@ -12,7 +13,7 @@ import { distance } from "./bodies.js";
 import { currentTarget } from "./targeting.js";
 import { transferToKiller } from "./transfer.js";
 
-type ForceKey = Army | AbandonedGroup | BossEvent | Npc;
+type ForceKey = Army | AbandonedGroup | BossEvent | Camp | Npc;
 
 const fullTurn = 2 * Math.PI;
 
@@ -55,7 +56,7 @@ const forceKey = (world: World, body: Body): ForceKey => {
     case EntityKind.Unit:
       return body.group ?? body.army;
     case EntityKind.Npc:
-      return eventOf(world, body) ?? body;
+      return body.camp ?? eventOf(world, body) ?? body;
   }
 };
 
@@ -71,6 +72,9 @@ const forceOfBody = (world: World, body: Body): Force => {
           : [...body.group.units],
       );
     case EntityKind.Npc: {
+      if (body.camp !== undefined) {
+        return enclose(undefined, [...body.camp.defenders]);
+      }
       const event = eventOf(world, body);
       if (event === undefined) {
         return enclose(undefined, [body]);

@@ -10,13 +10,22 @@ import {
   orderRetreat,
 } from "../systems/orders.js";
 import { armyStrength, bodiesStrength } from "../systems/strength.js";
+import { orderFormation } from "../systems/tactics.js";
 import type {
   Army,
   Battle,
+  Camp,
   Entity,
   PointOfInterest,
   World,
 } from "../world/world.js";
+import { rankArmies } from "./leaderboard.js";
+
+type Mode = keyof World["config"]["lobby"]["bots"]["formations"];
+
+const setFormation = (world: World, army: Army, mode: Mode): void => {
+  orderFormation(world, army, world.config.lobby.bots.formations[mode]);
+};
 
 const nearestPoint = (
   world: World,
@@ -57,7 +66,7 @@ const nearestCivilian = (
   return best;
 };
 
-const flee = (world: World, army: Army, battle: Battle): void => {
+const engage = (world: World, army: Army, battle: Battle): void => {
   const { fleeRatio, avoidSectorDeg, fleeDistance } = world.config.lobby.bots;
   const own = bodiesStrength(world, mainBodies(army));
   const foes = battle.foes.reduce(
@@ -67,6 +76,7 @@ const flee = (world: World, army: Army, battle: Battle): void => {
   const trapped =
     battle.freeSector < (avoidSectorDeg * Math.PI) / 180 && foes >= own;
   if (battle.encircled || (foes <= own * fleeRatio && !trapped)) {
+    setFormation(world, army, foes > own ? "defend" : "attack");
     return;
   }
   orderRetreat(
@@ -93,6 +103,43 @@ const weakerArmy = (world: World, army: Army): Army | undefined => {
     ) {
       best = other;
       bestDistance = otherDistance;
+    }
+  }
+  return best;
+};
+
+const bountyTarget = (world: World, army: Army): Army | undefined => {
+  const { bountyRange, bountyRatio } = world.config.lobby.bots;
+  const [leader] = rankArmies(world).entries;
+  const target =
+    leader === undefined ? undefined : world.armies.get(leader.army);
+  if (
+    leader === undefined ||
+    target === undefined ||
+    target === army ||
+    !target.alive ||
+    leader.strength <= 0 ||
+    leader.strength > armyStrength(world, army) * bountyRatio ||
+    distance(target.mage, army.mage) > bountyRange
+  ) {
+    return undefined;
+  }
+  return target;
+};
+
+const campTarget = (world: World, army: Army): Camp | undefined => {
+  const { campRange, campRatio } = world.config.lobby.bots;
+  const own = armyStrength(world, army);
+  let best: Camp | undefined;
+  let bestDistance = campRange;
+  for (const camp of world.camps) {
+    const campDistance = distance(camp, army.mage);
+    if (
+      campDistance <= bestDistance &&
+      own >= bodiesStrength(world, camp.defenders) * campRatio
+    ) {
+      best = camp;
+      bestDistance = campDistance;
     }
   }
   return best;
@@ -179,18 +226,21 @@ const think = (world: World, army: Army): void => {
     return;
   }
   if (army.battle !== undefined) {
-    flee(world, army, army.battle);
+    engage(world, army, army.battle);
     return;
   }
   const evolution = bestEvolution(world, army);
   if (evolution !== undefined) {
     orderEvolve(world, army, evolution);
   }
-  const prey = weakerArmy(world, army);
-  if (prey !== undefined) {
-    moveTo(world, army, prey.mage.x, prey.mage.y);
+  const prey = bountyTarget(world, army) ?? weakerArmy(world, army);
+  const target = prey?.mage ?? campTarget(world, army);
+  if (target !== undefined) {
+    setFormation(world, army, "attack");
+    moveTo(world, army, target.x, target.y);
     return;
   }
+  setFormation(world, army, "explore");
   const point = nearestPoint(world, army, lootRange);
   if (point !== undefined) {
     moveTo(world, army, point.x, point.y);

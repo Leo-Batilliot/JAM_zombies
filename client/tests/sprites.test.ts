@@ -50,6 +50,9 @@ describe("spriteName", () => {
     npcs: ["civilian"],
     pointsOfInterest: ["mass-grave"],
     events: [],
+    projectiles: ["arrow"],
+    mists: [{ id: "necrotic", radius: 12 }],
+    formations: [],
   };
   const entity = { id: 1, type: 1, army: 1, flags: 0, x: 0, y: 0 };
 
@@ -95,6 +98,9 @@ describe("gearName", () => {
     npcs: [],
     pointsOfInterest: [],
     events: [],
+    projectiles: ["arrow"],
+    mists: [{ id: "necrotic", radius: 12 }],
+    formations: [],
   };
   const unit = { id: 1, kind: EntityKind.Unit, army: 1, x: 0, y: 0 };
 

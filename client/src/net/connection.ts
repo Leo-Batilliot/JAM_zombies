@@ -6,6 +6,7 @@ import {
   encodeClientMessage,
   socketPath,
   type ClientConfig,
+  type Bounty,
   type ClientMessage,
   type LeaderboardEntry,
   type SnapshotEntity,
@@ -22,6 +23,7 @@ export interface Leaderboard {
   rank: number;
   total: number;
   entries: LeaderboardEntry[];
+  bounty: Bounty;
 }
 
 export interface EventStart {

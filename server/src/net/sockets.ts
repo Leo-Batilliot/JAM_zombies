@@ -9,9 +9,11 @@ import {
   ServerMessageType,
   decodeClientMessage,
   encodeServerMessage,
+  neutralArmy,
   socketPath,
   toClientConfig,
   type ClientMessage,
+  type LeaderboardEntry,
   type ServerMessage,
 } from "@horde/shared";
 import { validatePlayerName } from "../lobby/name.js";
@@ -27,6 +29,12 @@ import {
   orderRetreat,
 } from "../systems/orders.js";
 import { maxHp } from "../systems/souls.js";
+import {
+  changeProgress,
+  formationIds,
+  formationIndex,
+  orderFormation,
+} from "../systems/tactics.js";
 import { armyStrength } from "../systems/strength.js";
 import type { Army, World } from "../world/world.js";
 import { SnapshotDelta } from "./delta.js";
@@ -128,8 +136,17 @@ export const attachSockets = (
       return strength > 0 ? [{ id: cross.id, strength }] : [];
     });
 
+  const bounty = (leader: LeaderboardEntry | undefined) => {
+    const army =
+      leader === undefined ? undefined : world.armies.get(leader.army);
+    return army === undefined || !army.alive || (leader?.strength ?? 0) <= 0
+      ? { army: neutralArmy, x: 0, y: 0 }
+      : { army: army.slot, x: army.mage.x, y: army.mage.y };
+  };
+
   const sendLeaderboards = (): void => {
     const ranking = rankArmies(world);
+    const target = bounty(ranking.entries[0]);
     for (const session of sessions) {
       if (session.army !== undefined) {
         send(session, {
@@ -137,6 +154,7 @@ export const attachSockets = (
           rank: ranking.ranks.get(session.army) ?? ranking.total,
           total: ranking.total,
           entries: ranking.entries,
+          bounty: target,
         });
       }
     }
@@ -190,6 +208,13 @@ export const attachSockets = (
         break;
       case ClientMessageType.Retreat:
         orderRetreat(world, session.army, message.x, message.y);
+        break;
+      case ClientMessageType.Formation:
+        orderFormation(
+          world,
+          session.army,
+          formationIds(world)[message.formation],
+        );
         break;
       case ClientMessageType.Evolve:
         orderEvolve(world, session.army, message.evolution);
@@ -285,6 +310,9 @@ export const attachSockets = (
           strength: armyStrength(world, army),
           battle: battleFlags(army),
           search: searchProgress(army),
+          formation: formationIndex(world, army.formation),
+          nextFormation: formationIndex(world, army.formationChange?.to),
+          formationProgress: changeProgress(world, army),
           circles: aggroCircles(world, army),
           counts: [...evolvableCounts(world, army)].map(([type, count]) => ({
             type: world.registries.units.index(type),

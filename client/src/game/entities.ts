@@ -28,7 +28,7 @@ const auraAlpha = 0.55;
 const searchedAlpha = 0.4;
 const grimoireOffset = { x: 14, y: -26 };
 const flagOffset = { x: -8, y: -18 };
-const gearOffset = { x: 7, y: 2 };
+const noOffset = { x: 0, y: 0 };
 const rechargingAlpha = 0.45;
 const soulOffset = -16;
 const bobHeight = 3;
@@ -36,6 +36,7 @@ const groundKinds = new Set([
   EntityKind.Corpse,
   EntityKind.PointOfInterest,
   EntityKind.Cross,
+  EntityKind.Camp,
 ]);
 
 const bob = (now: number, periodMs: number): number =>
@@ -73,6 +74,7 @@ class EntityView {
     this.container.alpha = 1;
     this.body.alpha = 1;
     this.body.scale.set(1);
+    this.body.rotation = 0;
     this.gear.visible = false;
   }
 
@@ -169,9 +171,11 @@ export class EntityLayer {
     const gear = gearName(entity, content);
     view.gear.visible = gear !== undefined;
     if (gear !== undefined) {
+      const category = content.units[entity.type]?.equipment ?? "";
+      const offset = client.gearOffsets[category] ?? noOffset;
       view.gear.texture = this.#texture(gear);
       view.gear.scale.x = view.facing;
-      view.gear.position.set(gearOffset.x * view.facing, gearOffset.y);
+      view.gear.position.set(offset.x * view.facing, offset.y);
     }
 
     const abandoned = (entity.flags & EntityFlag.Abandoned) !== 0;
@@ -202,6 +206,21 @@ export class EntityLayer {
     const progress = Math.min((now - view.risingSince) / riseMs, 1);
     view.container.alpha = progress;
     view.body.scale.y = progress;
+  }
+
+  #drawProjectile(view: EntityView, entity: SnapshotEntity): void {
+    const dx = entity.x - view.x;
+    const dy = entity.y - view.y;
+    if (Math.hypot(dx, dy) > movingEpsilon) {
+      view.body.rotation = Math.atan2(dy, dx);
+    }
+    view.x = entity.x;
+    view.y = entity.y;
+    view.aura.visible = false;
+    view.extra.visible = false;
+    view.body.texture = this.#texture(
+      spriteName(entity, this.connection.config.content),
+    );
   }
 
   #drawGround(view: EntityView, entity: SnapshotEntity, now: number): void {
@@ -244,13 +263,18 @@ export class EntityLayer {
     const scale = 1 / this.connection.config.client.pixelsPerMeter;
     this.#seen.clear();
     for (const entity of entities) {
+      if (entity.kind === EntityKind.Mist) {
+        continue;
+      }
       this.#seen.add(entity.id);
       let entityView = this.#active.get(entity.id);
       if (entityView === undefined) {
         entityView = this.#acquire(entity.kind);
         this.#active.set(entity.id, entityView);
       }
-      if (groundKinds.has(entity.kind)) {
+      if (entity.kind === EntityKind.Projectile) {
+        this.#drawProjectile(entityView, entity);
+      } else if (groundKinds.has(entity.kind)) {
         this.#drawGround(entityView, entity, now);
       } else {
         this.#drawBody(entityView, entity, now);

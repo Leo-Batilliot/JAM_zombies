@@ -148,7 +148,9 @@ Quatre formations prédéfinies. Dans toutes les formations, les unités de mêl
 | **Cercle** | La garde du mage est toujours pleine | −30 % de vitesse | Protéger le mage, se replier |
 | **Nuée** | +30 % de vitesse | −25 % de défense | Explorer, poursuivre, fuir |
 
-Changer de formation prend 1,5 s, ce qui empêche de changer à volonté en plein combat.
+Changer de formation prend 1,5 s, ce qui empêche de changer à volonté en plein combat. Pendant le changement, l'armée n'a ni les bonus ni les malus d'aucune formation.
+
+L'armée commence, et recommence après chaque réapparition, dans une formation neutre sans bonus ni malus. Les touches 1 à 4 la font passer dans une des quatre formations.
 
 La **Retraite** n'est pas une formation de combat : c'est un ordre de fuite (§4.2, règle 4). Les unités non engagées forment le tunnel en flèche (§4.5) pendant que le mage s'enfuit, et toutes les unités au contact sont abandonnées.
 Elle a son propre bouton, à l'écart des quatre formations, pour éviter de la déclencher par erreur.
@@ -236,13 +238,13 @@ Règles communes :
 ### 7.2 Population
 
 - **Civils** : errent en groupes et fuient les armées. C'est la ressource de base, qui donne des zombies.
-- **Camps humains armés** : fixes le temps de leur durée de vie, défendus par des chasseurs, des soldats et des chiens. Les raser donne des squelettes, des bêtes et du loot.
+- **Camps humains armés** : fixes le temps de leur durée de vie, défendus par des chasseurs, des soldats et des chiens. Les raser donne des squelettes et des bêtes (leurs cadavres), et laisse un coffre au sol que chaque armée peut fouiller une fois.
 
 ### 7.3 Zones et phénomènes mobiles
 
 | Phénomène | Effet |
 |---|---|
-| **Brume purificatrice** | Nuage qui dérive lentement et blesse les morts-vivants. Il faut le contourner ou le traverser vite. |
+| **Brume purificatrice** | Nuage qui dérive lentement et blesse les morts-vivants, unités et mage. Il faut le contourner ou le traverser vite. |
 | **Brume nécrotique** | Nuage mobile dans lequel la réanimation ne prend que 10 s au lieu de 30. Il attire les combats. |
 | **Bombardement** (*28 semaines plus tard*) | Des zones sont marquées au sol, puis bombardées 10 s plus tard. Les grosses armées en formation serrée sont les plus touchées. |
 

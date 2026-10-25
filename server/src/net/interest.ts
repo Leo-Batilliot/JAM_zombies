@@ -26,7 +26,12 @@ const typeIndex = (world: World, entity: Entity): number => {
       return world.registries.npcs.index(entity.type);
     case EntityKind.PointOfInterest:
       return world.registries.pointsOfInterest.index(entity.type);
+    case EntityKind.Projectile:
+      return world.registries.projectiles.index(entity.type);
+    case EntityKind.Mist:
+      return world.registries.mists.index(entity.type);
     case EntityKind.Cross:
+    case EntityKind.Camp:
       return 0;
   }
 };
@@ -38,9 +43,13 @@ const armySlot = (entity: Entity): number => {
       return entity.army.slot;
     case EntityKind.Corpse:
       return entity.owner.slot;
+    case EntityKind.Projectile:
+      return entity.attacker?.slot ?? neutralArmy;
     case EntityKind.Npc:
     case EntityKind.PointOfInterest:
     case EntityKind.Cross:
+    case EntityKind.Mist:
+    case EntityKind.Camp:
       return neutralArmy;
   }
 };
@@ -137,9 +146,12 @@ export const visibleEntities = (
   const entities: SnapshotEntity[] = [];
   for (const id of ids) {
     const entity = world.entities.get(id);
-    if (entity !== undefined) {
+    if (entity !== undefined && entity.kind !== EntityKind.Mist) {
       entities.push(toSnapshot(world, entity, viewer));
     }
+  }
+  for (const mist of world.mists) {
+    entities.push(toSnapshot(world, mist, viewer));
   }
   return entities;
 };

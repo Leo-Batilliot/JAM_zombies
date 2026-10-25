@@ -1,8 +1,10 @@
 import { EntityKind } from "@horde/shared";
+import { rankArmies } from "../lobby/leaderboard.js";
 import { farPoint } from "../world/spawn.js";
 import type {
   Army,
   Corpse,
+  Entity,
   Mage,
   Remains,
   Unit,
@@ -12,8 +14,9 @@ import { addStartingUnits } from "./army.js";
 import { distance } from "./bodies.js";
 import { absorb, isFull } from "./enlist.js";
 import { createMassGrave } from "./points.js";
-import { maxHp } from "./souls.js";
+import { grantSouls, maxHp } from "./souls.js";
 import { armyStrength } from "./strength.js";
+import { effectsOf } from "./tactics.js";
 import { receiver, transferCorpse, transferUnit } from "./transfer.js";
 
 const shuffle = <T>(world: World, items: T[]): T[] => {
@@ -54,12 +57,23 @@ const handOver = (world: World, army: Army, killer: Army | undefined): void => {
   createMassGrave(world, army.mage.x, army.mage.y, grave);
 };
 
+const isBounty = (world: World, army: Army): boolean => {
+  const [leader] = rankArmies(world).entries;
+  return (
+    leader !== undefined && leader.army === army.slot && leader.strength > 0
+  );
+};
+
 export const killMage = (
   world: World,
   army: Army,
   killer: Army | undefined,
   killerName = killer?.name ?? "",
 ): void => {
+  const hunter = receiver(world, killer, army);
+  if (hunter !== undefined && isBounty(world, army)) {
+    grantSouls(world, hunter, world.config.events.bounty.souls);
+  }
   handOver(world, army, killer);
   world.clearArmy(army);
   army.alive = false;
@@ -71,6 +85,8 @@ export const killMage = (
   army.focusId = undefined;
   army.search = undefined;
   army.inventory = [];
+  army.formation = undefined;
+  army.formationChange = undefined;
 };
 
 export const damageMage = (
@@ -92,15 +108,20 @@ export const damageMage = (
   }
 };
 
+const guardCandidates = (
+  world: World,
+  mage: Mage,
+): Iterable<Entity | undefined> =>
+  effectsOf(world, mage.army).fullGuard
+    ? mage.army.units
+    : world.grid
+        .queryRadius(mage.x, mage.y, world.config.gameplay.soulLink.guardRadius)
+        .map((id) => world.entities.get(id));
+
 export const nearestGuard = (world: World, mage: Mage): Unit | undefined => {
   let best: Unit | undefined;
   let bestDistance = Infinity;
-  for (const id of world.grid.queryRadius(
-    mage.x,
-    mage.y,
-    world.config.gameplay.soulLink.guardRadius,
-  )) {
-    const unit = world.entities.get(id);
+  for (const unit of guardCandidates(world, mage)) {
     if (
       unit?.kind !== EntityKind.Unit ||
       unit.army !== mage.army ||

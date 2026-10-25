@@ -49,6 +49,12 @@ export const spriteName = (
       return `poi-${content.pointsOfInterest[entity.type] ?? ""}`;
     case EntityKind.Cross:
       return "cross";
+    case EntityKind.Projectile:
+      return `projectile-${content.projectiles[entity.type] ?? ""}`;
+    case EntityKind.Mist:
+      return `mist-${content.mists[entity.type]?.id ?? ""}`;
+    case EntityKind.Camp:
+      return "camp";
   }
 };
 

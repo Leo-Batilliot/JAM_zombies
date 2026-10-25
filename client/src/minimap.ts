@@ -5,6 +5,7 @@ export interface MinimapPoint {
 
 const selfColor = "#ece3f5";
 const bossColor = "#ff9a1f";
+const bountyColor = "#e0605a";
 const dotRadius = 3;
 
 export class Minimap {
@@ -22,6 +23,7 @@ export class Minimap {
     world: { width: number; height: number },
     self: MinimapPoint | undefined,
     bosses: MinimapPoint[],
+    bounty: MinimapPoint | undefined,
   ): void {
     const context = this.#context;
     if (context === null) {
@@ -43,6 +45,9 @@ export class Minimap {
     };
     for (const boss of bosses) {
       dot(boss, bossColor);
+    }
+    if (bounty !== undefined) {
+      dot(bounty, bountyColor);
     }
     if (self !== undefined) {
       dot(self, selfColor);

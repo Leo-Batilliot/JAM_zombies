@@ -2,8 +2,10 @@ import { EntityKind } from "@horde/shared";
 import type { Army, Mage, Npc, Unit, World } from "../world/world.js";
 import { eventNpcKilled, recordContribution } from "./events.js";
 import { enlist } from "./enlist.js";
+import { armorOf } from "./equipment.js";
 import { damageMage, nearestGuard } from "./mage.js";
 import { grantSouls } from "./souls.js";
+import { effectsOf } from "./tactics.js";
 
 const victimProfile = (world: World, victim: Unit | Npc) => {
   if (victim.kind === EntityKind.Unit) {
@@ -93,7 +95,12 @@ export const damage = (
   if (target.kind === EntityKind.Npc && attacker !== undefined) {
     recordContribution(world, target, attacker, amount);
   }
-  target.hp -= amount;
+  target.hp -=
+    target.kind === EntityKind.Unit
+      ? amount *
+        (1 - effectsOf(world, target.army).defense) *
+        (1 - armorOf(world, target))
+      : amount;
   if (target.hp <= 0) {
     kill(world, target, attacker);
   }

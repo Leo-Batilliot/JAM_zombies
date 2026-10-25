@@ -71,11 +71,15 @@
       "loot": [
         {
           "item": "shovel",
-          "weight": 70
+          "weight": 55
         },
         {
           "item": "cricket-bat",
-          "weight": 30
+          "weight": 25
+        },
+        {
+          "item": "leather-helmet",
+          "weight": 20
         }
       ]
     },
@@ -91,11 +95,66 @@
       "loot": [
         {
           "item": "cricket-bat",
-          "weight": 85
+          "weight": 60
+        },
+        {
+          "item": "iron-helmet",
+          "weight": 25
         },
         {
           "item": "chainsaw",
-          "weight": 15
+          "weight": 10
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 5
+        }
+      ]
+    },
+    "graveyard": {
+      "count": 4,
+      "radius": 3,
+      "searchSec": 3,
+      "lifetimeSec": {
+        "min": 180,
+        "max": 300
+      },
+      "reward": "units",
+      "units": {
+        "unit": "skeleton-archer",
+        "min": 3,
+        "max": 6
+      }
+    },
+    "camp-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "leather-helmet",
+          "weight": 40
+        },
+        {
+          "item": "iron-helmet",
+          "weight": 30
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 20
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 5
+        },
+        {
+          "item": "chainsaw",
+          "weight": 5
         }
       ]
     }
@@ -111,5 +170,52 @@
       "min": 480,
       "max": 720
     }
+  },
+  "mists": {
+    "purifying": {
+      "name": "the purifying mist",
+      "count": 2,
+      "radius": 14,
+      "speed": 1.2,
+      "turnIntervalSec": 20,
+      "lifetimeSec": {
+        "min": 240,
+        "max": 360
+      },
+      "damagePerSec": 3
+    },
+    "necrotic": {
+      "name": "the necrotic mist",
+      "count": 2,
+      "radius": 12,
+      "speed": 1,
+      "turnIntervalSec": 20,
+      "lifetimeSec": {
+        "min": 240,
+        "max": 360
+      },
+      "damagePerSec": 0,
+      "reanimationDelaySec": 10
+    }
+  },
+  "camps": {
+    "count": 3,
+    "spread": 5,
+    "safeDistance": 50,
+    "lifetimeSec": {
+      "min": 300,
+      "max": 480
+    },
+    "defenders": [
+      {
+        "npc": "hunter",
+        "count": 4
+      },
+      {
+        "npc": "soldier",
+        "count": 4
+      }
+    ],
+    "chest": "camp-chest"
   }
 }
