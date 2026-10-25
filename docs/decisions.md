@@ -4,6 +4,13 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Retour aux sprites générés | L.BA
+
+- **Quoi** : les visuels tirés des packs LPC (unités, bâtiments, rues, fontaine) seront remplacés par des sprites générés par script, dans l'esprit de l'atlas d'avant la V2. La passe se fait une fois, après les mécaniques du Lot 4 (étape 13.18). L'interface en cuir et parchemin est gardée.
+- **Pourquoi** : retour de jeu, les zombies LPC ressemblent à des extraterrestres gris et le décor rend mal. Aucun pack libre accessible ne couvre tout le contenu dans un même style.
+- **Impact** : les sprites LPC restent provisoires jusqu'à 13.18. La chaîne `tools/assets/` sert de base pour la génération.
+- **Avis** : Validée. L'interface plaît, le reste du Lot 3 visuel est à refaire.
+
 ### Cibles et corps toujours à l'intérieur des remparts | L.BA
 
 - **Quoi** : un point libre est ramené à l'intérieur des remparts (bordure plus le rayon du corps), puis sorti des obstacles. Il sert aux corps repoussés par les murs, aux cibles de déplacement des joueurs et des bots, et aux apparitions. Un bot qui fuit essaie plusieurs directions pour ne pas se coincer contre un mur.
@@ -37,7 +44,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 - **Quoi** : fonds en cuir sombre, texte parchemin, accents laiton à la place du violet (`client/src/style.css`).
 - **Pourquoi** : ART-04, le violet est réservé à la magie des mages.
 - **Impact** : aucun changement de mise en page.
-- **Avis** : À vérifier. Proposition du concept, à valider en jeu.
+- **Avis** : Validée. L'interface plaît.
 
 ### Citrouille au parc ou en forêt | L.BA
 
@@ -51,7 +58,7 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 - **Quoi** : les sprites viennent des packs LPC, découpés, recolorés et ramenés à une palette de nuit d'automne par `tools/assets/build.py`, puis paquetés en plusieurs atlas. La carte est une grille de 4 x 4 quartiers tirés parmi des gabarits de `world.json`, séparés par des rues, entourés de remparts. Les obstacles sont des rectangles et des cercles : les corps qui y entrent sont repoussés, sans pathfinding. Un bot qui n'avance plus fait un détour.
 - **Pourquoi** : ART-01, ART-02, ART-03 et ART-07 sans dessinateur dans l'équipe, avec un coût serveur faible.
 - **Impact** : nouvel outil Python (Pillow) pour régénérer l'atlas. Les assets LPC imposent les crédits et la licence CC-BY-SA.
-- **Avis** : Validée. Les obstacles coûtent environ 2,5 % du tick.
+- **Avis** : À vérifier. Documenté par L.BA d'après le code, avis d'A.PI à recueillir. Les obstacles coûtent environ 2,5 % du tick.
 
 ### Bots qui mutent la lignée en attente de fusion | A.PI
 

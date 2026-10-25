@@ -678,3 +678,83 @@ Quartiers, remparts et icônes des lieux sur la minimap (UI-06).
 
 Temps de tick avec les obstacles, débit, captures en headless, documentation (TECH-02, TECH-03).
 
+
+## Phase 13 : Concept V2, Lot 4 (nouveau contenu)
+
+Objectif : les cases du Lot 4 de `docs/conceptV2.md`, puis une passe de sprites générés pour tout le jeu à la place des packs LPC. Les identifiants entre parenthèses renvoient à ce document.
+
+### 13.01 Config et registres du Lot 4 | L.BA
+
+Couche des corps (sol, air, éthéré), comportement des populations (fuir, ou attaquer les petites armées et fuir les grosses), champions, lieux, nouvelles catégories d'objets. Gabarits qui portent un élément unique au moins une fois par ville, vérifié par le registre (TECH-04).
+
+### 13.02 Couches de déplacement | L.BA
+
+Les volants ignorent murs, remparts et séparation avec le sol, les spectres traversent les rangs. Couche envoyée dans le contenu client pour l'ombre et la transparence, sans changement de protocole.
+
+### 13.03 Lignée Volants | L.BA
+
+Volée de charognards, branches Nuée et Charogne, 7 unités fragiles qui harcèlent à distance (EVO-15).
+
+### 13.04 Lignée Spectres | L.BA
+
+Âme errante, branches Hantise et Ombre, 7 unités qui traversent les rangs (EVO-16).
+
+### 13.05 Triangle étendu | L.BA
+
+Volants et Spectres placés dans le triangle, en bonus de dégâts (EVO-17).
+
+### 13.06 Chiens errants et pillards | L.BA
+
+Bandes errantes qui attaquent les petites armées et fuient les grosses, réutilisant populations et hostiles (CONT-01, CONT-04).
+
+### 13.07 Loups en meute | L.BA
+
+Meutes au parc et en forêt, qui chassent en groupe et encerclent (CONT-02).
+
+### 13.08 Corbeaux et chauves-souris | L.BA
+
+Nuées volantes qui harcèlent puis fuient (CONT-03).
+
+### 13.09 Processions de moines | L.BA
+
+Moines et pèlerins entre la cathédrale et la ville (CONT-05).
+
+### 13.10 Sources réparties | L.BA
+
+Chaque lignée à peu près aussi fréquente que les zombies, sources repeuplées comme les civils. Total de PNJ errants gardé à 150 pour l'instant (EVO-18).
+
+### 13.11 Cathédrale, hôpital, forêt et parc | L.BA
+
+Défenseurs, coffres et butin de la cathédrale et sa crypte, de l'hôpital de quarantaine, de la cabane du chasseur (CONT-06, CONT-08, CONT-09).
+
+### 13.12 Caserne, mitrailleuse et mortier | L.BA
+
+Mitrailleuse fixe, mortier qui devient l'origine visible des bombardements (CONT-07).
+
+### 13.13 Pièges de gaz de l'hôpital | L.BA
+
+Zones de gaz qui blessent les troupes autour de l'hôpital (CONT-08).
+
+### 13.14 Règles des champions | L.BA
+
+Exemplaire unique dans son repaire, icône sur la minimap de tous, passage au tueur, retour au repaire, ni découpé, ni fusionné, ni muté, compté dans le plafond des bots (CONT-11).
+
+### 13.15 Les 4 champions | L.BA
+
+Grand chevalier (charge), Gargouille (piqué), Bourreau (exécution sous 20 % de PV), Évêque déchu (soins des morts-vivants) (CONT-10, CONT-12).
+
+### 13.16 Équipement et butin des lieux | L.BA
+
+Objets des Volants et des Spectres, tables de butin par lieu (CONT-13, CONT-14).
+
+### 13.17 Bots et nouveau contenu | L.BA
+
+Nouvelles lignées dans le choix des cartes, prudence devant les lieux trop forts, chasse aux champions quand ils sont assez forts.
+
+### 13.18 Sprites générés pour tout le jeu | L.BA
+
+Retour de jeu : les visuels LPC du Lot 3 ne conviennent pas. Sprites générés par script dans l'esprit de l'atlas d'avant la V2, pour les unités, PNJ, champions et la ville, maquette validée avant la passe complète (ART-06, ART-07).
+
+### 13.19 Vérification | L.BA
+
+Tests, simulation de bots, test de charge, budget de PNJ à revoir, documentation.
