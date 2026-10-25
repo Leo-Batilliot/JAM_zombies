@@ -326,9 +326,13 @@ Carte réduite avec la position du joueur et celle de la citrouille.
 
 Les bots pillent voitures et coffres, font évoluer leurs troupes et contournent les croix sacrées.
 
-### 5.13 Jalon MVP : test sur téléphone | Tous
+### 5.13 Jalon MVP : mesure côté serveur | P1
 
-Partie à 4 joueurs et 8 bots via le tunnel. Mesure des fps, du temps de tick et du débit, correction des problèmes trouvés.
+Test de charge à 4 joueurs et 8 bots (option `--bots`), temps de tick et débit notés dans `docs/load-test.md`.
+
+### 5.14 Jalon MVP : test sur téléphone | Tous
+
+Partie à 4 joueurs et 8 bots via le tunnel. Mesure des fps sur téléphone, correction des problèmes trouvés.
 
 ## Phase 6 : V1
 

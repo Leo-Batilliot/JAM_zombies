@@ -4,6 +4,38 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Monde et équipement du MVP | 5.01-5.13 | L.BA
+
+- `shared/src/config/schema.ts` : équipement (raretés, objets, bonus de dégâts), catégorie et nom des unités, tables de loot, croix sacrées, plafond et ralentissement de l'armée, délai de relève après une croix, butin du boss, marge des bots autour des croix, durée de la notification de butin et taille de la minimap, contenu envoyé au client.
+- `shared/config/equipment.json` : pelle, batte de cricket et tronçonneuse.
+- `shared/config/units.json` : gros zombie, évolution du zombie à 5 unités, catégorie d'arme de la lignée.
+- `shared/config/world.json` : voitures et coffres avec leurs tables de loot, 8 croix sacrées.
+- `shared/config/gameplay.json`, `events.json`, `lobby.json`, `client.json` : plafond de 150 et ralentissement de 60 à 150 unités, relève à 60 s après une croix, butin de la citrouille, marge des bots, notification et minimap.
+- `shared/src/registry.ts` : vérification des tables de loot, du butin du boss et du nombre d'objets par catégorie.
+- `shared/src/protocol/messages.ts` : croix comme genre d'entité, 3 bits de niveau génériques, progression de fouille, compteurs d'unités évolutives et force dans les croix dans l'état du joueur, message de butin.
+- `server/src/world/world.ts` : objet porté par les unités et les cadavres, inventaire et butin du tick, restes avec leur objet, croix sacrées.
+- `server/src/systems/equipment.ts` : rang des objets, équipement de la meilleure unité libre, tirage pondéré, bonus de dégâts.
+- `server/src/systems/enlist.ts` : entrée d'une unité dans l'armée, surplus converti en âmes, ralentissement.
+- `server/src/systems/evolution.ts` : sacrifice des unités les plus proches du mage, objet gardé, compteurs.
+- `server/src/systems/crosses.ts` : placement, force par armée, déclenchement, recharge et déplacement.
+- `server/src/systems/points.ts`, `death.ts`, `reanimation.ts`, `mage.ts`, `combat.ts`, `demo.ts` : objet conservé à la mort, à la relève, au transfert et au charnier, butin des voitures et coffres, délai propre aux cadavres d'une croix, plafond au transfert, inventaire perdu à la mort, dégâts de l'arme.
+- `server/src/systems/events.ts` : un objet par contributeur et légendaire tiré selon la contribution.
+- `server/src/systems/movement.ts`, `formation.ts`, `orders.ts` : ralentissement du mage et des unités, ordre d'évolution.
+- `server/src/world/loop.ts` : systèmes d'équipement et de croix.
+- `server/src/lobby/bots.ts`, `lobby.ts` : évolution, détour autour des croix, charnier avec les objets.
+- `server/src/net/interest.ts`, `sockets.ts` : objet porté et recharge des croix dans les drapeaux, état du joueur étendu, message de butin, ordre d'évolution.
+- `server/scripts/load-test.ts` : option `--bots`.
+- `client/src/game/entities.ts`, `sprites.ts` : arme sur l'unité, croix au sol.
+- `client/src/game/crosses.ts` : zone, recharge et force du joueur sur chaque croix.
+- `client/src/game/search.ts` : barre de progression de la fouille.
+- `client/src/evolution.ts`, `loot.ts`, `minimap.ts` : popup d'évolution, notification du butin, minimap.
+- `client/src/game/game.ts`, `events.ts`, `net/connection.ts`, `style.css` : branchement des nouveaux éléments.
+- `client/public/atlas/` : gros zombie, armes, voiture, coffre et croix.
+- `server/tests/`, `shared/tests/`, `client/tests/` : équipement, loot, butin du boss, évolution, plafond, ralentissement, croix, bots, protocole.
+- `docs/plan.md` : 5.13 limité à la mesure serveur, test sur téléphone en 5.14.
+- `docs/concept.md` : surplus du plafond étendu aux unités transférées.
+- `docs/load-test.md` : mesures de la phase 5.
+
 ### Taille du charnier selon son contenu | 4.06 | A.PI
 
 - `shared/src/protocol/messages.ts` : niveau de taille de 0 à 7 dans les 3 bits libres des drapeaux.

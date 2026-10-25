@@ -211,7 +211,7 @@ Chaque lignée a **sa propre catégorie d'équipement**, qui reste valable sur t
 Le plafond est fixé pour garantir un jeu fluide sur téléphone et limiter l'effet boule de neige.
 
 - **Plafond** : 150 unités par armée (valeur de départ, à ajuster selon les tests).
-- Au-delà, chaque cadavre qui devrait rejoindre l'armée est converti en **âmes**.
+- Au-delà, chaque cadavre ou unité qui devrait rejoindre l'armée est converti en **âmes**.
 - Les âmes font monter le **niveau du mage** (plus de PV max, voir §4.3).
 - Ce système incite à **faire évoluer** les troupes : moins d'unités mais plus fortes, ce qui allège aussi le rendu.
 
