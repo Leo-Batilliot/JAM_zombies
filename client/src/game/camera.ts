@@ -3,6 +3,7 @@ import type { ClientConfig } from "@horde/shared";
 type CameraSettings = ClientConfig["client"]["camera"];
 
 export const zoomFor = (strength: number, camera: CameraSettings): number =>
+  camera.baseZoom *
   Math.max(
     camera.minZoom,
     1 /

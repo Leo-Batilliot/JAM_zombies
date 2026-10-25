@@ -188,6 +188,7 @@ const serverMessages: ServerMessage[] = [
         },
         plates: { offsetY: -40, fontSize: 12 },
         camera: {
+          baseZoom: 0.77,
           minZoom: 0.6,
           strengthScale: 100,
           factor: 0.25,
@@ -224,7 +225,7 @@ const serverMessages: ServerMessage[] = [
             },
             tree: { sprite: "obstacle-tree", scale: 2, anchorY: 0.85 },
           },
-          minimapObstacle: "#141017",
+          minimapGround: "#232a1c",
           landmarks: { cathedral: { symbol: "+", color: "#c7ccd1" } },
           ramparts: {
             tower: "obstacle-tower",

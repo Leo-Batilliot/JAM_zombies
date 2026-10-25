@@ -4,6 +4,18 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Retours de jeu sur les Lots 3 et 4 | 14.01-14.04 | L.BA
+
+- `shared/config/world.json` : carte en forêt sans bâtiments ni remparts, 130 civils, apparitions espacées, pub *Winchester* dans la clairière.
+- `shared/config/client.json` : sol d'herbe, minimap unie, caméra 30 % plus loin, créatures 20 % plus petites, voiture des points d'intérêt agrandie.
+- `shared/config/gameplay.json`, `units.json` : civils près du mage à l'apparition, attaque magique du mage et son projectile.
+- `shared/src/config/schema.ts` : zoom de base, fond de minimap, civils de départ, espacement des apparitions, attaque du mage.
+- `server/src/systems/magic.ts`, `server/src/world/loop.ts` : tir de base du mage.
+- `server/src/systems/army.ts`, `mage.ts`, `server/src/world/spawn.ts`, `world.ts` : apparition loin des ennemis, civils de départ, points aléatoires espacés.
+- `client/src/game/camera.ts`, `decor.ts`, `client/src/minimap.ts` : zoom de base, décor hors des arbres, minimap unie et gros points.
+- `tools/assets/creatures.json`, `city.json`, `client/public/atlas/` : goule en zombie accroupi, voiture agrandie.
+- `server/tests/`, `client/tests/`, `shared/tests/` : magie du mage, réglages de caméra et de minimap.
+
 ### Concept V2, Lot 4 : nouveau contenu et sprites générés | 13.01-13.19 | L.BA
 
 - `shared/src/config/schema.ts`, `shared/src/registry.ts` : couche des corps, comportement de raid, quartiers et trajets des populations, lieux, champions et capacités, couche et apparence envoyées au client, vérification des lieux et des champions.

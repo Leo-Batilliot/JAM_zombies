@@ -6,6 +6,12 @@
     "hpPerLevel": 10,
     "regenDelaySec": 5,
     "regenPerSec": 4,
+    "attack": {
+      "damage": 6,
+      "intervalSec": 1.2,
+      "range": 7,
+      "projectile": "magic"
+    },
     "skins": {
       "necromancer": {
         "name": "Necromancer"
@@ -34,6 +40,11 @@
       }
     ],
     "spawnRadius": 2,
+    "starterCivilians": {
+      "npc": "civilian",
+      "count": 5,
+      "distance": 14
+    },
     "cap": 150,
     "slowdown": {
       "scale": 70,

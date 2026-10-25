@@ -432,12 +432,25 @@ export class World {
     };
   }
 
+  #isSpaced(x: number, y: number): boolean {
+    const { spawnSpacing } = this.config.world;
+    for (const fixed of [...this.points, ...this.camps, ...this.crosses]) {
+      if (Math.hypot(fixed.x - x, fixed.y - y) < spawnSpacing) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   randomPoint(tags?: string[]): { x: number; y: number } {
     const { spawnAttempts } = this.config.world;
     const { clearance } = this.config.world.city;
     let point = this.#candidate(tags);
     for (let attempt = 1; attempt < spawnAttempts; attempt++) {
-      if (this.obstacles.isFree(point.x, point.y, clearance)) {
+      if (
+        this.obstacles.isFree(point.x, point.y, clearance) &&
+        this.#isSpaced(point.x, point.y)
+      ) {
         return point;
       }
       point = this.#candidate(tags);

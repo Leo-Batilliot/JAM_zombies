@@ -1,7 +1,7 @@
 import { EntityKind } from "@horde/shared";
 import { hasRoom } from "../lobby/handicap.js";
 import { rankArmies } from "../lobby/leaderboard.js";
-import { farPoint } from "../world/spawn.js";
+import { distanceToHostiles, farPoint } from "../world/spawn.js";
 import type {
   Army,
   Corpse,
@@ -198,7 +198,11 @@ const distanceToBigArmies = (world: World, x: number, y: number): number => {
 export const respawnMage = (world: World, army: Army): void => {
   const { x, y } = farPoint(
     world,
-    (px, py) => distanceToBigArmies(world, px, py),
+    (px, py) =>
+      Math.min(
+        distanceToBigArmies(world, px, py),
+        distanceToHostiles(world, px, py),
+      ),
     world.config.gameplay.respawn.safeDistance,
   );
   world.placeMage(army, x, y);

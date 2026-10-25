@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import { easeZoom, zoomFor } from "../src/game/camera.js";
 
 const camera = {
+  baseZoom: 1,
   minZoom: 0.6,
   strengthScale: 100,
   factor: 0.25,

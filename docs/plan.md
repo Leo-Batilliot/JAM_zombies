@@ -758,3 +758,23 @@ Retour de jeu : les visuels LPC du Lot 3 ne conviennent pas. Sprites générés 
 ### 13.19 Vérification | L.BA
 
 Tests, simulation de bots, test de charge, budget de PNJ à revoir, documentation.
+
+## Phase 14 : Retours de jeu sur les Lots 3 et 4
+
+Objectif : corriger ce qui ressort des premières parties sur la ville, le nouveau contenu et les sprites générés.
+
+### 14.01 Carte toute en forêt | L.BA
+
+Plus de quartiers visibles, de rues, de bâtiments ni de remparts : sol d'herbe, arbres bloquants épars, lieux et repaires gardés comme clairières.
+
+### 14.02 Minimap, caméra et tailles | L.BA
+
+Minimap sur fond uni avec des points plus gros, caméra 30 % plus loin à tous les niveaux, créatures 20 % plus petites sauf le mage, voitures agrandies, goule en zombie accroupi.
+
+### 14.03 Départ sans danger | L.BA
+
+Plus de civils, groupe de civils près du mage à chaque apparition, apparition loin des mages et des ennemis, apparitions espacées entre elles.
+
+### 14.04 Attaque magique du mage | L.BA
+
+Tir de base du mage sur le PNJ ciblé ou le plus proche, pour se relancer sans troupes.

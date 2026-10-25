@@ -1075,6 +1075,9 @@
     },
     "fire": {
       "speed": 16
+    },
+    "magic": {
+      "speed": 18
     }
   },
   "fusionRatio": 2,

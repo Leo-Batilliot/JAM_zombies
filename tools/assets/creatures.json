@@ -98,12 +98,21 @@
   {
     "kind": "generated",
     "name": "unit-ghoul",
-    "model": "quadruped",
+    "model": "humanoid",
     "params": {
-      "body": "#8fae7a",
+      "skin": "#a8b898",
+      "shirt": "#8a9a7a",
+      "legs": "#4a4a3a",
+      "sleeve": "#a8b898",
       "eyes": "#e0605a",
-      "ribs": false,
-      "tail": "#8fae7a"
+      "mouth": "#3a1a1a",
+      "crouch": 3,
+      "hunch": 2,
+      "reach": true,
+      "wounds": [
+        [8, 17],
+        [15, 19]
+      ]
     },
     "recolor": [
       {

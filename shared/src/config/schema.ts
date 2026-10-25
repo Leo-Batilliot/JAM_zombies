@@ -52,6 +52,12 @@ const gameplaySchema = z.strictObject({
     hpPerLevel: z.number().nonnegative(),
     regenDelaySec: z.number().nonnegative(),
     regenPerSec: z.number().nonnegative(),
+    attack: z.strictObject({
+      damage: z.number().positive(),
+      intervalSec: z.number().positive(),
+      range: z.number().positive(),
+      projectile: id,
+    }),
     skins: z
       .record(id, z.strictObject({ name: z.string().min(1) }))
       .refine(
@@ -73,6 +79,11 @@ const gameplaySchema = z.strictObject({
       }),
     ),
     spawnRadius: z.number().positive(),
+    starterCivilians: z.strictObject({
+      npc: id,
+      count: z.int().nonnegative(),
+      distance: z.number().nonnegative(),
+    }),
     cap: z.int().positive(),
     slowdown: z.strictObject({
       scale: z.number().positive(),
@@ -470,6 +481,7 @@ const worldSchema = z.strictObject({
   gridCellSize: structural(z.number().positive()),
   spawnMargin: z.number().nonnegative(),
   spawnAttempts: z.int().positive(),
+  spawnSpacing: z.number().nonnegative(),
   populations: z.array(
     z.strictObject({
       npc: id,
@@ -668,7 +680,7 @@ const cityLookSchema = z.strictObject({
     }),
   ),
   obstacles: z.record(id, obstacleLookSchema),
-  minimapObstacle: color,
+  minimapGround: color,
   landmarks: z.record(
     id,
     z.strictObject({ symbol: z.string().min(1).max(2), color }),
@@ -753,6 +765,7 @@ export const clientSettingsSchema = z.strictObject({
     fontSize: z.number().positive(),
   }),
   camera: z.strictObject({
+    baseZoom: z.number().positive(),
     minZoom: z.number().positive().max(1),
     strengthScale: z.number().positive(),
     factor: z.number().nonnegative(),

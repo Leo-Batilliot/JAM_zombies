@@ -4,6 +4,27 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Abandon de la ville pour une forêt | L.BA
+
+- **Quoi** : la carte est une forêt d'herbe avec des arbres bloquants épars, sans rues, bâtiments ni remparts. La grille de quartiers reste en interne pour placer les lieux, les repaires et les sources, devenus des clairières.
+- **Pourquoi** : retour de jeu, la ville et ses grands bâtiments bloquants rendaient mal et gênaient les déplacements.
+- **Impact** : la DA de la cité fortifiée (ART-01, ART-02, ART-10) est abandonnée. Les mécaniques des lieux restent.
+- **Avis** : Validée. Demande de L.BA.
+
+### Départ sans danger et magie du mage | L.BA
+
+- **Quoi** : 130 civils, un groupe de 5 civils à 14 m du mage à chaque apparition, apparition loin des mages et des PNJ hostiles, points aléatoires à 8 m des coffres, camps et croix. Le mage tire un sort de base (6 dégâts toutes les 1,2 s, 7 m) sur le PNJ ciblé ou le plus proche.
+- **Pourquoi** : retour de jeu, on se faisait tuer au départ et un mage sans troupes ne pouvait plus rien faire.
+- **Impact** : 230 PNJ errants au total au lieu de 150, débit et tick à remesurer.
+- **Avis** : À vérifier. Valeurs à régler en jeu.
+
+### Caméra plus loin et créatures plus petites | L.BA
+
+- **Quoi** : la caméra est 30 % plus loin à tous les niveaux (`camera.baseZoom`), les unités et PNJ sont 20 % plus petits, le mage garde sa taille. La minimap passe sur un fond uni avec des points plus gros.
+- **Pourquoi** : retour de jeu.
+- **Impact** : vue jusqu'à environ 175 m de large au dézoom maximal, sous la limite de 200 m du serveur.
+- **Avis** : Validée. Demande de L.BA.
+
 ### Sprites générés par modèles | L.BA
 
 - **Quoi** : tous les sprites (unités, PNJ, champions, mages, sols, bâtiments, décor) sont dessinés par `tools/assets/draw/` à partir de modèles paramétrés (humanoïde de face, bêtes, volants et engins de profil, spectres), décrits en données dans `creatures.json` et `city.json`, contour sombre et pixels doublés. Les packs LPC sont supprimés.

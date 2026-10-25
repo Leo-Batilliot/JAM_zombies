@@ -4,10 +4,11 @@
   "gridCellSize": 4,
   "spawnMargin": 20,
   "spawnAttempts": 12,
+  "spawnSpacing": 8,
   "populations": [
     {
       "npc": "civilian",
-      "count": 90,
+      "count": 130,
       "groupSize": {
         "min": 3,
         "max": 6
@@ -171,8 +172,7 @@
           "item": "spiked-collar",
           "weight": 15
         }
-      ],
-      "districts": ["street"]
+      ]
     },
     "chest": {
       "count": 5,
@@ -687,268 +687,292 @@
     "maxMultiplier": 3
   },
   "city": {
-    "border": 8,
+    "border": 0,
     "clearance": 1.5,
     "cellSize": 8,
     "columns": 4,
     "rows": 4,
-    "street": 12,
-    "streetGround": "stone",
+    "street": 0,
+    "streetGround": "grass",
     "templates": {
       "houses": {
-        "name": "Houses",
+        "name": "Woods",
         "weight": 5,
         "min": 0,
         "max": 8,
-        "ground": "cobble",
+        "ground": "grass",
         "tags": ["houses", "car", "chest", "cross"],
         "obstacles": [
           {
-            "kind": "building",
-            "rect": [0.06, 0.06, 0.38, 0.3]
+            "kind": "tree",
+            "circle": [0.35, 0.21, 0.018]
           },
           {
-            "kind": "building",
-            "rect": [0.56, 0.06, 0.38, 0.3]
+            "kind": "tree",
+            "circle": [0.63, 0.14, 0.018]
           },
           {
-            "kind": "building",
-            "rect": [0.06, 0.62, 0.38, 0.32]
+            "kind": "tree",
+            "circle": [0.53, 0.39, 0.018]
           },
           {
-            "kind": "building",
-            "rect": [0.56, 0.62, 0.38, 0.32]
+            "kind": "tree",
+            "circle": [0.13, 0.51, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.14, 0.16, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.44, 0.77, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.61, 0.88, 0.018]
           }
         ],
         "decor": [
           {
-            "composition": "lamp",
-            "at": [0.5, 0.5]
+            "composition": "grove",
+            "at": [0.56, 0.42]
           },
           {
-            "composition": "lamp",
-            "at": [0.5, 0.16]
+            "composition": "grove",
+            "at": [0.88, 0.14]
           },
           {
-            "composition": "bushes",
-            "at": [0.25, 0.48]
+            "composition": "grove",
+            "at": [0.79, 0.33]
+          },
+          {
+            "composition": "grove",
+            "at": [0.22, 0.19]
           },
           {
             "composition": "car-wreck",
-            "at": [0.76, 0.48]
-          },
-          {
-            "composition": "barrels",
-            "at": [0.48, 0.84]
+            "at": [0.5, 0.5]
           }
         ]
       },
       "plaza": {
-        "name": "Market square",
+        "name": "Clearing",
         "weight": 2,
         "min": 1,
         "max": 3,
-        "ground": "cobble",
+        "ground": "grass",
         "tags": ["plaza", "car", "cross", "camp"],
         "obstacles": [
           {
-            "kind": "fountain",
-            "circle": [0.5, 0.5, 0.08]
+            "kind": "tree",
+            "circle": [0.54, 0.13, 0.018]
           },
           {
-            "kind": "stall",
-            "rect": [0.14, 0.14, 0.12, 0.07]
+            "kind": "tree",
+            "circle": [0.13, 0.25, 0.018]
           },
           {
-            "kind": "stall",
-            "rect": [0.74, 0.14, 0.12, 0.07]
+            "kind": "tree",
+            "circle": [0.52, 0.82, 0.018]
           },
           {
-            "kind": "stall",
-            "rect": [0.14, 0.8, 0.12, 0.07]
-          },
-          {
-            "kind": "stall",
-            "rect": [0.74, 0.8, 0.12, 0.07]
+            "kind": "tree",
+            "circle": [0.9, 0.18, 0.018]
           }
         ],
         "decor": [
           {
-            "composition": "fountain-lamps",
-            "at": [0.5, 0.5]
+            "composition": "grove",
+            "at": [0.43, 0.71]
+          },
+          {
+            "composition": "grove",
+            "at": [0.22, 0.49]
+          },
+          {
+            "composition": "barrels",
+            "at": [0.3, 0.3]
           },
           {
             "composition": "pub",
-            "at": [0.5, 0.2]
-          },
-          {
-            "composition": "barrels",
-            "at": [0.2, 0.3]
-          },
-          {
-            "composition": "barrels",
-            "at": [0.8, 0.3]
+            "at": [0.5, 0.25]
           }
         ]
       },
       "cathedral": {
-        "name": "Cathedral",
+        "name": "Ruined chapel",
         "weight": 0,
         "min": 1,
         "max": 1,
-        "ground": "stone",
+        "ground": "grass",
         "tags": ["cathedral", "cross"],
         "obstacles": [
           {
-            "kind": "cathedral",
-            "rect": [0.22, 0.1, 0.56, 0.5]
+            "kind": "tree",
+            "circle": [0.11, 0.64, 0.018]
           },
           {
-            "kind": "tower",
-            "circle": [0.22, 0.1, 0.06]
+            "kind": "tree",
+            "circle": [0.82, 0.34, 0.018]
           },
           {
-            "kind": "tower",
-            "circle": [0.78, 0.1, 0.06]
+            "kind": "tree",
+            "circle": [0.79, 0.87, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.62, 0.91, 0.018]
           }
         ],
         "decor": [
           {
-            "composition": "lamp",
-            "at": [0.35, 0.72]
+            "composition": "grove",
+            "at": [0.76, 0.33]
           },
           {
-            "composition": "lamp",
-            "at": [0.65, 0.72]
+            "composition": "grove",
+            "at": [0.41, 0.63]
           },
           {
             "composition": "tomb-row",
             "at": [0.5, 0.86]
-          }
-        ]
-      },
-      "castle": {
-        "name": "Castle museum",
-        "weight": 0,
-        "min": 1,
-        "max": 1,
-        "ground": "stone",
-        "tags": ["castle", "chest"],
-        "obstacles": [
-          {
-            "kind": "keep",
-            "rect": [0.28, 0.28, 0.44, 0.44]
-          },
-          {
-            "kind": "tower",
-            "circle": [0.28, 0.28, 0.07]
-          },
-          {
-            "kind": "tower",
-            "circle": [0.72, 0.28, 0.07]
-          },
-          {
-            "kind": "tower",
-            "circle": [0.28, 0.72, 0.07]
-          },
-          {
-            "kind": "tower",
-            "circle": [0.72, 0.72, 0.07]
-          }
-        ],
-        "decor": [
-          {
-            "composition": "lamp",
-            "at": [0.5, 0.18]
-          },
-          {
-            "composition": "lamp",
-            "at": [0.5, 0.82]
-          },
-          {
-            "composition": "bushes",
-            "at": [0.15, 0.5]
-          },
-          {
-            "composition": "bushes",
-            "at": [0.85, 0.5]
-          }
-        ]
-      },
-      "hospital": {
-        "name": "Quarantine hospital",
-        "weight": 0,
-        "min": 1,
-        "max": 1,
-        "ground": "dirt",
-        "tags": ["hospital", "chest"],
-        "obstacles": [
-          {
-            "kind": "hospital",
-            "rect": [0.08, 0.1, 0.84, 0.24]
-          },
-          {
-            "kind": "building",
-            "rect": [0.08, 0.6, 0.36, 0.3]
-          },
-          {
-            "kind": "building",
-            "rect": [0.56, 0.6, 0.36, 0.3]
-          }
-        ],
-        "decor": [
-          {
-            "composition": "barrels",
-            "at": [0.5, 0.45]
           },
           {
             "composition": "lamp",
             "at": [0.5, 0.55]
+          }
+        ]
+      },
+      "castle": {
+        "name": "Old keep",
+        "weight": 0,
+        "min": 1,
+        "max": 1,
+        "ground": "grass",
+        "tags": ["castle", "chest"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.1, 0.47, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.22, 0.18, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.13, 0.73, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.41, 0.81, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.16, 0.46]
+          },
+          {
+            "composition": "grove",
+            "at": [0.54, 0.81]
+          },
+          {
+            "composition": "grove",
+            "at": [0.76, 0.79]
+          }
+        ]
+      },
+      "hospital": {
+        "name": "Quarantine camp",
+        "weight": 0,
+        "min": 1,
+        "max": 1,
+        "ground": "grass",
+        "tags": ["hospital", "chest"],
+        "obstacles": [
+          {
+            "kind": "tree",
+            "circle": [0.38, 0.82, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.88, 0.21, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.08, 0.43, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.88, 0.66, 0.018]
+          }
+        ],
+        "decor": [
+          {
+            "composition": "grove",
+            "at": [0.51, 0.59]
+          },
+          {
+            "composition": "grove",
+            "at": [0.64, 0.14]
+          },
+          {
+            "composition": "barrels",
+            "at": [0.5, 0.4]
           },
           {
             "composition": "car-wreck",
-            "at": [0.25, 0.47]
+            "at": [0.25, 0.5]
           }
         ]
       },
       "barracks": {
-        "name": "Barracks",
+        "name": "Military camp",
         "weight": 1,
         "min": 1,
         "max": 1,
-        "ground": "dirt",
+        "ground": "grass",
         "tags": ["barracks", "camp"],
         "obstacles": [
           {
-            "kind": "building",
-            "rect": [0.08, 0.08, 0.3, 0.5]
+            "kind": "tree",
+            "circle": [0.84, 0.74, 0.018]
           },
           {
-            "kind": "building",
-            "rect": [0.62, 0.08, 0.3, 0.5]
+            "kind": "tree",
+            "circle": [0.17, 0.61, 0.018]
           },
           {
-            "kind": "wall",
-            "rect": [0.08, 0.76, 0.84, 0.03]
+            "kind": "tree",
+            "circle": [0.13, 0.14, 0.018]
+          },
+          {
+            "kind": "tree",
+            "circle": [0.37, 0.12, 0.018]
           }
         ],
         "decor": [
+          {
+            "composition": "grove",
+            "at": [0.1, 0.22]
+          },
+          {
+            "composition": "grove",
+            "at": [0.18, 0.39]
+          },
           {
             "composition": "barrels",
             "at": [0.5, 0.3]
           },
           {
-            "composition": "lamp",
-            "at": [0.5, 0.62]
-          },
-          {
             "composition": "car-wreck",
-            "at": [0.3, 0.88]
+            "at": [0.3, 0.85]
           }
         ]
       },
       "park": {
-        "name": "Park",
+        "name": "Pumpkin field",
         "weight": 2,
         "min": 0,
         "max": 3,
@@ -957,157 +981,117 @@
         "obstacles": [
           {
             "kind": "tree",
-            "circle": [0.2, 0.25, 0.025]
+            "circle": [0.1, 0.81, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.75, 0.3, 0.025]
+            "circle": [0.6, 0.2, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.3, 0.72, 0.025]
+            "circle": [0.39, 0.18, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.68, 0.75, 0.025]
+            "circle": [0.79, 0.91, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.5, 0.48, 0.025]
+            "circle": [0.15, 0.17, 0.018]
           }
         ],
         "decor": [
           {
             "composition": "grove",
-            "at": [0.2, 0.25]
+            "at": [0.37, 0.31]
           },
           {
             "composition": "grove",
-            "at": [0.75, 0.3]
+            "at": [0.76, 0.23]
           },
           {
             "composition": "grove",
-            "at": [0.3, 0.72]
-          },
-          {
-            "composition": "grove",
-            "at": [0.68, 0.75]
-          },
-          {
-            "composition": "grove",
-            "at": [0.5, 0.48]
-          },
-          {
-            "composition": "lamp",
-            "at": [0.5, 0.2]
-          },
-          {
-            "composition": "lamp",
-            "at": [0.5, 0.8]
+            "at": [0.12, 0.86]
           },
           {
             "composition": "pumpkin-patch",
-            "at": [0.5, 0.62]
+            "at": [0.5, 0.55]
           }
         ]
       },
       "forest": {
-        "name": "Forest",
+        "name": "Deep forest",
         "weight": 1.5,
         "min": 1,
         "max": 2,
-        "ground": "leaves",
+        "ground": "grass",
         "tags": ["forest", "camp"],
         "obstacles": [
           {
             "kind": "tree",
-            "circle": [0.15, 0.2, 0.022]
+            "circle": [0.52, 0.2, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.35, 0.15, 0.022]
+            "circle": [0.52, 0.9, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.6, 0.22, 0.022]
+            "circle": [0.81, 0.66, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.82, 0.18, 0.022]
+            "circle": [0.3, 0.39, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.25, 0.45, 0.022]
+            "circle": [0.22, 0.73, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.5, 0.5, 0.022]
+            "circle": [0.53, 0.73, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.78, 0.48, 0.022]
+            "circle": [0.36, 0.27, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.18, 0.75, 0.022]
+            "circle": [0.76, 0.91, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.42, 0.8, 0.022]
+            "circle": [0.27, 0.51, 0.018]
           },
           {
             "kind": "tree",
-            "circle": [0.68, 0.78, 0.022]
-          },
-          {
-            "kind": "tree",
-            "circle": [0.88, 0.82, 0.022]
+            "circle": [0.38, 0.1, 0.018]
           }
         ],
         "decor": [
           {
             "composition": "grove",
-            "at": [0.15, 0.2]
+            "at": [0.12, 0.32]
           },
           {
             "composition": "grove",
-            "at": [0.35, 0.15]
+            "at": [0.31, 0.65]
           },
           {
             "composition": "grove",
-            "at": [0.6, 0.22]
+            "at": [0.87, 0.46]
           },
           {
             "composition": "grove",
-            "at": [0.82, 0.18]
+            "at": [0.85, 0.89]
           },
           {
             "composition": "grove",
-            "at": [0.25, 0.45]
+            "at": [0.86, 0.39]
           },
           {
             "composition": "grove",
-            "at": [0.5, 0.5]
-          },
-          {
-            "composition": "grove",
-            "at": [0.78, 0.48]
-          },
-          {
-            "composition": "grove",
-            "at": [0.18, 0.75]
-          },
-          {
-            "composition": "grove",
-            "at": [0.42, 0.8]
-          },
-          {
-            "composition": "grove",
-            "at": [0.68, 0.78]
-          },
-          {
-            "composition": "grove",
-            "at": [0.88, 0.82]
+            "at": [0.28, 0.28]
           }
         ]
       },
@@ -1116,62 +1100,46 @@
         "weight": 1,
         "min": 1,
         "max": 2,
-        "ground": "moss",
+        "ground": "grass",
         "tags": ["graveyard"],
         "obstacles": [
           {
-            "kind": "wall",
-            "rect": [0.08, 0.08, 0.84, 0.02]
+            "kind": "tree",
+            "circle": [0.6, 0.84, 0.018]
           },
           {
-            "kind": "wall",
-            "rect": [0.08, 0.9, 0.34, 0.02]
+            "kind": "tree",
+            "circle": [0.15, 0.63, 0.018]
           },
           {
-            "kind": "wall",
-            "rect": [0.58, 0.9, 0.34, 0.02]
+            "kind": "tree",
+            "circle": [0.84, 0.74, 0.018]
           },
           {
-            "kind": "wall",
-            "rect": [0.08, 0.08, 0.02, 0.84]
-          },
-          {
-            "kind": "wall",
-            "rect": [0.9, 0.08, 0.02, 0.84]
-          },
-          {
-            "kind": "building",
-            "rect": [0.4, 0.13, 0.2, 0.15]
+            "kind": "tree",
+            "circle": [0.9, 0.41, 0.018]
           }
         ],
         "decor": [
           {
             "composition": "tomb-row",
-            "at": [0.3, 0.42]
+            "at": [0.35, 0.4]
           },
           {
             "composition": "tomb-row",
-            "at": [0.7, 0.42]
+            "at": [0.65, 0.4]
           },
           {
             "composition": "tomb-row",
-            "at": [0.3, 0.6]
+            "at": [0.35, 0.6]
           },
           {
             "composition": "tomb-row",
-            "at": [0.7, 0.6]
-          },
-          {
-            "composition": "tomb-row",
-            "at": [0.5, 0.76]
+            "at": [0.65, 0.6]
           },
           {
             "composition": "lamp",
-            "at": [0.45, 0.94]
-          },
-          {
-            "composition": "lamp",
-            "at": [0.55, 0.94]
+            "at": [0.5, 0.5]
           }
         ]
       }
@@ -1186,52 +1154,6 @@
             "light": 7
           }
         ]
-      },
-      "fountain-lamps": {
-        "items": [
-          {
-            "sprite": "decor-lamp",
-            "x": -9,
-            "y": 0,
-            "light": 6
-          },
-          {
-            "sprite": "decor-lamp",
-            "x": 9,
-            "y": 0,
-            "light": 6
-          },
-          {
-            "sprite": "decor-lamp",
-            "x": 0,
-            "y": -9,
-            "light": 6
-          },
-          {
-            "sprite": "decor-lamp",
-            "x": 0,
-            "y": 9,
-            "light": 6
-          }
-        ]
-      },
-      "pub": {
-        "items": [
-          {
-            "sprite": "decor-winchester",
-            "x": 0,
-            "y": 0,
-            "light": 5
-          }
-        ]
-      },
-      "bushes": {
-        "items": [],
-        "scatter": {
-          "sprites": ["decor-bush"],
-          "count": 5,
-          "radius": 4
-        }
       },
       "grove": {
         "items": [
@@ -1321,6 +1243,16 @@
           "count": 9,
           "radius": 6
         }
+      },
+      "pub": {
+        "items": [
+          {
+            "sprite": "decor-winchester",
+            "x": 0,
+            "y": 0,
+            "light": 5
+          }
+        ]
       }
     }
   }

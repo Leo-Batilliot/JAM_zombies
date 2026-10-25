@@ -16,7 +16,7 @@ const selfColor = "#ece3f5";
 const bossColor = "#ff9a1f";
 const bountyColor = "#e0605a";
 const championColor = "#f6d660";
-const dotRadius = 3;
+const dotRadius = 5;
 const landmarkFont = "bold 11px sans-serif";
 
 const drawPlan = (
@@ -25,36 +25,8 @@ const drawPlan = (
   look: CityLook,
   scale: number,
 ): void => {
-  for (const patch of layout.grounds) {
-    context.fillStyle = look.grounds[patch.ground]?.minimap ?? look.edge;
-    context.fillRect(
-      patch.x * scale,
-      patch.y * scale,
-      patch.width * scale,
-      patch.height * scale,
-    );
-  }
-  context.fillStyle = look.minimapObstacle;
-  for (const obstacle of layout.city.obstacles) {
-    if (obstacle.radius > 0) {
-      context.beginPath();
-      context.arc(
-        obstacle.x * scale,
-        obstacle.y * scale,
-        Math.max(obstacle.radius * scale, 1),
-        0,
-        2 * Math.PI,
-      );
-      context.fill();
-    } else {
-      context.fillRect(
-        obstacle.x * scale,
-        obstacle.y * scale,
-        Math.max(obstacle.width * scale, 1),
-        Math.max(obstacle.height * scale, 1),
-      );
-    }
-  }
+  context.fillStyle = look.minimapGround;
+  context.fillRect(0, 0, context.canvas.width, context.canvas.height);
   context.font = landmarkFont;
   context.textAlign = "center";
   context.textBaseline = "middle";

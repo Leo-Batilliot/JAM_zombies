@@ -32,3 +32,15 @@ export const distanceToMages = (world: World, x: number, y: number): number => {
   }
   return nearest;
 };
+
+export const distanceToHostiles = (
+  world: World,
+  x: number,
+  y: number,
+): number => {
+  let nearest = Infinity;
+  for (const npc of world.hostiles) {
+    nearest = Math.min(nearest, Math.hypot(npc.x - x, npc.y - y));
+  }
+  return nearest;
+};

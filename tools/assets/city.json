@@ -415,7 +415,8 @@
       {
         "op": "outline"
       }
-    ]
+    ],
+    "scale": 3
   },
   {
     "kind": "generated",

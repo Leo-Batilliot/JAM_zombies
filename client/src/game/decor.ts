@@ -1,4 +1,5 @@
 import {
+  blocks,
   generateCity,
   seededRandom,
   type City,
@@ -36,6 +37,8 @@ export interface CityLayout {
 }
 
 type Random = () => number;
+
+const decorClearance = 0.5;
 
 const pick = <T>(list: T[], random: Random): T | undefined =>
   list[Math.floor(random() * list.length)];
@@ -182,7 +185,13 @@ export const layoutCity = (config: ClientConfig): CityLayout => {
     city,
     grounds,
     tiles: groundTiles(config, grounds, random),
-    decor: decor.sort(byDepth),
+    decor: decor
+      .filter((item) =>
+        city.obstacles.every(
+          (obstacle) => !blocks(obstacle, item.x, item.y, decorClearance),
+        ),
+      )
+      .sort(byDepth),
     lights,
     ramparts: rampartPieces(config).sort(byDepth),
     outside: outsideTrees(config, random).sort(byDepth),
