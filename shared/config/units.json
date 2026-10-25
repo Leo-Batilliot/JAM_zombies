@@ -610,6 +610,99 @@
       "attackIntervalSec": 1,
       "attackRange": 0.4,
       "aggroRange": 10
+    },
+    "grand-knight": {
+      "name": "Grand knight",
+      "family": "champion",
+      "bonus": {},
+      "strength": 8,
+      "rank": "front",
+      "speed": 6,
+      "radius": 1,
+      "hp": 600,
+      "damage": 45,
+      "attackIntervalSec": 1.2,
+      "attackRange": 0.4,
+      "aggroRange": 10
+    },
+    "gargoyle": {
+      "name": "Gargoyle",
+      "family": "champion",
+      "bonus": {},
+      "strength": 8,
+      "rank": "front",
+      "layer": "air",
+      "speed": 9,
+      "radius": 0.9,
+      "hp": 380,
+      "damage": 40,
+      "attackIntervalSec": 1,
+      "attackRange": 0.6,
+      "aggroRange": 14
+    },
+    "executioner": {
+      "name": "Executioner",
+      "family": "champion",
+      "bonus": {},
+      "strength": 8,
+      "rank": "front",
+      "speed": 6,
+      "radius": 1,
+      "hp": 520,
+      "damage": 55,
+      "attackIntervalSec": 1.6,
+      "attackRange": 0.6,
+      "aggroRange": 10
+    },
+    "fallen-bishop": {
+      "name": "Fallen bishop",
+      "family": "champion",
+      "bonus": {},
+      "projectile": "fire",
+      "strength": 8,
+      "rank": "back",
+      "speed": 6.5,
+      "radius": 0.8,
+      "hp": 360,
+      "damage": 30,
+      "attackIntervalSec": 1.5,
+      "attackRange": 9,
+      "aggroRange": 11
+    }
+  },
+  "champions": {
+    "grand-knight": {
+      "abilities": {
+        "charge": {
+          "intervalSec": 6,
+          "radius": 3,
+          "damage": 25,
+          "knockback": 3,
+          "maxStrength": 1
+        }
+      }
+    },
+    "gargoyle": {
+      "abilities": {
+        "prefersBack": true
+      }
+    },
+    "executioner": {
+      "abilities": {
+        "execute": 0.2,
+        "cleave": {
+          "radius": 2,
+          "ratio": 0.6
+        }
+      }
+    },
+    "fallen-bishop": {
+      "abilities": {
+        "heal": {
+          "radius": 7,
+          "perSec": 6
+        }
+      }
     }
   },
   "npcs": {
@@ -880,6 +973,76 @@
       "hp": 110,
       "radius": 0.7,
       "speed": 0,
+      "obstacle": false
+    },
+    "grand-knight": {
+      "name": "the Grand knight",
+      "corpse": "grand-knight",
+      "infects": false,
+      "strength": 12,
+      "hp": 900,
+      "radius": 1,
+      "speed": 6,
+      "attack": {
+        "damage": 50,
+        "attackIntervalSec": 1.2,
+        "attackRange": 0.4,
+        "aggroRange": 10,
+        "leashDistance": 14
+      },
+      "obstacle": false
+    },
+    "gargoyle": {
+      "name": "the Gargoyle",
+      "corpse": "gargoyle",
+      "infects": false,
+      "strength": 12,
+      "hp": 560,
+      "radius": 0.9,
+      "layer": "air",
+      "speed": 9,
+      "attack": {
+        "damage": 45,
+        "attackIntervalSec": 1,
+        "attackRange": 0.6,
+        "aggroRange": 16,
+        "leashDistance": 22
+      },
+      "obstacle": false
+    },
+    "executioner": {
+      "name": "the Executioner",
+      "corpse": "executioner",
+      "infects": false,
+      "strength": 12,
+      "hp": 780,
+      "radius": 1,
+      "speed": 6,
+      "attack": {
+        "damage": 60,
+        "attackIntervalSec": 1.6,
+        "attackRange": 0.6,
+        "aggroRange": 10,
+        "leashDistance": 14
+      },
+      "obstacle": false
+    },
+    "fallen-bishop": {
+      "name": "the Fallen bishop",
+      "corpse": "fallen-bishop",
+      "infects": false,
+      "strength": 12,
+      "hp": 540,
+      "radius": 0.8,
+      "speed": 6.5,
+      "attack": {
+        "damage": 34,
+        "attackIntervalSec": 1.5,
+        "attackRange": 9,
+        "aggroRange": 12,
+        "leashDistance": 14,
+        "projectile": "fire"
+      },
       "obstacle": false
     }
   },

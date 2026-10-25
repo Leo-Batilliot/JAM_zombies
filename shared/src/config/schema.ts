@@ -243,8 +243,35 @@ const npcTypeSchema = z.strictObject({
     .optional(),
 });
 
+const abilitiesSchema = z.strictObject({
+  charge: z
+    .strictObject({
+      intervalSec: z.number().positive(),
+      radius: z.number().positive(),
+      damage: z.number().nonnegative(),
+      knockback: z.number().nonnegative(),
+      maxStrength: z.int().positive(),
+    })
+    .optional(),
+  execute: z.number().min(0).max(1).optional(),
+  cleave: z
+    .strictObject({
+      radius: z.number().positive(),
+      ratio: z.number().positive(),
+    })
+    .optional(),
+  heal: z
+    .strictObject({
+      radius: z.number().positive(),
+      perSec: z.number().positive(),
+    })
+    .optional(),
+  prefersBack: z.boolean().optional(),
+});
+
 const unitsSchema = z.strictObject({
   units: z.record(id, unitTypeSchema),
+  champions: z.record(id, z.strictObject({ abilities: abilitiesSchema })),
   npcs: z.record(id, npcTypeSchema),
   projectiles: z.record(id, z.strictObject({ speed: z.number().positive() })),
   fusionRatio: z.int().min(2),
@@ -333,6 +360,8 @@ const placeSchema = z.strictObject({
     .array(z.strictObject({ npc: id, count: z.int().positive() }))
     .min(1),
   chest: id,
+  champion: id.optional(),
+  rampart: z.boolean().optional(),
   gas: z
     .strictObject({
       mist: id,
@@ -819,6 +848,7 @@ export const clientConfigSchema = z.strictObject({
     lineages: z.array(lineageSchema.extend({ id })),
     layers: z.record(id, z.enum(layers)),
     places: z.array(id),
+    champions: z.array(id),
     gifts: z.array(giftSchema.extend({ id })),
     spells: z.array(spellSchema.extend({ id })),
   }),
@@ -905,6 +935,7 @@ export const toClientConfig = (
       ),
     ),
     places: Object.keys(config.world.places),
+    champions: Object.keys(config.units.champions),
     gifts: withIds(config.gameplay.gifts),
     spells: withIds(config.gameplay.spells),
   },

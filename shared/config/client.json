@@ -343,6 +343,54 @@
     "poi-cabin-chest": {
       "sprite": "poi-chest",
       "scale": 1
+    },
+    "unit-grand-knight": {
+      "sprite": "npc-soldier",
+      "scale": 1.8
+    },
+    "npc-grand-knight": {
+      "sprite": "npc-soldier",
+      "scale": 1.8
+    },
+    "unit-gargoyle": {
+      "sprite": "unit-bat",
+      "scale": 2.2
+    },
+    "npc-gargoyle": {
+      "sprite": "unit-bat",
+      "scale": 2.2
+    },
+    "unit-executioner": {
+      "sprite": "npc-hunter",
+      "scale": 1.8
+    },
+    "npc-executioner": {
+      "sprite": "npc-hunter",
+      "scale": 1.8
+    },
+    "unit-fallen-bishop": {
+      "sprite": "mage-lich",
+      "scale": 1.6
+    },
+    "npc-fallen-bishop": {
+      "sprite": "mage-lich",
+      "scale": 1.6
+    },
+    "place-museum": {
+      "sprite": "poi-chest",
+      "scale": 1
+    },
+    "place-scaffold": {
+      "sprite": "camp",
+      "scale": 1
+    },
+    "place-crypt": {
+      "sprite": "cross",
+      "scale": 1
+    },
+    "place-gargoyle-tower": {
+      "sprite": "obstacle-tower",
+      "scale": 1
     }
   },
   "cardArtScale": 2,

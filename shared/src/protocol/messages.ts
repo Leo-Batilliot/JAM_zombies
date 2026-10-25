@@ -172,6 +172,12 @@ export interface MageSighting {
   y: number;
 }
 
+export interface ChampionSighting {
+  champion: number;
+  x: number;
+  y: number;
+}
+
 export interface Status {
   army: number;
   hp: number;
@@ -195,6 +201,7 @@ export interface Status {
   crosses: CrossStrength[];
   bosses: BossHealth[];
   mages: MageSighting[];
+  champions: ChampionSighting[];
 }
 
 export type ServerMessage =
@@ -469,6 +476,7 @@ export const encodeServerMessage = (
           message.crosses.length,
           message.bosses.length,
           message.mages.length,
+          message.champions.length,
         ) > 0xff
       ) {
         throw new ProtocolError("Too many status entries");
@@ -478,7 +486,8 @@ export const encodeServerMessage = (
           message.cards.length * 2 +
           message.crosses.length * 6 +
           message.bosses.length * 9 +
-          message.mages.length * 5,
+          message.mages.length * 5 +
+          message.champions.length * 5,
       )
         .uint8(message.type)
         .uint8(message.army)
@@ -530,6 +539,13 @@ export const encodeServerMessage = (
           .uint8(mage.army)
           .uint16(quantizeX(mage.x, bounds))
           .uint16(quantizeY(mage.y, bounds));
+      }
+      writer.uint8(message.champions.length);
+      for (const champion of message.champions) {
+        writer
+          .uint8(champion.champion)
+          .uint16(quantizeX(champion.x, bounds))
+          .uint16(quantizeY(champion.y, bounds));
       }
       return writer.finish();
     }
@@ -722,7 +738,24 @@ export const decodeServerMessage = (
           y: dequantizeY(reader.uint16(), statusBounds),
         });
       }
-      message = { type, ...fields, cards, crosses, bosses, mages };
+      const champions: ChampionSighting[] = [];
+      const championCount = reader.uint8();
+      for (let index = 0; index < championCount; index++) {
+        champions.push({
+          champion: reader.uint8(),
+          x: dequantizeX(reader.uint16(), statusBounds),
+          y: dequantizeY(reader.uint16(), statusBounds),
+        });
+      }
+      message = {
+        type,
+        ...fields,
+        cards,
+        crosses,
+        bosses,
+        mages,
+        champions,
+      };
       break;
     }
     case ServerMessageType.EventStarted: {

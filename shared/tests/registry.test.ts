@@ -76,6 +76,7 @@ const withUnits = (
     ...config,
     units: {
       units: units.units,
+      champions: {},
       npcs: { ...keptNpcs, ...units.npcs },
       projectiles: config.units.projectiles,
       fusionRatio: config.units.fusionRatio,

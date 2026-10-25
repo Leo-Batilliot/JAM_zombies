@@ -31,11 +31,14 @@ export const createMassGrave = (
   y: number,
   corpses: Remains[],
 ): PointOfInterest | undefined => {
-  if (corpses.length === 0) {
+  const remains = corpses.filter(
+    (corpse) => !Object.hasOwn(world.config.units.champions, corpse.type),
+  );
+  if (remains.length === 0) {
     return undefined;
   }
   const point = spawnPoint(world, world.config.world.massGrave, x, y);
-  point.corpses = corpses;
+  point.corpses = remains;
   return point;
 };
 

@@ -1,7 +1,7 @@
 import { EntityKind } from "@horde/shared";
 import type { World } from "../world/world.js";
 import { bodyRadius, distance } from "./bodies.js";
-import { damage } from "./death.js";
+import { strike } from "./abilities.js";
 import { damageBonus } from "./equipment.js";
 import { rallyBonus } from "./pace.js";
 import { effectsOf } from "./tactics.js";
@@ -64,7 +64,7 @@ export const fight = (world: World, dt: number): void => {
         impactBonus(world, unit) *
         rallyBonus(world, army);
       if (stats.projectile === undefined) {
-        damage(world, target, amount, army);
+        strike(world, unit, target, amount);
       } else {
         world.addProjectile(
           stats.projectile,

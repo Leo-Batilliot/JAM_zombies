@@ -342,6 +342,7 @@ export class World {
   readonly mists = new Set<Mist>();
   readonly camps = new Set<Camp>();
   readonly places = new Map<string, PlaceState>();
+  readonly abilityAt = new Map<number, number>();
   readonly bombings = new Set<Bombing>();
   readonly walls = new Set<Wall>();
   readonly populationSpawnAt = new Map<number, number>();

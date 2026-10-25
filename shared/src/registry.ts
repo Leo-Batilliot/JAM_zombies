@@ -313,6 +313,20 @@ const checkCity = (config: Config): void => {
   }
 };
 
+const checkChampions = (config: Config, registries: Registries): void => {
+  for (const championId of Object.keys(config.units.champions)) {
+    const source = `Champion "${championId}"`;
+    checkReference(registries.units, championId, source);
+    checkReference(registries.npcs, championId, source);
+    if (registries.tree.has(championId)) {
+      throw new RegistryError(`${source} must not be in a lineage`);
+    }
+    if (registries.npcs.get(championId).corpse !== championId) {
+      throw new RegistryError(`${source} must rise as itself`);
+    }
+  }
+};
+
 const checkPlaces = (config: Config, registries: Registries): void => {
   for (const [placeId, place] of Object.entries(config.world.places)) {
     const source = `Place "${placeId}"`;
@@ -333,6 +347,16 @@ const checkPlaces = (config: Config, registries: Registries): void => {
     checkReference(registries.pointsOfInterest, place.chest, source);
     if (place.gas !== undefined) {
       checkReference(registries.mists, place.gas.mist, source);
+    }
+    if (place.champion !== undefined) {
+      checkReference(registries.units, place.champion, source);
+      if (
+        !place.defenders.some((defender) => defender.npc === place.champion)
+      ) {
+        throw new RegistryError(
+          `${source} champion "${place.champion}" is not a defender`,
+        );
+      }
     }
     const mortar = place.mortar?.npc;
     if (
@@ -405,11 +429,15 @@ export const buildRegistries = (config: Config): Registries => {
   }
 
   for (const unitId of registries.units.ids()) {
-    if (!registries.tree.has(unitId)) {
+    if (
+      !registries.tree.has(unitId) &&
+      !Object.hasOwn(config.units.champions, unitId)
+    ) {
       throw new RegistryError(`Unit "${unitId}" is in no lineage`);
     }
   }
   checkPowers(registries);
+  checkChampions(config, registries);
   checkPlaces(config, registries);
 
   return registries;

@@ -33,7 +33,11 @@ import {
   orderRespawn,
 } from "../systems/orders.js";
 import { spellCooldown } from "../systems/spells.js";
-import { sightedMages, visionBonus } from "../systems/detection.js";
+import {
+  championSightings,
+  sightedMages,
+  visionBonus,
+} from "../systems/detection.js";
 import { powerPace } from "../systems/pace.js";
 import { maxHp, soulsToReach } from "../systems/souls.js";
 import {
@@ -463,6 +467,7 @@ export const attachSockets = (
           crosses: crossStrengths(world, army),
           bosses: bossHealth(world),
           mages: sightedMages(world, army),
+          champions: championSightings(world),
         });
         send(session, {
           type: ServerMessageType.Snapshot,

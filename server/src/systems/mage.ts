@@ -29,6 +29,20 @@ const shuffle = <T>(world: World, items: T[]): T[] => {
   return items;
 };
 
+const handChampion = (
+  world: World,
+  remain: Unit | Corpse,
+  heir: Army | undefined,
+): void => {
+  if (heir === undefined || !hasRoom(world, heir)) {
+    world.removeEntity(remain);
+  } else if (remain.kind === EntityKind.Unit) {
+    transferUnit(remain, heir);
+  } else {
+    transferCorpse(remain, heir);
+  }
+};
+
 const handOver = (world: World, army: Army, killer: Army | undefined): void => {
   const heir = receiver(world, killer, army);
   const remains: (Unit | Corpse)[] = shuffle(world, [
@@ -44,7 +58,9 @@ const handOver = (world: World, army: Army, killer: Army | undefined): void => {
       remain.kind === EntityKind.Unit
         ? heir
         : (receiver(world, remain.killer, army) ?? heir);
-    if (index >= kept || to === undefined || !hasRoom(world, to)) {
+    if (Object.hasOwn(world.config.units.champions, remain.type)) {
+      handChampion(world, remain, heir);
+    } else if (index >= kept || to === undefined || !hasRoom(world, to)) {
       grave.push({ type: remain.type, item: remain.item });
       world.removeEntity(remain);
     } else if (

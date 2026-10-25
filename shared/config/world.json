@@ -607,6 +607,75 @@
         }
       ],
       "chest": "cabin-chest"
+    },
+    "museum": {
+      "district": "castle",
+      "at": [0.5, 0.5],
+      "spread": 4,
+      "safeDistance": 30,
+      "respawnSec": 300,
+      "defenders": [
+        {
+          "npc": "grand-knight",
+          "count": 1
+        },
+        {
+          "npc": "soldier",
+          "count": 2
+        }
+      ],
+      "chest": "cathedral-chest",
+      "champion": "grand-knight"
+    },
+    "scaffold": {
+      "district": "plaza",
+      "at": [0.5, 0.7],
+      "spread": 4,
+      "safeDistance": 30,
+      "respawnSec": 300,
+      "defenders": [
+        {
+          "npc": "executioner",
+          "count": 1
+        }
+      ],
+      "chest": "cathedral-chest",
+      "champion": "executioner"
+    },
+    "crypt": {
+      "district": "cathedral",
+      "at": [0.5, 0.35],
+      "spread": 4,
+      "safeDistance": 30,
+      "respawnSec": 300,
+      "defenders": [
+        {
+          "npc": "fallen-bishop",
+          "count": 1
+        },
+        {
+          "npc": "templar",
+          "count": 2
+        }
+      ],
+      "chest": "cathedral-chest",
+      "champion": "fallen-bishop"
+    },
+    "gargoyle-tower": {
+      "district": "barracks",
+      "at": [0.5, 0.5],
+      "spread": 4,
+      "safeDistance": 30,
+      "respawnSec": 300,
+      "defenders": [
+        {
+          "npc": "gargoyle",
+          "count": 1
+        }
+      ],
+      "chest": "cathedral-chest",
+      "champion": "gargoyle",
+      "rampart": true
     }
   },
   "bombings": {

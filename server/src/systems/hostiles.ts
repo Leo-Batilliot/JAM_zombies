@@ -1,7 +1,7 @@
 import { EntityKind } from "@horde/shared";
 import type { Entity, Mage, Npc, Unit, World } from "../world/world.js";
 import { bodyRadius, distance } from "./bodies.js";
-import { damage } from "./death.js";
+import { strike } from "./abilities.js";
 import { nearestPrey } from "./targeting.js";
 
 type Prey = Mage | Unit;
@@ -124,7 +124,7 @@ export const updateHostiles = (world: World, dt: number): void => {
     } else if (npc.cooldown <= 0) {
       npc.cooldown = attack.attackIntervalSec;
       if (attack.projectile === undefined) {
-        damage(world, target, attack.damage, undefined, stats.name);
+        strike(world, npc, target, attack.damage, stats.name);
       } else {
         world.addProjectile(
           attack.projectile,

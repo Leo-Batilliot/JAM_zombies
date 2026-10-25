@@ -66,6 +66,7 @@ const serverMessages: ServerMessage[] = [
     crosses: [],
     bosses: [],
     mages: [],
+    champions: [],
   },
   {
     type: ServerMessageType.Status,
@@ -98,6 +99,7 @@ const serverMessages: ServerMessage[] = [
       { army: 3, x: 120, y: 80 },
       { army: 9, x: 0, y: 300 },
     ],
+    champions: [{ champion: 2, x: 40, y: 200 }],
   },
   { type: ServerMessageType.Loot, item: 2 },
   { type: ServerMessageType.Focus, army: 4, mageId: 70123, name: "Léa" },
@@ -345,6 +347,7 @@ const serverMessages: ServerMessage[] = [
         ],
         layers: { crow: "air" },
         places: ["cathedral"],
+        champions: ["gargoyle"],
         gifts: [
           {
             id: "haste",

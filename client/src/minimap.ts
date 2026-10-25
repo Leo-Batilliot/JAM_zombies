@@ -15,6 +15,7 @@ export interface MinimapMage extends MinimapPoint {
 const selfColor = "#ece3f5";
 const bossColor = "#ff9a1f";
 const bountyColor = "#e0605a";
+const championColor = "#f6d660";
 const dotRadius = 3;
 const landmarkFont = "bold 11px sans-serif";
 
@@ -107,6 +108,7 @@ export class Minimap {
     bosses: MinimapPoint[],
     bounty: MinimapPoint | undefined,
     mages: MinimapMage[],
+    champions: MinimapPoint[],
     plan?: { layout: CityLayout; look: CityLook },
   ): void {
     const context = this.#context;
@@ -136,6 +138,9 @@ export class Minimap {
     }
     for (const boss of bosses) {
       dot(boss, bossColor);
+    }
+    for (const champion of champions) {
+      dot(champion, championColor);
     }
     if (bounty !== undefined) {
       dot(bounty, bountyColor);
