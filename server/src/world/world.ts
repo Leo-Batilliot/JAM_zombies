@@ -183,7 +183,17 @@ export interface PointOfInterest {
   corpses: Remains[];
 }
 
-export type Entity = Mage | Unit | Npc | Corpse | PointOfInterest;
+export interface Cross {
+  id: number;
+  kind: EntityKind.Cross;
+  x: number;
+  y: number;
+  expiresAt: number;
+  readyAt: number;
+  strengths: Map<Army, number>;
+}
+
+export type Entity = Mage | Unit | Npc | Corpse | PointOfInterest | Cross;
 export type Body = Mage | Unit | Npc;
 
 const maxArmySlot = 0xff;
@@ -203,6 +213,7 @@ export class World {
   readonly armies = new Map<number, Army>();
   readonly npcGroups = new Set<NpcGroup>();
   readonly points = new Set<PointOfInterest>();
+  readonly crosses = new Set<Cross>();
   readonly populationSpawnAt = new Map<number, number>();
   readonly hostiles = new Set<Npc>();
   readonly events = new Map<string, BossEvent>();
@@ -438,6 +449,21 @@ export class World {
     return point;
   }
 
+  addCross(x: number, y: number, lifetimeSec: number): Cross {
+    const cross: Cross = {
+      id: this.#nextId++,
+      kind: EntityKind.Cross,
+      x: this.clampX(x),
+      y: this.clampY(y),
+      expiresAt: this.time + lifetimeSec,
+      readyAt: this.time,
+      strengths: new Map(),
+    };
+    this.crosses.add(cross);
+    this.#add(cross);
+    return cross;
+  }
+
   clearArmy(army: Army): void {
     for (const unit of army.units) {
       this.remove(unit.id);
@@ -484,6 +510,9 @@ export class World {
       case EntityKind.PointOfInterest:
         this.points.delete(entity);
         break;
+      case EntityKind.Cross:
+        this.crosses.delete(entity);
+        break;
       case EntityKind.Mage:
         break;
     }
@@ -494,6 +523,9 @@ export class World {
     this.clearArmy(army);
     for (const point of this.points) {
       point.searchedBy.delete(army);
+    }
+    for (const cross of this.crosses) {
+      cross.strengths.delete(army);
     }
     for (const event of this.events.values()) {
       event.contributions.delete(army);

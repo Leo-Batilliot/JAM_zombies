@@ -3,6 +3,7 @@ import { updateLobby } from "../lobby/lobby.js";
 import { maintainPopulations, moveCivilians } from "../systems/civilians.js";
 import { updateBattles } from "../systems/battle.js";
 import { fight } from "../systems/combat.js";
+import { maintainCrosses, updateCrosses } from "../systems/crosses.js";
 import { clearFound, equipArmies } from "../systems/equipment.js";
 import { runEvents } from "../systems/events.js";
 import { updateHostiles } from "../systems/hostiles.js";
@@ -30,12 +31,14 @@ export const systems: System[] = [
   updateHostiles,
   separateBodies,
   fight,
+  updateCrosses,
   updateBattles,
   reanimate,
   regenerateMages,
   searchPoints,
   equipArmies,
   maintainPoints,
+  maintainCrosses,
   respawnMages,
 ];
 

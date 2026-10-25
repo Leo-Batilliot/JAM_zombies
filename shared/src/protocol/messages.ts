@@ -45,6 +45,7 @@ export enum EntityKind {
   Npc,
   Corpse,
   PointOfInterest,
+  Cross,
 }
 
 export enum EntityFlag {

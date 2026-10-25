@@ -46,6 +46,8 @@ export const spriteName = (
       return "corpse";
     case EntityKind.PointOfInterest:
       return `poi-${content.pointsOfInterest[entity.type] ?? ""}`;
+    case EntityKind.Cross:
+      return "cross";
   }
 };
 

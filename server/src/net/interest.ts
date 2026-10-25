@@ -1,12 +1,13 @@
 import {
   EntityFlag,
   EntityKind,
+  maxFlagLevel,
   neutralArmy,
   levelFlags,
   type SnapshotEntity,
 } from "@horde/shared";
 import { corpseDelay } from "../systems/reanimation.js";
-import type { Army, Entity, World } from "../world/world.js";
+import type { Army, Cross, Entity, World } from "../world/world.js";
 
 export interface View {
   width: number;
@@ -24,6 +25,8 @@ const typeIndex = (world: World, entity: Entity): number => {
       return world.registries.npcs.index(entity.type);
     case EntityKind.PointOfInterest:
       return world.registries.pointsOfInterest.index(entity.type);
+    case EntityKind.Cross:
+      return 0;
   }
 };
 
@@ -36,8 +39,17 @@ const armySlot = (entity: Entity): number => {
       return entity.owner.slot;
     case EntityKind.Npc:
     case EntityKind.PointOfInterest:
+    case EntityKind.Cross:
       return neutralArmy;
   }
+};
+
+const crossCharge = (world: World, cross: Cross): number => {
+  const { rechargeSec } = world.config.world.crosses;
+  const left = cross.readyAt - world.time;
+  return left <= 0 || rechargeSec <= 0
+    ? maxFlagLevel
+    : Math.floor((1 - left / rechargeSec) * maxFlagLevel);
 };
 
 const flags = (world: World, entity: Entity, viewer: Army): number => {
@@ -62,6 +74,8 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
         (entity.searchedBy.has(viewer) ? EntityFlag.Searched : 0) |
         levelFlags(Math.log2(Math.max(1, entity.corpses.length)))
       );
+    case EntityKind.Cross:
+      return levelFlags(crossCharge(world, entity));
     default:
       return 0;
   }

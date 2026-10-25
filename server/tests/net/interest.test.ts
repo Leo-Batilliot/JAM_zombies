@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { EntityFlag, EntityKind, flagLevel } from "@horde/shared";
+import { EntityFlag, EntityKind, flagLevel, maxFlagLevel } from "@horde/shared";
 import { visibleEntities } from "../../src/net/interest.js";
 import { createMassGrave } from "../../src/systems/points.js";
 import { createBench } from "../support/bench.js";
@@ -149,5 +149,26 @@ describe("mass grave size", () => {
     expect(level(3)).toBe(1);
     expect(level(45)).toBe(5);
     expect(level(1000)).toBe(7);
+  });
+});
+
+describe("sacred cross charge", () => {
+  test("is full when ready and grows during the recharge", () => {
+    const { world, addArmy } = createBench((config) => {
+      config.world.crosses.rechargeSec = 10;
+    });
+    const army = addArmy(100, 100);
+    const cross = world.addCross(102, 100, 600);
+    const charge = (): number =>
+      flagLevel(
+        visibleEntities(world, army, viewAround).find(
+          (entity) => entity.id === cross.id,
+        )?.flags ?? -1,
+      );
+    expect(charge()).toBe(maxFlagLevel);
+    cross.readyAt = world.time + 10;
+    expect(charge()).toBe(0);
+    cross.readyAt = world.time + 5;
+    expect(charge()).toBe(3);
   });
 });
