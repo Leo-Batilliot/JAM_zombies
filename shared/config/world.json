@@ -268,6 +268,14 @@
         {
           "item": "cerberus-chain",
           "weight": 3
+        },
+        {
+          "item": "iron-talons",
+          "weight": 12
+        },
+        {
+          "item": "rusty-chains",
+          "weight": 12
         }
       ]
     },
@@ -282,36 +290,28 @@
       "reward": "items",
       "loot": [
         {
-          "item": "leather-helmet",
+          "item": "rusty-chains",
           "weight": 30
+        },
+        {
+          "item": "spectral-lantern",
+          "weight": 25
         },
         {
           "item": "iron-helmet",
           "weight": 20
         },
         {
-          "item": "spiked-collar",
-          "weight": 15
-        },
-        {
-          "item": "cricket-bat",
-          "weight": 15
-        },
-        {
-          "item": "bone-collar",
+          "item": "cursed-helm",
           "weight": 10
         },
         {
-          "item": "cursed-helm",
-          "weight": 4
+          "item": "ankou-scythe",
+          "weight": 8
         },
         {
-          "item": "chainsaw",
-          "weight": 3
-        },
-        {
-          "item": "cerberus-chain",
-          "weight": 3
+          "item": "bone-talons",
+          "weight": 7
         }
       ]
     },
@@ -326,36 +326,24 @@
       "reward": "items",
       "loot": [
         {
-          "item": "leather-helmet",
-          "weight": 30
+          "item": "iron-helmet",
+          "weight": 35
         },
         {
-          "item": "iron-helmet",
-          "weight": 20
+          "item": "cricket-bat",
+          "weight": 25
+        },
+        {
+          "item": "chainsaw",
+          "weight": 15
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 10
         },
         {
           "item": "spiked-collar",
           "weight": 15
-        },
-        {
-          "item": "cricket-bat",
-          "weight": 15
-        },
-        {
-          "item": "bone-collar",
-          "weight": 10
-        },
-        {
-          "item": "cursed-helm",
-          "weight": 4
-        },
-        {
-          "item": "chainsaw",
-          "weight": 3
-        },
-        {
-          "item": "cerberus-chain",
-          "weight": 3
         }
       ]
     },
@@ -371,35 +359,19 @@
       "loot": [
         {
           "item": "leather-helmet",
+          "weight": 35
+        },
+        {
+          "item": "shovel",
           "weight": 30
         },
         {
-          "item": "iron-helmet",
+          "item": "rusty-chains",
           "weight": 20
         },
         {
-          "item": "spiked-collar",
+          "item": "iron-helmet",
           "weight": 15
-        },
-        {
-          "item": "cricket-bat",
-          "weight": 15
-        },
-        {
-          "item": "bone-collar",
-          "weight": 10
-        },
-        {
-          "item": "cursed-helm",
-          "weight": 4
-        },
-        {
-          "item": "chainsaw",
-          "weight": 3
-        },
-        {
-          "item": "cerberus-chain",
-          "weight": 3
         }
       ]
     },
@@ -414,36 +386,56 @@
       "reward": "items",
       "loot": [
         {
-          "item": "leather-helmet",
+          "item": "spiked-collar",
           "weight": 30
         },
         {
-          "item": "iron-helmet",
-          "weight": 20
-        },
-        {
-          "item": "spiked-collar",
-          "weight": 15
-        },
-        {
-          "item": "cricket-bat",
-          "weight": 15
+          "item": "iron-talons",
+          "weight": 30
         },
         {
           "item": "bone-collar",
-          "weight": 10
+          "weight": 20
         },
         {
-          "item": "cursed-helm",
-          "weight": 4
-        },
-        {
-          "item": "chainsaw",
-          "weight": 3
+          "item": "bone-talons",
+          "weight": 15
         },
         {
           "item": "cerberus-chain",
-          "weight": 3
+          "weight": 5
+        }
+      ]
+    },
+    "champion-chest": {
+      "count": 0,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 90,
+        "max": 150
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "chainsaw",
+          "weight": 20
+        },
+        {
+          "item": "cursed-helm",
+          "weight": 20
+        },
+        {
+          "item": "cerberus-chain",
+          "weight": 20
+        },
+        {
+          "item": "dragon-claws",
+          "weight": 20
+        },
+        {
+          "item": "ankou-scythe",
+          "weight": 20
         }
       ]
     }
@@ -624,7 +616,7 @@
           "count": 2
         }
       ],
-      "chest": "cathedral-chest",
+      "chest": "champion-chest",
       "champion": "grand-knight"
     },
     "scaffold": {
@@ -639,7 +631,7 @@
           "count": 1
         }
       ],
-      "chest": "cathedral-chest",
+      "chest": "champion-chest",
       "champion": "executioner"
     },
     "crypt": {
@@ -658,7 +650,7 @@
           "count": 2
         }
       ],
-      "chest": "cathedral-chest",
+      "chest": "champion-chest",
       "champion": "fallen-bishop"
     },
     "gargoyle-tower": {
@@ -673,7 +665,7 @@
           "count": 1
         }
       ],
-      "chest": "cathedral-chest",
+      "chest": "champion-chest",
       "champion": "gargoyle",
       "rampart": true
     }

@@ -60,6 +60,47 @@
       "rarity": "legendary",
       "damage": 1.6,
       "speed": 1.3
+    },
+    "iron-talons": {
+      "name": "Iron talons",
+      "category": "talons",
+      "rarity": "common",
+      "damage": 1.2
+    },
+    "bone-talons": {
+      "name": "Bone talons",
+      "category": "talons",
+      "rarity": "rare",
+      "damage": 1.4,
+      "speed": 1.1
+    },
+    "dragon-claws": {
+      "name": "Dragon claws",
+      "category": "talons",
+      "rarity": "legendary",
+      "damage": 1.8,
+      "speed": 1.2
+    },
+    "rusty-chains": {
+      "name": "Rusty chains",
+      "category": "relic",
+      "rarity": "common",
+      "hp": 1.25,
+      "armor": 0.1
+    },
+    "spectral-lantern": {
+      "name": "Spectral lantern",
+      "category": "relic",
+      "rarity": "rare",
+      "damage": 1.3,
+      "hp": 1.3
+    },
+    "ankou-scythe": {
+      "name": "Scythe of the Ankou",
+      "category": "relic",
+      "rarity": "legendary",
+      "damage": 1.8,
+      "hp": 1.5
     }
   }
 }

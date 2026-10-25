@@ -128,3 +128,25 @@ describe("city look", () => {
     }
   });
 });
+
+describe("content sprites", () => {
+  const frames = atlasFrames();
+  const drawable = (name: string): boolean => {
+    const sprite = config.client.spriteAliases[name]?.sprite ?? name;
+    return [`${sprite}-walk-s-0`, `${sprite}-walk-0`, sprite].some((frame) =>
+      frames.has(frame),
+    );
+  };
+
+  test("every unit, npc, item, point and place can be drawn", () => {
+    const { content } = config;
+    const names = [
+      ...content.units.map((unit) => `unit-${unit.id}`),
+      ...content.npcs.map((npc) => `npc-${npc}`),
+      ...content.items.map((item) => `item-${item.id}`),
+      ...content.pointsOfInterest.map((point) => `poi-${point}`),
+      ...content.places.map((place) => `place-${place}`),
+    ];
+    expect(names.filter((name) => !drawable(name))).toEqual([]);
+  });
+});

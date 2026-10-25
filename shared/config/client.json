@@ -91,6 +91,14 @@
     "collar": {
       "x": 5,
       "y": -6
+    },
+    "talons": {
+      "x": 4,
+      "y": 4
+    },
+    "relic": {
+      "x": 5,
+      "y": 0
     }
   },
   "mistColors": {
@@ -390,6 +398,34 @@
     },
     "place-gargoyle-tower": {
       "sprite": "obstacle-tower",
+      "scale": 1
+    },
+    "item-iron-talons": {
+      "sprite": "item-spiked-collar",
+      "scale": 1
+    },
+    "item-bone-talons": {
+      "sprite": "item-bone-collar",
+      "scale": 1
+    },
+    "item-dragon-claws": {
+      "sprite": "item-cerberus-chain",
+      "scale": 1
+    },
+    "item-rusty-chains": {
+      "sprite": "item-cerberus-chain",
+      "scale": 1
+    },
+    "item-spectral-lantern": {
+      "sprite": "item-cursed-helm",
+      "scale": 1
+    },
+    "item-ankou-scythe": {
+      "sprite": "item-shovel",
+      "scale": 1
+    },
+    "poi-champion-chest": {
+      "sprite": "poi-chest",
       "scale": 1
     }
   },
