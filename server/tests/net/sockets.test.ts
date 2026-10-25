@@ -319,3 +319,41 @@ describe("leaving", () => {
     second.socket.close();
   });
 });
+
+describe("formations and bounty", () => {
+  test("the player changes formation and sees the change in its status", async () => {
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    if (army === undefined) {
+      throw new Error("Expected an army");
+    }
+    client.send({ type: ClientMessageType.Formation, formation: 1 });
+    await vi.waitFor(() => {
+      expect(army.formationChange?.to).toBe(
+        Object.keys(bench.config.formations.selectable)[1],
+      );
+    });
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      const status = client.of(ServerMessageType.Status).at(-1);
+      expect(status?.formation).toBe(0);
+      expect(status?.nextFormation).toBe(2);
+    });
+    client.socket.close();
+  });
+
+  test("the leaderboard names the bounty with its position", async () => {
+    const client = await joined();
+    const army = [...bench.world.armies.values()][0];
+    if (army === undefined) {
+      throw new Error("Expected an army");
+    }
+    sockets.sendSnapshots();
+    await vi.waitFor(() => {
+      const [leaderboard] = client.of(ServerMessageType.Leaderboard);
+      expect(leaderboard?.bounty.army).toBe(army.slot);
+      expect(leaderboard?.bounty.x).toBeCloseTo(army.mage.x, 1);
+    });
+    client.socket.close();
+  });
+});
