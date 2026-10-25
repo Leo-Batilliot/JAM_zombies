@@ -41,7 +41,9 @@ describe("bots", () => {
     const bench = createBench();
     const army = botArmy(bench);
     bench.addCivilians(110, 100, 1);
-    createMassGrave(bench.world, 90, 100, ["zombie"]);
+    createMassGrave(bench.world, 90, 100, [
+      { type: "zombie", item: undefined },
+    ]);
     runBots(bench.world);
     expect(army.mage.targetX).toBeCloseTo(90);
     expect(army.focusId).toBeUndefined();

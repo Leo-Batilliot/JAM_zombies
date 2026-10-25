@@ -19,6 +19,13 @@ export interface Army {
   groups: Set<AbandonedGroup>;
   battle: Battle | undefined;
   retreat: Retreat | undefined;
+  inventory: string[];
+  found: string[];
+}
+
+export interface Remains {
+  type: string;
+  item: string | undefined;
 }
 
 export interface AbandonedGroup {
@@ -103,6 +110,7 @@ export interface Unit {
   fighting: boolean;
   group: AbandonedGroup | undefined;
   returning: boolean;
+  item: string | undefined;
 }
 
 export interface NpcGroup {
@@ -158,6 +166,8 @@ export interface Corpse {
   killer: Army | undefined;
   group: AbandonedGroup | undefined;
   diedAt: number;
+  sacred: boolean;
+  item: string | undefined;
   x: number;
   y: number;
 }
@@ -170,7 +180,7 @@ export interface PointOfInterest {
   y: number;
   expiresAt: number;
   searchedBy: Set<Army>;
-  corpses: string[];
+  corpses: Remains[];
 }
 
 export type Entity = Mage | Unit | Npc | Corpse | PointOfInterest;
@@ -269,6 +279,8 @@ export class World {
       groups: new Set(),
       battle: undefined,
       retreat: undefined,
+      inventory: [],
+      found: [],
     } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
@@ -291,7 +303,7 @@ export class World {
     return army;
   }
 
-  addUnit(army: Army, type: string, x: number, y: number): Unit {
+  addUnit(army: Army, type: string, x: number, y: number, item?: string): Unit {
     const unit: Unit = {
       id: this.#nextId++,
       kind: EntityKind.Unit,
@@ -307,6 +319,7 @@ export class World {
       fighting: false,
       group: undefined,
       returning: false,
+      item,
     };
     army.units.add(unit);
     this.#add(unit);
@@ -384,6 +397,7 @@ export class World {
     killer: Army | undefined,
     x: number,
     y: number,
+    item?: string,
   ): Corpse {
     const corpse: Corpse = {
       id: this.#nextId++,
@@ -393,6 +407,8 @@ export class World {
       killer,
       group: undefined,
       diedAt: this.time,
+      sacred: false,
+      item,
       x: this.clampX(x),
       y: this.clampY(y),
     };

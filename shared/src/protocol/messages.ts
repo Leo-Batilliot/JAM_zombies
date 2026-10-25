@@ -55,13 +55,13 @@ export enum EntityFlag {
   Abandoned = 16,
 }
 
-export const sizeShift = 5;
-export const maxSizeLevel = 7;
+export const levelShift = 5;
+export const maxFlagLevel = 7;
 
-export const sizeFlags = (level: number): number =>
-  Math.min(Math.max(Math.floor(level), 0), maxSizeLevel) << sizeShift;
+export const levelFlags = (level: number): number =>
+  Math.min(Math.max(Math.floor(level), 0), maxFlagLevel) << levelShift;
 
-export const sizeLevel = (flags: number): number => flags >> sizeShift;
+export const flagLevel = (flags: number): number => flags >> levelShift;
 
 export enum BattleFlag {
   InBattle = 1,

@@ -11,9 +11,9 @@ import {
   decodeServerMessage,
   encodeClientMessage,
   encodeServerMessage,
-  maxSizeLevel,
-  sizeFlags,
-  sizeLevel,
+  maxFlagLevel,
+  levelFlags,
+  flagLevel,
   type ClientMessage,
   type ServerMessage,
 } from "../../src/protocol/messages.js";
@@ -119,6 +119,8 @@ const serverMessages: ServerMessage[] = [
         retreatKey: "r",
         sizeScaleStep: 0.25,
         aggroPulseMs: 900,
+        lootMs: 2500,
+        minimapSize: 110,
       },
       world: {
         width: 400,
@@ -128,11 +130,28 @@ const serverMessages: ServerMessage[] = [
           scattered: [{ sprite: "decor-tree", count: 3 }],
           fixed: [{ sprite: "decor-winchester", x: 10, y: 20 }],
         },
+        crosses: {
+          count: 2,
+          radius: 6,
+          threshold: 40,
+          rechargeSec: 60,
+          spacing: 50,
+          lifetimeSec: { min: 480, max: 720 },
+        },
       },
       network: { tickRate: 20, interpolationDelayMs: 100 },
       gameplay: { riseSec: 0.8 },
       content: {
-        units: ["zombie"],
+        units: [
+          {
+            id: "zombie",
+            name: "Zombie",
+            equipment: "melee",
+            evolutions: [{ into: "big-zombie", cost: 5 }],
+          },
+          { id: "big-zombie", name: "Big zombie", evolutions: [] },
+        ],
+        items: [{ id: "shovel", name: "Shovel", category: "melee" }],
         npcs: ["civilian"],
         pointsOfInterest: ["mass-grave"],
         events: [{ id: "pumpkin", name: "the Evil Pumpkin" }],
@@ -267,10 +286,10 @@ describe("server messages", () => {
 
 describe("size level", () => {
   test("is stored above the other flags and capped", () => {
-    expect(sizeLevel(sizeFlags(3) | EntityFlag.Searched)).toBe(3);
-    expect(sizeFlags(3) & 0x1f).toBe(0);
-    expect(sizeLevel(sizeFlags(99))).toBe(maxSizeLevel);
-    expect(sizeFlags(-1)).toBe(0);
+    expect(flagLevel(levelFlags(3) | EntityFlag.Searched)).toBe(3);
+    expect(levelFlags(3) & 0x1f).toBe(0);
+    expect(flagLevel(levelFlags(99))).toBe(maxFlagLevel);
+    expect(levelFlags(-1)).toBe(0);
   });
 });
 

@@ -20,6 +20,7 @@ const unit = (
   strength: number,
   evolutions: { into: string; cost: number }[] = [],
 ) => ({
+  name: "Unit",
   strength,
   rank: "front" as const,
   speed: 1,
@@ -160,5 +161,63 @@ describe("buildRegistries", () => {
         withUnits({ units: {}, npcs: { civilian: npc("zombie") } }),
       ),
     ).toThrow(/civilian[\s\S]*zombie/);
+  });
+});
+
+describe("equipment references", () => {
+  test("fails on a loot table with an unknown item", () => {
+    const config = loadSharedConfig();
+    const car = config.world.pointsOfInterest["car"];
+    if (car !== undefined) {
+      car.loot = [{ item: "laser", weight: 1 }];
+    }
+    expect(() => buildRegistries(config)).toThrow(/car[\s\S]*laser/);
+  });
+
+  test("fails on an item reward without loot", () => {
+    const config = loadSharedConfig();
+    delete config.world.pointsOfInterest["car"]?.loot;
+    expect(() => buildRegistries(config)).toThrow(/"car" has no loot/);
+  });
+
+  test("fails on an unknown legendary boss reward", () => {
+    const config = loadSharedConfig();
+    const pumpkin = config.events.events["pumpkin"];
+    if (pumpkin !== undefined) {
+      pumpkin.rewardLegendary = "laser";
+    }
+    expect(() => buildRegistries(config)).toThrow(/pumpkin[\s\S]*laser/);
+  });
+
+  test("fails when a category has more items than the snapshot can tell", () => {
+    const config = loadSharedConfig();
+    for (let index = 0; index < 8; index++) {
+      config.equipment.items[`spoon-${String(index)}`] = {
+        name: "Spoon",
+        category: "melee",
+        rarity: "common",
+        damage: 1,
+      };
+    }
+    expect(() => buildRegistries(config)).toThrow(/Category "melee"/);
+  });
+
+  test("an item rarity must be listed", () => {
+    const raw = loadSharedConfig();
+    const result = configSchema.safeParse({
+      ...raw,
+      equipment: {
+        ...raw.equipment,
+        items: {
+          spoon: {
+            name: "Spoon",
+            category: "melee",
+            rarity: "epic",
+            damage: 1,
+          },
+        },
+      },
+    });
+    expect(result.success).toBe(false);
   });
 });

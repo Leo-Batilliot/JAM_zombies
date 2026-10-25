@@ -2,9 +2,10 @@ import {
   EntityFlag,
   EntityKind,
   neutralArmy,
-  sizeFlags,
+  levelFlags,
   type SnapshotEntity,
 } from "@horde/shared";
+import { corpseDelay } from "../systems/reanimation.js";
 import type { Army, Entity, World } from "../world/world.js";
 
 export interface View {
@@ -51,8 +52,7 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
         (entity.group === undefined ? 0 : EntityFlag.Abandoned)
       );
     case EntityKind.Corpse:
-      return world.time - entity.diedAt >=
-        world.config.gameplay.reanimation.delaySec
+      return world.time - entity.diedAt >= corpseDelay(world, entity)
         ? EntityFlag.Waiting
         : 0;
     case EntityKind.Npc:
@@ -60,7 +60,7 @@ const flags = (world: World, entity: Entity, viewer: Army): number => {
     case EntityKind.PointOfInterest:
       return (
         (entity.searchedBy.has(viewer) ? EntityFlag.Searched : 0) |
-        sizeFlags(Math.log2(Math.max(1, entity.corpses.length)))
+        levelFlags(Math.log2(Math.max(1, entity.corpses.length)))
       );
     default:
       return 0;

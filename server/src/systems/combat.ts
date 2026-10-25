@@ -1,6 +1,7 @@
 import type { World } from "../world/world.js";
 import { bodyRadius, distance } from "./bodies.js";
 import { damage } from "./death.js";
+import { damageBonus } from "./equipment.js";
 import { currentTarget, type Target } from "./targeting.js";
 import type { Unit } from "../world/world.js";
 
@@ -26,7 +27,7 @@ export const fight = (world: World, dt: number): void => {
       }
       const stats = world.registries.units.get(unit.type);
       unit.cooldown = stats.attackIntervalSec;
-      damage(world, target, stats.damage, army);
+      damage(world, target, stats.damage * damageBonus(world, unit), army);
     }
   }
 };

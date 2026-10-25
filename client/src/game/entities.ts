@@ -3,7 +3,7 @@ import {
   EntityFlag,
   EntityKind,
   neutralArmy,
-  sizeLevel,
+  flagLevel,
   type SnapshotEntity,
 } from "@horde/shared";
 import type { Connection } from "../net/connection.js";
@@ -184,7 +184,7 @@ export class EntityLayer {
     const { client, content } = this.connection.config;
     view.aura.visible = false;
     view.body.texture = this.#texture(spriteName(entity, content));
-    view.body.scale.set(1 + sizeLevel(entity.flags) * client.sizeScaleStep);
+    view.body.scale.set(1 + flagLevel(entity.flags) * client.sizeScaleStep);
     view.body.alpha =
       (entity.flags & EntityFlag.Searched) !== 0 ? searchedAlpha : 1;
     view.extra.visible =

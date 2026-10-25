@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { EntityFlag, EntityKind, sizeLevel } from "@horde/shared";
+import { EntityFlag, EntityKind, flagLevel } from "@horde/shared";
 import { visibleEntities } from "../../src/net/interest.js";
 import { createMassGrave } from "../../src/systems/points.js";
 import { createBench } from "../support/bench.js";
@@ -132,7 +132,10 @@ describe("mass grave size", () => {
         world,
         101,
         100,
-        new Array<string>(count).fill("zombie"),
+        Array.from({ length: count }, () => ({
+          type: "zombie",
+          item: undefined,
+        })),
       );
       const entity = visibleEntities(world, army, viewAround).find(
         (candidate) => candidate.id === grave?.id,
@@ -140,7 +143,7 @@ describe("mass grave size", () => {
       if (grave !== undefined) {
         world.removeEntity(grave);
       }
-      return sizeLevel(entity?.flags ?? 0);
+      return flagLevel(entity?.flags ?? 0);
     };
     expect(level(1)).toBe(0);
     expect(level(3)).toBe(1);

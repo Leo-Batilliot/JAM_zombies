@@ -41,7 +41,11 @@ describe("frameAt", () => {
 
 describe("spriteName", () => {
   const content = {
-    units: ["zombie", "fat-zombie"],
+    units: [
+      { id: "zombie", name: "Zombie", evolutions: [] },
+      { id: "fat-zombie", name: "Fat zombie", evolutions: [] },
+    ],
+    items: [],
     npcs: ["civilian"],
     pointsOfInterest: ["mass-grave"],
     events: [],

@@ -58,7 +58,58 @@
         "max": 240
       },
       "reward": "corpses"
+    },
+    "car": {
+      "count": 10,
+      "radius": 3,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 120,
+        "max": 240
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "shovel",
+          "weight": 70
+        },
+        {
+          "item": "cricket-bat",
+          "weight": 30
+        }
+      ]
+    },
+    "chest": {
+      "count": 5,
+      "radius": 2.5,
+      "searchSec": 2,
+      "lifetimeSec": {
+        "min": 120,
+        "max": 240
+      },
+      "reward": "items",
+      "loot": [
+        {
+          "item": "cricket-bat",
+          "weight": 85
+        },
+        {
+          "item": "chainsaw",
+          "weight": 15
+        }
+      ]
     }
   },
-  "massGrave": "mass-grave"
+  "massGrave": "mass-grave",
+  "crosses": {
+    "count": 8,
+    "radius": 6,
+    "threshold": 40,
+    "rechargeSec": 60,
+    "spacing": 60,
+    "lifetimeSec": {
+      "min": 480,
+      "max": 720
+    }
+  }
 }

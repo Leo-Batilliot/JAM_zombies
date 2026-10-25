@@ -53,5 +53,7 @@
   },
   "retreatKey": "r",
   "sizeScaleStep": 0.25,
-  "aggroPulseMs": 900
+  "aggroPulseMs": 900,
+  "lootMs": 2500,
+  "minimapSize": 110
 }

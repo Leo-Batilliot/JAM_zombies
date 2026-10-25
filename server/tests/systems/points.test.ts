@@ -12,7 +12,10 @@ describe("searching a point of interest", () => {
       });
     });
     const army = addArmy(100, 100);
-    createMassGrave(world, 101, 100, ["zombie", "zombie"]);
+    createMassGrave(world, 101, 100, [
+      { type: "zombie", item: undefined },
+      { type: "zombie", item: undefined },
+    ]);
     step(config.network.tickRate);
     expect(army.units.size).toBe(0);
     step(config.network.tickRate + 1);
@@ -22,7 +25,7 @@ describe("searching a point of interest", () => {
   test("does nothing out of range", () => {
     const { config, world, addArmy, step } = createBench();
     const army = addArmy(100, 100);
-    createMassGrave(world, 120, 100, ["zombie"]);
+    createMassGrave(world, 120, 100, [{ type: "zombie", item: undefined }]);
     step(config.network.tickRate * 5);
     expect(army.units.size).toBe(0);
     expect(army.search).toBeUndefined();
@@ -35,7 +38,7 @@ describe("searching a point of interest", () => {
       });
     });
     const army = addArmy(100, 100);
-    createMassGrave(world, 101, 100, ["zombie"]);
+    createMassGrave(world, 101, 100, [{ type: "zombie", item: undefined }]);
     step(config.network.tickRate * 1.5);
     damage(world, army.mage, 1, undefined);
     step();
@@ -49,7 +52,9 @@ describe("searching a point of interest", () => {
   test("an army never searches the same point twice", () => {
     const { config, world, addArmy, step } = createBench();
     const army = addArmy(100, 100);
-    const point = createMassGrave(world, 101, 100, ["zombie"]);
+    const point = createMassGrave(world, 101, 100, [
+      { type: "zombie", item: undefined },
+    ]);
     point?.searchedBy.add(army);
     step(config.network.tickRate * 3);
     expect(army.search).toBeUndefined();
@@ -80,7 +85,10 @@ describe("mass grave", () => {
     const { config, world, addArmy, step } = createBench();
     const first = addArmy(100, 100);
     const second = addArmy(101, 101);
-    const grave = createMassGrave(world, 100.5, 100.5, ["zombie", "zombie"]);
+    const grave = createMassGrave(world, 100.5, 100.5, [
+      { type: "zombie", item: undefined },
+      { type: "zombie", item: undefined },
+    ]);
     step(config.network.tickRate * 3);
     expect(first.units.size + second.units.size).toBe(2);
     expect(world.points.has(grave as never)).toBe(false);
@@ -95,7 +103,7 @@ describe("mass grave", () => {
   test("raised units come with the rising flag time", () => {
     const { config, world, addArmy, step } = createBench();
     const army = addArmy(100, 100);
-    createMassGrave(world, 100, 100, ["zombie"]);
+    createMassGrave(world, 100, 100, [{ type: "zombie", item: undefined }]);
     step(config.network.tickRate * 3);
     expect([...army.units][0]?.raisedAt).toBeGreaterThan(0);
   });

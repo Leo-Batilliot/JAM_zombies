@@ -1,6 +1,8 @@
 {
   "units": {
     "zombie": {
+      "name": "Zombie",
+      "equipment": "melee",
       "strength": 1,
       "rank": "front",
       "speed": 7,
@@ -9,6 +11,25 @@
       "damage": 5,
       "attackIntervalSec": 1,
       "attackRange": 0.3,
+      "aggroRange": 8,
+      "evolutions": [
+        {
+          "into": "big-zombie",
+          "cost": 5
+        }
+      ]
+    },
+    "big-zombie": {
+      "name": "Big zombie",
+      "equipment": "melee",
+      "strength": 5,
+      "rank": "front",
+      "speed": 6.5,
+      "radius": 0.7,
+      "hp": 180,
+      "damage": 20,
+      "attackIntervalSec": 1.2,
+      "attackRange": 0.4,
       "aggroRange": 8,
       "evolutions": []
     }

@@ -1,4 +1,5 @@
 import type { Config } from "./config/schema.js";
+import { maxFlagLevel } from "./protocol/messages.js";
 
 export class RegistryError extends Error {
   override name = "RegistryError";
@@ -71,6 +72,44 @@ const checkReference = (
   }
 };
 
+const checkLoot = (
+  registries: Registries,
+  loot: { item: string }[],
+  source: string,
+): void => {
+  for (const { item } of loot) {
+    checkReference(registries.items, item, source);
+  }
+};
+
+const checkItems = (registries: Registries): void => {
+  const perCategory = new Map<string, number>();
+  for (const [, item] of registries.items.entries()) {
+    perCategory.set(item.category, (perCategory.get(item.category) ?? 0) + 1);
+  }
+  for (const [category, count] of perCategory) {
+    if (count > maxFlagLevel) {
+      throw new RegistryError(
+        `Category "${category}" has more than ${String(maxFlagLevel)} items`,
+      );
+    }
+  }
+  for (const [pointId, point] of registries.pointsOfInterest.entries()) {
+    if (point.reward === "items" && point.loot === undefined) {
+      throw new RegistryError(`Point of interest "${pointId}" has no loot`);
+    }
+    checkLoot(registries, point.loot ?? [], `Loot of "${pointId}"`);
+  }
+  for (const [eventId, event] of registries.events.entries()) {
+    checkLoot(registries, event.rewardLoot, `Reward of event "${eventId}"`);
+    checkReference(
+      registries.items,
+      event.rewardLegendary,
+      `Legendary reward of event "${eventId}"`,
+    );
+  }
+};
+
 export const buildRegistries = (config: Config): Registries => {
   const registries: Registries = {
     units: new Registry("unit", config.units.units),
@@ -116,6 +155,7 @@ export const buildRegistries = (config: Config): Registries => {
     config.world.massGrave,
     "Mass grave",
   );
+  checkItems(registries);
   for (const { unit } of config.gameplay.army.startingUnits) {
     checkReference(registries.units, unit, "Starting army");
   }

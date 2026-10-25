@@ -1,6 +1,13 @@
 import { EntityKind } from "@horde/shared";
 import { farPoint } from "../world/spawn.js";
-import type { Army, Corpse, Mage, Unit, World } from "../world/world.js";
+import type {
+  Army,
+  Corpse,
+  Mage,
+  Remains,
+  Unit,
+  World,
+} from "../world/world.js";
 import { addStartingUnits } from "./army.js";
 import { distance } from "./bodies.js";
 import { createMassGrave } from "./points.js";
@@ -25,14 +32,14 @@ const handOver = (world: World, army: Army, killer: Army | undefined): void => {
   const kept = Math.round(
     remains.length * world.config.gameplay.transfer.share,
   );
-  const grave: string[] = [];
+  const grave: Remains[] = [];
   remains.forEach((remain, index) => {
     const to =
       remain.kind === EntityKind.Unit
         ? heir
         : (receiver(world, remain.killer, army) ?? heir);
     if (index >= kept || to === undefined) {
-      grave.push(remain.type);
+      grave.push({ type: remain.type, item: remain.item });
       world.removeEntity(remain);
     } else if (remain.kind === EntityKind.Unit) {
       transferUnit(remain, to);
@@ -59,6 +66,7 @@ export const killMage = (
   army.level = 1;
   army.focusId = undefined;
   army.search = undefined;
+  army.inventory = [];
 };
 
 export const damageMage = (

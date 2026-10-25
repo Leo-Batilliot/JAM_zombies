@@ -39,7 +39,7 @@ export const spriteName = (
     case EntityKind.Mage:
       return "mage";
     case EntityKind.Unit:
-      return `unit-${content.units[entity.type] ?? ""}`;
+      return `unit-${content.units[entity.type]?.id ?? ""}`;
     case EntityKind.Npc:
       return `npc-${content.npcs[entity.type] ?? ""}`;
     case EntityKind.Corpse:
