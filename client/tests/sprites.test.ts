@@ -53,6 +53,10 @@ describe("spriteName", () => {
     projectiles: ["arrow"],
     mists: [{ id: "necrotic", radius: 12 }],
     formations: [],
+    skins: [
+      { id: "necromancer", name: "Necromancer" },
+      { id: "lich", name: "Lich" },
+    ],
   };
   const entity = { id: 1, type: 1, army: 1, flags: 0, x: 0, y: 0 };
 
@@ -77,10 +81,13 @@ describe("spriteName", () => {
     ).toBe("poi-mass-grave");
   });
 
-  test("names the mage", () => {
+  test("names the mage after its skin", () => {
     expect(spriteName({ ...entity, kind: EntityKind.Mage }, content)).toBe(
-      "mage",
+      "mage-lich",
     );
+    expect(
+      spriteName({ ...entity, type: 9, kind: EntityKind.Mage }, content),
+    ).toBe("mage-necromancer");
   });
 });
 
@@ -101,6 +108,10 @@ describe("gearName", () => {
     projectiles: ["arrow"],
     mists: [{ id: "necrotic", radius: 12 }],
     formations: [],
+    skins: [
+      { id: "necromancer", name: "Necromancer" },
+      { id: "lich", name: "Lich" },
+    ],
   };
   const unit = { id: 1, kind: EntityKind.Unit, army: 1, x: 0, y: 0 };
 

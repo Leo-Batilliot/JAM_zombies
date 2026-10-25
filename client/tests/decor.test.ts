@@ -20,6 +20,19 @@ const world = {
     spacing: 50,
     lifetimeSec: { min: 480, max: 720 },
   },
+  bombings: {
+    name: "the bombing",
+    firstDelaySec: 150,
+    intervalSec: { min: 75, max: 120 },
+    zones: 3,
+    radius: 7,
+    spread: 5,
+    delaySec: 10,
+    blastSec: 0.6,
+    damage: 20,
+    crowding: 0.03,
+    maxMultiplier: 3,
+  },
 };
 
 describe("placeDecor", () => {

@@ -21,6 +21,7 @@ const content = {
   projectiles: [],
   mists: [],
   formations: [],
+  skins: [],
 };
 
 describe("evolutionOptions", () => {

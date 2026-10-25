@@ -32,13 +32,17 @@ export const frameAt = <T>(
 ): T | undefined =>
   frames[Math.floor(Math.max(time, 0) / frameMs) % frames.length];
 
+export const skinSprite = (id: string): string => `mage-${id}`;
+
 export const spriteName = (
   entity: SnapshotEntity,
   content: ClientConfig["content"],
 ): string => {
   switch (entity.kind) {
     case EntityKind.Mage:
-      return "mage";
+      return skinSprite(
+        (content.skins[entity.type] ?? content.skins[0])?.id ?? "",
+      );
     case EntityKind.Unit:
       return `unit-${content.units[entity.type]?.id ?? ""}`;
     case EntityKind.Npc:
@@ -55,6 +59,8 @@ export const spriteName = (
       return `mist-${content.mists[entity.type]?.id ?? ""}`;
     case EntityKind.Camp:
       return "camp";
+    case EntityKind.Bombing:
+      return "bombing";
   }
 };
 

@@ -2,6 +2,8 @@ import { describe, expect, test } from "vitest";
 import {
   EntityFlag,
   EntityKind,
+  levelFlags,
+  maxFlagLevel,
   neutralArmy,
   type SnapshotEntity,
 } from "@horde/shared";
@@ -93,5 +95,24 @@ describe("CueTracker", () => {
     const rising = entity(1, { flags: EntityFlag.Rising });
     expect(tracker.read([rising], view).rises).toBe(1);
     expect(tracker.read([rising], view).rises).toBe(0);
+  });
+
+  test("reports each visible blast once, not the countdown", () => {
+    const tracker = new CueTracker();
+    const bombing = {
+      kind: EntityKind.Bombing,
+      army: neutralArmy,
+      flags: levelFlags(3),
+    };
+    expect(tracker.read([entity(1, bombing)], view).blasts).toBe(0);
+    const blast = entity(1, { ...bombing, flags: levelFlags(maxFlagLevel) });
+    expect(tracker.read([blast], view).blasts).toBe(1);
+    expect(tracker.read([blast], view).blasts).toBe(0);
+    const far = entity(2, {
+      ...bombing,
+      flags: levelFlags(maxFlagLevel),
+      x: 50,
+    });
+    expect(tracker.read([far], view).blasts).toBe(0);
   });
 });

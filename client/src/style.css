@@ -123,6 +123,59 @@ body {
   color: var(--danger);
 }
 
+.home .skins {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.home .skins button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.4rem 0.6rem;
+  border: 2px solid var(--panel);
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.home .skins button.selected {
+  border-color: var(--accent-light);
+  color: var(--text);
+}
+
+.home .skins canvas {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+}
+
+.home .watch {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.9rem;
+  border-color: var(--muted);
+  background: transparent;
+  color: var(--muted);
+}
+
+@media (max-height: 480px) {
+  .home {
+    gap: 0.5rem;
+  }
+
+  .home h1 {
+    font-size: 2rem;
+  }
+
+  .home .skins canvas {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 #rotate {
   display: none;
 }
@@ -233,6 +286,20 @@ body.share p {
 .hud-army {
   margin-top: 0.3rem;
   color: var(--muted);
+}
+
+.hud.watching .hud-line,
+.hud.watching .hud-army {
+  display: none;
+}
+
+.hud-watch {
+  font-weight: bold;
+  color: var(--accent-light);
+}
+
+.hud-watch[hidden] {
+  display: none;
 }
 
 .hud-board {

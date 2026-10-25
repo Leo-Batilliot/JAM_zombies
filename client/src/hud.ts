@@ -8,6 +8,7 @@ export class Hud {
   readonly #hpText: HTMLElement;
   readonly #level: HTMLElement;
   readonly #army: HTMLElement;
+  readonly #watch: HTMLElement;
   readonly #rank: HTMLElement;
   readonly #rows: HTMLOListElement;
   #status: Status | undefined;
@@ -21,6 +22,7 @@ export class Hud {
           <div class="hud-hp"><div class="hud-hp-fill"></div><span></span></div>
         </div>
         <div class="hud-army"></div>
+        <div class="hud-watch" hidden></div>
       </section>
       <section class="hud-board">
         <div class="hud-rank"></div>
@@ -34,6 +36,7 @@ export class Hud {
     this.#hpText = find(".hud-hp span");
     this.#level = find(".hud-level");
     this.#army = find(".hud-army");
+    this.#watch = find(".hud-watch");
     this.#rank = find(".hud-rank");
     this.#rows = find(".hud-board ol") as HTMLOListElement;
   }
@@ -47,8 +50,17 @@ export class Hud {
     this.#army.textContent = `${String(status.units)} units · strength ${String(status.strength)}`;
   }
 
+  setWatching(name: string): void {
+    this.element.classList.add("watching");
+    this.#watch.hidden = false;
+    this.#watch.textContent = name === "" ? "Watching" : `Watching ${name}`;
+  }
+
   setLeaderboard(leaderboard: Leaderboard): void {
-    this.#rank.textContent = `Rank ${String(leaderboard.rank)} / ${String(leaderboard.total)}`;
+    this.#rank.textContent =
+      leaderboard.rank === 0
+        ? `${String(leaderboard.total)} players`
+        : `Rank ${String(leaderboard.rank)} / ${String(leaderboard.total)}`;
     const rows = leaderboardRows(
       leaderboard,
       this.#status?.army,

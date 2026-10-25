@@ -263,7 +263,10 @@ export class EntityLayer {
     const scale = 1 / this.connection.config.client.pixelsPerMeter;
     this.#seen.clear();
     for (const entity of entities) {
-      if (entity.kind === EntityKind.Mist) {
+      if (
+        entity.kind === EntityKind.Mist ||
+        entity.kind === EntityKind.Bombing
+      ) {
         continue;
       }
       this.#seen.add(entity.id);
