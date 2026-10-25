@@ -32,6 +32,7 @@ import { MapLayer } from "./map.js";
 import { ClickMarker } from "./marker.js";
 import { MistLayer } from "./mists.js";
 import { entityLights, NightLayer, SlowFrames } from "./night.js";
+import { EffectLayer } from "./effects.js";
 import { buildOutlines } from "./outlines.js";
 import { pickEnemy } from "./picking.js";
 import { armyHex } from "./sprites.js";
@@ -92,12 +93,14 @@ export const startGame = async (
   const searchBar = new SearchBar();
   const mists = new MistLayer();
   const bombings = new BombingLayer();
+  const effects = new EffectLayer();
   world.addChild(
     map.container,
     crosses.container,
     bombings.graphics,
     marker.graphics,
     entities.container,
+    effects.graphics,
     plates.container,
     mists.graphics,
     searchBar.graphics,
@@ -330,6 +333,8 @@ export const startGame = async (
       slowFrames.degraded,
     );
     entities.update(frame, view, now, self?.army);
+    effects.watch(frame, config(), self, status?.level, now);
+    effects.update(now);
     plates.update(frame, self?.army, config());
     crosses.update(frame, status?.crosses ?? [], config().world.crosses, scale);
     searchBar.update(status?.search ?? 0, self);

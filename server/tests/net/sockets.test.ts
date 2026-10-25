@@ -157,9 +157,9 @@ describe("playing", () => {
     const client = await joined();
     client.send({ type: ClientMessageType.View, width: 80, height: 45 });
     const army = [...bench.world.armies.values()][0];
-    client.send({ type: ClientMessageType.Move, x: 0, y: 0 });
+    client.send({ type: ClientMessageType.Move, x: 20, y: 30 });
     await vi.waitFor(() => {
-      expect(army?.mage.targetX).toBe(0);
+      expect(army?.mage.targetX).toBeCloseTo(20, 1);
     });
     bench.step();
     sockets.sendSnapshots();

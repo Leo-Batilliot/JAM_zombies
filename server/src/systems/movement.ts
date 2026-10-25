@@ -27,8 +27,9 @@ export const setMageTarget = (
   x: number,
   y: number,
 ): void => {
-  mage.targetX = world.clampX(x);
-  mage.targetY = world.clampY(y);
+  const free = world.freePoint(x, y, world.config.world.city.clearance);
+  mage.targetX = free.x;
+  mage.targetY = free.y;
   aimFormation(world, mage.army, mage.targetX - mage.x, mage.targetY - mage.y);
 };
 

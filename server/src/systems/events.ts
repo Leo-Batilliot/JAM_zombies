@@ -144,6 +144,7 @@ export const runEvents = (world: World): void => {
         world,
         (px, py) => distanceToMages(world, px, py),
         event.safeDistance,
+        event.districts,
       );
       startEvent(world, type, x, y);
     }

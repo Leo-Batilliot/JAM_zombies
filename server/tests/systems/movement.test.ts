@@ -23,13 +23,14 @@ describe("mage movement", () => {
     expect(mage.y).toBe(101);
   });
 
-  test("stops at the edges of the map", () => {
+  test("stops at the edges of the map, keeping clear of them", () => {
     const { config, world, addArmy, step } = createBench();
+    const { clearance } = config.world.city;
     const { mage } = addArmy(10, 10);
     setMageTarget(world, mage, -500, config.world.height + 500);
     step(10000);
-    expect(mage.x).toBe(0);
-    expect(mage.y).toBe(config.world.height);
+    expect(mage.x).toBe(clearance);
+    expect(mage.y).toBe(config.world.height - clearance);
   });
 
   test("keeps the grid in sync", () => {

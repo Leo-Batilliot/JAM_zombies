@@ -194,24 +194,7 @@
     {
       "kind": "legacy",
       "file": "legacy/atlas.json",
-      "drop": [
-        "unit-zombie-",
-        "unit-big-zombie-",
-        "unit-flesh-golem-",
-        "unit-skeleton-archer-",
-        "unit-skeleton-crossbowman-",
-        "unit-mastiff-",
-        "unit-cerberus-",
-        "unit-zombie-dog-",
-        "npc-civilian-",
-        "npc-hunter-",
-        "npc-soldier-",
-        "npc-guard-dog-",
-        "mage-necromancer-",
-        "mage-lich-",
-        "mage-witch-",
-        "mage-plague-doctor-"
-      ]
+      "drop": ["unit-zombie-", "unit-big-zombie-", "unit-flesh-golem-", "unit-skeleton-archer-", "unit-skeleton-crossbowman-", "unit-mastiff-", "unit-cerberus-", "unit-zombie-dog-", "npc-civilian-", "npc-hunter-", "npc-soldier-", "npc-guard-dog-", "mage-necromancer-", "mage-lich-", "mage-witch-", "mage-plague-doctor-"]
     },
     {
       "kind": "character",
@@ -324,12 +307,7 @@
         "shoot": "BODY_animation",
         "thrust": "BODY_animation"
       },
-      "layers": [
-        "BEHIND_quiver",
-        "BODY_skeleton",
-        "WEAPON_bow",
-        "WEAPON_arrow"
-      ],
+      "layers": ["BEHIND_quiver", "BODY_skeleton", "WEAPON_bow", "WEAPON_arrow"],
       "anims": {
         "walk": "walk",
         "attack": "shoot",
@@ -350,15 +328,7 @@
         "shoot": "BODY_animation",
         "thrust": "BODY_animation"
       },
-      "layers": [
-        "BEHIND_quiver",
-        "BODY_skeleton",
-        "HEAD_chain_armor_helmet",
-        "TORSO_chain_armor_torso",
-        "WEAPON_shield_cutout_body",
-        "WEAPON_bow",
-        "WEAPON_arrow"
-      ],
+      "layers": ["BEHIND_quiver", "BODY_skeleton", "HEAD_chain_armor_helmet", "TORSO_chain_armor_torso", "WEAPON_shield_cutout_body", "WEAPON_bow", "WEAPON_arrow"],
       "anims": {
         "walk": "walk",
         "attack": "shoot",
@@ -698,13 +668,7 @@
         "shoot": "BODY_animation",
         "thrust": "BODY_animation"
       },
-      "layers": [
-        "BODY",
-        "FEET_shoes_brown",
-        "LEGS_pants_greenish",
-        "TORSO_leather_armor_shirt_white",
-        "HEAD_hair_blonde"
-      ],
+      "layers": ["BODY", "FEET_shoes_brown", "LEGS_pants_greenish", "TORSO_leather_armor_shirt_white", "HEAD_hair_blonde"],
       "anims": {
         "walk": "walk",
         "death": "hurt"
@@ -724,18 +688,7 @@
         "shoot": "BODY_animation",
         "thrust": "BODY_animation"
       },
-      "layers": [
-        "BEHIND_quiver",
-        "BODY",
-        "FEET_shoes_brown",
-        "LEGS_pants_greenish",
-        "TORSO_leather_armor_torso",
-        "TORSO_leather_armor_bracers",
-        "BELT_leather",
-        "HEAD_leather_armor_hat",
-        "WEAPON_bow",
-        "WEAPON_arrow"
-      ],
+      "layers": ["BEHIND_quiver", "BODY", "FEET_shoes_brown", "LEGS_pants_greenish", "TORSO_leather_armor_torso", "TORSO_leather_armor_bracers", "BELT_leather", "HEAD_leather_armor_hat", "WEAPON_bow", "WEAPON_arrow"],
       "anims": {
         "walk": "walk",
         "attack": "shoot",
@@ -756,15 +709,7 @@
         "shoot": "BODY_animation",
         "thrust": "BODY_animation"
       },
-      "layers": [
-        "BODY",
-        "FEET_plate_armor_shoes",
-        "LEGS_plate_armor_pants",
-        "TORSO_chain_armor_torso",
-        "BELT_leather",
-        "HEAD_chain_armor_helmet",
-        "WEAPON_spear"
-      ],
+      "layers": ["BODY", "FEET_plate_armor_shoes", "LEGS_plate_armor_pants", "TORSO_chain_armor_torso", "BELT_leather", "HEAD_chain_armor_helmet", "WEAPON_spear"],
       "anims": {
         "walk": "walk",
         "attack": "thrust",
@@ -1207,6 +1152,32 @@
       },
       "recolor": [
         "night-stone",
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/medieval-village-decorations/decorations-medieval.png",
+      "rects": {
+        "cross": [0, 0, 32, 64]
+      },
+      "recolor": [
+        "normalize",
+        {
+          "op": "outline"
+        }
+      ]
+    },
+    {
+      "kind": "image",
+      "file": "lpc/medieval-village-decorations/fence_medieval.png",
+      "rects": {
+        "camp": [192, 384, 64, 64]
+      },
+      "recolor": [
         "normalize",
         {
           "op": "outline"

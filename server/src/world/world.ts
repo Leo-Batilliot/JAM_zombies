@@ -408,6 +408,16 @@ export class World {
     return this.random() < 0.5 ? { x: line, y: along } : { x: along, y: line };
   }
 
+  freePoint(x: number, y: number, radius: number): { x: number; y: number } {
+    const { width, height, city } = this.config.world;
+    const margin = Math.min(city.border + radius, width / 2, height / 2);
+    const inside = {
+      x: clamp(x, margin, width - margin),
+      y: clamp(y, margin, height - margin),
+    };
+    return this.obstacles.resolve(inside.x, inside.y, radius) ?? inside;
+  }
+
   randomPoint(tags?: string[]): { x: number; y: number } {
     const { spawnAttempts } = this.config.world;
     const { clearance } = this.config.world.city;
@@ -418,8 +428,7 @@ export class World {
       }
       point = this.#candidate(tags);
     }
-    const free = this.obstacles.resolve(point.x, point.y, clearance) ?? point;
-    return { x: this.clampX(free.x), y: this.clampY(free.y) };
+    return this.freePoint(point.x, point.y, clearance);
   }
 
   randomNear(x: number, y: number, radius: number): { x: number; y: number } {

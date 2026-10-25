@@ -35,6 +35,20 @@ describe("World", () => {
     }
   });
 
+  test("keeps free points inside the ramparts and out of buildings", () => {
+    const config = loadConfig(sharedConfigDir);
+    const world = new World(config, buildRegistries(config), seededRandom(5));
+    const { border } = config.world.city;
+    const edge = world.freePoint(1, config.world.height / 2, 1);
+    expect(edge.x).toBeGreaterThanOrEqual(border + 1);
+    for (const obstacle of world.city.obstacles) {
+      const x = obstacle.x + obstacle.width / 2;
+      const y = obstacle.y + obstacle.height / 2;
+      const free = world.freePoint(x, y, 1);
+      expect(world.obstacles.isFree(free.x, free.y, 0.99)).toBe(true);
+    }
+  });
+
   test("gives each entity its own id and indexes it in the grid", () => {
     const { world, addArmy } = createBench();
     const first = addArmy(10, 10);

@@ -289,6 +289,12 @@ const checkCity = (config: Config): void => {
       ],
     ),
     ["Camps", config.world.camps.districts],
+    ...Object.entries(config.events.events).map(
+      ([eventId, event]): [string, string[] | undefined] => [
+        `Event "${eventId}"`,
+        event.districts,
+      ],
+    ),
   ];
   for (const [source, districts] of sources) {
     for (const tag of districts ?? []) {

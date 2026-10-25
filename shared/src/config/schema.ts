@@ -456,6 +456,7 @@ const eventsSchema = z.strictObject({
       intervalSec: z.number().positive(),
       lifetimeSec: z.number().positive(),
       safeDistance: z.number().nonnegative(),
+      districts: z.array(id).optional(),
       summonIntervalSec: z.number().positive(),
       summonCount: z.int().nonnegative(),
       maxMinions: z.int().nonnegative(),
@@ -574,6 +575,13 @@ const obstacleLookSchema = z.union([
   }),
 ]);
 
+const ringSchema = z.strictObject({
+  color,
+  radius: z.number().positive(),
+  width: z.number().positive(),
+  durationMs: z.int().positive(),
+});
+
 const cityLookSchema = z.strictObject({
   tilePixels: z.int().positive(),
   edge: color,
@@ -691,6 +699,10 @@ export const clientSettingsSchema = z.strictObject({
   ),
   cardArtScale: z.number().positive(),
   city: cityLookSchema,
+  effects: z.strictObject({
+    fusion: ringSchema,
+    levelUp: ringSchema,
+  }),
   night: z.strictObject({
     color,
     alpha: fraction,

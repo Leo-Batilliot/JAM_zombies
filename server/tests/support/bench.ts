@@ -50,6 +50,9 @@ export const createBench = (
     delete point.districts;
   }
   delete config.world.camps.districts;
+  for (const event of Object.values(config.events.events)) {
+    delete event.districts;
+  }
   for (const mist of Object.values(config.world.mists)) {
     mist.count = 0;
   }

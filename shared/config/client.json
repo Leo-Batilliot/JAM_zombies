@@ -360,5 +360,19 @@
     },
     "minFps": 28,
     "slowSec": 6
+  },
+  "effects": {
+    "fusion": {
+      "color": "#5fd45a",
+      "radius": 2.5,
+      "width": 0.25,
+      "durationMs": 700
+    },
+    "levelUp": {
+      "color": "#9b59d0",
+      "radius": 7,
+      "width": 0.4,
+      "durationMs": 1100
+    }
   }
 }

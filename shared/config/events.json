@@ -7,6 +7,7 @@
       "intervalSec": 360,
       "lifetimeSec": 180,
       "safeDistance": 40,
+      "districts": ["park", "forest"],
       "summonIntervalSec": 10,
       "summonCount": 3,
       "maxMinions": 9,

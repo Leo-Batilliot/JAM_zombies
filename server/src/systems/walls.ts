@@ -6,12 +6,8 @@ export const blockBodies = (world: World): void => {
     if (!isBody(entity) || isFixedNpc(world, entity)) {
       continue;
     }
-    const free = world.obstacles.resolve(
-      entity.x,
-      entity.y,
-      bodyRadius(world, entity),
-    );
-    if (free !== undefined) {
+    const free = world.freePoint(entity.x, entity.y, bodyRadius(world, entity));
+    if (free.x !== entity.x || free.y !== entity.y) {
       world.setPosition(entity, free.x, free.y);
     }
   }

@@ -211,6 +211,7 @@ const serverMessages: ServerMessage[] = [
               tile: "ground-grass",
               variants: ["ground-grass-1"],
               variantRate: 0.2,
+              minimap: "#3e4a2a",
             },
           },
           obstacles: {
@@ -221,6 +222,8 @@ const serverMessages: ServerMessage[] = [
             },
             tree: { sprite: "obstacle-tree", scale: 2, anchorY: 0.85 },
           },
+          minimapObstacle: "#141017",
+          landmarks: { cathedral: { symbol: "+", color: "#c7ccd1" } },
           ramparts: {
             tower: "obstacle-tower",
             towerSpacing: 50,
@@ -234,6 +237,18 @@ const serverMessages: ServerMessage[] = [
             shade: "#0a080c",
             shadeAlpha: 0.5,
           },
+        },
+        effects: {
+          fusion: { color: "#5fd45a", radius: 2, width: 0.2, durationMs: 700 },
+          levelUp: { color: "#9b59d0", radius: 7, width: 0.4, durationMs: 900 },
+        },
+        night: {
+          color: "#0a0814",
+          alpha: 0.55,
+          resolution: 0.5,
+          lights: { Mage: 9 },
+          minFps: 28,
+          slowSec: 6,
         },
       },
       world: {

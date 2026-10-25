@@ -61,6 +61,34 @@ const nearestCivilian = (
   return best;
 };
 
+const fleeTurns = [0, Math.PI / 3, -Math.PI / 3, (2 * Math.PI) / 3];
+
+const fleePoint = (
+  world: World,
+  army: Army,
+  away: number,
+  distance: number,
+): [number, number] => {
+  const { mage } = army;
+  const { clearance } = world.config.world.city;
+  let best: [number, number] = [mage.x, mage.y];
+  let bestReach = -1;
+  for (const turn of fleeTurns) {
+    const x = world.clampX(mage.x + Math.cos(away + turn) * distance);
+    const y = world.clampY(mage.y + Math.sin(away + turn) * distance);
+    const free = world.obstacles.resolve(x, y, clearance) ?? { x, y };
+    const reach = Math.hypot(free.x - mage.x, free.y - mage.y);
+    if (reach >= distance / 2) {
+      return [free.x, free.y];
+    }
+    if (reach > bestReach) {
+      best = [free.x, free.y];
+      bestReach = reach;
+    }
+  }
+  return best;
+};
+
 const engage = (world: World, army: Army, battle: Battle): void => {
   const { fleeRatio, fleeDistance } = world.config.lobby.bots;
   const own = bodiesStrength(world, mainBodies(army));
@@ -71,15 +99,8 @@ const engage = (world: World, army: Army, battle: Battle): void => {
     return;
   }
   const center = enclose(undefined, foeBodies);
-  const dx = army.mage.x - center.x;
-  const dy = army.mage.y - center.y;
-  const length = Math.hypot(dx, dy) || 1;
-  orderMove(
-    world,
-    army,
-    army.mage.x + (dx / length) * fleeDistance,
-    army.mage.y + (dy / length) * fleeDistance,
-  );
+  const away = Math.atan2(army.mage.y - center.y, army.mage.x - center.x);
+  orderMove(world, army, ...fleePoint(world, army, away, fleeDistance));
 };
 
 const isIgnored = (world: World, army: Army, prey: Army): boolean =>
