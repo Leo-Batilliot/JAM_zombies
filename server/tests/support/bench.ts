@@ -29,6 +29,10 @@ export const createBench = (
     point.count = 0;
   }
   config.world.crosses.count = 0;
+  config.world.camps.count = 0;
+  for (const mist of Object.values(config.world.mists)) {
+    mist.count = 0;
+  }
   config.lobby.minParticipants = 0;
   patch(config);
   const world = new World(config, buildRegistries(config), seededRandom(seed));

@@ -4,7 +4,17 @@ import { formationSlots, slotOffsets } from "../../src/systems/formation.js";
 import type { Config } from "@horde/shared";
 import { createBench } from "../support/bench.js";
 
-const layout = { spacing: 1, frontOffset: 2, backOffset: 3 };
+const layout = {
+  name: "Test",
+  layout: "block" as const,
+  spacing: 1,
+  frontOffset: 2,
+  backOffset: 3,
+  width: 1,
+  speed: 1,
+  defense: 0,
+  fullGuard: false,
+};
 
 const withArcher = (config: Config): void => {
   const zombie = config.units.units["zombie"];
@@ -30,7 +40,7 @@ describe("slotOffsets", () => {
 describe("formationSlots", () => {
   test("turns the formation with the mage", () => {
     const bench = createBench((config) => {
-      config.formations.default = layout;
+      config.formations.neutral = layout;
       withArcher(config);
     });
     const army = bench.addArmy(100, 100);

@@ -97,7 +97,18 @@ export const updateHostiles = (world: World, dt: number): void => {
       moveToward(world, npc, target.x, target.y, stats.speed * dt);
     } else if (npc.cooldown <= 0) {
       npc.cooldown = attack.attackIntervalSec;
-      damage(world, target, attack.damage, undefined, stats.name);
+      if (attack.projectile === undefined) {
+        damage(world, target, attack.damage, undefined, stats.name);
+      } else {
+        world.addProjectile(
+          attack.projectile,
+          npc,
+          target.id,
+          attack.damage,
+          undefined,
+          stats.name,
+        );
+      }
     }
   }
 };

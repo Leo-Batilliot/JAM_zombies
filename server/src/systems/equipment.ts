@@ -30,10 +30,22 @@ export const fits = (world: World, item: string, type: string): boolean =>
   world.registries.units.get(type).equipment ===
     world.registries.items.get(item).category;
 
-export const damageBonus = (world: World, unit: Unit): number =>
+const itemOf = (world: World, unit: Unit) =>
   unit.item !== undefined && world.registries.items.has(unit.item)
-    ? world.registries.items.get(unit.item).damage
-    : 1;
+    ? world.registries.items.get(unit.item)
+    : undefined;
+
+export const damageBonus = (world: World, unit: Unit): number =>
+  itemOf(world, unit)?.damage ?? 1;
+
+export const armorOf = (world: World, unit: Unit): number =>
+  itemOf(world, unit)?.armor ?? 0;
+
+export const equip = (world: World, unit: Unit, item: string): void => {
+  const before = world.unitMaxHp(unit.type, unit.item);
+  unit.item = item;
+  unit.hp += world.unitMaxHp(unit.type, item) - before;
+};
 
 export const drawWeighted = <T>(
   world: World,
@@ -92,7 +104,7 @@ export const equipInventory = (world: World, army: Army): void => {
     if (unit === undefined) {
       return true;
     }
-    unit.item = item;
+    equip(world, unit, item);
     return false;
   });
 };

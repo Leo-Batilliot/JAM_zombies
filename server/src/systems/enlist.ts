@@ -1,5 +1,6 @@
 import type { Army, Remains, Unit, World } from "../world/world.js";
 import { grantSouls } from "./souls.js";
+import { effectsOf } from "./tactics.js";
 
 export const isFull = (world: World, army: Army): boolean =>
   army.units.size >= world.config.gameplay.army.cap;
@@ -48,5 +49,5 @@ export const armyPace = (world: World, army: Army): number => {
     Math.max((army.units.size - from) / (to - from), 0),
     1,
   );
-  return 1 - penalty * progress;
+  return (1 - penalty * progress) * effectsOf(world, army).speed;
 };

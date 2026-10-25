@@ -21,6 +21,13 @@ export interface Army {
   retreat: Retreat | undefined;
   inventory: string[];
   found: string[];
+  formation: string | undefined;
+  formationChange: FormationChange | undefined;
+}
+
+export interface FormationChange {
+  to: string;
+  at: number;
 }
 
 export interface Remains {
@@ -111,6 +118,7 @@ export interface Unit {
   group: AbandonedGroup | undefined;
   returning: boolean;
   item: string | undefined;
+  contactAt: number;
 }
 
 export interface NpcGroup {
@@ -129,6 +137,7 @@ export interface Npc {
   type: string;
   group: NpcGroup | undefined;
   event: string | undefined;
+  camp: Camp | undefined;
   offsetX: number;
   offsetY: number;
   homeX: number;
@@ -193,7 +202,51 @@ export interface Cross {
   strengths: Map<Army, number>;
 }
 
-export type Entity = Mage | Unit | Npc | Corpse | PointOfInterest | Cross;
+export interface Projectile {
+  id: number;
+  kind: EntityKind.Projectile;
+  type: string;
+  x: number;
+  y: number;
+  targetId: number;
+  damage: number;
+  attacker: Army | undefined;
+  attackerName: string;
+  fromX: number;
+  fromY: number;
+}
+
+export interface Mist {
+  id: number;
+  kind: EntityKind.Mist;
+  type: string;
+  x: number;
+  y: number;
+  dirX: number;
+  dirY: number;
+  turnAt: number;
+  expiresAt: number;
+}
+
+export interface Camp {
+  id: number;
+  kind: EntityKind.Camp;
+  x: number;
+  y: number;
+  expiresAt: number;
+  defenders: Set<Npc>;
+}
+
+export type Entity =
+  | Mage
+  | Unit
+  | Npc
+  | Corpse
+  | PointOfInterest
+  | Cross
+  | Projectile
+  | Mist
+  | Camp;
 export type Body = Mage | Unit | Npc;
 
 const maxArmySlot = 0xff;
@@ -214,6 +267,9 @@ export class World {
   readonly npcGroups = new Set<NpcGroup>();
   readonly points = new Set<PointOfInterest>();
   readonly crosses = new Set<Cross>();
+  readonly projectiles = new Set<Projectile>();
+  readonly mists = new Set<Mist>();
+  readonly camps = new Set<Camp>();
   readonly populationSpawnAt = new Map<number, number>();
   readonly hostiles = new Set<Npc>();
   readonly events = new Map<string, BossEvent>();
@@ -292,6 +348,8 @@ export class World {
       retreat: undefined,
       inventory: [],
       found: [],
+      formation: undefined,
+      formationChange: undefined,
     } as unknown as Army;
     army.mage = {
       id: this.#nextId++,
@@ -314,6 +372,14 @@ export class World {
     return army;
   }
 
+  unitMaxHp(type: string, item: string | undefined): number {
+    const bonus =
+      item !== undefined && this.registries.items.has(item)
+        ? (this.registries.items.get(item).hp ?? 1)
+        : 1;
+    return this.registries.units.get(type).hp * bonus;
+  }
+
   addUnit(army: Army, type: string, x: number, y: number, item?: string): Unit {
     const unit: Unit = {
       id: this.#nextId++,
@@ -322,7 +388,7 @@ export class World {
       army,
       x: this.clampX(x),
       y: this.clampY(y),
-      hp: this.registries.units.get(type).hp,
+      hp: this.unitMaxHp(type, item),
       targetId: undefined,
       retargetAt: this.time,
       cooldown: 0,
@@ -331,6 +397,7 @@ export class World {
       group: undefined,
       returning: false,
       item,
+      contactAt: -Infinity,
     };
     army.units.add(unit);
     this.#add(unit);
@@ -357,6 +424,7 @@ export class World {
     y: number,
     group: NpcGroup | undefined,
     event: string | undefined,
+    camp?: Camp,
   ): Npc {
     const stats = this.registries.npcs.get(type);
     const npc: Npc = {
@@ -365,6 +433,7 @@ export class World {
       type,
       group,
       event,
+      camp,
       offsetX: 0,
       offsetY: 0,
       homeX: this.clampX(x),
@@ -400,6 +469,70 @@ export class World {
 
   addEventNpc(type: string, x: number, y: number, event: string): Npc {
     return this.#addNpc(type, x, y, undefined, event);
+  }
+
+  addCamp(x: number, y: number, lifetimeSec: number): Camp {
+    const camp: Camp = {
+      id: this.#nextId++,
+      kind: EntityKind.Camp,
+      x: this.clampX(x),
+      y: this.clampY(y),
+      expiresAt: this.time + lifetimeSec,
+      defenders: new Set(),
+    };
+    this.camps.add(camp);
+    this.#add(camp);
+    return camp;
+  }
+
+  addCampNpc(camp: Camp, type: string, x: number, y: number): Npc {
+    const npc = this.#addNpc(type, x, y, undefined, undefined, camp);
+    camp.defenders.add(npc);
+    return npc;
+  }
+
+  addProjectile(
+    type: string,
+    from: { x: number; y: number },
+    targetId: number,
+    damage: number,
+    attacker: Army | undefined,
+    attackerName: string,
+  ): Projectile {
+    const projectile: Projectile = {
+      id: this.#nextId++,
+      kind: EntityKind.Projectile,
+      type,
+      x: this.clampX(from.x),
+      y: this.clampY(from.y),
+      targetId,
+      damage,
+      attacker,
+      attackerName,
+      fromX: from.x,
+      fromY: from.y,
+    };
+    this.projectiles.add(projectile);
+    this.#add(projectile);
+    return projectile;
+  }
+
+  addMist(type: string, x: number, y: number, lifetimeSec: number): Mist {
+    const angle = this.random() * 2 * Math.PI;
+    const mist: Mist = {
+      id: this.#nextId++,
+      kind: EntityKind.Mist,
+      type,
+      x: this.clampX(x),
+      y: this.clampY(y),
+      dirX: Math.cos(angle),
+      dirY: Math.sin(angle),
+      turnAt: this.time,
+      expiresAt: this.time + lifetimeSec,
+    };
+    this.mists.add(mist);
+    this.#add(mist);
+    return mist;
   }
 
   addCorpse(
@@ -496,6 +629,7 @@ export class World {
         break;
       case EntityKind.Npc:
         this.hostiles.delete(entity);
+        entity.camp?.defenders.delete(entity);
         if (entity.group !== undefined) {
           entity.group.members.delete(entity);
           if (entity.group.members.size === 0) {
@@ -512,6 +646,15 @@ export class World {
         break;
       case EntityKind.Cross:
         this.crosses.delete(entity);
+        break;
+      case EntityKind.Projectile:
+        this.projectiles.delete(entity);
+        break;
+      case EntityKind.Mist:
+        this.mists.delete(entity);
+        break;
+      case EntityKind.Camp:
+        this.camps.delete(entity);
         break;
       case EntityKind.Mage:
         break;

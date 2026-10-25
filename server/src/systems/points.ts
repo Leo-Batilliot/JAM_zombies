@@ -10,7 +10,7 @@ const lifetime = (world: World, type: PointType): number =>
   type.lifetimeSec.min +
   world.random() * (type.lifetimeSec.max - type.lifetimeSec.min);
 
-const spawnPoint = (
+export const spawnPoint = (
   world: World,
   typeId: string,
   x: number,
@@ -46,6 +46,17 @@ const rewards: Record<
       enlistNearMage(world, army, remains);
     }
     world.removeEntity(point);
+  },
+  units: (world, point, army) => {
+    const { units } = world.registries.pointsOfInterest.get(point.type);
+    if (units === undefined) {
+      return;
+    }
+    const count =
+      units.min + Math.floor(world.random() * (units.max - units.min + 1));
+    for (let index = 0; index < count; index++) {
+      enlistNearMage(world, army, { type: units.unit, item: undefined });
+    }
   },
   items: (world, point, army) => {
     const { loot } = world.registries.pointsOfInterest.get(point.type);

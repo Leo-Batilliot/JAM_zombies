@@ -63,7 +63,7 @@ describe("equipping items", () => {
     const unit = world.addUnit(army, "zombie", 101, 100);
     expect(damageBonus(world, unit)).toBe(1);
     unit.item = "chainsaw";
-    const { damage: bonus } = world.registries.items.get("chainsaw");
+    const bonus = world.registries.items.get("chainsaw").damage ?? 1;
     expect(damageBonus(world, unit)).toBe(bonus);
     const boss = world.addEventNpc("evil-pumpkin", 101.5, 100, "test");
     const before = boss.hp;
