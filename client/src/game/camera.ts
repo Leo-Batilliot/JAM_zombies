@@ -17,3 +17,16 @@ export const easeZoom = (
   target: number,
   camera: CameraSettings,
 ): number => current + (target - current) * camera.smoothing;
+
+export const isSmallScreen = (
+  width: number,
+  height: number,
+  camera: CameraSettings,
+): boolean => Math.min(width, height) < camera.smallScreen;
+
+export const screenZoom = (
+  width: number,
+  height: number,
+  camera: CameraSettings,
+): number =>
+  isSmallScreen(width, height, camera) ? camera.smallScreenZoom : 1;

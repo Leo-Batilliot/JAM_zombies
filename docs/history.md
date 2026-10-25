@@ -4,6 +4,11 @@ Format : voir `ressources/exemples/history.md`. Entrée la plus récente en haut
 
 ---
 
+### Vue plus large et rendu allégé sur téléphone | 14.06 | L.BA
+
+- `client/src/game/camera.ts`, `game.ts` : sur petit écran, caméra 2 fois plus loin et rendu à 1 pixel physique par pixel.
+- `shared/src/config/schema.ts`, `shared/config/client.json` : seuil de petit écran, zoom et résolution associés.
+
 ### Cartes de level up verrouillées un instant | 14.05 | L.BA
 
 - `client/src/cards.ts`, `client/src/style.css` : nouvelles cartes visibles mais grisées et non cliquables pendant le délai.

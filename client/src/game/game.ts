@@ -23,7 +23,7 @@ import type { Connection } from "../net/connection.js";
 import { Screamer } from "../screamer.js";
 import { SpellButton } from "../spell.js";
 import { BombingLayer } from "./bombings.js";
-import { easeZoom, zoomFor } from "./camera.js";
+import { easeZoom, isSmallScreen, screenZoom, zoomFor } from "./camera.js";
 import { CrossLayer } from "./crosses.js";
 import { atlasFrame, type Atlas } from "./assets.js";
 import { EntityLayer, type Rect } from "./entities.js";
@@ -68,7 +68,13 @@ export const startGame = async (
     resizeTo: window,
     resolution: Math.min(
       window.devicePixelRatio,
-      config().client.maxPixelRatio,
+      isSmallScreen(
+        window.innerWidth,
+        window.innerHeight,
+        config().client.camera,
+      )
+        ? config().client.camera.smallScreenPixelRatio
+        : config().client.maxPixelRatio,
     ),
     autoDensity: true,
     antialias: true,
@@ -286,7 +292,9 @@ export const startGame = async (
     const { camera: cameraSettings, pixelsPerMeter } = config().client;
     zoom = easeZoom(
       zoom,
-      zoomFor(status?.strength ?? 0, cameraSettings) / (status?.vision ?? 1),
+      (zoomFor(status?.strength ?? 0, cameraSettings) *
+        screenZoom(app.screen.width, app.screen.height, cameraSettings)) /
+        (status?.vision ?? 1),
       cameraSettings,
     );
     if (Math.abs(zoom - sentZoom) > sentZoom * cameraSettings.resendRatio) {

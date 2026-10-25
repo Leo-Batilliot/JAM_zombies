@@ -8,6 +8,9 @@ const camera = {
   factor: 0.25,
   smoothing: 0.1,
   resendRatio: 0.05,
+  smallScreen: 600,
+  smallScreenZoom: 0.5,
+  smallScreenPixelRatio: 1,
 };
 
 describe("camera zoom", () => {

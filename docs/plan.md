@@ -782,3 +782,7 @@ Tir de base du mage sur le PNJ ciblé ou le plus proche, pour se relancer sans t
 ### 14.05 Cartes verrouillées un instant | L.BA
 
 Les nouvelles cartes de level up restent visibles mais incliquables pendant un court délai, pour éviter un clic de déplacement pris pour un choix.
+
+### 14.06 Téléphone : vue plus large et rendu allégé | L.BA
+
+Sur un écran de moins de 600 px de petit côté, caméra 2 fois plus loin et résolution limitée à 1, pour voir plus et alléger le rendu.

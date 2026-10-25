@@ -4,6 +4,13 @@ Format : voir `ressources/exemples/decisions.md`. Entrée la plus récente en ha
 
 ---
 
+### Vue et rendu adaptés au téléphone | L.BA
+
+- **Quoi** : quand le petit côté de l'écran fait moins de 600 px, la caméra est 2 fois plus loin (`camera.smallScreenZoom`) et le rendu est limité à 1 pixel physique par pixel (`camera.smallScreenPixelRatio`).
+- **Pourquoi** : retour de jeu, sur téléphone on voyait environ 20 m de large et le jeu ramait. Un lobby normal coûte 2,8 ms par tick au serveur, le lag vient du réseau ou du rendu.
+- **Impact** : plus d'entités visibles et plus de débit sur téléphone, mais environ 4 fois moins de pixels à dessiner.
+- **Avis** : À vérifier. Fps et lisibilité à confirmer sur le téléphone.
+
 ### Cartes verrouillées 800 ms | L.BA
 
 - **Quoi** : à chaque nouveau tirage, les cartes s'affichent grisées et ne réagissent pas aux clics pendant `cardLockMs` (800 ms).
