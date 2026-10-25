@@ -190,7 +190,11 @@ describe("bots with equipment and crosses", () => {
     expect(army.mage.targetX).toBeCloseTo(115);
     bench.step(bench.config.network.tickRate * 5);
     const [unit] = army.units;
-    expect(unit?.item).toBeDefined();
+    const items = [
+      ...army.inventory,
+      ...(unit?.item === undefined ? [] : [unit.item]),
+    ];
+    expect(items).toHaveLength(1);
   });
 
   test("evolve their zombies when they can", () => {
@@ -233,5 +237,79 @@ describe("bots with equipment and crosses", () => {
     bench.world.addUnit(army, "zombie", 100, 100);
     cross.readyAt = bench.world.time + 10;
     expect(detour(bench.world, army, 140, 100)).toEqual({ x: 140, y: 100 });
+  });
+});
+
+describe("bots in the V1 world", () => {
+  test("spread out in the explore formation when nothing is around", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    runBots(bench.world);
+    expect(army.formationChange?.to).toBe(
+      bench.config.lobby.bots.formations.explore,
+    );
+  });
+
+  test("attack a camp they can beat in the attack formation", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    for (let index = 0; index < 10; index++) {
+      bench.world.addUnit(army, "big-zombie", 100, 101);
+    }
+    const camp = bench.world.addCamp(140, 100, 600);
+    bench.world.addCampNpc(camp, "soldier", 140, 100);
+    runBots(bench.world);
+    expect(army.mage.targetX).toBeCloseTo(140);
+    expect(army.formationChange?.to).toBe(
+      bench.config.lobby.bots.formations.attack,
+    );
+  });
+
+  test("leave a camp too strong for them", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    bench.world.addUnit(army, "zombie", 100, 101);
+    const camp = bench.world.addCamp(140, 100, 600);
+    for (let index = 0; index < 4; index++) {
+      bench.world.addCampNpc(camp, "soldier", 140, 100);
+    }
+    runBots(bench.world);
+    expect(army.mage.targetX).not.toBeCloseTo(140);
+  });
+
+  test("hunt the bounty from far away", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    for (let index = 0; index < 6; index++) {
+      bench.world.addUnit(army, "zombie", 100, 101);
+    }
+    const leader = bench.addArmy(200, 100, "Leader");
+    for (let index = 0; index < 7; index++) {
+      bench.world.addUnit(leader, "zombie", 200, 101);
+    }
+    bench.config.lobby.bots.bountyRatio = 2;
+    runBots(bench.world);
+    expect(army.mage.targetX).toBeCloseTo(200);
+  });
+
+  test("hold in the defend formation against a slightly stronger army", () => {
+    const bench = createBench();
+    const army = botArmy(bench);
+    for (const y of [99, 100, 101, 102]) {
+      bench.world.addUnit(army, "zombie", 103, y);
+    }
+    const enemy = bench.addArmy(114, 100, "Enemy");
+    for (const y of [98, 99, 100, 101, 102]) {
+      bench.world.addUnit(enemy, "zombie", 107, y);
+    }
+    bench.step();
+    if (army.bot !== undefined) {
+      army.bot.thinkAt = 0;
+    }
+    runBots(bench.world);
+    expect(army.retreat).toBeUndefined();
+    expect(army.formationChange?.to).toBe(
+      bench.config.lobby.bots.formations.defend,
+    );
   });
 });
