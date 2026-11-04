@@ -1,5 +1,7 @@
 # Horde.io
 
+![Demo](docs/demo.gif)
+
 Jeu multijoueur en ligne (.io) sur le thème des zombies, jouable sur navigateur, PC et téléphone. Chaque joueur est un mage zombifié qui commande une armée de morts : les unités tuées se relèvent 30 s plus tard, et passent à l'ennemi si leur mage fuit ou meurt.
 
 Le concept est dans `docs/concept.md`, et les changements du revamp dans `docs/conceptV2.md`.
